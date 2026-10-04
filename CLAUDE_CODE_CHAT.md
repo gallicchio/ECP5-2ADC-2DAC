@@ -1673,3 +1673,23 @@ tree is clean on the branch.
 * Its report comes back through the tool, not into the tree.  Save it as
   `ECP5-2ADC-2DAC/design_review_Claude-ultrareview/DESIGN_REVIEW_Claude-ultrareview.md` (or ask me to) so the
   reconciliation can cite it like the others.
+
+## Prompt 18
+
+/ultrareview
+
+*(Claude Code answered: "/ultrareview isn't available over Remote Control.")*
+
+Do I need to start claude code locally and then type /ultrareview or do I do that from within the github webpage?
+
+## Response 18 2026-10-04 09:58 Claude Fable 5.1 Max
+
+Neither the web page nor Remote Control: it is a Claude Code slash command, and it has to be typed into the
+Claude Code terminal that runs on `bell` itself.  Remote Control only mirrors that session from another device
+and refuses the command.  Two ways: (1) at bell's keyboard, or over SSH into the terminal running this session,
+type `/code-review ultra` (the current name; `/ultrareview` is the deprecated alias) -- this session is already on
+`ecp5-2adc-2dac` with a clean tree, which is what the no-arg form bundles and sends; or (2) start a fresh
+session on bell, `cd .../OpticsPCBs && claude`, and type the same command there -- the review needs only the
+repository state and the root `CLAUDE.md`, not this conversation.  The GitHub web page enters only if you want
+the pull-request form: push both branches, open the PR of `ecp5-2adc-2dac` against `master`, then type
+`/code-review ultra <PR#>` in Claude Code on bell.  The command is billed; I cannot run it from here.
