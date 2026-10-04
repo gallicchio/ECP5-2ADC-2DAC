@@ -1,0 +1,18 @@
+LED driver: VA2 (0..0.48 V) -> OPA2810 -> 100 R -> SS8050 -> LED to +5 V, 10 R emitter sense: I_LED = VA2 / 10 R
+.include opamps.lib
+Vin va 0 DC 0.24
+X1 va sense vp5 vm5 out OPA2810
+Rb out base 100
+Q1 col base emit SS8050
+.model SS8050 NPN(IS=1e-13 BF=200 VAF=100 RB=5 RC=0.5 RE=0.1 CJE=20p CJC=10p TF=0.5n)
+Rsense emit sense 1e-3
+Rs sense 0 10
+Dled vp5 col LEDR
+.model LEDR D(IS=1e-18 N=1.8 RS=1.5)
+Vp5 vp5 0 5
+Vm5 vm5 0 -4.4
+.control
+dc Vin 0 0.48 0.08
+print i(Vp5) v(col) v(sense)
+.endc
+.end

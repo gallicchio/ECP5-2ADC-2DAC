@@ -1,0 +1,18 @@
+Photodiode transimpedance amplifier: 10 k || 2.2 pF, OPA2810, diode capacitance 70 pF reverse biased
+.include opamps.lib
+Ipd 0 inn DC 0 AC 1u
+Cpd inn 0 70p
+X1 0 inn vp5 vm5 out OPA2810
+Rf out inn 10k
+Cf out inn 2.2p
+Vp5 vp5 0 5
+Vm5 vm5 0 -4.4
+.control
+ac dec 20 1k 100meg
+let g = db(v(out))
+meas ac g1k find g at=1k
+meas ac f3db when g=g1k-3 fall=1
+meas ac gmax max g
+print g1k f3db gmax
+.endc
+.end

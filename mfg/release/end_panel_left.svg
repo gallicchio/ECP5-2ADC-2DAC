@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="145.02mm" height="81.13mm" viewBox="-72.51 -45.56 145.02 81.13">
+<g transform="scale(1,-1)" fill="none" stroke="black" stroke-width="0.2">
+<rect x="-62.51" y="-25.57" width="125.02" height="51.13" rx="3" />
+<circle cx="-57.76" cy="-21.75" r="2.10" />
+<circle cx="-57.76" cy="21.75" r="2.10" />
+<circle cx="57.76" cy="-21.75" r="2.10" />
+<circle cx="57.76" cy="21.75" r="2.10" />
+<circle cx="-37.50" cy="-12.57" r="3.25" />
+<g transform="translate(-37.50,-7.32) scale(1,-1)"><text x="0" y="0" font-size="2" text-anchor="middle" fill="black" stroke="none">DAC 1 OUT (SMA)</text></g>
+<circle cx="-20.50" cy="-12.57" r="3.25" />
+<g transform="translate(-20.50,-4.32) scale(1,-1)"><text x="0" y="0" font-size="2" text-anchor="middle" fill="black" stroke="none">DAC 2 OUT (SMA)</text></g>
+<circle cx="-3.50" cy="-12.57" r="3.25" />
+<g transform="translate(-3.50,-7.32) scale(1,-1)"><text x="0" y="0" font-size="2" text-anchor="middle" fill="black" stroke="none">ADC B IN (SMA)</text></g>
+<circle cx="13.50" cy="-12.57" r="3.25" />
+<g transform="translate(13.50,-4.32) scale(1,-1)"><text x="0" y="0" font-size="2" text-anchor="middle" fill="black" stroke="none">ADC A IN (SMA)</text></g>
+<circle cx="30.50" cy="-12.57" r="3.25" />
+<g transform="translate(30.50,-7.32) scale(1,-1)"><text x="0" y="0" font-size="2" text-anchor="middle" fill="black" stroke="none">CLK OUT (SMA)</text></g>
+<circle cx="47.50" cy="-12.57" r="3.25" />
+<g transform="translate(47.50,-4.32) scale(1,-1)"><text x="0" y="0" font-size="2" text-anchor="middle" fill="black" stroke="none">CLK IN (SMA)</text></g>
+</g>
+<g transform="scale(1,-1)"><g transform="translate(-62.51,-33.56) scale(1,-1)"><text font-size="2.5" fill="black">LEFT END PLATE, viewed from OUTSIDE, 1:1 mm. Board top 8.0 mm above the inside floor (slot: measure).</text></g></g>
+</svg>

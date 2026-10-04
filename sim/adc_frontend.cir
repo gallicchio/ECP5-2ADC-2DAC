@@ -1,0 +1,59 @@
+ADC front end, one channel: SMA -> 50R term -> 100R -> clamp node -> x1/x10 -> x1/x10 -> THS4521 (gain 1) -> 33R/22pF -> AD9238
+.include opamps.lib
+.param gain1=1 gain2=1
+* ---- source and input network ------------------------------------------------
+Vin in 0 DC 0 AC 1 SIN(0 0.5 1e6)
+Rsrc in sma 50
+Rterm sma 0 49.9
+R100 sma node 100
+* clamp diodes (BAV99) to +5VA / -5VA
+Dclp node vp5 D1
+Dcln vm5 node D1
+.model D1 D(IS=2.5e-9 N=1.8 RS=1)
+Vp5 vp5 0 5
+Vm5 vm5 0 -4.4
+* ---- stage 1: OPA1612 non-inverting, 9.1k feedback, 1k to ground (jumper open = x10; shunt = x1) ----
+X1 node fb1 vp5 vm5 o1 OPA1612
+Rf1 o1 fb1 9.1k
+Rg1 fb1 0 1k
+Rj1 o1 fb1 {gain1 == 1 ? 1e-3 : 1e12}
+* ---- stage 2 -------------------------------------------------------------------
+X2 o1 fb2 vp5 vm5 o2 OPA1612
+Rf2 o2 fb2 9.1k
+Rg2 fb2 0 1k
+Rj2 o2 fb2 {gain2 == 1 ? 1e-3 : 1e12}
+* ---- THS4521 gain 1 single-ended to differential, VOCM = 1.65 V ------------------
+Rgp o2 fp 499
+Rgn 0 fn 499
+X3 fp fn vocm v33 0 on op THS4521
+Rfp fp on 499
+Rfn fn op 499
+Vocm vocm 0 1.65
+V33 v33 0 3.3
+* ---- RC into the converter --------------------------------------------------------
+Rsp op adp 33
+Rsn on adn 33
+Cp adp 0 22p
+Cn adn 0 22p
+Cadc adp adn 5p
+.control
+op
+print v(node) v(o1) v(o2) v(adp) v(adn)
+ac dec 20 1k 100meg
+let diff = v(adp)-v(adn)
+let gdb = db(diff)
+meas ac g1k find gdb at=1k
+meas ac f3db when gdb=g1k-3 fall=1
+print g1k f3db
+dc Vin -1.5 1.5 0.05
+let outd = v(adp)-v(adn)
+meas dc vlo find outd at=-1
+meas dc vhi find outd at=1
+print vlo vhi
+* clamp check: 10 V in, the node must stay within the rails
+dc Vin -10 10 1
+meas dc nmin min v(node)
+meas dc nmax max v(node)
+print nmin nmax
+.endc
+.end
