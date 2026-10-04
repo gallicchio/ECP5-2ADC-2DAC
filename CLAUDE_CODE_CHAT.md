@@ -1693,3 +1693,29 @@ session on bell, `cd .../OpticsPCBs && claude`, and type the same command there 
 repository state and the root `CLAUDE.md`, not this conversation.  The GitHub web page enters only if you want
 the pull-request form: push both branches, open the PR of `ecp5-2adc-2dac` against `master`, then type
 `/code-review ultra <PR#>` in Claude Code on bell.  The command is billed; I cannot run it from here.
+
+## Prompt 19
+
+/ultrareview
+
+*(typed at bell; Claude Code answered: "Repo is too large. Push a PR and use `/code-review ultra <PR#>` instead.")*
+
+## Response 19 2026-10-04 10:03 Claude Fable 5.1 Max
+
+The no-arg form bundles the repository and ours is 1.3 GB packed, so the pull-request form is the only way.  The
+push is still yours: this shell's SSH agent socket is stale ("Permission denied (publickey)"), and `gh` is not
+installed, so the PR is opened on the web.  No file in the commits is over GitHub's 100 MB limit (the largest
+are a 15 MB Siglent manual and a 12 MB 3D model).  Steps, from a shell on bell in the repository:
+
+1. `git fetch origin` and `git log --oneline master..origin/master` -- if that prints anything, someone pushed
+   since this clone's last fetch and master must be rebased first (ask me).
+2. `git push origin master ecp5-2adc-2dac`.
+3. Open https://github.com/QuantumQuasars/OpticsPCBs/compare/master...ecp5-2adc-2dac?expand=1 and create the
+   pull request with the title and body in `ECP5-2ADC-2DAC/build/scratch/review/PR_BODY.md` (the body tells
+   the reviewer to start from the brief and to reconcile with the three reviews).
+4. In Claude Code on bell: `/code-review ultra <PR#>`.
+
+Caveat: GitHub's PR view will not display the biggest files (the 5 MB board, the 20 000-line sheets, the 3D
+bodies marked linguist-generated), and the review tool reads the PR through GitHub, so it may see those as
+"too large" too; the root `CLAUDE.md` and the committed `build/` results give it the DRC/ERC/routing facts
+without the board file.
