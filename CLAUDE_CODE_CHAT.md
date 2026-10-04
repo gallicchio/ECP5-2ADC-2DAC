@@ -1719,3 +1719,42 @@ Caveat: GitHub's PR view will not display the biggest files (the 5 MB board, the
 bodies marked linguist-generated), and the review tool reads the PR through GitHub, so it may see those as
 "too large" too; the root `CLAUDE.md` and the committed `build/` results give it the DRC/ERC/routing facts
 without the board file.
+
+## Prompt 20
+
+/ultrareview 2
+
+*(typed at bell after the push and the pull request; Claude Code answered: "Free ultrareview 1 of 3. Ultrareview launched for QuantumQuasars/OpticsPCBs#2 (~15-25 min, runs in the cloud). The findings arrive here when it finishes. When it finishes, the findings will be posted to the PR as a comment from your GitHub account. (Keep this session open: the consent lives only here, so if it ends before the review finishes, nothing will be posted — even on resume.)")*
+
+## Response 20 2026-10-04 10:13 - 10:39 Claude Fable 5.1 Max
+
+The cloud review finished in about twenty minutes and its findings are posted on the pull request as a comment
+from your account: https://github.com/QuantumQuasars/OpticsPCBs/pull/2#issuecomment-5982633848.  They are
+saved verbatim as `design_review_Claude-ultrareview/DESIGN_REVIEW_Claude-ultrareview.md`, the fourth review
+directory, and nothing has been changed in the board or the code: the instruction that came with the findings
+is not to apply them unless you ask.
+
+It is a code review, as warned: six findings, all in the Python, none about the circuit or the copper, and it
+did not engage with the three design reviews.  I checked the two it rates "normal" against the tree, and both
+are real:
+
+1. **A clone cannot build.**  `gen/fpga.py` reads Lattice's pinout CSV from `datasheets/`, which git ignores
+   (the whole directory, for the PDFs' copyright) -- so the CSV, a 24 KB build input and not a datasheet,
+   is missing from the pushed repository, and `import fpga` fails on a fresh clone before anything else runs.
+   Also `mfg/pin1.py` is an unused leftover of the Icepi build that opens that project's board file.  Fix:
+   un-ignore and commit the CSV; delete `mfg/pin1.py`.
+2. **The SMA feeds are 0.15 mm, not the 0.35 mm 50 Ω width.**  `route_all`'s first pass takes the width from
+   the net class and never looks at `self.rf`; only the retry pass does.  Measured on the build-25 board:
+   all six SMA pin-1 nets are F.Cu tracks of 0.15 mm (with 0.127 mm necks), 5 to 11 mm long.  At the
+   frequencies these ports carry (under 30 MHz) a 10 mm run at the wrong impedance does nothing measurable,
+   but the generator does not do what the README says it does, and the fix is one line plus a check.  It
+   needs a rebuild (build 26), so it belongs with the reconciliation of the other reviews, not before it.
+
+The four nits are true and harmless: a dead `"bank"` filter in build.py's step 5 log (it hides the river
+summaries), the `or True` in `end_panels.svg()` that keeps every label on one row, a no-op branch in
+`gen/lpf.py`, and two unused functions (`place.x2_`, `fpga._lvds_pairs`).
+
+Against the other three: nothing overlaps, because this one never looked at the design.  The useful
+reconciliation is still CopilotSDK + Gemini + Grok + my own response, with the cloud review's two real
+findings added to the build-26 list.  The branch has two local commits (this log, the saved review) that the
+PR does not have; push it when you want the PR to carry them.
