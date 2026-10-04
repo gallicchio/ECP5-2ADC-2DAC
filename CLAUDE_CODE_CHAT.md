@@ -1593,3 +1593,83 @@ The other LLMs' reviews are in. Check in everything that is relevant, including 
 
 *(and then:)* ok, they all should be on the `bell` computer.
 
+## Response 17 2026-10-04 09:34 - 09:49 Claude Fable 5.1 Max
+
+Everything is checked in, on two branches, and the tree is clean.  I could not push: this shell has no SSH key
+for GitHub (`git fetch` answered "Permission denied (publickey)"), so the push and the fetch that should precede
+it are yours.  The caveats about `/code-review ultra` are at the end.
+
+### The three reviews
+
+All three landed in `ECP5-2ADC-2DAC/design_review_*/` at 09:31 and kept to the ground rules (own directory, no
+git, no build; one of them opened the project in the KiCad GUI, which rewrote `ECP5-2ADC-2DAC.kicad_pro` -- I
+reverted that to the generated file).  None of their findings has been acted on yet: build 25 stays frozen so
+that the cloud review and the three reports describe the same board.  In one line each:
+
+* **CopilotSDK**: do not order unchanged.  C4951 is a general-purpose 2 kV MLCC, not a safety capacitor, so the
+  1500 V claim is unsupported; the DAC stage has no slew margin at 13 MHz (149 of 180 V/µs); CLK IN is a squarer,
+  not a reference input; the RGMII TX delay has no gateware; USB-C current is not negotiated.  Passes: the ADC
+  bias, the Master-SPI order, SDRAM/HDMI skew, independent ERC/DRC/footprint checks.
+* **Gemini 3.8 Flash**: twelve findings, three of them new -- the THS4521 sees 2.27 V across its inputs
+  (1 V absolute maximum) when a preamp saturates; the ADC input traces are 9-10 mm mismatched with the 22 pF
+  caps 10 mm from the pins; DAC_CLK1/WRT1 cross the In4 plane split; the USB-C receptacles sit 2.7 mm behind
+  the end plate (the RJ45 face sets the depth); no filter on -4.4 V; the DAC difference amplifier is
+  AC-unbalanced; the squarer runs on the digital 3.3 V; narrow SOIC-8 has no CPL rotation entry (parked, as you
+  asked).  It read the other two before writing its reconciliation.
+* **Grok 4.7**: do not start over, do not hold the fab; fix the claims.  The -4.4 V pump's 2 MHz spur is
+  common to both noise channels (35 dB PSRR, no ferrite); the silkscreen says ±1 V / ±2 V where the simulation
+  says ±0.91 / ±1.82 V; the power sheet's "no order requirement" sentence is wrong (the datasheet's trip is the
+  FIRST of VCC and VCCAUX); the isolation gap is a bench clearance, not a 1500 V barrier; the RGMII TX delay
+  is missing in gateware; a ±10 V source into the high-Z input opens the 100 Ω shunt.  It disputes Gemini on
+  the THS4521 overdrive (recoverable, under 1 V differential).
+
+Where they agree, with my own review: the RGMII TX delay (gateware, not copper), the -4.4 V spur, the CLK IN
+squarer's limits, the C4951 / 1500 V claim, the DAC labels.  Where they disagree: the THS4521 overdrive
+(Gemini's 2.27 V vs Grok's "under 1 V" -- both cannot be right; the datasheet's VID limit and the FDA's output
+saturation decide it) and whether the DAC stage needs parts or a label.  Reconciling all of that into a build 26
+plan is the next job, after the cloud review has had its say; §11 of the prompt lists the three so the cloud
+reviewer reads them after its own pass.
+
+### What was checked in
+
+Five commits, arranged so that the project is a branch and master is the rest of the repository:
+
+* `master` = origin's five Syzygy commits (a colleague, 2026-09-30 to 10-02, which this clone had not pulled) +
+  `GPSDO-PYNQ-Z2: rounds 39-43` (the 17 modified files, the bench tools, REVB_CHANGES.md, 25 MB of
+  measurement logs) + `SyzygyRadioDrivers: V3 test board Gerbers, launch footprint, review prompt, fetch
+  script` + `util_bench_instruments: drivers, tests and references` (110 MB, 105 of them Siglent manuals that
+  the folder's own .gitignore chose to keep; its installers and catalogs stay out).
+* `ecp5-2adc-2dac` = master + the build-25 project (the commit from Prompt 16, replayed) + the reviews, the
+  reviewer material (`docs/datasheets/txt` and `drawings`, the un-ignored `build/` results, root `CLAUDE.md`,
+  `.gitattributes`) + this log entry.  `git diff master ecp5-2adc-2dac` is the whole project: 381 files.
+
+Why a branch: `/code-review ultra` reviews "the current branch" or a pull request, which is a diff against
+its base.  With the project on master there would be nothing to diff; on the branch the whole project is the
+diff, and a PR against master would carry the same content.  After the review, `git checkout master && git
+merge --ff-only ecp5-2adc-2dac` puts it all on master.  While master is checked out the ECP5 files are absent
+from the working tree and `git status` shows `?? ECP5-2ADC-2DAC/` for the ignored leftovers (build/,
+datasheets/); that is expected.
+
+The first attempt at this arrangement misfired: `cherry-pick -q` is not a valid flag, so the reset to origin's
+head ran and the replays did not, leaving both branches at origin for a minute.  Nothing was lost -- every
+commit was already stored by hash -- and the replay with explicit checks produced the tree above; the working
+tree is clean on the branch.
+
+### For the cloud review, and for the push
+
+* I cannot launch `/code-review ultra` (it is user-triggered and billed); `/ultrareview` is its deprecated
+  alias.  Run it with `ecp5-2adc-2dac` checked out, as it is now.
+* Push first if you want the PR form: `git fetch origin` (to confirm nobody pushed since this clone's last
+  fetch), then `git push origin master ecp5-2adc-2dac`, open a PR of the branch against master on GitHub and
+  use `/code-review ultra <PR#>`.  The no-arg form bundles the local branch and needs no push.
+* The cloud reviewer sees only what is committed: no `datasheets/` PDFs (it has the text and drawings), no
+  `build/scratch`, no KiCad, yosys or ngspice.  `CLAUDE.md` at the repository root tells it where the brief,
+  the reviews and the rules are, and to settle the reviewers' disagreements with datasheet numbers.
+* The diff is large (381 files; the board file alone is 5 MB, the sheets 20 000 lines each).  3D models and
+  Gerbers are marked not-for-diff, but a code-review product may still truncate or skip the biggest files; if
+  its report is thin on the board itself, that is why.
+* It is a code-review tool: expect it to find things in the Python generators too.  The design-review brief is
+  what `CLAUDE.md` points it to.
+* Its report comes back through the tool, not into the tree.  Save it as
+  `ECP5-2ADC-2DAC/design_review_Claude-ultrareview/DESIGN_REVIEW_Claude-ultrareview.md` (or ask me to) so the
+  reconciliation can cite it like the others.
