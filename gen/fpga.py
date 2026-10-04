@@ -232,22 +232,6 @@ def assign():
     return out
 
 
-def _lvds_pairs(avail):
-    """(true, comp) ball pairs among `avail`, from the CSV's Differential column
-    (True_OF_PR47B pairs with Comp_OF_PR47A: same pad name, A/B suffix)."""
-    by_pad = {d["pad"]: d for d in avail}
-    pairs = []
-    for d in avail:
-        if d["diff"].startswith("True_OF_"):
-            padname = d["diff"][len("True_OF_"):]          # e.g. PR47B or PR47D
-            comp = padname[:-1] + {"B": "A", "D": "C"}[padname[-1]]
-            for e in avail:
-                if e["diff"] == "Comp_OF_" + comp:
-                    pairs.append((d, e))
-    pairs.sort(key=lambda t: (t[0]["row"], -t[0]["col"]))
-    return pairs
-
-
 def summary(a):
     inv = collections.defaultdict(list)
     for s, b in a.items():

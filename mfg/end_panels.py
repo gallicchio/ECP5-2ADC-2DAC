@@ -82,7 +82,7 @@ def svg(path, side, items):
         else:
             out.append('<rect x="%.2f" y="%.2f" width="%.2f" height="%.2f" rx="0.8" />' % (u - w / 2, v - h / 2, w, h))
         k = items.index((ref, name, u, v, w, h, shape))
-        ty = v + h / 2 + 2.0 + 3.0 * (k % 2) if k % 2 == 0 or True else v - h / 2 - 2.5     # labels above the cutouts, staggered on two rows
+        ty = v + h / 2 + 2.0 + 3.0 * (k % 2)          # labels above the cutouts, alternately 2 and 5 mm up so neighbours do not collide
         out.append('<g transform="translate(%.2f,%.2f) scale(1,-1)"><text x="0" y="0" font-size="2" text-anchor="middle" fill="black" stroke="none">%s</text></g>' % (u, ty, name))
     out.append('</g>')
     out.append('<g transform="scale(1,-1)"><g transform="translate(%.2f,%.2f) scale(1,-1)"><text font-size="2.5" fill="black">%s END PLATE, viewed from OUTSIDE, 1:1 mm. Board top %.1f mm above the inside floor (slot: measure).</text></g></g>'

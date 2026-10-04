@@ -926,6 +926,15 @@ class Build:
                     return (0, side, 0, -x) if dx >= 0 else (0, side, 1, x)      # east-bound: east to west; west-bound: west to east
                 return (0, side, 0, y) if dy <= 0 else (0, side, 1, -y)          # north-bound: north to south; south-bound: south to north
             return (1, 0, 0, 0)
+        def width_of(n):
+            """One width rule for both passes.  Builds 1-25 computed the first pass's width inline and never looked
+            at self.rf, so all six SMA feeds went out at 0.15 mm (the cloud review of PR #2 found it; measured)."""
+            if n in self.rf:
+                return RF_W
+            c = net_class(n); w = CLASS_WIDTH.get(c, 0.15)
+            if c == "Rail":
+                return 0.2 if n in THIN_RAILS else RAIL_W
+            return 0.127 if (n in self.esc["exits"] and c == "Default") else w
         t_start = time.time()
         results = {}
         self.n_fixed_tracks, self.n_fixed_vias = len(self.tracks), len(self.vias)
@@ -945,22 +954,9 @@ class Build:
             # copper (an escape exit, a plane's vias, an island feed) counts as terminals too
             if len({t[2] for t in terms}) + len(self.comps.get(net, [])) < 2:
                 continue
-            cls = net_class(net)
-            width = CLASS_WIDTH.get(cls, 0.15)
-            if net in self.esc["exits"] and cls == "Default":
-                width = 0.127
-            if net in THIN_RAILS:
-                width = 0.2                 # VCCAUX: tens of mA, and its ball vias are reached between the BGA's vias
-            ok = self.route_net(net, terms, width)
+            ok = self.route_net(net, terms, width_of(net))
             results[net] = ok
         # one more go at what failed, now that everything else is in place
-        def width_of(n):
-            if n in self.rf:
-                return RF_W
-            c = net_class(n); w = CLASS_WIDTH.get(c, 0.15)
-            if c == "Rail":
-                return 0.2 if n in THIN_RAILS else RAIL_W
-            return 0.127 if (n in self.esc["exits"] and c == "Default") else w
         # the retry pass searches four times harder: pcb/route_diag2.py found paths with 2 M pops for
         # connections the 600 k budget had given up on
         self.retry_mode = True
@@ -1834,7 +1830,11 @@ class Build:
         out += getattr(self, "lines", [])
         txt = B.document("\n".join(out), self.numof)
         open(PCB, "w", encoding="utf-8").write(txt)
+        rf_bad = sorted({(t[5], t[6]) for t in self.tracks if t[5] in self.rf and abs(t[6] - RF_W) > 1e-6})
+        self.report["rf_width_violations"] = ["%s at %.3f mm" % b for b in rf_bad]
         json.dump(self.report, open(os.path.join(ROOT, "build", "route_report.json"), "w"), indent=1)
+        if rf_bad:
+            raise SystemExit("FAILED: SMA feed tracks not at RF_W %.2f mm: %s" % (RF_W, self.report["rf_width_violations"]))
         json.dump({r: list(v) for r, v in self.pl.placed.items()}, open(os.path.join(ROOT, "build", "placement.json"), "w"), indent=0, sort_keys=True)
 
 

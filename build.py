@@ -138,9 +138,10 @@ def main():
     if not a.no_pcb:
         # the board decides which ball carries which signal: place it, match
         # exits to destinations, and if that moved anything regenerate once
-        s = Step("5/9  pin swaps  <- pcb/pinswap.py  (match BGA exits to destinations, per bank)")
+        s = Step("5/9  pin swaps  <- pcb/pinswap.py  (match BGA exits to destinations, per exit pool)")
         r = subprocess.run([sys.executable, "pcb/pinswap.py"], capture_output=True, text=True, cwd=ROOT)
-        s.done("\n    ".join(l for l in r.stdout.strip().splitlines() if l.startswith("bank") or l.startswith("wrote")))
+        s.done("\n    ".join(l for l in r.stdout.strip().splitlines()
+                              if l.startswith(("river", "pool", "pinswap", "wrote")) or "CLEARANCE" in l))
         if r.returncode == 1:
             generate("  (again, with the swaps)")
             r = subprocess.run([sys.executable, "pcb/pinswap.py"], capture_output=True, text=True, cwd=ROOT)

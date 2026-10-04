@@ -47,8 +47,6 @@ def write_lpf(j, path):
         n = s.lower()
         L.append('LOCATE COMP "%s" SITE "%s";' % (n, b))
         extra = ""
-        if n.startswith("clk_") or n == "eth_rxc":
-            extra = ""
         if n in ("usb_dp", "usb_dn", "sd_cmd", "sd_d0", "sd_d1", "sd_d2", "sd_d3", "i2c_sda", "i2c_scl", "eth_mdio"):
             extra = " PULLMODE=UP"
         L.append('IOBUF PORT "%s" IO_TYPE=%s%s;' % (n, IOSTD, extra))

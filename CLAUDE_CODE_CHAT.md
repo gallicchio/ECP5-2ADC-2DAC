@@ -1758,3 +1758,10 @@ Against the other three: nothing overlaps, because this one never looked at the 
 reconciliation is still CopilotSDK + Gemini + Grok + my own response, with the cloud review's two real
 findings added to the build-26 list.  The branch has two local commits (this log, the saved review) that the
 PR does not have; push it when you want the PR to carry them.
+
+## Prompt 21
+
+Apply the fixes and commit the CSV. Then do the reconciliation. Then spend whatever time you need to take it all the way to "OK, upload to JLCPCB." I might take a look at things by eye and ask you questions or give you suggestions, but hopefully at this point they'll be more about the silkscreen than the circuit. One thing that we haven't address is testpoints in any of the signal paths. If you think this would help debug the most questionable aspects of revA, add them. Needing to solder a little wire or hold a probe is annoying. If you do this, try to use something like a surface mount U.FL connector that I can just push an SMA pigtail into. If you think it needs a 10x probe, I can start a seperate PCB project to make a BNC to U.FL best approximation to a 10x probe, or even a simple active probe if that would really help. I just don't want to have to solder stuff or hold stuff while you and I debug. I'd rather plug something in and hook it up to the ADALM2000 or a one of the siglent scopes that you can control from O
+
+*(completed a moment later:)* from OpticsPCBs/util_bench_instruments. (Sorry I hit enter early.)
+

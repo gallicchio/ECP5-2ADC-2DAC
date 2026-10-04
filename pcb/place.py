@@ -230,6 +230,3 @@ class Placer:
             todo = left
         return todo
 
-
-def x2_(v):
-    return v
