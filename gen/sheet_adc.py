@@ -23,7 +23,7 @@ def channel(ctx, tag, cl, base, alt_name, ids):
     gnd(ctx, *j.pin(2), stub=2.54)
     s.text(21.0, cl - 10.0, "ADC %s IN" % tag, size=1.8, bold=True)
     s.text(21.0, cl - 14.5, "±1 V MAX IN", size=2.2, bold=True)
-    s.text(21.0, cl + 15.5, "±1 V full scale at x1 (±0.1 V at x10)\n50 Ω or high-Z (JP%d)\nDC coupled; clamps at ±5 V\n±8 V max (100 Ω, 0.1 W)" % (base + 1), size=0.9, justify="left top")
+    s.text(21.0, cl + 15.5, "±1 V full scale at x1 (±0.1 V at x10)\n50 Ω or high-Z (JP%d)\nDC coupled; clamps at the rails (+5, -4.2 V)\n±10 V max (100 Ω 1206, 0.25 W)" % (base + 1), size=0.9, justify="left top")
     xt = 45.72
     s.wire(n0[0], cl, xt, cl)
     rt = R(ctx, base, "49.9R", xt, cl + 6.35)
@@ -35,14 +35,14 @@ def channel(ctx, tag, cl, base, alt_name, ids):
     s.wire(*rt.pin(2), *top)
     gnd(ctx, *bot, stub=2.54)
     label_node(ctx, xt + 3.0, cl + 22.0, "shunt in = 50 Ω", side="right", size=0.9)
-    rs = R(ctx, base, "100R", 57.15, cl, horiz=True)
+    rs = R(ctx, base, "100R", 57.15, cl, horiz=True, fp="R1206")          # 1206: 0.25 W, so a ±10 V source into the clamp (43 mA, 0.18 W) does not open it
     s.wire(xt, cl, *rs.pin(1))
     xc = 68.58
     s.wire(*rs.pin(2), xc, cl)
     d = part(ctx, "Diode:BAV99", "D%d" % (100 + n), "BAV99", "SOT23", xc, cl - 8.89, rot=0,
              ref_at=(xc - 4.0, cl - 12.5), val_at=(xc + 1.0, cl - 12.5))
     s.wire(*d.pin(3), xc, cl)                       # common pin on the signal
-    s.wire(*d.pin(1), d.pin(1)[0] - 2.54, d.pin(1)[1]); gnd(ctx, d.pin(1)[0] - 2.54, d.pin(1)[1], "-4V4", stub=3.81, up=True)
+    s.wire(*d.pin(1), d.pin(1)[0] - 2.54, d.pin(1)[1]); gnd(ctx, d.pin(1)[0] - 2.54, d.pin(1)[1], "-4V2", stub=3.81, up=True)
     s.wire(*d.pin(2), d.pin(2)[0] + 2.54, d.pin(2)[1]); rail(ctx, d.pin(2)[0] + 2.54, d.pin(2)[1], "+5VA", stub=3.81)
     label_node(ctx, xc + 6.0, cl - 10.5, "clamps to\nthe rails", side="right", size=0.85)
     # --- source select: B (top) = SMA, A (bottom) = alternate, C (right) = to the preamp ---
@@ -79,15 +79,27 @@ def channel(ctx, tag, cl, base, alt_name, ids):
         ja, jb = jg.pin(1), jg.pin(2)
         s.wire(*ja, rf.pin(1)[0] - 1.27, ja[1]); s.wire(rf.pin(1)[0] - 1.27, ja[1], rf.pin(1)[0] - 1.27, yf)
         s.wire(*jb, rf.pin(2)[0] + 1.27, jb[1]); s.wire(rf.pin(2)[0] + 1.27, jb[1], rf.pin(2)[0] + 1.27, yf)
-        label_node(ctx, x0 - 4.0, yf + 13.5, "shunt: x1   open: x10", side="right", size=0.85)
+        label_node(ctx, x0 - 4.0, yf + 19.0, "shunt: x1   open: x10", side="right", size=0.85)      # (5.5 mm lower since build 27: on the row above it sat on C1101's labels)
         prev = (po[0] + 2.54, cl)
         s.wire(po[0] + 2.54, cl, po[0] + 6.35, cl)
         prev = (po[0] + 6.35, cl)
+    # monitor tap (build 26): 49.9 R into a U.FL at the second stage's output, so a scope sees the preamp
+    # chain without a probe: a 50 R input sees half the signal, a 1 MR input (ADALM2000) all of it
+    xtp = prev[0]
+    s.junction(xtp, cl)
+    rtp = R(ctx, base, "49.9R", xtp, cl + 7.62, side="left", ref="R%d" % (1000 + base + 13))      # explicit: the strip's R1..R12 keep their numbers
+    s.wire(xtp, cl, *rtp.pin(1))
+    jtp = part(ctx, ids["ufl"], "J%d" % (106 + n), "U.FL", "UFL", xtp + 7.62, cl + 15.24,
+               ref_at=(xtp + 10.0, cl + 13.5), val_at=(xtp + 10.0, cl + 15.5), desc="monitor tap: preamp output, through 49.9 R")
+    s.wire(*rtp.pin(2), xtp, cl + 15.24); s.wire(xtp, cl + 15.24, *jtp.pin(1))
+    gnd(ctx, *jtp.pin(2), stub=2.54)
+    s.text(xtp + 15.0, cl + 20.5, "TAP %s: preamp out, 49.9 Ω to a U.FL" % tag, size=0.85)      # (two lines right of the +5VA flag since build 27: one line ran through its stem)
+    s.text(xtp + 15.0, cl + 22.5, "(50 Ω scope: x1/2)", size=0.85)
     # power unit of the OPA1612 (unit 3)
     xpw = x1 + 45.72 + 27.94
     pw = part(ctx, ids["opa1612"], u, "OPA1612", "SOIC8", xpw, cl + 33.02, unit=3,
               ref_at=(xpw + 6.0, cl + 32.0), val_at=(xpw + 6.0, cl + 33.0))
-    rail(ctx, *pw.pin("8"), "+5VA", stub=3.81); gnd(ctx, *pw.pin("4"), "-4V4", stub=3.81)
+    rail(ctx, *pw.pin("8"), "+5VA", stub=3.81); gnd(ctx, *pw.pin("4"), "-4V2", stub=3.81)
     c1 = C(ctx, base, "100nF", xpw - 12.7, pw.pin("8")[1] - 3.81 + 3.81, side="left")
     s.wire(pw.pin("8")[0], pw.pin("8")[1] - 3.81, xpw - 12.7, pw.pin("8")[1] - 3.81); s.wire(xpw - 12.7, pw.pin("8")[1] - 3.81, *c1.pin(1))
     gnd(ctx, *c1.pin(2), stub=0)
@@ -101,12 +113,34 @@ def channel(ctx, tag, cl, base, alt_name, ids):
              ref_at=(xf + 5.5, cl - 11.0), val_at=(xf + 5.5, cl - 10.5))
     ip, im = f.pin("8"), f.pin("1")
     on, op = f.pin("5"), f.pin("4")        # THS4521: pin 4 is VOUT+, pin 5 VOUT- (datasheet); the symbol draws OUT- level with IN+
-    rg1 = R(ctx, base, "499R", ip[0] - 8.89, ip[1], horiz=True)
+    rg1 = R(ctx, base, "499R", ip[0] - 8.89, ip[1], horiz=True, ref_at=(ip[0] - 16.0, ip[1] - 1.6), val_at=(ip[0] - 16.0, ip[1] + 1.3))   # labels west: the clamp's designator sits between the rows
     s.wire(prev[0], cl, prev[0] + 2.54, cl); s.wire(prev[0] + 2.54, cl, prev[0] + 2.54, ip[1]); s.wire(prev[0] + 2.54, ip[1], *rg1.pin(1))
-    s.wire(*rg1.pin(2), *ip)
-    rg2 = R(ctx, base, "499R", im[0] - 8.89, im[1], horiz=True)
-    s.wire(*rg2.pin(2), *im)
+    rg2 = R(ctx, base, "499R", im[0] - 8.89, im[1], horiz=True, ref_at=(ip[0] - 16.0, im[1] - 1.6), val_at=(ip[0] - 16.0, im[1] + 1.3))
     s.wire(*rg2.pin(1), rg2.pin(1)[0] - 2.54, im[1]); gnd(ctx, rg2.pin(1)[0] - 2.54, im[1], stub=2.54)
+    # a BAV99 anti-parallel across the two inputs (its common pin 3 on IN+, pins 1 and 2 on IN-): whatever a
+    # saturated preamp (-4.2 V through 499 Ω) makes the amplifier do, the differential input stays under one
+    # diode drop (abs max 1 V); in use the inputs are within millivolts, the diodes carry nanoamps (reviews, R1).
+    # Drawn as its two diodes (one unit each) standing between the two input rows; the rows are split at their
+    # pins so every pin lands on a wire END.
+    xd = ip[0] - 2.54                                           # pin 3 on the feedback's junction, pins 1/2 either side of it on the lower row
+    dq = part(ctx, ids["ap_diode"], "D%d" % (110 + n), "BAV99", "SOT23", xd, cl, rot=0,
+              ref_at=(xd - 2.4, cl + 0.5), val_at=(xd - 2.4, cl + 0.5), hide_value=True, justify="right", fsize=1.0)
+    ends = {}
+    for pn in ("1", "2", "3"):
+        q = dq.pin(pn)
+        row = ip if q[1] < cl else im                         # pin 3 on the IN+ row (upper), pins 1 and 2 on IN- (lower)
+        if abs(q[1] - row[1]) > 0.01:
+            s.wire(q[0], q[1], q[0], row[1])
+        ends.setdefault(row, []).append(q[0])
+    for row, src in ((ip, rg1.pin(2)), (im, rg2.pin(2))):
+        xs_ = sorted(set(round(x, 3) for x in ends[row] + [ip[0] - 2.54]))      # the feedback resistors' junctions split the rows too
+        pts = [src[0]] + xs_ + [row[0]]
+        for a_, b_ in zip(pts, pts[1:]):
+            s.wire(a_, row[1], b_, row[1])
+        for x_ in xs_:
+            if abs(x_ - (ip[0] - 2.54)) > 0.01:
+                s.junction(x_, row[1])                              # (the feedback code adds its own junction there)
+    label_node(ctx, xd - 24.0, cl - 29.5, "D%d: a BAV99 anti-parallel across the FDA's inputs keeps them within one diode drop in any overload" % (110 + n), side="right", size=0.8)
     yfa, yfb = cl - 25.4, cl + 25.4
     rfa = R(ctx, base, "499R", xf, yfa, horiz=True)
     s.junction(ip[0] - 2.54, ip[1]); s.wire(ip[0] - 2.54, ip[1], ip[0] - 2.54, yfa); s.wire(ip[0] - 2.54, yfa, *rfa.pin(1))
@@ -143,7 +177,8 @@ def draw(sch, ids, fpga):
     s.text(20, 22, "ADC: two DC-coupled 12-bit channels, AD9238, 65 MSPS", size=3.0, bold=True)
     note(ctx, 20, 26, "Each channel: SMA (50 Ω or high-Z, jumper) -> 100 Ω + diode clamp to the ±4.5 V rails -> "
                       "source jumper (SMA / noise resistor / photodiode) -> two OPA1612 stages, each x1 or x10 "
-                      "by jumper (so x1, x10, x100; 1.1 nV/√Hz) -> THS4521 fully-differential driver at gain 1 "
+                      "by jumper (so x1, x10, x100; 1.1 nV/√Hz) -> U.FL monitor tap -> THS4521 fully-differential driver at gain 1 (a BAV99 "
+                      "across its inputs keeps an overload under its 1 V differential limit) "
                       "-> 33 Ω + 22 pF -> AD9238 (2 Vpp differential about 1.65 V = AVDD/2; -3 dB at 23 MHz at x1, sim/adc_frontend.cir). The ADC's internal "
                       "1.0 V reference sets the 2 Vpp span (SENSE = GND); SHARED_REF ties both channels to one "
                       "reference so their gains match for the cross-correlation experiment. Both sample clocks "
@@ -319,7 +354,7 @@ def draw(sch, ids, fpga):
     xs_ = tm[0] - 2.54
     ysum = kk[1] - 2.54
     s.wire(*tm, xs_, tm[1]); s.junction(xs_, tm[1]); s.wire(xs_, tm[1], xs_, ysum); s.wire(xs_, ysum, kk[0], ysum); s.wire(kk[0], ysum, *kk)
-    gnd(ctx, *aa, "-4V4", stub=5.08)
+    gnd(ctx, *aa, "-4V2", stub=5.08)
     # external photodiode header, pins pointing at the diode: top pin to the cathode node, bottom to -4V4
     jpd = part(ctx, "Connector_Generic:Conn_01x02", "J106", "PD EXT", "H1x2", kk[0] - 17.78, (kk[1] + aa[1]) / 2, rot=180,
                ref_at=(kk[0] - 28.0, kk[1] - 2.0), val_at=(kk[0] - 28.0, aa[1] + 1.0))
@@ -329,12 +364,21 @@ def draw(sch, ids, fpga):
     s.wire(*el, el[0] + 5.08, el[1]); s.wire(el[0] + 5.08, el[1], el[0] + 5.08, aa[1] + 2.54); s.wire(el[0] + 5.08, aa[1] + 2.54, aa[0], aa[1] + 2.54); s.junction(aa[0], aa[1] + 2.54)
     yf = tm[1] - 10.16
     rf = R(ctx, 400, "10k", tia.x, yf, horiz=True)
-    cf = C(ctx, 400, "2.2pF", tia.x, yf - 6.35, horiz=True)
+    cf = C(ctx, 400, "2.2pF", tia.x, yf - 6.35, horiz=True, ref_at=(tia.x + 2.6, yf - 8.25), val_at=(tia.x - 6.5, yf - 9.75))      # (either side above the body since build 27: below it the value sat on R1405)
     s.wire(tm[0] - 2.54, tm[1], tm[0] - 2.54, yf - 6.35); s.wire(tm[0] - 2.54, yf, *rf.pin(1)); s.wire(tm[0] - 2.54, yf - 6.35, *cf.pin(1))
     s.wire(*rf.pin(2), to[0] + 2.54, yf); s.wire(*cf.pin(2), to[0] + 2.54, yf - 6.35); s.wire(to[0] + 2.54, yf - 6.35, to[0] + 2.54, to[1]); s.wire(*to, to[0] + 2.54, to[1])
-    s.wire(to[0] + 2.54, to[1], to[0] + 7.62, to[1]); s.wire(to[0] + 7.62, to[1], to[0] + 7.62, pdn[1] + 10.16)
+    ytt = to[1] - 10.16                                              # the tap's row, on the output's run up to the jumper
+    s.wire(to[0] + 2.54, to[1], to[0] + 7.62, to[1]); s.wire(to[0] + 7.62, to[1], to[0] + 7.62, ytt); s.wire(to[0] + 7.62, ytt, to[0] + 7.62, pdn[1] + 10.16)
+    # monitor tap (build 26): the receiver's output through 49.9 R into a U.FL
+    s.junction(to[0] + 7.62, ytt)
+    rtt = R(ctx, 400, "49.9R", to[0] + 15.24, ytt, horiz=True)
+    s.wire(to[0] + 7.62, ytt, *rtt.pin(1))
+    jtt = part(ctx, ids["ufl"], "J109", "U.FL", "UFL", to[0] + 26.67, ytt, ref_at=(to[0] + 29.0, ytt - 2.0), val_at=(to[0] + 29.0, ytt + 0.5),
+               desc="monitor tap: photodiode receiver output, through 49.9 R")
+    s.wire(*rtt.pin(2), *jtt.pin(1)); gnd(ctx, *jtt.pin(2), stub=2.54)
+    label_node(ctx, to[0] + 9.0, ytt - 4.0, "TAP TIA (50 Ω scope: x1/2)", side="right", size=0.85)
     s.wire(to[0] + 7.62, pdn[1] + 10.16, pdn[0], pdn[1] + 10.16); s.wire(pdn[0], pdn[1] + 10.16, *pdn)
-    label_node(ctx, to[0] + 8.5, to[1] - 8.0, "to JP203", side="right", size=0.85)
+    label_node(ctx, to[0] + 8.5, to[1] - 4.5, "to JP203", side="right", size=0.85)      # (between the output run and the tap row: on the tap row it sat on R1406's value)
     ub = part(ctx, ids["opa2810"], "U105", "OPA2810", "SOIC8", xp + 55.88, yp + 73.66, unit=2,
               ref_at=(xp + 50.5, yp + 68.0), val_at=(xp + 55.0, yp + 65.5))
     bp, bm, bo = ub.pin("5"), ub.pin("6"), ub.pin("7")
@@ -343,7 +387,7 @@ def draw(sch, ids, fpga):
     label_node(ctx, bo[0] + 3.5, bo[1] + 0.5, "spare half, parked as a follower", side="right", size=0.85)
     up = part(ctx, ids["opa2810"], "U105", "OPA2810", "SOIC8", xp + 100.0, yp + 60.96, unit=3,
               ref_at=(xp + 106.0, yp + 60.0), val_at=(xp + 106.0, yp + 61.0))
-    rail(ctx, *up.pin("8"), "+5VA", stub=3.81); gnd(ctx, *up.pin("4"), "-4V4", stub=3.81)
+    rail(ctx, *up.pin("8"), "+5VA", stub=3.81); gnd(ctx, *up.pin("4"), "-4V2", stub=3.81)
     c1 = C(ctx, 400, "100nF", up.pin("8")[0] - 12.7, up.pin("8")[1] - 3.81 + 3.81, side="left")
     s.wire(up.pin("8")[0], up.pin("8")[1] - 3.81, c1.pin(1)[0], up.pin("8")[1] - 3.81); s.wire(c1.pin(1)[0], up.pin("8")[1] - 3.81, *c1.pin(1)); gnd(ctx, *c1.pin(2), stub=0)
     c2 = C(ctx, 400, "100nF", up.pin("4")[0] - 22.86, up.pin("4")[1] + 3.81 - 3.81, side="left")

@@ -13,7 +13,7 @@ J304,PMOD B,PinSocket_2x06_P2.54mm_Horizontal,
 J305,JTAG,PinHeader_1x06_P2.54mm_Vertical,
 J401,RJ45,RJ45-TH_R-RJ45R08P-C000,C386757
 J601,5V IN,PinHeader_1x02_P2.54mm_Vertical,
-J602,RAILS,PinHeader_2x08_P2.54mm_Vertical,
+J602,RAILS,PinHeader_2x09_P2.54mm_Vertical,
 JP101,TERM,PinHeader_1x02_P2.54mm_Vertical,
 JP102,SRC,PinHeader_1x03_P2.54mm_Vertical,
 JP103,GAIN,PinHeader_1x02_P2.54mm_Vertical,

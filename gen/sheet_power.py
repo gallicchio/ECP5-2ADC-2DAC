@@ -65,7 +65,7 @@ def draw(sch, ids, fpga):
                       "regulators make the digital 3.3 V (FPGA I/O, SDRAM, flash, PHY, FTDI) and the 1.1 V core; they are "
                       "placed in the far corner from the converters. Every analog rail is a separate LDO off the 5 V: "
                       "+3V3_ADC (AD9238 and its drivers), +3V3_DAC (AD9767); the op amps get +5VA through a ferrite and "
-                      "-4.5 V from an LM27761 charge pump. The converters' digital supplies and the PHY are fed from +3V3 "
+                      "-4.2 V from an LM27761 charge pump (then a ferrite bead). The converters' digital supplies and the PHY are fed from +3V3 "
                       "through ferrite beads so their switching noise does not ride the common rail. Budget: FPGA ~0.6 W, "
                       "ADC 0.6 W, DAC 0.4 W, PHY 0.4 W, FTDI 0.3 W, amplifiers 0.4 W, SDRAM 0.2 W: about 3 W, 0.6 A at 5 V.",
          w=340, size=1.1)
@@ -114,18 +114,31 @@ def draw(sch, ids, fpga):
     cf = C(ctx, 2300, "1uF", cp[0] - 7.62, (cp[1] + cm[1]) / 2, side="left"); s.wire(*cp, cp[0] - 7.62, cp[1]); s.wire(cp[0] - 7.62, cp[1], *cf.pin(1)); s.wire(*cf.pin(2), cp[0] - 7.62, cm[1]); s.wire(cp[0] - 7.62, cm[1], *cm)
     s.wire(*pad, pad[0], pad[1] + 2.54); s.wire(pad[0], pad[1] + 2.54, g[0], g[1] + 2.54); gnd(ctx, *g, stub=2.54)
     cc = C(ctx, 2300, "10uF", cpo[0] + 3.81, cpo[1] + 5.08, fp="C0603", side="right"); s.wire(*cpo, cpo[0] + 3.81, cpo[1]); s.wire(cpo[0] + 3.81, cpo[1], *cc.pin(1)); gnd(ctx, *cc.pin(2), stub=1.27)
-    s.wire(*vo, vo[0] + 38.1, vo[1])
-    r1 = R(ctx, 2300, "1.3M", vo[0] + 15.24, vo[1] + 6.35 - 1.27, side="right"); s.wire(vo[0] + 15.24, vo[1], *r1.pin(1))
+    s.wire(*vo, vo[0] + 33.02, vo[1])
+    r1 = R(ctx, 2300, "1.2M", vo[0] + 15.24, vo[1] + 6.35 - 1.27, side="right"); s.wire(vo[0] + 15.24, vo[1], *r1.pin(1))
     r2 = R(ctx, 2300, "499k", vo[0] + 15.24, vo[1] + 16.51 - 1.27, side="right"); s.wire(*r1.pin(2), *r2.pin(1)); gnd(ctx, *r2.pin(2), stub=1.27)
     s.wire(*vfb, vfb[0] + 10.16, vfb[1]); s.wire(vfb[0] + 10.16, vfb[1], vfb[0] + 10.16, vo[1] + 10.16); s.wire(vfb[0] + 10.16, vo[1] + 10.16, vo[0] + 15.24, vo[1] + 10.16)
     co = C(ctx, 2300, "10uF", vo[0] + 33.02, vo[1] + 5.08, fp="C0603", side="left")
     s.wire(vo[0] + 33.02, vo[1], *co.pin(1)); gnd(ctx, *co.pin(2), stub=1.27); s.junction(vo[0] + 33.02, vo[1])
-    gnd(ctx, vo[0] + 38.1, vo[1], "-4V4", stub=5.08)
-    label_node(ctx, x - 20.0, y + 28.0, "-4V4 = -1.22 V x (1.3M + 499k) / 499k = -4.4 V (the pump cannot reach -5 V from a 5 V USB port); 2 MHz, 250 mA", side="right", size=0.85)
+    # build 26: a ferrite bead and 10 uF between the pump and the op amps (the 2 MHz ripple was common to both
+    # noise channels: reviews, R3); the divider senses the pump's own output, before the bead
+    fbn = FB(ctx, 2300, vo[0] + 41.91, vo[1], horiz=True)
+    s.wire(vo[0] + 33.02, vo[1], *fbn.pin(1)); s.wire(*fbn.pin(2), vo[0] + 80.0, vo[1])
+    cfl = C(ctx, 2300, "10uF", vo[0] + 56.0, vo[1] + 5.08, fp="C0603", side="right")
+    s.wire(vo[0] + 56.0, vo[1], *cfl.pin(1)); gnd(ctx, *cfl.pin(2), stub=1.27); s.junction(vo[0] + 56.0, vo[1])
+    gnd(ctx, vo[0] + 80.0, vo[1], "-4V2", stub=5.08); pwr_flag(ctx, vo[0] + 52.07, vo[1]); s.junction(vo[0] + 52.07, vo[1])   # driven through a bead: ERC wants the flag
+    # and a monitor tap on the rail: 49.9 R into a U.FL (a 1 MR scope input sees the rail; a 50 R one, half of it)
+    rtn = R(ctx, 2300, "49.9R", vo[0] + 66.0, vo[1] + 7.62, side="right"); s.wire(vo[0] + 66.0, vo[1], *rtn.pin(1)); s.junction(vo[0] + 66.0, vo[1])
+    jtn = part(ctx, ids["ufl"], "J603", "U.FL", "UFL", vo[0] + 74.1, vo[1] + 15.24, ref_at=(vo[0] + 76.5, vo[1] + 13.5), val_at=(vo[0] + 76.5, vo[1] + 15.5),
+               desc="monitor tap: the -4.2 V rail, through 49.9 R")
+    s.wire(*rtn.pin(2), vo[0] + 66.0, vo[1] + 15.24); s.wire(vo[0] + 66.0, vo[1] + 15.24, *jtn.pin(1)); gnd(ctx, *jtn.pin(2), stub=2.54)
+    label_node(ctx, vo[0] + 58.0, vo[1] + 29.5, "TAP -4V2 (50 Ω scope: x1/2)", side="right", size=0.85)      # (below the jack's ground since build 27: on the jack's row it crossed pin 2's wire)
+    label_node(ctx, x - 20.0, y + 28.0, "-4V2 = -1.22 V x (1.2M + 499k) / 499k = -4.15 V: 0.45 V of LDO headroom from a 4.75 V USB supply", side="right", size=0.85)
+    label_node(ctx, x - 20.0, y + 31.0, "(builds 1-25 aimed at -4.4 V, in dropout below 4.6 V in); 2 MHz, 250 mA. The bead and 10 µF keep the 2 MHz out of the op-amp rail", side="right", size=0.85)
     # --- the rails header: every rail beside a ground pin, for a scope probe and its ground spring -----
-    RAILS = ["+5V", "+3V3", "+1V1", "+2V5", "+3V3_ADC", "+3V3_DAC", "+5VA", "-4V4"]
+    RAILS = ["+5V", "+3V3", "+1V1", "+2V5", "+3V3_ADC", "+3V3_DAC", "+5VA", "+1V0_PHY", "-4V2"]      # +1V0_PHY since build 26 (reviews: no pin for it); the negative rail last: its flag hangs down
     xt, yt = 100.0, 352.0
-    jr = part(ctx, "Connector_Generic:Conn_02x08_Odd_Even", "J602", "RAILS", "H2x8", xt, yt, ref_at=(xt - 4.0, yt - 6.0), val_at=(xt - 4.0, yt - 3.5), lcsc=None)
+    jr = part(ctx, "Connector_Generic:Conn_02x09_Odd_Even", "J602", "RAILS", "H2x9", xt, yt, ref_at=(xt + 0.5, yt - 16.7), val_at=(xt + 0.5, yt - 14.5), lcsc=None)      # (above the body: the 18-pin symbol is 23 mm tall, centred on its anchor)
     for i, nm in enumerate(RAILS):
         po = jr.pin(str(2 * i + 1)); pe = jr.pin(str(2 * i + 2))
         # the rails step out to the left (the lowest row furthest), each flag clear of the rows above it
@@ -136,9 +149,9 @@ def draw(sch, ids, fpga):
         else:
             rail(ctx, xo, po[1], nm, stub=2.54)
         s.wire(*pe, pe[0] + 2.54, pe[1])
-    g0, g1 = jr.pin("2"), jr.pin("16")
+    g0, g1 = jr.pin("2"), jr.pin("18")
     s.wire(g0[0] + 2.54, g0[1], g1[0] + 2.54, g1[1]); gnd(ctx, g1[0] + 2.54, g1[1], stub=2.54)
-    for i in range(1, 7):
+    for i in range(1, 8):
         s.junction(jr.pin(str(2 * i + 2))[0] + 2.54, jr.pin(str(2 * i + 2))[1])
     s.text(xt - 62.0, yt - 19.0, "RAILS header: odd pins the rails, even pins ground (probe with a ground spring)", size=1.2, bold=True)
     # --- power-good LEDs: a dim red LED on every rail --------------------------------------------------
@@ -157,7 +170,7 @@ def draw(sch, ids, fpga):
         return r
     xp0, yp0 = 230.0, 352.0
     for i, (nm, rv, dref) in enumerate((("+5V", "10k", "D602"), ("+3V3", "4.7k", "D603"), ("+2V5", "2.2k", "D604"), ("+3V3_ADC", "4.7k", "D605"),
-                                        ("+3V3_DAC", "4.7k", "D606"), ("+5VA", "10k", "D607"), ("-4V4", "10k", "D608"))):
+                                        ("+3V3_DAC", "4.7k", "D606"), ("+5VA", "10k", "D607"), ("-4V2", "10k", "D608"))):
         pg_led(1650 + 10 * i, xp0 + 17.78 * i, yp0, nm, rv, dref)
     # the 1.1 V rail cannot light a diode itself: it turns on an NPN whose collector takes a LED from 3.3 V
     xq = xp0 + 17.78 * 7 + 12.7
@@ -180,9 +193,11 @@ def draw(sch, ids, fpga):
         gnd(ctx, *h.pin(1), stub=1.27)
     s.text(xh - 3.0, 388.0, "M3 mounting holes, four corners, grounded", size=1.2, bold=True)
     # power flags for ERC: the rails are driven here
-    for i, nm in enumerate(("+5V", "+3V3", "+1V1", "+2V5", "+3V3_ADC", "+3V3_DAC", "+3V3_DRV", "+3V3_DAC_D", "+3V3_ETH", "+5VA", "-4V4", "+1V0_PHY", "+1V8_FTDI", "GND")):
+    for i, nm in enumerate(("+5V", "+3V3", "+1V1", "+2V5", "+3V3_ADC", "+3V3_DAC", "+3V3_DRV", "+3V3_DAC_D", "+3V3_ETH", "+5VA", "-4V2", "+1V0_PHY", "+1V8_FTDI", "GND")):
         pass
-    note(ctx, 20.0, 318.0, "Sequencing: the ECP5 has no order requirement (VCCIO before or with VCC is recommended, and 3.3 V "
-                           "comes up first here because the 1.1 V buck's input capacitor charges through the same 5 V). "
-                           "The PHY, converters and amplifiers all tolerate any order.", w=180, size=0.95)
+    note(ctx, 20.0, 318.0, "Sequencing (FPGA-DS-02012 §3.5, Master SPI): VCCIO8 must be above the flash's VIH before the FIRST of VCC "
+                           "and VCCAUX reaches its POR threshold, or PROGRAMN/INITN must be held low until it is. Here VCCAUX is an LDO "
+                           "off +3V3 (= VCCIO8), so it cannot lead it; VCC is the other buck, enabled by the same 5 V with the same "
+                           "soft-start, and the 100 nF on PROGRAMN (FPGA sheet) holds configuration off for ~0.5 ms after +3V3 is up "
+                           "in any case. Scope +3V3 against +1V1 on the first board. The PHY, converters and amplifiers tolerate any order.", w=180, size=0.95)
     return hp

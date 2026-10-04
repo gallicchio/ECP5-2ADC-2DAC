@@ -18,57 +18,65 @@ J101(SMA).1  [net Net-(J101-Pad1)]
             U101(OPA1612).1  [net Net-(JP103-B)]
               via U101(OPA1612) pin 5 -> pin 7
                 U101(OPA1612).7  [net Net-(JP104-B)]
-                  via JP104(GAIN) pin 2 -> pin 1
-                    JP104(GAIN).1  [net Net-(JP104-A)]   {R1106 1k to GND}
-                      via U101(OPA1612) pin 6 -> pin 7
-                        (already shown)
-                      via R1105(9.1k) pin 1 -> pin 2
-                        R1105(9.1k).2  [net Net-(JP104-B)]   -> U101(OPA1612).7
-                          via JP104(GAIN) pin 2 -> pin 1
-                            (already shown)
-                          via R1107(499R) pin 1 -> pin 2
-                            R1107(499R).2  [net Net-(U111-+)]
-                              via U111(THS4521) pin 8 -> pin 4
-                                U111(THS4521).4  [net Net-(R1110-Pad2)]
-                                  via R1110(499R) pin 2 -> pin 1
-                                    R1110(499R).1  [net Net-(U111--)]   {R1108 499R to GND}
-                                      via U111(THS4521) pin 1 -> pin 4
+                  via R1107(499R) pin 1 -> pin 2
+                    R1107(499R).2  [net Net-(D111-K1A2)]   -> D111(BAV99).3
+                      via U111(THS4521) pin 8 -> pin 4
+                        U111(THS4521).4  [net Net-(R1110-Pad2)]
+                          via R1110(499R) pin 2 -> pin 1
+                            R1110(499R).1  [net Net-(D111-A1)]   {R1108 499R to GND}   -> D111(BAV99).1, D111(BAV99).2
+                              via U111(THS4521) pin 1 -> pin 4
+                                (already shown)
+                              via U111(THS4521) pin 1 -> pin 5
+                                U111(THS4521).5  [net Net-(R1109-Pad2)]
+                                  via R1109(499R) pin 2 -> pin 1
+                                    R1109(499R).1  [net Net-(D111-K1A2)]   -> D111(BAV99).3
+                                      via U111(THS4521) pin 8 -> pin 4
                                         (already shown)
-                                      via U111(THS4521) pin 1 -> pin 5
-                                        U111(THS4521).5  [net Net-(R1109-Pad2)]
-                                          via R1109(499R) pin 2 -> pin 1
-                                            R1109(499R).1  [net Net-(U111-+)]
-                                              via U111(THS4521) pin 8 -> pin 4
+                                      via U111(THS4521) pin 8 -> pin 5
+                                        (already shown)
+                                      via R1107(499R) pin 2 -> pin 1
+                                        R1107(499R).1  [net Net-(JP104-B)]   -> U101(OPA1612).7
+                                          via R1113(49.9R) pin 1 -> pin 2
+                                            R1113(49.9R).2  [net Net-(J107-Pad1)]   -> J107(U.FL).1
+                                          via JP104(GAIN) pin 2 -> pin 1
+                                            JP104(GAIN).1  [net Net-(JP104-A)]   {R1106 1k to GND}
+                                              via U101(OPA1612) pin 6 -> pin 7
                                                 (already shown)
-                                              via U111(THS4521) pin 8 -> pin 5
-                                                (already shown)
-                                              via R1107(499R) pin 2 -> pin 1
-                                                R1107(499R).1  [net Net-(JP104-B)]   -> U101(OPA1612).7
+                                              via R1105(9.1k) pin 1 -> pin 2
+                                                R1105(9.1k).2  [net Net-(JP104-B)]   -> U101(OPA1612).7
+                                                  via R1107(499R) pin 1 -> pin 2
+                                                    (already shown)
+                                                  via R1113(49.9R) pin 1 -> pin 2
+                                                    (already shown)
                                                   via JP104(GAIN) pin 2 -> pin 1
                                                     (already shown)
+                                          via R1105(9.1k) pin 2 -> pin 1
+                                            R1105(9.1k).1  [net Net-(JP104-A)]   {R1106 1k to GND}
+                                              via U101(OPA1612) pin 6 -> pin 7
+                                                (already shown)
+                                              via JP104(GAIN) pin 1 -> pin 2
+                                                JP104(GAIN).2  [net Net-(JP104-B)]   -> U101(OPA1612).7
+                                                  via R1107(499R) pin 1 -> pin 2
+                                                    (already shown)
+                                                  via R1113(49.9R) pin 1 -> pin 2
+                                                    (already shown)
                                                   via R1105(9.1k) pin 2 -> pin 1
-                                                    R1105(9.1k).1  [net Net-(JP104-A)]   {R1106 1k to GND}
-                                                      via U101(OPA1612) pin 6 -> pin 7
-                                                        (already shown)
-                                                      via JP104(GAIN) pin 1 -> pin 2
-                                                        JP104(GAIN).2  [net Net-(JP104-B)]   -> U101(OPA1612).7
-                                                          via R1105(9.1k) pin 2 -> pin 1
-                                                            (already shown)
-                                                          via R1107(499R) pin 1 -> pin 2
-                                                            (already shown)
-                                          via R1111(33R) pin 1 -> pin 2
-                                            R1111(33R).2  [net Net-(U103A-VIN-_A)]   {C1105 22pF to GND}   -> U103(AD9238).3
-                                  via R1112(33R) pin 1 -> pin 2
-                                    R1112(33R).2  [net Net-(U103A-VIN+_A)]   {C1106 22pF to GND}   -> U103(AD9238).2
-                              via U111(THS4521) pin 8 -> pin 5
-                                (already shown)
-                              via R1109(499R) pin 1 -> pin 2
-                                R1109(499R).2  [net Net-(R1109-Pad2)]   -> U111(THS4521).5
+                                                    (already shown)
                                   via R1111(33R) pin 1 -> pin 2
-                                    (already shown)
-                  via R1105(9.1k) pin 2 -> pin 1
+                                    R1111(33R).2  [net Net-(U103A-VIN-_A)]   {C1105 22pF to GND}   -> U103(AD9238).3
+                          via R1112(33R) pin 1 -> pin 2
+                            R1112(33R).2  [net Net-(U103A-VIN+_A)]   {C1106 22pF to GND}   -> U103(AD9238).2
+                      via U111(THS4521) pin 8 -> pin 5
+                        (already shown)
+                      via R1109(499R) pin 1 -> pin 2
+                        R1109(499R).2  [net Net-(R1109-Pad2)]   -> U111(THS4521).5
+                          via R1111(33R) pin 1 -> pin 2
+                            (already shown)
+                  via R1113(49.9R) pin 1 -> pin 2
                     (already shown)
-                  via R1107(499R) pin 1 -> pin 2
+                  via JP104(GAIN) pin 2 -> pin 1
+                    (already shown)
+                  via R1105(9.1k) pin 2 -> pin 1
                     (already shown)
               via JP103(GAIN) pin 2 -> pin 1
                 JP103(GAIN).1  [net Net-(JP103-A)]   {R1104 1k to GND}
@@ -106,57 +114,65 @@ J102(SMA).1  [net Net-(J102-Pad1)]
             U102(OPA1612).1  [net Net-(JP203-B)]
               via U102(OPA1612) pin 5 -> pin 7
                 U102(OPA1612).7  [net Net-(JP204-B)]
-                  via JP204(GAIN) pin 2 -> pin 1
-                    JP204(GAIN).1  [net Net-(JP204-A)]   {R1206 1k to GND}
-                      via U102(OPA1612) pin 6 -> pin 7
-                        (already shown)
-                      via R1205(9.1k) pin 1 -> pin 2
-                        R1205(9.1k).2  [net Net-(JP204-B)]   -> U102(OPA1612).7
-                          via JP204(GAIN) pin 2 -> pin 1
-                            (already shown)
-                          via R1207(499R) pin 1 -> pin 2
-                            R1207(499R).2  [net Net-(U112-+)]
-                              via U112(THS4521) pin 8 -> pin 4
-                                U112(THS4521).4  [net Net-(R1210-Pad2)]
-                                  via R1210(499R) pin 2 -> pin 1
-                                    R1210(499R).1  [net Net-(U112--)]   {R1208 499R to GND}
-                                      via U112(THS4521) pin 1 -> pin 4
+                  via R1207(499R) pin 1 -> pin 2
+                    R1207(499R).2  [net Net-(D112-K1A2)]   -> D112(BAV99).3
+                      via U112(THS4521) pin 8 -> pin 4
+                        U112(THS4521).4  [net Net-(R1210-Pad2)]
+                          via R1210(499R) pin 2 -> pin 1
+                            R1210(499R).1  [net Net-(D112-A1)]   {R1208 499R to GND}   -> D112(BAV99).1, D112(BAV99).2
+                              via U112(THS4521) pin 1 -> pin 4
+                                (already shown)
+                              via U112(THS4521) pin 1 -> pin 5
+                                U112(THS4521).5  [net Net-(R1209-Pad2)]
+                                  via R1209(499R) pin 2 -> pin 1
+                                    R1209(499R).1  [net Net-(D112-K1A2)]   -> D112(BAV99).3
+                                      via U112(THS4521) pin 8 -> pin 4
                                         (already shown)
-                                      via U112(THS4521) pin 1 -> pin 5
-                                        U112(THS4521).5  [net Net-(R1209-Pad2)]
-                                          via R1209(499R) pin 2 -> pin 1
-                                            R1209(499R).1  [net Net-(U112-+)]
-                                              via U112(THS4521) pin 8 -> pin 4
+                                      via U112(THS4521) pin 8 -> pin 5
+                                        (already shown)
+                                      via R1207(499R) pin 2 -> pin 1
+                                        R1207(499R).1  [net Net-(JP204-B)]   -> U102(OPA1612).7
+                                          via R1213(49.9R) pin 1 -> pin 2
+                                            R1213(49.9R).2  [net Net-(J108-Pad1)]   -> J108(U.FL).1
+                                          via JP204(GAIN) pin 2 -> pin 1
+                                            JP204(GAIN).1  [net Net-(JP204-A)]   {R1206 1k to GND}
+                                              via U102(OPA1612) pin 6 -> pin 7
                                                 (already shown)
-                                              via U112(THS4521) pin 8 -> pin 5
-                                                (already shown)
-                                              via R1207(499R) pin 2 -> pin 1
-                                                R1207(499R).1  [net Net-(JP204-B)]   -> U102(OPA1612).7
+                                              via R1205(9.1k) pin 1 -> pin 2
+                                                R1205(9.1k).2  [net Net-(JP204-B)]   -> U102(OPA1612).7
+                                                  via R1207(499R) pin 1 -> pin 2
+                                                    (already shown)
+                                                  via R1213(49.9R) pin 1 -> pin 2
+                                                    (already shown)
                                                   via JP204(GAIN) pin 2 -> pin 1
                                                     (already shown)
+                                          via R1205(9.1k) pin 2 -> pin 1
+                                            R1205(9.1k).1  [net Net-(JP204-A)]   {R1206 1k to GND}
+                                              via U102(OPA1612) pin 6 -> pin 7
+                                                (already shown)
+                                              via JP204(GAIN) pin 1 -> pin 2
+                                                JP204(GAIN).2  [net Net-(JP204-B)]   -> U102(OPA1612).7
+                                                  via R1207(499R) pin 1 -> pin 2
+                                                    (already shown)
+                                                  via R1213(49.9R) pin 1 -> pin 2
+                                                    (already shown)
                                                   via R1205(9.1k) pin 2 -> pin 1
-                                                    R1205(9.1k).1  [net Net-(JP204-A)]   {R1206 1k to GND}
-                                                      via U102(OPA1612) pin 6 -> pin 7
-                                                        (already shown)
-                                                      via JP204(GAIN) pin 1 -> pin 2
-                                                        JP204(GAIN).2  [net Net-(JP204-B)]   -> U102(OPA1612).7
-                                                          via R1205(9.1k) pin 2 -> pin 1
-                                                            (already shown)
-                                                          via R1207(499R) pin 1 -> pin 2
-                                                            (already shown)
-                                          via R1211(33R) pin 1 -> pin 2
-                                            R1211(33R).2  [net Net-(U103B-VIN-_B)]   {C1205 22pF to GND}   -> U103(AD9238).14
-                                  via R1212(33R) pin 1 -> pin 2
-                                    R1212(33R).2  [net Net-(U103B-VIN+_B)]   {C1206 22pF to GND}   -> U103(AD9238).15
-                              via U112(THS4521) pin 8 -> pin 5
-                                (already shown)
-                              via R1209(499R) pin 1 -> pin 2
-                                R1209(499R).2  [net Net-(R1209-Pad2)]   -> U112(THS4521).5
+                                                    (already shown)
                                   via R1211(33R) pin 1 -> pin 2
-                                    (already shown)
-                  via R1205(9.1k) pin 2 -> pin 1
+                                    R1211(33R).2  [net Net-(U103B-VIN-_B)]   {C1205 22pF to GND}   -> U103(AD9238).14
+                          via R1212(33R) pin 1 -> pin 2
+                            R1212(33R).2  [net Net-(U103B-VIN+_B)]   {C1206 22pF to GND}   -> U103(AD9238).15
+                      via U112(THS4521) pin 8 -> pin 5
+                        (already shown)
+                      via R1209(499R) pin 1 -> pin 2
+                        R1209(499R).2  [net Net-(R1209-Pad2)]   -> U112(THS4521).5
+                          via R1211(33R) pin 1 -> pin 2
+                            (already shown)
+                  via R1213(49.9R) pin 1 -> pin 2
                     (already shown)
-                  via R1207(499R) pin 1 -> pin 2
+                  via JP204(GAIN) pin 2 -> pin 1
+                    (already shown)
+                  via R1205(9.1k) pin 2 -> pin 1
                     (already shown)
               via JP203(GAIN) pin 2 -> pin 1
                 JP203(GAIN).1  [net Net-(JP203-A)]   {R1204 1k to GND}
@@ -190,57 +206,65 @@ J105(NOISE).2  [net Net-(J105-Pin_2)]
         U101(OPA1612).1  [net Net-(JP103-B)]
           via U101(OPA1612) pin 5 -> pin 7
             U101(OPA1612).7  [net Net-(JP104-B)]
-              via JP104(GAIN) pin 2 -> pin 1
-                JP104(GAIN).1  [net Net-(JP104-A)]   {R1106 1k to GND}
-                  via U101(OPA1612) pin 6 -> pin 7
-                    (already shown)
-                  via R1105(9.1k) pin 1 -> pin 2
-                    R1105(9.1k).2  [net Net-(JP104-B)]   -> U101(OPA1612).7
-                      via JP104(GAIN) pin 2 -> pin 1
-                        (already shown)
-                      via R1107(499R) pin 1 -> pin 2
-                        R1107(499R).2  [net Net-(U111-+)]
-                          via U111(THS4521) pin 8 -> pin 4
-                            U111(THS4521).4  [net Net-(R1110-Pad2)]
-                              via R1110(499R) pin 2 -> pin 1
-                                R1110(499R).1  [net Net-(U111--)]   {R1108 499R to GND}
-                                  via U111(THS4521) pin 1 -> pin 4
+              via R1107(499R) pin 1 -> pin 2
+                R1107(499R).2  [net Net-(D111-K1A2)]   -> D111(BAV99).3
+                  via U111(THS4521) pin 8 -> pin 4
+                    U111(THS4521).4  [net Net-(R1110-Pad2)]
+                      via R1110(499R) pin 2 -> pin 1
+                        R1110(499R).1  [net Net-(D111-A1)]   {R1108 499R to GND}   -> D111(BAV99).1, D111(BAV99).2
+                          via U111(THS4521) pin 1 -> pin 4
+                            (already shown)
+                          via U111(THS4521) pin 1 -> pin 5
+                            U111(THS4521).5  [net Net-(R1109-Pad2)]
+                              via R1109(499R) pin 2 -> pin 1
+                                R1109(499R).1  [net Net-(D111-K1A2)]   -> D111(BAV99).3
+                                  via U111(THS4521) pin 8 -> pin 4
                                     (already shown)
-                                  via U111(THS4521) pin 1 -> pin 5
-                                    U111(THS4521).5  [net Net-(R1109-Pad2)]
-                                      via R1109(499R) pin 2 -> pin 1
-                                        R1109(499R).1  [net Net-(U111-+)]
-                                          via U111(THS4521) pin 8 -> pin 4
+                                  via U111(THS4521) pin 8 -> pin 5
+                                    (already shown)
+                                  via R1107(499R) pin 2 -> pin 1
+                                    R1107(499R).1  [net Net-(JP104-B)]   -> U101(OPA1612).7
+                                      via R1113(49.9R) pin 1 -> pin 2
+                                        R1113(49.9R).2  [net Net-(J107-Pad1)]   -> J107(U.FL).1
+                                      via JP104(GAIN) pin 2 -> pin 1
+                                        JP104(GAIN).1  [net Net-(JP104-A)]   {R1106 1k to GND}
+                                          via U101(OPA1612) pin 6 -> pin 7
                                             (already shown)
-                                          via U111(THS4521) pin 8 -> pin 5
-                                            (already shown)
-                                          via R1107(499R) pin 2 -> pin 1
-                                            R1107(499R).1  [net Net-(JP104-B)]   -> U101(OPA1612).7
+                                          via R1105(9.1k) pin 1 -> pin 2
+                                            R1105(9.1k).2  [net Net-(JP104-B)]   -> U101(OPA1612).7
+                                              via R1107(499R) pin 1 -> pin 2
+                                                (already shown)
+                                              via R1113(49.9R) pin 1 -> pin 2
+                                                (already shown)
                                               via JP104(GAIN) pin 2 -> pin 1
                                                 (already shown)
+                                      via R1105(9.1k) pin 2 -> pin 1
+                                        R1105(9.1k).1  [net Net-(JP104-A)]   {R1106 1k to GND}
+                                          via U101(OPA1612) pin 6 -> pin 7
+                                            (already shown)
+                                          via JP104(GAIN) pin 1 -> pin 2
+                                            JP104(GAIN).2  [net Net-(JP104-B)]   -> U101(OPA1612).7
+                                              via R1107(499R) pin 1 -> pin 2
+                                                (already shown)
+                                              via R1113(49.9R) pin 1 -> pin 2
+                                                (already shown)
                                               via R1105(9.1k) pin 2 -> pin 1
-                                                R1105(9.1k).1  [net Net-(JP104-A)]   {R1106 1k to GND}
-                                                  via U101(OPA1612) pin 6 -> pin 7
-                                                    (already shown)
-                                                  via JP104(GAIN) pin 1 -> pin 2
-                                                    JP104(GAIN).2  [net Net-(JP104-B)]   -> U101(OPA1612).7
-                                                      via R1105(9.1k) pin 2 -> pin 1
-                                                        (already shown)
-                                                      via R1107(499R) pin 1 -> pin 2
-                                                        (already shown)
-                                      via R1111(33R) pin 1 -> pin 2
-                                        R1111(33R).2  [net Net-(U103A-VIN-_A)]   {C1105 22pF to GND}   -> U103(AD9238).3
-                              via R1112(33R) pin 1 -> pin 2
-                                R1112(33R).2  [net Net-(U103A-VIN+_A)]   {C1106 22pF to GND}   -> U103(AD9238).2
-                          via U111(THS4521) pin 8 -> pin 5
-                            (already shown)
-                          via R1109(499R) pin 1 -> pin 2
-                            R1109(499R).2  [net Net-(R1109-Pad2)]   -> U111(THS4521).5
+                                                (already shown)
                               via R1111(33R) pin 1 -> pin 2
-                                (already shown)
-              via R1105(9.1k) pin 2 -> pin 1
+                                R1111(33R).2  [net Net-(U103A-VIN-_A)]   {C1105 22pF to GND}   -> U103(AD9238).3
+                      via R1112(33R) pin 1 -> pin 2
+                        R1112(33R).2  [net Net-(U103A-VIN+_A)]   {C1106 22pF to GND}   -> U103(AD9238).2
+                  via U111(THS4521) pin 8 -> pin 5
+                    (already shown)
+                  via R1109(499R) pin 1 -> pin 2
+                    R1109(499R).2  [net Net-(R1109-Pad2)]   -> U111(THS4521).5
+                      via R1111(33R) pin 1 -> pin 2
+                        (already shown)
+              via R1113(49.9R) pin 1 -> pin 2
                 (already shown)
-              via R1107(499R) pin 1 -> pin 2
+              via JP104(GAIN) pin 2 -> pin 1
+                (already shown)
+              via R1105(9.1k) pin 2 -> pin 1
                 (already shown)
           via JP103(GAIN) pin 2 -> pin 1
             JP103(GAIN).1  [net Net-(JP103-A)]   {R1104 1k to GND}
@@ -270,57 +294,65 @@ J105(NOISE).2  [net Net-(J105-Pin_2)]
             U102(OPA1612).1  [net Net-(JP203-B)]
               via U102(OPA1612) pin 5 -> pin 7
                 U102(OPA1612).7  [net Net-(JP204-B)]
-                  via JP204(GAIN) pin 2 -> pin 1
-                    JP204(GAIN).1  [net Net-(JP204-A)]   {R1206 1k to GND}
-                      via U102(OPA1612) pin 6 -> pin 7
-                        (already shown)
-                      via R1205(9.1k) pin 1 -> pin 2
-                        R1205(9.1k).2  [net Net-(JP204-B)]   -> U102(OPA1612).7
-                          via JP204(GAIN) pin 2 -> pin 1
-                            (already shown)
-                          via R1207(499R) pin 1 -> pin 2
-                            R1207(499R).2  [net Net-(U112-+)]
-                              via U112(THS4521) pin 8 -> pin 4
-                                U112(THS4521).4  [net Net-(R1210-Pad2)]
-                                  via R1210(499R) pin 2 -> pin 1
-                                    R1210(499R).1  [net Net-(U112--)]   {R1208 499R to GND}
-                                      via U112(THS4521) pin 1 -> pin 4
+                  via R1207(499R) pin 1 -> pin 2
+                    R1207(499R).2  [net Net-(D112-K1A2)]   -> D112(BAV99).3
+                      via U112(THS4521) pin 8 -> pin 4
+                        U112(THS4521).4  [net Net-(R1210-Pad2)]
+                          via R1210(499R) pin 2 -> pin 1
+                            R1210(499R).1  [net Net-(D112-A1)]   {R1208 499R to GND}   -> D112(BAV99).1, D112(BAV99).2
+                              via U112(THS4521) pin 1 -> pin 4
+                                (already shown)
+                              via U112(THS4521) pin 1 -> pin 5
+                                U112(THS4521).5  [net Net-(R1209-Pad2)]
+                                  via R1209(499R) pin 2 -> pin 1
+                                    R1209(499R).1  [net Net-(D112-K1A2)]   -> D112(BAV99).3
+                                      via U112(THS4521) pin 8 -> pin 4
                                         (already shown)
-                                      via U112(THS4521) pin 1 -> pin 5
-                                        U112(THS4521).5  [net Net-(R1209-Pad2)]
-                                          via R1209(499R) pin 2 -> pin 1
-                                            R1209(499R).1  [net Net-(U112-+)]
-                                              via U112(THS4521) pin 8 -> pin 4
+                                      via U112(THS4521) pin 8 -> pin 5
+                                        (already shown)
+                                      via R1207(499R) pin 2 -> pin 1
+                                        R1207(499R).1  [net Net-(JP204-B)]   -> U102(OPA1612).7
+                                          via R1213(49.9R) pin 1 -> pin 2
+                                            R1213(49.9R).2  [net Net-(J108-Pad1)]   -> J108(U.FL).1
+                                          via JP204(GAIN) pin 2 -> pin 1
+                                            JP204(GAIN).1  [net Net-(JP204-A)]   {R1206 1k to GND}
+                                              via U102(OPA1612) pin 6 -> pin 7
                                                 (already shown)
-                                              via U112(THS4521) pin 8 -> pin 5
-                                                (already shown)
-                                              via R1207(499R) pin 2 -> pin 1
-                                                R1207(499R).1  [net Net-(JP204-B)]   -> U102(OPA1612).7
+                                              via R1205(9.1k) pin 1 -> pin 2
+                                                R1205(9.1k).2  [net Net-(JP204-B)]   -> U102(OPA1612).7
+                                                  via R1207(499R) pin 1 -> pin 2
+                                                    (already shown)
+                                                  via R1213(49.9R) pin 1 -> pin 2
+                                                    (already shown)
                                                   via JP204(GAIN) pin 2 -> pin 1
                                                     (already shown)
+                                          via R1205(9.1k) pin 2 -> pin 1
+                                            R1205(9.1k).1  [net Net-(JP204-A)]   {R1206 1k to GND}
+                                              via U102(OPA1612) pin 6 -> pin 7
+                                                (already shown)
+                                              via JP204(GAIN) pin 1 -> pin 2
+                                                JP204(GAIN).2  [net Net-(JP204-B)]   -> U102(OPA1612).7
+                                                  via R1207(499R) pin 1 -> pin 2
+                                                    (already shown)
+                                                  via R1213(49.9R) pin 1 -> pin 2
+                                                    (already shown)
                                                   via R1205(9.1k) pin 2 -> pin 1
-                                                    R1205(9.1k).1  [net Net-(JP204-A)]   {R1206 1k to GND}
-                                                      via U102(OPA1612) pin 6 -> pin 7
-                                                        (already shown)
-                                                      via JP204(GAIN) pin 1 -> pin 2
-                                                        JP204(GAIN).2  [net Net-(JP204-B)]   -> U102(OPA1612).7
-                                                          via R1205(9.1k) pin 2 -> pin 1
-                                                            (already shown)
-                                                          via R1207(499R) pin 1 -> pin 2
-                                                            (already shown)
-                                          via R1211(33R) pin 1 -> pin 2
-                                            R1211(33R).2  [net Net-(U103B-VIN-_B)]   {C1205 22pF to GND}   -> U103(AD9238).14
-                                  via R1212(33R) pin 1 -> pin 2
-                                    R1212(33R).2  [net Net-(U103B-VIN+_B)]   {C1206 22pF to GND}   -> U103(AD9238).15
-                              via U112(THS4521) pin 8 -> pin 5
-                                (already shown)
-                              via R1209(499R) pin 1 -> pin 2
-                                R1209(499R).2  [net Net-(R1209-Pad2)]   -> U112(THS4521).5
+                                                    (already shown)
                                   via R1211(33R) pin 1 -> pin 2
-                                    (already shown)
-                  via R1205(9.1k) pin 2 -> pin 1
+                                    R1211(33R).2  [net Net-(U103B-VIN-_B)]   {C1205 22pF to GND}   -> U103(AD9238).14
+                          via R1212(33R) pin 1 -> pin 2
+                            R1212(33R).2  [net Net-(U103B-VIN+_B)]   {C1206 22pF to GND}   -> U103(AD9238).15
+                      via U112(THS4521) pin 8 -> pin 5
+                        (already shown)
+                      via R1209(499R) pin 1 -> pin 2
+                        R1209(499R).2  [net Net-(R1209-Pad2)]   -> U112(THS4521).5
+                          via R1211(33R) pin 1 -> pin 2
+                            (already shown)
+                  via R1213(49.9R) pin 1 -> pin 2
                     (already shown)
-                  via R1207(499R) pin 1 -> pin 2
+                  via JP204(GAIN) pin 2 -> pin 1
+                    (already shown)
+                  via R1205(9.1k) pin 2 -> pin 1
                     (already shown)
               via JP203(GAIN) pin 2 -> pin 1
                 JP203(GAIN).1  [net Net-(JP203-A)]   {R1204 1k to GND}
@@ -374,54 +406,55 @@ D103(VBPW34S).1  [net Net-(D103-K)]   -> J106(PD EXT).2
                         U102(OPA1612).1  [net Net-(JP203-B)]
                           via U102(OPA1612) pin 5 -> pin 7
                             U102(OPA1612).7  [net Net-(JP204-B)]
-                              via JP204(GAIN) pin 2 -> pin 1
-                                JP204(GAIN).1  [net Net-(JP204-A)]   {R1206 1k to GND}
-                                  via U102(OPA1612) pin 6 -> pin 7
-                                    (already shown)
-                                  via R1205(9.1k) pin 1 -> pin 2
-                                    R1205(9.1k).2  [net Net-(JP204-B)]   -> U102(OPA1612).7
-                                      via JP204(GAIN) pin 2 -> pin 1
-                                        (already shown)
-                                      via R1207(499R) pin 1 -> pin 2
-                                        R1207(499R).2  [net Net-(U112-+)]
-                                          via U112(THS4521) pin 8 -> pin 4
-                                            U112(THS4521).4  [net Net-(R1210-Pad2)]
-                                              via R1210(499R) pin 2 -> pin 1
-                                                R1210(499R).1  [net Net-(U112--)]   {R1208 499R to GND}
-                                                  via U112(THS4521) pin 1 -> pin 4
-                                                    (already shown)
-                                                  via U112(THS4521) pin 1 -> pin 5
-                                                    U112(THS4521).5  [net Net-(R1209-Pad2)]
-                                                      via R1209(499R) pin 2 -> pin 1
-                                                        R1209(499R).1  [net Net-(U112-+)]
-                                                          via U112(THS4521) pin 8 -> pin 4
-                                                            (already shown)
-                                                          via U112(THS4521) pin 8 -> pin 5
-                                                            (already shown)
-                                                          via R1207(499R) pin 2 -> pin 1
-                                                            R1207(499R).1  [net Net-(JP204-B)]   -> U102(OPA1612).7
-                                                              ...
-                                                      via R1211(33R) pin 1 -> pin 2
-                                                        R1211(33R).2  [net Net-(U103B-VIN-_B)]   {C1205 22pF to GND}   -> U103(AD9238).14
-                                              via R1212(33R) pin 1 -> pin 2
-                                                R1212(33R).2  [net Net-(U103B-VIN+_B)]   {C1206 22pF to GND}   -> U103(AD9238).15
-                                          via U112(THS4521) pin 8 -> pin 5
-                                            (already shown)
-                                          via R1209(499R) pin 1 -> pin 2
-                                            R1209(499R).2  [net Net-(R1209-Pad2)]   -> U112(THS4521).5
-                                              via R1211(33R) pin 1 -> pin 2
-                                                (already shown)
-                              via R1205(9.1k) pin 2 -> pin 1
-                                R1205(9.1k).1  [net Net-(JP204-A)]   {R1206 1k to GND}
-                                  via U102(OPA1612) pin 6 -> pin 7
-                                    (already shown)
-                                  via JP204(GAIN) pin 1 -> pin 2
-                                    JP204(GAIN).2  [net Net-(JP204-B)]   -> U102(OPA1612).7
-                                      via R1205(9.1k) pin 2 -> pin 1
-                                        (already shown)
-                                      via R1207(499R) pin 1 -> pin 2
-                                        (already shown)
                               via R1207(499R) pin 1 -> pin 2
+                                R1207(499R).2  [net Net-(D112-K1A2)]   -> D112(BAV99).3
+                                  via U112(THS4521) pin 8 -> pin 4
+                                    U112(THS4521).4  [net Net-(R1210-Pad2)]
+                                      via R1210(499R) pin 2 -> pin 1
+                                        R1210(499R).1  [net Net-(D112-A1)]   {R1208 499R to GND}   -> D112(BAV99).1, D112(BAV99).2
+                                          via U112(THS4521) pin 1 -> pin 4
+                                            (already shown)
+                                          via U112(THS4521) pin 1 -> pin 5
+                                            U112(THS4521).5  [net Net-(R1209-Pad2)]
+                                              via R1209(499R) pin 2 -> pin 1
+                                                R1209(499R).1  [net Net-(D112-K1A2)]   -> D112(BAV99).3
+                                                  via U112(THS4521) pin 8 -> pin 4
+                                                    (already shown)
+                                                  via U112(THS4521) pin 8 -> pin 5
+                                                    (already shown)
+                                                  via R1207(499R) pin 2 -> pin 1
+                                                    R1207(499R).1  [net Net-(JP204-B)]   -> U102(OPA1612).7
+                                                      via R1213(49.9R) pin 1 -> pin 2
+                                                        R1213(49.9R).2  [net Net-(J108-Pad1)]   -> J108(U.FL).1
+                                                      via JP204(GAIN) pin 2 -> pin 1
+                                                        JP204(GAIN).1  [net Net-(JP204-A)]   {R1206 1k to GND}
+                                                          via U102(OPA1612) pin 6 -> pin 7
+                                                            (already shown)
+                                                          via R1205(9.1k) pin 1 -> pin 2
+                                                            R1205(9.1k).2  [net Net-(JP204-B)]   -> U102(OPA1612).7
+                                                              ...
+                                                      via R1205(9.1k) pin 2 -> pin 1
+                                                        R1205(9.1k).1  [net Net-(JP204-A)]   {R1206 1k to GND}
+                                                          via U102(OPA1612) pin 6 -> pin 7
+                                                            (already shown)
+                                                          via JP204(GAIN) pin 1 -> pin 2
+                                                            JP204(GAIN).2  [net Net-(JP204-B)]   -> U102(OPA1612).7
+                                                              ...
+                                              via R1211(33R) pin 1 -> pin 2
+                                                R1211(33R).2  [net Net-(U103B-VIN-_B)]   {C1205 22pF to GND}   -> U103(AD9238).14
+                                      via R1212(33R) pin 1 -> pin 2
+                                        R1212(33R).2  [net Net-(U103B-VIN+_B)]   {C1206 22pF to GND}   -> U103(AD9238).15
+                                  via U112(THS4521) pin 8 -> pin 5
+                                    (already shown)
+                                  via R1209(499R) pin 1 -> pin 2
+                                    R1209(499R).2  [net Net-(R1209-Pad2)]   -> U112(THS4521).5
+                                      via R1211(33R) pin 1 -> pin 2
+                                        (already shown)
+                              via R1213(49.9R) pin 1 -> pin 2
+                                (already shown)
+                              via JP204(GAIN) pin 2 -> pin 1
+                                (already shown)
+                              via R1205(9.1k) pin 2 -> pin 1
                                 (already shown)
                           via JP203(GAIN) pin 2 -> pin 1
                             JP203(GAIN).1  [net Net-(JP203-A)]   {R1204 1k to GND}
@@ -443,6 +476,8 @@ D103(VBPW34S).1  [net Net-(D103-K)]   -> J106(PD EXT).2
                                     (already shown)
                                   via R1203(9.1k) pin 2 -> pin 1
                                     (already shown)
+              via R1406(49.9R) pin 1 -> pin 2
+                R1406(49.9R).2  [net Net-(J109-Pad1)]   -> J109(U.FL).1
       via R1405(10k) pin 2 -> pin 1
         R1405(10k).1  [net Net-(D103-K)]   -> D103(VBPW34S).1, J106(PD EXT).2
           via U105(OPA2810) pin 2 -> pin 1
@@ -453,7 +488,11 @@ D103(VBPW34S).1  [net Net-(D103-K)]   -> J106(PD EXT).2
                 (already shown)
               via JP1203(ALT) pin 1 -> pin 2
                 (already shown)
+              via R1406(49.9R) pin 1 -> pin 2
+                (already shown)
       via JP1203(ALT) pin 1 -> pin 2
+        (already shown)
+      via R1406(49.9R) pin 1 -> pin 2
         (already shown)
   via C1401(2.2pF) pin 1 -> pin 2
     (already shown)
@@ -464,11 +503,15 @@ D103(VBPW34S).1  [net Net-(D103-K)]   -> J106(PD EXT).2
 ## photodiode D103 anode
 
 ```
-D103(VBPW34S).2  [net -4V4]   {C1102 100nF to GND; C1202 100nF to GND; C1403 100nF to GND; C2602 100nF to GND; C2702 100nF to GND; C8304 10uF to GND}   -> J602(RAILS).15, U606(LM27761DSGR).4, D101(BAV99).1, D102(BAV99).1, U101(OPA1612).4, U102(OPA1612).4, U105(OPA2810).4, U202(OPA2810).4, U203(OPA2810).4, J106(PD EXT).1
+D103(VBPW34S).2  [net -4V2]   {C1102 100nF to GND; C1202 100nF to GND; C1403 100nF to GND; C2602 100nF to GND; C2702 100nF to GND; C8305 10uF to GND}   -> J602(RAILS).17, D101(BAV99).1, D102(BAV99).1, U101(OPA1612).4, U102(OPA1612).4, U105(OPA2810).4, U202(OPA2810).4, U203(OPA2810).4, J106(PD EXT).1
+  via FB8301(600R@100MHz) pin 2 -> pin 1
+    FB8301(600R@100MHz).1  [net Net-(U606-VOUT)]   {C8304 10uF to GND}   -> U606(LM27761DSGR).4
+      via R8301(1.2M) pin 1 -> pin 2
+        R8301(1.2M).2  [net Net-(U606-VFB)]   {R8302 499k to GND}   -> U606(LM27761DSGR).5
   via R7711(10k) pin 2 -> pin 1
     R7711(10k).1  [net Net-(D608-K)]   -> D608(red).1
-  via R8301(1.3M) pin 1 -> pin 2
-    R8301(1.3M).2  [net Net-(U606-VFB)]   {R8302 499k to GND}   -> U606(LM27761DSGR).5
+  via R8303(49.9R) pin 1 -> pin 2
+    R8303(49.9R).2  [net Net-(J603-Pad1)]   -> J603(U.FL).1
 ```
 
 ## PD EXT header J106 (K, pin 2)
@@ -493,54 +536,55 @@ J106(PD EXT).2  [net Net-(D103-K)]   -> D103(VBPW34S).1
                         U102(OPA1612).1  [net Net-(JP203-B)]
                           via U102(OPA1612) pin 5 -> pin 7
                             U102(OPA1612).7  [net Net-(JP204-B)]
-                              via JP204(GAIN) pin 2 -> pin 1
-                                JP204(GAIN).1  [net Net-(JP204-A)]   {R1206 1k to GND}
-                                  via U102(OPA1612) pin 6 -> pin 7
-                                    (already shown)
-                                  via R1205(9.1k) pin 1 -> pin 2
-                                    R1205(9.1k).2  [net Net-(JP204-B)]   -> U102(OPA1612).7
-                                      via JP204(GAIN) pin 2 -> pin 1
-                                        (already shown)
-                                      via R1207(499R) pin 1 -> pin 2
-                                        R1207(499R).2  [net Net-(U112-+)]
-                                          via U112(THS4521) pin 8 -> pin 4
-                                            U112(THS4521).4  [net Net-(R1210-Pad2)]
-                                              via R1210(499R) pin 2 -> pin 1
-                                                R1210(499R).1  [net Net-(U112--)]   {R1208 499R to GND}
-                                                  via U112(THS4521) pin 1 -> pin 4
-                                                    (already shown)
-                                                  via U112(THS4521) pin 1 -> pin 5
-                                                    U112(THS4521).5  [net Net-(R1209-Pad2)]
-                                                      via R1209(499R) pin 2 -> pin 1
-                                                        R1209(499R).1  [net Net-(U112-+)]
-                                                          via U112(THS4521) pin 8 -> pin 4
-                                                            (already shown)
-                                                          via U112(THS4521) pin 8 -> pin 5
-                                                            (already shown)
-                                                          via R1207(499R) pin 2 -> pin 1
-                                                            R1207(499R).1  [net Net-(JP204-B)]   -> U102(OPA1612).7
-                                                              ...
-                                                      via R1211(33R) pin 1 -> pin 2
-                                                        R1211(33R).2  [net Net-(U103B-VIN-_B)]   {C1205 22pF to GND}   -> U103(AD9238).14
-                                              via R1212(33R) pin 1 -> pin 2
-                                                R1212(33R).2  [net Net-(U103B-VIN+_B)]   {C1206 22pF to GND}   -> U103(AD9238).15
-                                          via U112(THS4521) pin 8 -> pin 5
-                                            (already shown)
-                                          via R1209(499R) pin 1 -> pin 2
-                                            R1209(499R).2  [net Net-(R1209-Pad2)]   -> U112(THS4521).5
-                                              via R1211(33R) pin 1 -> pin 2
-                                                (already shown)
-                              via R1205(9.1k) pin 2 -> pin 1
-                                R1205(9.1k).1  [net Net-(JP204-A)]   {R1206 1k to GND}
-                                  via U102(OPA1612) pin 6 -> pin 7
-                                    (already shown)
-                                  via JP204(GAIN) pin 1 -> pin 2
-                                    JP204(GAIN).2  [net Net-(JP204-B)]   -> U102(OPA1612).7
-                                      via R1205(9.1k) pin 2 -> pin 1
-                                        (already shown)
-                                      via R1207(499R) pin 1 -> pin 2
-                                        (already shown)
                               via R1207(499R) pin 1 -> pin 2
+                                R1207(499R).2  [net Net-(D112-K1A2)]   -> D112(BAV99).3
+                                  via U112(THS4521) pin 8 -> pin 4
+                                    U112(THS4521).4  [net Net-(R1210-Pad2)]
+                                      via R1210(499R) pin 2 -> pin 1
+                                        R1210(499R).1  [net Net-(D112-A1)]   {R1208 499R to GND}   -> D112(BAV99).1, D112(BAV99).2
+                                          via U112(THS4521) pin 1 -> pin 4
+                                            (already shown)
+                                          via U112(THS4521) pin 1 -> pin 5
+                                            U112(THS4521).5  [net Net-(R1209-Pad2)]
+                                              via R1209(499R) pin 2 -> pin 1
+                                                R1209(499R).1  [net Net-(D112-K1A2)]   -> D112(BAV99).3
+                                                  via U112(THS4521) pin 8 -> pin 4
+                                                    (already shown)
+                                                  via U112(THS4521) pin 8 -> pin 5
+                                                    (already shown)
+                                                  via R1207(499R) pin 2 -> pin 1
+                                                    R1207(499R).1  [net Net-(JP204-B)]   -> U102(OPA1612).7
+                                                      via R1213(49.9R) pin 1 -> pin 2
+                                                        R1213(49.9R).2  [net Net-(J108-Pad1)]   -> J108(U.FL).1
+                                                      via JP204(GAIN) pin 2 -> pin 1
+                                                        JP204(GAIN).1  [net Net-(JP204-A)]   {R1206 1k to GND}
+                                                          via U102(OPA1612) pin 6 -> pin 7
+                                                            (already shown)
+                                                          via R1205(9.1k) pin 1 -> pin 2
+                                                            R1205(9.1k).2  [net Net-(JP204-B)]   -> U102(OPA1612).7
+                                                              ...
+                                                      via R1205(9.1k) pin 2 -> pin 1
+                                                        R1205(9.1k).1  [net Net-(JP204-A)]   {R1206 1k to GND}
+                                                          via U102(OPA1612) pin 6 -> pin 7
+                                                            (already shown)
+                                                          via JP204(GAIN) pin 1 -> pin 2
+                                                            JP204(GAIN).2  [net Net-(JP204-B)]   -> U102(OPA1612).7
+                                                              ...
+                                              via R1211(33R) pin 1 -> pin 2
+                                                R1211(33R).2  [net Net-(U103B-VIN-_B)]   {C1205 22pF to GND}   -> U103(AD9238).14
+                                      via R1212(33R) pin 1 -> pin 2
+                                        R1212(33R).2  [net Net-(U103B-VIN+_B)]   {C1206 22pF to GND}   -> U103(AD9238).15
+                                  via U112(THS4521) pin 8 -> pin 5
+                                    (already shown)
+                                  via R1209(499R) pin 1 -> pin 2
+                                    R1209(499R).2  [net Net-(R1209-Pad2)]   -> U112(THS4521).5
+                                      via R1211(33R) pin 1 -> pin 2
+                                        (already shown)
+                              via R1213(49.9R) pin 1 -> pin 2
+                                (already shown)
+                              via JP204(GAIN) pin 2 -> pin 1
+                                (already shown)
+                              via R1205(9.1k) pin 2 -> pin 1
                                 (already shown)
                           via JP203(GAIN) pin 2 -> pin 1
                             JP203(GAIN).1  [net Net-(JP203-A)]   {R1204 1k to GND}
@@ -562,6 +606,8 @@ J106(PD EXT).2  [net Net-(D103-K)]   -> D103(VBPW34S).1
                                     (already shown)
                                   via R1203(9.1k) pin 2 -> pin 1
                                     (already shown)
+              via R1406(49.9R) pin 1 -> pin 2
+                R1406(49.9R).2  [net Net-(J109-Pad1)]   -> J109(U.FL).1
       via R1405(10k) pin 2 -> pin 1
         R1405(10k).1  [net Net-(D103-K)]   -> D103(VBPW34S).1, J106(PD EXT).2
           via U105(OPA2810) pin 2 -> pin 1
@@ -572,7 +618,11 @@ J106(PD EXT).2  [net Net-(D103-K)]   -> D103(VBPW34S).1
                 (already shown)
               via JP1203(ALT) pin 1 -> pin 2
                 (already shown)
+              via R1406(49.9R) pin 1 -> pin 2
+                (already shown)
       via JP1203(ALT) pin 1 -> pin 2
+        (already shown)
+      via R1406(49.9R) pin 1 -> pin 2
         (already shown)
   via C1401(2.2pF) pin 1 -> pin 2
     (already shown)
@@ -585,7 +635,7 @@ J106(PD EXT).2  [net Net-(D103-K)]   -> D103(VBPW34S).1
 ```
 U201(AD9767).46  [net Net-(U201A-IOUTA1)]   {R2401 24.9R to GND}
   via R2403(499R) pin 1 -> pin 2
-    R2403(499R).2  [net Net-(U202A-+)]   {R2405 2k to GND}
+    R2403(499R).2  [net Net-(U202A-+)]   {C2402 2.2pF to GND; R2405 2k to GND}
       via U202(OPA2810) pin 3 -> pin 1
         U202(OPA2810).1  [net Net-(C2401-Pad2)]
           via C2401(2.2pF) pin 2 -> pin 1
@@ -671,7 +721,7 @@ U201(AD9767).39  [net Net-(U201B-IOUTA2)]   {R2501 24.9R to GND}
               via JP2009(LED) pin 2 -> pin 3
                 JP2009(LED).3  [net Net-(J210-Pin_2)]   -> J210(LED EXT).2
   via R2503(499R) pin 1 -> pin 2
-    R2503(499R).2  [net Net-(U203A-+)]   {R2505 2k to GND}
+    R2503(499R).2  [net Net-(U203A-+)]   {C2502 2.2pF to GND; R2505 2k to GND}
       via U203(OPA2810) pin 3 -> pin 1
         U203(OPA2810).1  [net Net-(C2501-Pad2)]
           via C2501(2.2pF) pin 2 -> pin 1
@@ -755,27 +805,11 @@ J210(LED EXT).2  [net Net-(J210-Pin_2)]
 ```
 J301(SMA).1  [net Net-(C5421-Pad1)]
   via C5421(10nF) pin 1 -> pin 2
-    C5421(10nF).2  [net Net-(C5421-Pad2)]
-      via U302(SN74LVC1GU04DBVR) pin 2 -> pin 4
-        U302(SN74LVC1GU04DBVR).4  [net Net-(R5422-Pad2)]
-          via U303(SN74LVC1G17DBVR) pin 2 -> pin 4
-            U303(SN74LVC1G17DBVR).4  [net Net-(R5423-Pad1)]
-              via R5423(33R) pin 1 -> pin 2
-                R5423(33R).2  [net /FPGA, memory, clocks, configuration/CLK_EXT]   -> U1(LFE5U-25F-6BG256C).K2
-          via R5422(1M) pin 2 -> pin 1
-            R5422(1M).1  [net Net-(C5421-Pad2)]
-              via U302(SN74LVC1GU04DBVR) pin 2 -> pin 4
-                (already shown)
-              via C5421(10nF) pin 2 -> pin 1
-                C5421(10nF).1  [net Net-(C5421-Pad1)]   -> J301(SMA).1
-                  via R5421(49.9R) pin 1 -> pin 2
-                    R5421(49.9R).2  [net Net-(JP3001-B)]   {JP3001 TERM to GND}
-      via R5422(1M) pin 1 -> pin 2
-        R5422(1M).2  [net Net-(R5422-Pad2)]   -> U302(SN74LVC1GU04DBVR).4
-          via U303(SN74LVC1G17DBVR) pin 2 -> pin 4
-            (already shown)
+    C5421(10nF).2  [net Net-(U302A-+)]   -> U302(TLV3501AIDBVR).3
+      via R5426(10k) pin 1 -> pin 2
+        R5426(10k).2  [net Net-(U302A--)]   {R5424 10k to +3V3_ADC; C5424 100nF to GND; R5425 10k to GND}   -> U302(TLV3501AIDBVR).1
   via R5421(49.9R) pin 1 -> pin 2
-    (already shown)
+    R5421(49.9R).2  [net Net-(JP3001-B)]   {JP3001 TERM to GND}
 ```
 
 ## TCXO X301 output

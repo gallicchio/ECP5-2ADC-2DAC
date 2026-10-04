@@ -10,7 +10,7 @@ Rs sense 0 10
 Dled vp5 col LEDR
 .model LEDR D(IS=1e-18 N=1.8 RS=1.5)
 Vp5 vp5 0 5
-Vm5 vm5 0 -4.4
+Vm5 vm5 0 -4.15
 .control
 dc Vin 0 0.48 0.08
 print i(Vp5) v(col) v(sense)

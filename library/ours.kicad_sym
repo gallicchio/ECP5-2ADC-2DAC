@@ -2390,6 +2390,224 @@
 		)
 (embedded_fonts no)
 	)
+	(symbol "BAV99_antiparallel"
+		(pin_names
+(offset 0.762)
+		)
+(exclude_from_sim no)
+(in_bom yes)
+(on_board yes)
+		(property "Reference" "D"
+(at 0 8.54 0)
+			(effects
+				(font
+(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "BAV99"
+(at 0 -8.54 0)
+			(effects
+				(font
+(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+(at 0 0 0)
+			(effects
+				(font
+(size 1.27 1.27)
+				)
+(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+(at 0 0 0)
+			(effects
+				(font
+(size 1.27 1.27)
+				)
+(hide yes)
+			)
+		)
+		(property "Description" "dual diode wired anti-parallel"
+(at 0 0 0)
+			(effects
+				(font
+(size 1.27 1.27)
+				)
+(hide yes)
+			)
+		)
+		(symbol "BAV99_antiparallel_1_1"
+			(polyline
+				(pts
+(xy -2.1700 -1.0000)
+(xy -1.2700 0.6000)
+(xy -0.3700 -1.0000)
+(xy -2.1700 -1.0000)
+				)
+				(stroke
+(width 0.254)
+(type default)
+				)
+				(fill
+(type outline)
+				)
+			)
+			(polyline
+				(pts
+(xy -2.1700 0.6000)
+(xy -0.3700 0.6000)
+				)
+				(stroke
+(width 0.254)
+(type default)
+				)
+				(fill
+(type none)
+				)
+			)
+			(polyline
+				(pts
+(xy 0.3700 1.0000)
+(xy 1.2700 -0.6000)
+(xy 2.1700 1.0000)
+(xy 0.3700 1.0000)
+				)
+				(stroke
+(width 0.254)
+(type default)
+				)
+				(fill
+(type outline)
+				)
+			)
+			(polyline
+				(pts
+(xy 0.3700 -0.6000)
+(xy 2.1700 -0.6000)
+				)
+				(stroke
+(width 0.254)
+(type default)
+				)
+				(fill
+(type none)
+				)
+			)
+			(polyline
+				(pts
+(xy -1.2700 -2.5400)
+(xy -1.2700 -1.0000)
+				)
+				(stroke
+(width 0.254)
+(type default)
+				)
+				(fill
+(type none)
+				)
+			)
+			(polyline
+				(pts
+(xy -1.2700 0.6000)
+(xy -1.2700 2.5400)
+(xy 1.2700 2.5400)
+(xy 1.2700 1.0000)
+				)
+				(stroke
+(width 0.254)
+(type default)
+				)
+				(fill
+(type none)
+				)
+			)
+			(polyline
+				(pts
+(xy 1.2700 -0.6000)
+(xy 1.2700 -2.5400)
+				)
+				(stroke
+(width 0.254)
+(type default)
+				)
+				(fill
+(type none)
+				)
+			)
+			(polyline
+				(pts
+(xy 0.0000 2.5400)
+(xy 0.0000 2.5400)
+				)
+				(stroke
+(width 0.254)
+(type default)
+				)
+				(fill
+(type none)
+				)
+			)
+			(pin passive line
+(at 0.00 3.81 270)
+(length 1.27)
+				(name "K1A2"
+					(effects
+						(font
+(size 1.02 1.02)
+						)
+					)
+				)
+				(number "3"
+					(effects
+						(font
+(size 1.02 1.02)
+						)
+					)
+				)
+			)
+			(pin passive line
+(at -1.27 -3.81 90)
+(length 1.27)
+				(name "A1"
+					(effects
+						(font
+(size 1.02 1.02)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+(size 1.02 1.02)
+						)
+					)
+				)
+			)
+			(pin passive line
+(at 1.27 -3.81 90)
+(length 1.27)
+				(name "K2"
+					(effects
+						(font
+(size 1.02 1.02)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+(size 1.02 1.02)
+						)
+					)
+				)
+			)
+		)
+(embedded_fonts no)
+	)
 	(symbol "G2406S"
 		(pin_names
 (offset 0.762)
@@ -10486,7 +10704,7 @@
 		)
 (embedded_fonts no)
 	)
-	(symbol "PWR_-4V4"
+	(symbol "PWR_-4V2"
 (power)
 		(pin_numbers
 (hide yes)
@@ -10507,7 +10725,7 @@
 (hide yes)
 			)
 		)
-		(property "Value" "-4V4"
+		(property "Value" "-4V2"
 (at 0 -3.810 0)
 			(effects
 				(font
@@ -10533,7 +10751,7 @@
 (hide yes)
 			)
 		)
-		(symbol "PWR_-4V4_0_1"
+		(symbol "PWR_-4V2_0_1"
 			(polyline
 				(pts
 (xy 0.0000 0.0000)
@@ -10587,11 +10805,11 @@
 				)
 			)
 		)
-		(symbol "PWR_-4V4_1_1"
+		(symbol "PWR_-4V2_1_1"
 			(pin power_in line
 (at 0.00 0.00 90)
 (length 0.00)
-				(name "-4V4"
+				(name "-4V2"
 					(effects
 						(font
 (size 1.02 1.02)
@@ -12407,6 +12625,321 @@
 					)
 				)
 				(number "4"
+					(effects
+						(font
+(size 1.02 1.02)
+						)
+					)
+				)
+			)
+		)
+(embedded_fonts no)
+	)
+	(symbol "TLV3501"
+		(pin_names
+(offset 0.762)
+		)
+(exclude_from_sim no)
+(in_bom yes)
+(on_board yes)
+		(property "Reference" "U"
+(at 0 8.54 0)
+			(effects
+				(font
+(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "TLV3501AIDBVR"
+(at 0 -8.54 0)
+			(effects
+				(font
+(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+(at 0 0 0)
+			(effects
+				(font
+(size 1.27 1.27)
+				)
+(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+(at 0 0 0)
+			(effects
+				(font
+(size 1.27 1.27)
+				)
+(hide yes)
+			)
+		)
+		(property "Description" "comparator"
+(at 0 0 0)
+			(effects
+				(font
+(size 1.27 1.27)
+				)
+(hide yes)
+			)
+		)
+		(symbol "TLV3501_1_1"
+			(polyline
+				(pts
+(xy -5.0800 5.0800)
+(xy 5.0800 0.0000)
+(xy -5.0800 -5.0800)
+(xy -5.0800 5.0800)
+				)
+				(stroke
+(width 0.254)
+(type default)
+				)
+				(fill
+(type background)
+				)
+			)
+			(pin input line
+(at -7.62 2.54 0)
+(length 2.54)
+				(name "+"
+					(effects
+						(font
+(size 1.27 1.27)
+						)
+					)
+				)
+				(number "3"
+					(effects
+						(font
+(size 1.02 1.02)
+						)
+					)
+				)
+			)
+			(pin input line
+(at -7.62 -2.54 0)
+(length 2.54)
+				(name "-"
+					(effects
+						(font
+(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+(size 1.02 1.02)
+						)
+					)
+				)
+			)
+			(pin output line
+(at 7.62 0.00 180)
+(length 2.54)
+				(name ""
+					(effects
+						(font
+(size 1.02 1.02)
+						)
+					)
+				)
+				(number "5"
+					(effects
+						(font
+(size 1.02 1.02)
+						)
+					)
+				)
+			)
+		)
+		(symbol "TLV3501_2_1"
+			(rectangle
+(start -5.08 3.81)
+(end 5.08 -3.81)
+				(stroke
+(width 0.254)
+(type default)
+				)
+				(fill
+(type background)
+				)
+			)
+			(pin power_in line
+(at 0.00 7.62 270)
+(length 3.81)
+				(name "V+"
+					(effects
+						(font
+(size 1.02 1.02)
+						)
+					)
+				)
+				(number "4"
+					(effects
+						(font
+(size 1.02 1.02)
+						)
+					)
+				)
+			)
+			(pin power_in line
+(at 0.00 -7.62 90)
+(length 3.81)
+				(name "V-"
+					(effects
+						(font
+(size 1.02 1.02)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+(size 1.02 1.02)
+						)
+					)
+				)
+			)
+			(pin input line
+(at -7.62 0.00 0)
+(length 2.54)
+				(name "SHDN"
+					(effects
+						(font
+(size 1.02 1.02)
+						)
+					)
+				)
+				(number "6"
+					(effects
+						(font
+(size 1.02 1.02)
+						)
+					)
+				)
+			)
+		)
+(embedded_fonts no)
+	)
+	(symbol "UFL_tap"
+		(pin_names
+(offset 0.762)
+		)
+(exclude_from_sim no)
+(in_bom yes)
+(on_board yes)
+		(property "Reference" "J"
+(at 0 8.54 0)
+			(effects
+				(font
+(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "U.FL"
+(at 0 -8.54 0)
+			(effects
+				(font
+(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+(at 0 0 0)
+			(effects
+				(font
+(size 1.27 1.27)
+				)
+(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+(at 0 0 0)
+			(effects
+				(font
+(size 1.27 1.27)
+				)
+(hide yes)
+			)
+		)
+		(property "Description" ""
+(at 0 0 0)
+			(effects
+				(font
+(size 1.27 1.27)
+				)
+(hide yes)
+			)
+		)
+		(symbol "UFL_tap_1_1"
+			(circle
+(center 0 0)
+(radius 2.54)
+				(stroke
+(width 0.254)
+(type default)
+				)
+				(fill
+(type none)
+				)
+			)
+			(circle
+(center 0 0)
+(radius 0.635)
+				(stroke
+(width 0.254)
+(type default)
+				)
+				(fill
+(type outline)
+				)
+			)
+			(polyline
+				(pts
+(xy 0.0000 -2.5400)
+(xy 0.0000 -5.0800)
+				)
+				(stroke
+(width 0.254)
+(type default)
+				)
+				(fill
+(type none)
+				)
+			)
+			(pin passive line
+(at -5.08 0.00 0)
+(length 2.54)
+				(name ""
+					(effects
+						(font
+(size 1.02 1.02)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+(size 1.02 1.02)
+						)
+					)
+				)
+			)
+			(pin passive line
+(at -5.08 -5.08 0)
+(length 5.08)
+				(name ""
+					(effects
+						(font
+(size 1.02 1.02)
+						)
+					)
+				)
+				(number "2"
 					(effects
 						(font
 (size 1.02 1.02)

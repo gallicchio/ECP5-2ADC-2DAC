@@ -72,11 +72,12 @@ def render(path, png, x0=0, y0=0, x1=None, y1=None, back=False, refs=True, dpi=1
             mine = (lyr == "B.Cu") == back
             if not (x0 - 15 < fx < x1 + 15 and y0 - 15 < fy < y1 + 15):
                 continue
-            ref = ""; refat = None
+            ref = ""; refat = None; refsilk = False
             for pr in kids(node, "property"):
                 if val(pr) == "Reference":
                     ref = val(pr, 2)
                     at = kid(pr, "at"); refat = (num(at, 1), num(at, 2))
+                    refsilk = val(kid(pr, "layer")).endswith("SilkS")      # F.Fab designators are not printed: drawn dim
             for ln in kids(node, "fp_line") + kids(node, "fp_rect"):
                 ll = val(kid(ln, "layer"))
                 if ll not in ("F.CrtYd", "B.CrtYd", "F.SilkS", "B.SilkS"):
@@ -105,7 +106,7 @@ def render(path, png, x0=0, y0=0, x1=None, y1=None, back=False, refs=True, dpi=1
                 ax.add_patch(Rectangle((fx + px - w / 2, fy + py - hh / 2), w, hh, color=col, alpha=alpha, zorder=3 if mine else 1))
             if refs and ref and mine:
                 rx, ry = rot(refat[0], refat[1], fa) if refat else (0, 0)
-                ax.text(fx + rx, fy + ry, ref, color="#ffffff", fontsize=max(3, 0.9 * scale / dpi * 72 * 0.8 / 2.2), ha="center", va="center", zorder=7)
+                ax.text(fx + rx, fy + ry, ref, color="#ffffff" if refsilk else "#5a5a5a", fontsize=max(3, 0.9 * scale / dpi * 72 * 0.8 / 2.2), ha="center", va="center", zorder=7)
     ax.set_xlim(x0, x1); ax.set_ylim(y1, y0); ax.set_aspect("equal"); ax.axis("off")
     fig.savefig(png, dpi=dpi, facecolor="#101418")
     plt.close(fig)

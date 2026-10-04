@@ -32,14 +32,19 @@ def output_stage(ctx, tag, cl, base, an, pa, pb, ids, uref, led=False):
     s.wire(xl + 10.16, B[1], rgm.pin(1)[0] - 5.08, B[1]); s.wire(rgm.pin(1)[0] - 5.08, B[1], rgm.pin(1)[0] - 5.08, im[1]); s.wire(rgm.pin(1)[0] - 5.08, im[1], *rgm.pin(1))
     s.wire(*rgm.pin(2), *im)
     # + input to ground through 2k; feedback 2k || 2.2 pF from the output to the - input
-    rtp = R(ctx, base, "2k", ip[0] - 1.27, ip[1] - 8.89, side="left")
+    rtp = R(ctx, base, "2k", ip[0] - 1.27, ip[1] - 8.89, side="right")
     s.wire(ip[0] - 1.27, ip[1], *rtp.pin(2)); gnd(ctx, *rtp.pin(1), stub=1.27, up=True)
+    # 2.2 pF across it too (build 26): the 2 k || 2.2 pF feedback on the - side needs the same impedance on the +
+    # side above 10 MHz, or the difference amplifier's common-mode rejection goes with the frequency (reviews, R6)
+    ctp = C(ctx, base, "2.2pF", ip[0] - 6.35, ip[1] - 8.89, side="left", ref="C%d" % (ctx.off + base + 2))    # explicit: the feedback 2.2 pF stays C2401/C2501
+    s.wire(*rtp.pin(2), *ctp.pin(2)); s.wire(*rtp.pin(1), *ctp.pin(1)); s.junction(*rtp.pin(2)); s.junction(*rtp.pin(1))
     yf = cl + 11.43
     rf = R(ctx, base, "2k", xo, yf, horiz=True)
-    cf = C(ctx, base, "2.2pF", xo, yf + 6.35, horiz=True)
+    cf = C(ctx, base, "2.2pF", xo, yf + 6.35, horiz=True, ref_at=(xo + 2.6, yf + 4.45), val_at=(xo - 8.0, yf + 2.95))      # (labels either side above the body since build 27: the Vout note goes under it)
     s.wire(im[0] - 1.27, im[1], im[0] - 1.27, yf + 6.35); s.wire(im[0] - 1.27, yf, *rf.pin(1)); s.wire(im[0] - 1.27, yf + 6.35, *cf.pin(1))
     s.wire(*rf.pin(2), out[0] + 2.54, yf); s.wire(*cf.pin(2), out[0] + 2.54, yf + 6.35); s.wire(out[0] + 2.54, yf + 6.35, out[0] + 2.54, out[1]); s.wire(*out, out[0] + 2.54, out[1])
-    label_node(ctx, xo - 8.0, yf + 11.5, "Vout = 4 x (VA - VB) = ±1.8 V, -3 dB at 13 MHz (sim/dac_stage.cir)", side="right", size=0.85)
+    label_node(ctx, xo - 8.0, yf + 10.5, "Vout = 4 x (VA - VB) = ±1.8 V unloaded, -3 dB at 13.5 MHz;", side="right", size=0.85)      # (two lines since build 27: one line ran under the +5VA flag)
+    label_node(ctx, xo - 8.0, yf + 12.5, "a full-scale sine is slew-limited above 10 MHz (sim/dac_stage.cir)", side="right", size=0.85)
     # output series resistor and SMA
     xr = out[0] + 11.43
     ro = R(ctx, base, "49.9R", xr, cl, horiz=True)
@@ -48,8 +53,8 @@ def output_stage(ctx, tag, cl, base, an, pa, pb, ids, uref, led=False):
              ref_at=(xr + 20.0, cl - 6.0), val_at=(xr + 20.0, cl + 4.0))
     s.wire(*ro.pin(2), *j.pin(1)); gnd(ctx, *j.pin(2), stub=2.54)
     s.text(xr + 12.0, cl - 10.0, "DAC %s OUT" % tag, size=1.8, bold=True)
-    s.text(xr + 8.0, cl - 14.5, "±1 V MAX OUT", size=2.2, bold=True)
-    s.text(xr + 8.0, cl + 15.0, "±1 V into 50 Ω\n±2 V open circuit\n50 Ω source", size=0.9, justify="left top")
+    s.text(xr + 8.0, cl - 14.5, "±0.9 V MAX OUT", size=2.2, bold=True)
+    s.text(xr + 8.0, cl + 14.0, "±0.9 V into 50 Ω\n±1.8 V open circuit\n50 Ω source, DC coupled", size=0.9, justify="left top")      # (full scale to 10 MHz: in the Vout note; a fourth line here sat on the +5VA flag)
     return A, amp
 
 
@@ -59,9 +64,9 @@ def draw(sch, ids, fpga):
     s.text(20, 22, "DAC: AD9767 dual 14-bit, 125 MSPS, two DC-coupled outputs", size=3.0, bold=True)
     note(ctx, 20, 26, "The FPGA writes 14 bits per port with its own WRT and CLK (dual-port mode; drive MODE low and the "
                       "same four pins become IQWRT/IQCLK/IQRESET/IQSEL for interleaved I/Q). Each DAC sources 0-19.2 mA into "
-                      "24.9 Ω (0-0.48 V) on complementary outputs; an OPA2810 takes the difference with gain 4, so the output "
-                      "swings ±2 V open-circuit, ±1 V into 50 Ω, DC coupled and centred on 0 V. 2 kΩ || 2.2 pF rolls the "
-                      "stage off at about 13 MHz with the OPA2810. Channel 2's unipolar node also feeds a voltage-to-current stage that drives an "
+                      "24.9 Ω (0-0.48 V) on complementary outputs; an OPA2810 takes the difference with gain 4 -- its 499 Ω inputs load "
+                      "the 24.9 Ω, so the output swings ±1.8 V unloaded, ±0.9 V into 50 Ω, DC coupled and centred on 0 V. 2 kΩ || 2.2 pF "
+                      "on both inputs rolls the stage off at 13.5 MHz; a full-scale sine is clean to 10 MHz (the OPA2810's 180 V/µs). Channel 2's unipolar node also feeds a voltage-to-current stage that drives an "
                       "LED (on board, or your own on J10) for the optical experiments.", w=340, size=1.1)
     hp = []
     # --- the converter: one trapezoid per port (the 14-bit bus and its WRT/CLK
@@ -135,7 +140,7 @@ def draw(sch, ids, fpga):
     for uref, amp in (("U202", amp1), ("U203", amp2)):
         pw = part(ctx, ids["opa2810"], uref, "OPA2810", "SOIC8", amp.x + 40.64, amp.y + 35.56, unit=3,
                   ref_at=(amp.x + 46.5, amp.y + 34.5), val_at=(amp.x + 46.5, amp.y + 35.5))
-        rail(ctx, *pw.pin("8"), "+5VA", stub=3.81); gnd(ctx, *pw.pin("4"), "-4V4", stub=3.81)
+        rail(ctx, *pw.pin("8"), "+5VA", stub=3.81); gnd(ctx, *pw.pin("4"), "-4V2", stub=3.81)
         c1 = C(ctx, 600 if uref == "U202" else 700, "100nF", pw.pin("8")[0] - 12.7, pw.pin("8")[1], side="left")
         s.wire(pw.pin("8")[0], pw.pin("8")[1] - 3.81, c1.pin(1)[0], pw.pin("8")[1] - 3.81); s.wire(c1.pin(1)[0], pw.pin("8")[1] - 3.81, *c1.pin(1)); gnd(ctx, *c1.pin(2), stub=0)
         c2 = C(ctx, 600 if uref == "U202" else 700, "100nF", pw.pin("4")[0] - 22.86, pw.pin("4")[1], side="left")
@@ -191,5 +196,5 @@ def draw(sch, ids, fpga):
     decouple(ctx, 340, 150.0, 285.0, "+3V3_DAC", ["10uF", "100nF"], label="AVDD")
     decouple(ctx, 350, 150.0, 310.0, "+3V3_DAC_D", ["10uF", "100nF", "100nF"], label="DVDD1, DVDD2: +3V3 through a ferrite (power sheet)")
     note(ctx, 20, 340.0, "Timing: data is latched by WRT and the DAC updates on CLK; tie them to the same FPGA clock for "
-                         "the simple case. 14 bits at 125 MSPS straight-binary (code 0 = IOUTA off = -2 V out).", w=160, size=0.95)
+                         "the simple case. 14 bits at 125 MSPS straight-binary (code 0 = IOUTA off = -1.8 V unloaded).", w=160, size=0.95)
     return hp

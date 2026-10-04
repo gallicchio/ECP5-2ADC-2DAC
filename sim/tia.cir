@@ -6,7 +6,7 @@ X1 0 inn vp5 vm5 out OPA2810
 Rf out inn 10k
 Cf out inn 2.2p
 Vp5 vp5 0 5
-Vm5 vm5 0 -4.4
+Vm5 vm5 0 -4.15
 .control
 ac dec 20 1k 100meg
 let g = db(v(out))

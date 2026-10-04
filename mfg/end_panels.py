@@ -31,6 +31,9 @@ PCB_TOP_ABOVE_FLOOR = 8.0                        # MEASURE THIS.  The SECOND slo
                                                  # the lowest slot leaves ~4.4 mm under the board; one slot up leaves 6.4 mm
 BOARD_T = 1.6
 
+# The two USB-C jacks and the mini-HDMI stand 2.5 mm past the board edge (build 26): the plate is 1.45 mm thick and the
+# board can float up to 2 mm between the plates, so their faces land within a millimetre of the plate's outer surface
+# and a USB-C plug's 6.5 mm shroud always reaches.  The RJ45's and Pmods' cutouts are their whole bodies, so they may sit back.
 # ref prefix -> (name, width across the panel, height, centre height above the board's top surface, shape)
 # Heights above the board top are from the connectors' drawings: a plug must pass the plate into the receptacle, so
 # every cutout is the receptacle's opening plus 1 mm each way (USB-C and HDMI plugs' overmoulds stay outside).
@@ -41,10 +44,10 @@ CUTOUTS = {
     "J102": ("ADC B IN (SMA)", 6.5, 6.5, 3.0, "circle"),
     "J205": ("DAC 2 OUT (SMA)", 6.5, 6.5, 3.0, "circle"),
     "J204": ("DAC 1 OUT (SMA)", 6.5, 6.5, 3.0, "circle"),
-    "J401": ("ETHERNET (RJ45)", 17.0, 14.6, 7.0, "rect"),               # jack body 16.1 x 13.6 on the board, whole front through the plate
-    "J501": ("USB PROG (USB-C)", 10.0, 4.6, 1.63, "rect"),              # receptacle opening 8.94 x 3.26, centred 1.63 above the board
-    "J502": ("USB FPGA (USB-C)", 10.0, 4.6, 1.63, "rect"),
-    "J503": ("HDMI (mini)", 11.6, 4.0, 1.75, "rect"),                   # mini-HDMI opening 10.4 x 2.4
+    "J401": ("ETHERNET (RJ45)", 16.6, 14.4, 7.0, "rect"),               # jack body 16.1 x 13.6 on the board, whole front through the plate
+    "J501": ("USB PROG (USB-C)", 12.2, 6.5, 1.63, "rect"),              # receptacle opening 8.94 x 3.26 centred 1.63 above the board; the cutout takes a plug's overmould nose (the USB-C spec's maximum is 12.35 x 6.5) so the plug seats however the board sits between the plates; the webs between neighbouring cutouts are 1.1-1.4 mm
+    "J502": ("USB FPGA (USB-C)", 12.2, 6.5, 1.63, "rect"),
+    "J503": ("HDMI (mini)", 13.0, 7.5, 1.75, "rect"),                   # mini-HDMI opening 10.4 x 2.4; the cutout takes the plug's overmould (the jack stands only 0.75 mm past the edge)
     "J304": ("PMOD B (2x6 socket)", 17.5, 8.0, 4.6, "rect"),            # right-angle 2x6 socket, 15.2 x 8.5 body on the board
     "J303": ("PMOD A (2x6 socket)", 17.5, 8.0, 4.6, "rect"),
 }

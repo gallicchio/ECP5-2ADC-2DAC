@@ -41,6 +41,9 @@ FP = {   # footprint shorthands
     "LED0603": "LED_SMD:LED_0603_1608Metric",
     "LED2835": "easyeda:LED-SMD_L3.5-W2.8-RD",
     "C_1206": "Capacitor_SMD:C_1206_3216Metric",
+    "C_1812": "Capacitor_SMD:C_1812_4532Metric",
+    "R1206": "Resistor_SMD:R_1206_3216Metric",
+    "UFL": "ours:UFL_Hirose_U.FL-R-SMT-1",       # LCSC's land pattern for C88374 (easyeda2kicad), its two ground pads both numbered 2
     "XTAL3225": "Crystal:Crystal_SMD_3225-4Pin_3.2x2.5mm",
     "TCXO5032": "Oscillator:Oscillator_SMD_Fox_FT5H_5.0x3.2mm",
     "BGA256": "Package_BGA:BGA-256_14.0x14.0mm_Layout16x16_P0.8mm_Ball0.45mm_Pad0.32mm_NSMD",
@@ -66,6 +69,7 @@ FP = {   # footprint shorthands
     "PMOD": "Connector_PinSocket_2.54mm:PinSocket_2x06_P2.54mm_Horizontal",
     "PMOD_V": "Connector_PinSocket_2.54mm:PinSocket_2x06_P2.54mm_Vertical",
     "H2x8": "Connector_PinHeader_2.54mm:PinHeader_2x08_P2.54mm_Vertical",
+    "H2x9": "Connector_PinHeader_2.54mm:PinHeader_2x09_P2.54mm_Vertical",
     "RGB1615": "easyeda:LED-ARRAY-SMD_4P-L1.6-W1.5-BR_XL-1615RGBC-RF",   # LCSC's land pattern for C965840 (easyeda2kicad)
     "TP": "TestPoint:TestPoint_Pad_D1.5mm",
     "HOLE": "MountingHole:MountingHole_3.2mm_M3_Pad",
@@ -128,7 +132,11 @@ LCSC = {
     ("25MHz", "XTAL3225"): ("C9006", "Basic 25 MHz 12 pF crystal (PHY)"),
     ("12MHz", "XTAL3225"): ("C9002", "Basic 12 MHz 20 pF crystal (FT2232H)"),
     ("SW_Push", "SW_1088"): ("C720477", "Basic tactile switch"),
-    ("1nF 2kV", "C_1206"): ("C53084552", "1 nF 2 kV X7R 1206 for the Ethernet Bob Smith termination"),
+    ("1nF 2kV", "C_1206"): ("C53084552", "1 nF 2 kV X7R 1206: the Ethernet Bob Smith bridge of builds 1-25"),
+    ("1nF 3kV", "C_1812"): ("C692296", "1 nF 3 kV X7R 1812 (FV43X102K302EFG): the Bob Smith bridge since build 26 -- a longer body, the reviews' point about the 1206's 1.4 mm gap"),
+    ("100R", "R1206"): ("C17901", "Basic 100 R 1206, 0.25 W: the ADC input's series resistor survives a ±10 V source into the clamp (0.18 W; the 0603 was 0.1 W)"),
+    ("TLV3501AIDBVR", "SOT23-6"): ("C193413", "4.5 ns rail-to-rail comparator with 6 mV hysteresis: the CLK IN squarer since build 26 (builds 1-25: a self-biased unbuffered inverter)"),
+    ("U.FL-R-SMT-1(80)", "UFL"): ("C88374", "Hirose U.FL jack: the monitor taps (plug a U.FL-SMA pigtail into a scope)"),
 }
 
 # Basic/Preferred passives, 0603 resistors (0603WAF... series) and 0402/0603/0805 capacitors.
@@ -143,6 +151,7 @@ RES = {
     "2k": "C22975", "2.2k": "C4190", "3.3k": "C22978", "4.7k": "C23162", "5.1k": "C23186",
     "9.1k": "C23260", "10k": "C25804", "12k": "C22790", "15k": "C22809", "22k": "C31850",
     "47k": "C25819", "100k": "C25803", "200k": "C25811", "2.49k": "C22908", "24.9R": "C22916", "499k": "C26751", "1M": "C22935", "1.3M": "C13316",
+    "1.2M": "C22766",
 }
 CAP = {
     ("100nF", "C0402"): "C1525", ("100nF", "C0402B"): "C1525", ("1uF", "C0402"): "C52923", ("22pF", "C0402"): "C1555",
@@ -161,7 +170,7 @@ CAP = {
 # hand-solder list.
 ALIASES = {"AD9238": "AD9238BSTZ-65", "AD9767": "AD9767ASTZRL", "OPA2810": "OPA2810IDR", "OPA1612": "OPA1612AIDR",
            "THS4521": "THS4521IDGKR", "mini HDMI": "A71-05H4-111N1", "microSD": "TF-01A", "SMA": "BWSMA-KWE-Z001",
-           "RJ45": "R-RJ45R08P-C000", "USBC": "USB4105-GF-A-120"}
+           "RJ45": "R-RJ45R08P-C000", "USBC": "USB4105-GF-A-120", "U.FL": "U.FL-R-SMT-1(80)"}
 
 
 def lcsc_for(value, fp_key, ref=""):
@@ -191,6 +200,68 @@ def make_hole(lib_id, value="M3"):
     out.append('(circle (center 0 0) (radius 1.6) (stroke (width 0.254) (type default)) (fill (type none)))')
     out.append('(circle (center 0 0) (radius 2.54) (stroke (width 0.254) (type default)) (fill (type none)))')
     out.append(kisch._pin("1", "", 0.0, -5.08, 90, 2.54, "passive"))
+    out.append(')')
+    out += ['(embedded_fonts no)', ')']
+    return SYMS.define(lib_id, "\n".join(out))
+
+
+def make_dual_diode(lib_id, value="BAV99"):
+    """A series-connected dual diode (BAV99: pin 1 anode of D1, pin 3 its cathode and D2's anode, pin 2 D2's
+    cathode) drawn as TWO units, one diode each, so the two can be placed anti-parallel across a pair of nodes
+    (unit 1: 1 -> 3, unit 2: 3 -> 2).  Horizontal, anode on the left."""
+    name = lib_id.split(":", 1)[1]
+    out = kisch._hdr(name, "D", value, 6.0, keywords="dual diode, one unit per diode")
+    for u, (a, k) in enumerate((("1", "3"), ("3", "2")), 1):
+        out.append('(symbol "%s_%d_1"' % (name, u))
+        out.append(kisch._poly([(-1.27, 1.27), (1.27, 0.0), (-1.27, -1.27), (-1.27, 1.27)], fill="outline"))
+        out.append(kisch._poly([(1.27, 1.27), (1.27, -1.27)]))
+        out.append(kisch._pin(a, "A", -3.81, 0.0, 0, 2.54, "passive"))
+        out.append(kisch._pin(k, "K", 3.81, 0.0, 180, 2.54, "passive"))
+        out.append(')')
+    out += ['(embedded_fonts no)', ')']
+    return SYMS.define(lib_id, "\n".join(out))
+
+
+def make_antiparallel(lib_id, value="BAV99"):
+    """A BAV99 drawn as what it is used for here: two diodes anti-parallel between a node on pin 3 (top) and a
+    node on pins 1 and 2 (bottom, 2.54 apart).  Pin 1 is D1's anode (D1: 1 -> 3), pin 2 is D2's cathode (D2: 3 -> 2).
+    7.62 mm tall, so it stands exactly between two rows 7.62 apart."""
+    name = lib_id.split(":", 1)[1]
+    out = kisch._hdr(name, "D", value, 6.0, keywords="dual diode wired anti-parallel")
+    out.append('(symbol "%s_1_1"' % name)
+    # left diode points up (1 -> 3), right diode points down (3 -> 2)
+    out.append(kisch._poly([(-2.17, -1.0), (-1.27, 0.6), (-0.37, -1.0), (-2.17, -1.0)], fill="outline"))
+    out.append(kisch._poly([(-2.17, 0.6), (-0.37, 0.6)]))
+    out.append(kisch._poly([(0.37, 1.0), (1.27, -0.6), (2.17, 1.0), (0.37, 1.0)], fill="outline"))
+    out.append(kisch._poly([(0.37, -0.6), (2.17, -0.6)]))
+    out.append(kisch._poly([(-1.27, -2.54), (-1.27, -1.0)]))
+    out.append(kisch._poly([(-1.27, 0.6), (-1.27, 2.54), (1.27, 2.54), (1.27, 1.0)]))
+    out.append(kisch._poly([(1.27, -0.6), (1.27, -2.54)]))
+    out.append(kisch._poly([(0.0, 2.54), (0.0, 2.54)]))
+    out.append(kisch._pin("3", "K1A2", 0.0, 3.81, 270, 1.27, "passive"))
+    out.append(kisch._pin("1", "A1", -1.27, -3.81, 90, 1.27, "passive"))
+    out.append(kisch._pin("2", "K2", 1.27, -3.81, 90, 1.27, "passive"))
+    out.append(')')
+    out += ['(embedded_fonts no)', ')']
+    return SYMS.define(lib_id, "\n".join(out))
+
+
+def make_comparator(lib_id, value):
+    """A comparator drawn like an op amp (unit 1: + on top, - below, out right) with its supply unit (unit 2:
+    V+ above, V- below, SHDN on the left).  TLV3501 in SOT-23-6: 1 -IN, 2 V-, 3 +IN, 4 V+, 5 OUT, 6 SHDN."""
+    name = lib_id.split(":", 1)[1]
+    out = kisch._hdr(name, "U", value, 6.0, keywords="comparator")
+    out.append('(symbol "%s_1_1"' % name)
+    out.append(kisch._poly([(-5.08, 5.08), (5.08, 0), (-5.08, -5.08), (-5.08, 5.08)], fill="background"))
+    out.append(kisch._pin("3", "+", -7.62, 2.54, 0, 2.54, "input", 1.27))
+    out.append(kisch._pin("1", "-", -7.62, -2.54, 0, 2.54, "input", 1.27))
+    out.append(kisch._pin("5", "", 7.62, 0.0, 180, 2.54, "output"))
+    out.append(')')
+    out.append('(symbol "%s_2_1"' % name)
+    out.append(kisch._rect(-5.08, 3.81, 5.08, -3.81))
+    out.append(kisch._pin("4", "V+", 0.0, 7.62, 270, 3.81, "power_in"))
+    out.append(kisch._pin("2", "V-", 0.0, -7.62, 90, 3.81, "power_in"))
+    out.append(kisch._pin("6", "SHDN", -7.62, 0.0, 0, 2.54, "input"))
     out.append(')')
     out += ['(embedded_fonts no)', ')']
     return SYMS.define(lib_id, "\n".join(out))
@@ -434,6 +505,9 @@ def define_symbols(fpga_json):
     ids["sma"] = make_coax("ours:SMA_in", value="SMA", side="right")
     ids["hole"] = make_hole("ours:MountingHole")
     ids["sma_out"] = make_coax("ours:SMA_out", value="SMA", side="left")
+    ids["ufl"] = make_coax("ours:UFL_tap", value="U.FL", side="left")
+    ids["ap_diode"] = make_antiparallel("ours:BAV99_antiparallel")           # the anti-parallel pair across each FDA's inputs
+    ids["cmp"] = make_comparator("ours:TLV3501", "TLV3501AIDBVR")             # the CLK IN comparator        # the monitor taps: pin 1 signal, pin 2 the shell (both ground pads)
     # --- RGB LED, common anode.  LCSC's land pattern for the XL-1615RGBC-RF numbers the pads 1 R, 2 anode,
     # 3 B, 4 G (the datasheet numbers the same four pads 1 R, 2 anode, 3 G, 4 B going round the other way;
     # the names on the pads agree, the numbers do not): the symbol follows the pattern it is placed on.

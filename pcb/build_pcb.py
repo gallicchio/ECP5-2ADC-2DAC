@@ -32,7 +32,9 @@ RAIL_ZONES = [
     # balls in the rows between them are joined by their own In3 island, fed through floorplan.aux_feed's gap
     # vias at the patch's edge), and a corridor south to its buck.  Build 15's polygon covered the whole FPGA
     # and 20 mm around it: 46 of the 3.3 V pads lay inside it and were each run to a via at its edge
-    ("+1V1", [(69.9, 56.3), (73.6, 56.3), (73.6, 68.0), (75.5, 68.0), (75.5, 95.0), (80.5, 95.0), (80.5, 103.0),
+    # (the corridor's east edge at 72.6 since build 26: the flash's CS and WP pull-ups' 3.3 V pads at x 73.3 sat over
+    #  it with no room for an edge via between them and the flash, and the router gave up on them)
+    ("+1V1", [(69.9, 56.3), (73.6, 56.3), (73.6, 68.0), (72.6, 68.0), (72.6, 95.0), (80.5, 95.0), (80.5, 103.0),
               (66.0, 103.0), (66.0, 68.0), (69.9, 68.0)], 2),
     # 5 V: the USB jacks and the input, both bucks' INPUT sides only (U601's 3.3 V output parts between them sit on
     # the 3.3 V plane), a corridor along the bottom to the analog side
@@ -1301,8 +1303,8 @@ class Build:
                 ("J302", ("CLK", "OUT"), "3V3 CMOS", "any FPGA clock out, 50 Ω series"),
                 ("J101", ("ADC A", "IN"), "±1V MAX", "50 Ω or hi-Z (JP101), DC; gain x1/x10: JP103, JP104"),
                 ("J102", ("ADC B", "IN"), "±1V MAX", "50 Ω or hi-Z (JP201), DC; gain x1/x10: JP203, JP204"),
-                ("J205", ("DAC 2", "OUT"), "±1V MAX", ""),                                          # (its strip's bottom row holds the LED jumper's choices)
-                ("J204", ("DAC 1", "OUT"), "±1V MAX", "into 50 Ω, DC coupled")]
+                ("J205", ("DAC 2", "OUT"), "±0.9V MAX", ""),                                        # (its strip's bottom row holds the LED jumper's choices)
+                ("J204", ("DAC 1", "OUT"), "±0.9V MAX", "into 50 Ω, DC coupled")]
         for ref, nm, warn, detail in smas:
             x, y = at(ref)
             lines = [(nm[0], 1.2, True), (nm[1], 1.2, True), (warn, 0.75, True)]      # 7 mm wide at most: the strip ends at the section box
@@ -1327,6 +1329,13 @@ class Build:
         if "J504" in placed:
             x, y = at("J504")
             self._put("B.Cu", [("card slides in here", 0.8, False)], (x + 14.0, y), maxd=6.0, rot_ok=True, tag="J504 card")
+        # the monitor taps (build 26): a short name beside each U.FL
+        # (TAP B stands over its jack, in the strip's empty bottom-left corner; TAP -4V2 in the 1.5 mm between
+        # its jack and the 49.9 Ω -- the only spots the occupancy grid has for them)
+        for ref, name, dx, dy in (("J107", "TAP A", 0.0, 3.2), ("J108", "TAP B", 0.0, -3.3), ("J109", "TAP TIA", 0.0, 3.2), ("J603", "TAP -4V2", 0.0, 2.3)):
+            if ref in placed:
+                x, y = at(ref)
+                self._put("F.Cu", [(name, 0.8, True)], (x + dx, y + dy), maxd=4.0, rot_ok=True, tag=ref + " name", ref=ref)
         for ref, lines, dx, dy in (("J601", [("5 V IN", 1.0, True), ("bench supply", 0.7, False)], 1.0, -5.0),
                                    ("J305", [("JTAG (FTDI A)", 0.8, True)], 0.0, -4.0),
                                    ("J105", [("NOISE R", 0.8, True)], 4.5, 0.0),
@@ -1362,7 +1371,7 @@ class Build:
                 self._put("F.Cu", lines, at(ref, dx, dy), maxd=6.0, rot_ok=True, tag=ref + " clock", ref=ref)
         # ---- pin names beside the hand-use headers, checked against the netlist (tools/trace_paths.py once found three reversed)
         for ref, names in (("J305", ["3V3", "TCK", "TMS", "TDI", "TDO", "GND"]), ("J601", ["GND", "+5V"]),
-                           ("J105", ["GND", "R"]), ("J106", ["A -4.4V", "K"]), ("J210", ["A +5V", "K"])):
+                           ("J105", ["GND", "R"]), ("J106", ["A -4.2V", "K"]), ("J210", ["A +5V", "K"])):
             allp = [p for k, p in self.pads.items() if k[0] == ref]
             vertical = len({round(p["x"], 1) for p in allp}) == 1
             for i, nm in enumerate(names):
@@ -1374,8 +1383,8 @@ class Build:
         # ADC's and DAC's 3.3 V), the title under the header says the whole top row is ground
         if "J602" in placed:
             pads = {k[1]: p for k, p in self.pads.items() if k[0] == "J602"}
-            short = {"+3V3_ADC": "3V3A", "+3V3_DAC": "3V3D"}
-            for i in range(1, 17, 2):
+            short = {"+3V3_ADC": "3V3A", "+3V3_DAC": "3V3D", "+1V0_PHY": "1V0"}
+            for i in range(1, len(pads) + 1, 2):                    # (builds 1-25 stopped at pin 15: a 2x8 header)
                 p = pads.get(str(i))
                 if p:
                     nm = short.get(p["net"], p["net"])
@@ -1469,7 +1478,8 @@ class Build:
 
     def _legend(self):
         front = [("JUMPERS   TERM: shunt = 50 Ω input      GAIN: shunt = x1, open = x10      SRC: SMA | NOISE      ALT: PD | NOISE      LED: LED | EXT", 0.75, False),
-                 ("HEADERS   RAILS: top row = GND, 3V3A/3V3D = the ADC's/DAC's 3.3 V      NOISE R: DIP switch ON puts the resistor in      PD EXT: anode at -4.4 V      LED EXT: anode at +5 V, cathode sinks", 0.75, False),
+                 ("HEADERS   RAILS: top row = GND, 3V3A/3V3D = the ADC's/DAC's 3.3 V, 1V0 = the Ethernet PHY's 1.0 V core      NOISE R: DIP switch ON puts the resistor in      PD EXT: anode at -4.2 V      LED EXT: anode at +5 V, cathode sinks", 0.75, False),
+                 ("TAPS: U.FL monitor points through 49.9 Ω -- a U.FL-SMA pigtail into a 50 Ω scope input sees half the signal, a 1 MΩ input all of it.   TAP A / TAP B: ADC preamp out,   TAP TIA: photodiode receiver,   TAP -4V2: the op-amp rail", 0.75, False),
                  ("USB PROG: power (0.7 A: a USB-C or USB 3 port, or 5 V IN), programming and the UART (FT2232H).   USB FPGA: wired straight to the FPGA -- it does nothing until the gateware implements USB.", 0.75, False)]
         occ = self.occ["F.Cu"]
         for lines in (front, front[:2], [front[0]], [front[1]], [front[2]]):
@@ -1481,7 +1491,7 @@ class Build:
                 if len(lines) == 3:
                     return
         back = [("ECP5 LFE5U-25F FPGA, 32 MB SDRAM, 16 MB flash, microSD.  AD9238 dual 12-bit ADC to 65 MS/s (±1 V, 50 Ω or hi-Z, gain x1/x10/x100).", 0.9, False),
-                ("AD9767 dual 14-bit DAC to 125 MS/s (±1 V into 50 Ω); channel 2 also drives an LED.  Noise source, photodiode receiver, 25 MHz TCXO,", 0.9, False),
+                ("AD9767 dual 14-bit DAC to 125 MS/s (±0.9 V into 50 Ω); channel 2 also drives an LED.  Noise source, photodiode receiver, 25 MHz TCXO,", 0.9, False),
                 ("Si5351 clock generator, CLK IN (10 MHz reference or external clock into the FPGA PLL), CLK OUT.  Gigabit Ethernet, two USB-C", 0.9, False),
                 ("(PROG: power, programming, UART; FPGA: the FPGA's own USB), mini HDMI, two Pmods.  Power 5 V in by USB PROG or the 5 V IN header.", 0.9, False)]
         self._put("B.Cu", back, (P.BW / 2.0, P.BH / 2.0), maxd=60.0, must=False, tag="legend back")
@@ -1830,7 +1840,9 @@ class Build:
         out += getattr(self, "lines", [])
         txt = B.document("\n".join(out), self.numof)
         open(PCB, "w", encoding="utf-8").write(txt)
-        rf_bad = sorted({(t[5], t[6]) for t in self.tracks if t[5] in self.rf and abs(t[6] - RF_W) > 1e-6})
+        # (a pad entry the router narrows to fit between fine pads is a few tenths of a millimetre long: allowed)
+        rf_bad = sorted({(t[5], t[6]) for t in self.tracks if t[5] in self.rf and abs(t[6] - RF_W) > 1e-6
+                         and math.hypot(t[3] - t[1], t[4] - t[2]) > 1.5})
         self.report["rf_width_violations"] = ["%s at %.3f mm" % b for b in rf_bad]
         json.dump(self.report, open(os.path.join(ROOT, "build", "route_report.json"), "w"), indent=1)
         if rf_bad:

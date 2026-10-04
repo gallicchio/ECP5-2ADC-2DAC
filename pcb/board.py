@@ -106,6 +106,21 @@ def footprint(fp, ref, value, x, y, rot, layer, padnets, numof, ref_at=None, val
     node.insert(2, A("layer", S(layer)))
     node.insert(3, A("uuid", S(uid("fp", ref))))
     node.insert(4, A("at", round(x, 4), round(y, 4), rot) if rot else A("at", round(x, 4), round(y, 4)))
+    # every primitive inside (pads, lines, texts) would otherwise keep the library's uuid, identical in every
+    # instance of the footprint; KiCad's DRC then names the wrong instance in a report (build 26: J109's silk on
+    # the photodiode's outline came out as "J603").  One uuid per primitive per instance.
+    k = [0]
+    def renumber(n):
+        for i, c in enumerate(n):
+            if isinstance(c, list):
+                if head(c) == "uuid":
+                    k[0] += 1
+                    n[i] = A("uuid", S(uid("fpi", ref, k[0])))
+                else:
+                    renumber(c)
+    for c in node[5:]:
+        if isinstance(c, list):
+            renumber(c)
     back = layer == "B.Cu"
     # 3D models: the easyeda2kicad footprints name their model relative to the
     # library; KiCad resolves relative paths against the project, so say so

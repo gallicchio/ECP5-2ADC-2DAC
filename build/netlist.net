@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "/home/jason/mudd/OpticsPCBs/ECP5-2ADC-2DAC/ECP5-2ADC-2DAC.kicad_sch")
-		(date "2026-10-04T03:49:24")
+		(date "2026-10-04T13:27:14")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
@@ -567,7 +567,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "b5bd5e8d-5f89-4e7d-9d82-5201c5864980")
+			(tstamps "821e07fe-4a78-16f5-ba3d-8f899a6dca56")
 			(units
 				(unit
 					(name "A")
@@ -583,7 +583,7 @@
 			)
 		)
 		(comp
-			(ref "C5423")
+			(ref "C5424")
 			(value "100nF")
 			(footprint "Capacitor_SMD:C_0402_1005Metric")
 			(fields
@@ -627,7 +627,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "4f480b42-1842-21a9-47c1-ee65ced94d4c")
+			(tstamps "5d6f391c-0988-4ebd-1b0e-bf4b6783e5aa")
 			(units
 				(unit
 					(name "A")
@@ -687,7 +687,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "3c416213-3210-ee99-1771-b729eb9f8f2a")
+			(tstamps "13006ecb-11a2-964b-79a8-ebbc627789ee")
 			(units
 				(unit
 					(name "A")
@@ -747,7 +747,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "c764f25c-6c23-4c63-81cd-2982935def73")
+			(tstamps "c889e8b0-9439-c435-e838-55f394f0cb0b")
 			(units
 				(unit
 					(name "A")
@@ -807,7 +807,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "a29457e1-6af3-79a5-fbe8-9be91359005a")
+			(tstamps "8043d516-ba6f-91a8-f864-936c0c91c5f7")
 			(units
 				(unit
 					(name "A")
@@ -867,7 +867,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "bc98f7e4-25c4-b5b0-8bd7-43c8d306d45c")
+			(tstamps "fe2f93e4-6337-4cdf-93c8-93fe84f23428")
 			(units
 				(unit
 					(name "A")
@@ -927,7 +927,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "4fd4c930-b0d8-71dc-c5bd-f4f0b32a2742")
+			(tstamps "54cb947e-4ff2-ba00-e341-9ac8718d21cf")
 			(units
 				(unit
 					(name "A")
@@ -987,7 +987,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "a4cb2eda-c132-4997-f19a-a4f664b6e829")
+			(tstamps "f150b1a8-423e-423c-fa5f-6cfc5007ef80")
 			(units
 				(unit
 					(name "A")
@@ -1047,7 +1047,67 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "858679e0-f977-d585-ec24-621b19612c05")
+			(tstamps "e96f7763-cd96-13df-ad15-3a86e2838498")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C5711")
+			(value "100nF")
+			(footprint "Capacitor_SMD:C_0402_1005Metric")
+			(fields
+				(field
+					(name "LCSC") "C1525")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0402_1005Metric")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description")
+				)
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "LCSC")
+				(value "C1525")
+			)
+			(property
+				(name "Sheetname")
+				(value "FPGA, memory, clocks, configuration")
+			)
+			(property
+				(name "Sheetfile")
+				(value "fpga.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/FPGA, memory, clocks, configuration/")
+				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
+			)
+			(tstamps "b22f9e40-e9e6-63d4-7e85-844fff46d610")
 			(units
 				(unit
 					(name "A")
@@ -1107,7 +1167,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "e456f2fa-3cbd-8834-1ee6-a30c5f1bcad1")
+			(tstamps "7c6724cd-3b60-2509-6d79-153ba497890d")
 			(units
 				(unit
 					(name "A")
@@ -1167,7 +1227,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "712df378-3497-0bdd-aa21-e2f4bccf3182")
+			(tstamps "ae2fdab5-2bdd-0d6c-b31b-a7e5e5ec9e52")
 			(units
 				(unit
 					(name "A")
@@ -1227,7 +1287,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "db73e095-66d9-8f3f-fe40-af848d65dca9")
+			(tstamps "6ea7f94a-dcfa-2edc-819b-6c0048d05e83")
 			(units
 				(unit
 					(name "A")
@@ -1287,7 +1347,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "8d91e956-f031-6bf4-9901-8da561339312")
+			(tstamps "57e5d3cc-0871-1f44-2112-4dd323af9cb4")
 			(units
 				(unit
 					(name "A")
@@ -1347,7 +1407,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "e47c3c7c-32f5-fd02-cade-15a46bc5792a")
+			(tstamps "cdc4d0ff-f896-dcd9-9cdf-dd229718ff94")
 			(units
 				(unit
 					(name "A")
@@ -1407,7 +1467,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "b83f375a-da73-40c7-ea07-ddf9dd8a997e")
+			(tstamps "6847184d-9769-4dba-1769-82c12a931640")
 			(units
 				(unit
 					(name "A")
@@ -1467,7 +1527,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "2b19ae8b-279d-147b-b22d-56585bbb71f8")
+			(tstamps "78cc9630-4c27-f06d-3721-5a2d207903cb")
 			(units
 				(unit
 					(name "A")
@@ -1527,7 +1587,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "a55c5a41-3edf-4f26-1beb-5de95ec16f31")
+			(tstamps "baeb2277-ce31-9bb1-1f1c-87658c3108e2")
 			(units
 				(unit
 					(name "A")
@@ -1587,7 +1647,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "128b1f3f-fb9a-de99-8297-8252d5e7d187")
+			(tstamps "fdba5b20-140c-7bc9-b399-14a2767283c0")
 			(units
 				(unit
 					(name "A")
@@ -1647,7 +1707,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "4c1b3c13-bfdd-587e-40c7-2310ed248048")
+			(tstamps "c9179f90-10b2-f9f7-bf30-262b9193accb")
 			(units
 				(unit
 					(name "A")
@@ -1707,7 +1767,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "09112fa3-36e9-ad50-7a6c-9bf45dc4c837")
+			(tstamps "828ff311-d4de-a840-c259-5882ad89273d")
 			(units
 				(unit
 					(name "A")
@@ -1767,7 +1827,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "69e66e63-daa0-8eac-644b-f5603f580853")
+			(tstamps "b3e7e591-c9fa-4471-287b-cb9df9e958bf")
 			(units
 				(unit
 					(name "A")
@@ -1827,7 +1887,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "9d0f9df0-023a-2cc8-0bcb-f908c159e69e")
+			(tstamps "5394d477-143d-26e6-39fb-37d260ffc823")
 			(units
 				(unit
 					(name "A")
@@ -1887,7 +1947,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "c5a1410b-2b7d-7c86-f3ed-88adb9db8892")
+			(tstamps "745fb167-59ce-787b-704a-cad0eaef3520")
 			(units
 				(unit
 					(name "A")
@@ -1947,7 +2007,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "20ce6927-1e8a-0eb2-f84f-05f5cc72914f")
+			(tstamps "86bc03ac-6b9f-f2c5-2525-7570b124c5fa")
 			(units
 				(unit
 					(name "A")
@@ -2007,7 +2067,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "0498545c-82e9-7888-32a5-775270fd2ac7")
+			(tstamps "3d4d177e-c661-509b-1de1-04df079d9d43")
 			(units
 				(unit
 					(name "A")
@@ -2067,7 +2127,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "65b266bf-4282-c8bc-150e-8ceb488db7c3")
+			(tstamps "e02d9060-5e00-5f33-dd2a-899f4dfd0cea")
 			(units
 				(unit
 					(name "A")
@@ -2127,7 +2187,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "f48393a6-4d90-b35c-f4c0-8dd08f3fe97f")
+			(tstamps "93ccf8f9-61f4-d227-c2a2-055340c1db59")
 			(units
 				(unit
 					(name "A")
@@ -2187,7 +2247,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "59885717-8b96-ddfe-3854-218f2af4db2c")
+			(tstamps "5ee86d84-cd29-001c-a1c3-308bd9175bf1")
 			(units
 				(unit
 					(name "A")
@@ -2247,7 +2307,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "53698d53-1b55-83bd-ea18-4f19bef180d8")
+			(tstamps "36128fb3-6809-c53f-82cd-71398fc416d6")
 			(units
 				(unit
 					(name "A")
@@ -2307,7 +2367,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "ed1ad385-8a86-7555-000f-b90af56a48d9")
+			(tstamps "c0106088-a585-04c6-895d-2e484726ab1a")
 			(units
 				(unit
 					(name "A")
@@ -2367,7 +2427,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "d3683572-8f44-ea10-b026-06c97abc5866")
+			(tstamps "c8e91678-7265-9f45-5ce5-91a79283fdfc")
 			(units
 				(unit
 					(name "A")
@@ -2427,7 +2487,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "e9ce4a58-79bf-e123-63b1-f5de72b15001")
+			(tstamps "a164dbf4-43ca-57b4-2fc8-51512375789b")
 			(units
 				(unit
 					(name "A")
@@ -2487,7 +2547,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "76262243-4fe4-df41-4f5d-ced242d7be0c")
+			(tstamps "6cbefd4e-3641-5865-4122-2463662eb982")
 			(units
 				(unit
 					(name "A")
@@ -2547,7 +2607,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "7f17e959-331e-df81-0d82-a04ce1075f81")
+			(tstamps "e895070a-edfa-8756-3f48-df1ca4e3be88")
 			(units
 				(unit
 					(name "A")
@@ -2607,7 +2667,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "57395100-b715-52ba-093e-a19326065327")
+			(tstamps "14d4dea9-5973-63bc-290c-d74d00d9d7d1")
 			(units
 				(unit
 					(name "A")
@@ -2667,7 +2727,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "203459b2-2d2a-0aaa-c89a-2d83aa4678cc")
+			(tstamps "fc882379-7e17-edb5-bf6a-65554c8464f9")
 			(units
 				(unit
 					(name "A")
@@ -2727,7 +2787,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "8d4f7f06-0216-0074-da36-16d0638ba8d5")
+			(tstamps "4d6319ae-dc66-e707-4230-32059f228809")
 			(units
 				(unit
 					(name "A")
@@ -2787,7 +2847,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "ea0b34aa-a5a8-6a78-4137-246a9b6ba1ba")
+			(tstamps "05c36f4b-0305-6b02-23b9-9bb9d99505df")
 			(units
 				(unit
 					(name "A")
@@ -2847,7 +2907,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "8f228a6a-8f5e-1551-1d27-ebb3499dbfb4")
+			(tstamps "010a3c1d-a549-c763-61f5-9a877f6362fe")
 			(units
 				(unit
 					(name "A")
@@ -2907,7 +2967,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "42053cbb-b9b7-d187-0d7e-c08a31379b99")
+			(tstamps "834eceb4-66d7-e505-a383-1439efeed92e")
 			(units
 				(unit
 					(name "A")
@@ -2967,7 +3027,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "d9d31910-6b68-fe26-8d25-070cb7a2f707")
+			(tstamps "de9b8486-8a47-59ee-ca18-88b083467987")
 			(units
 				(unit
 					(name "A")
@@ -3027,7 +3087,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "c0cc069a-cf00-b190-c9ec-742e5af64104")
+			(tstamps "99cb91d8-fa1a-3845-85fc-ea4a4419ec3e")
 			(units
 				(unit
 					(name "A")
@@ -3087,7 +3147,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "a8a0149f-996e-5510-5370-813e3d17a576")
+			(tstamps "b2440744-0ec3-a695-a123-0000d5d2dfe4")
 			(units
 				(unit
 					(name "A")
@@ -3147,7 +3207,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "c8719fd6-1135-60a0-bdcd-0f4b5338ab4e")
+			(tstamps "4759badc-cb13-9d80-60c4-9dd743f37fe1")
 			(units
 				(unit
 					(name "A")
@@ -3207,7 +3267,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "fcd8f1be-f7af-38a4-c922-b6d8b0e1f828")
+			(tstamps "92258c2c-5fed-81f6-e3d0-a88307cfd1cb")
 			(units
 				(unit
 					(name "A")
@@ -3267,7 +3327,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "196ea492-2ecd-26fa-46f1-aecff3f50438")
+			(tstamps "17e47f4f-6869-bb68-8a65-506ceb31fc08")
 			(units
 				(unit
 					(name "A")
@@ -3327,7 +3387,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "5a18da2e-02d1-b4f3-c2ce-c747f17a0fdd")
+			(tstamps "aba0c67a-e3ea-908b-82e0-862eec619c29")
 			(units
 				(unit
 					(name "A")
@@ -3387,7 +3447,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "056b569a-38c3-8f68-48aa-f00c548574dc")
+			(tstamps "4f88ec7e-3c40-c89b-3f95-5246239a7bf8")
 			(units
 				(unit
 					(name "A")
@@ -3447,7 +3507,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "5d0b6029-cc09-5c39-8a4f-e5bcff3b278a")
+			(tstamps "56f3cd67-02f5-cffb-67f7-438b788d9de1")
 			(units
 				(unit
 					(name "A")
@@ -3507,7 +3567,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "0896df2f-eba4-c1f3-6d9d-e0dbf4d52fac")
+			(tstamps "920693c6-e405-9ad0-a218-e55784cddcfd")
 			(units
 				(unit
 					(name "A")
@@ -3567,7 +3627,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "ee373a78-2cf0-b6ee-6ad6-ed8843360a55")
+			(tstamps "1c5257f8-3ee3-e627-de4f-73cf19377b5e")
 			(units
 				(unit
 					(name "A")
@@ -3627,7 +3687,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "95794df8-b5f2-4bf2-5766-8b5594fb1e40")
+			(tstamps "68078cbc-b2ef-c79c-2fad-2f0e3afabe91")
 			(units
 				(unit
 					(name "A")
@@ -3687,7 +3747,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "09ec7019-868c-77ab-4877-1140d2396ae4")
+			(tstamps "afa1885f-e676-7009-2ca4-15adc98d7ed6")
 			(units
 				(unit
 					(name "A")
@@ -3747,7 +3807,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "d853ab40-3a85-b2ec-67fe-c7aad46e4e59")
+			(tstamps "d755efa8-02c7-8b79-d518-3028197e0f06")
 			(units
 				(unit
 					(name "A")
@@ -3807,7 +3867,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "c1e79781-8aca-b292-1a63-adddc5d2c268")
+			(tstamps "6bd965e7-70e2-afda-41f5-939f7239f3d9")
 			(units
 				(unit
 					(name "A")
@@ -3867,7 +3927,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "beaad00d-707d-b0d6-5d15-e77030c3275c")
+			(tstamps "c13eb0ac-8ec7-87c8-10fe-4def635a204a")
 			(units
 				(unit
 					(name "A")
@@ -3927,7 +3987,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "515c0845-4921-ef56-b50e-0e4976cd83b8")
+			(tstamps "23fafd1b-0d93-045d-201c-54de376ed84f")
 			(units
 				(unit
 					(name "A")
@@ -3979,7 +4039,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "545f98bb-819c-6a66-8187-32a26adc802a")
+			(tstamps "d8e5e48f-f459-d4e4-93e6-4c2401e911af")
 			(units
 				(unit
 					(name "A")
@@ -4045,7 +4105,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "aa0fb501-74ea-2276-f3bf-a982f63fe535")
+			(tstamps "78239468-4575-6c2b-e7a0-f19db327d907")
 			(units
 				(unit
 					(name "A")
@@ -4149,7 +4209,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "02095b08-3aa0-a36e-6e8f-f354c916ea21")
+			(tstamps "c1d67f3b-11a9-9415-e612-5a531b3a8fdf")
 			(units
 				(unit
 					(name "A")
@@ -4203,7 +4263,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "936f32d8-760c-7638-8060-c164dfc82580")
+			(tstamps "51ffaeb6-cd00-8f51-f9fc-d4c55daae2a3")
 			(units
 				(unit
 					(name "A")
@@ -4287,7 +4347,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "bebd0b17-8a1d-86ed-734e-157da006b69d")
+			(tstamps "c201c1bd-277f-00e8-456c-0f4e87e9f292")
 			(units
 				(unit
 					(name "A")
@@ -4371,7 +4431,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "8188fc6e-a121-870f-7ad7-0667249a4c1e")
+			(tstamps "0d0e3b32-3413-8b21-7266-d1b910705abe")
 			(units
 				(unit
 					(name "A")
@@ -4873,66 +4933,6 @@
 			)
 		)
 		(comp
-			(ref "R5422")
-			(value "1M")
-			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(fields
-				(field
-					(name "LCSC") "C22935")
-				(field
-					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Device")
-				(part "R")
-				(description "Resistor")
-			)
-			(property
-				(name "LCSC")
-				(value "C22935")
-			)
-			(property
-				(name "Sheetname")
-				(value "FPGA, memory, clocks, configuration")
-			)
-			(property
-				(name "Sheetfile")
-				(value "fpga.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "R res resistor")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "R_*")
-			)
-			(sheetpath
-				(names "/FPGA, memory, clocks, configuration/")
-				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
-			)
-			(tstamps "df15fd30-dfb9-00de-f35d-340b0e09c5e4")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-						(pin
-							(num "2")
-						)
-					)
-				)
-			)
-		)
-		(comp
 			(ref "R5423")
 			(value "33R")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
@@ -4977,7 +4977,187 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "aa2826c1-28a8-39cc-b528-cf2f30521956")
+			(tstamps "4c0800ee-5cf1-f9ed-8f76-41597e4276e9")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R5424")
+			(value "10k")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
+			(fields
+				(field
+					(name "LCSC") "C25804")
+				(field
+					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description")
+				)
+			)
+			(libsource
+				(lib "Device")
+				(part "R")
+				(description "Resistor")
+			)
+			(property
+				(name "LCSC")
+				(value "C25804")
+			)
+			(property
+				(name "Sheetname")
+				(value "FPGA, memory, clocks, configuration")
+			)
+			(property
+				(name "Sheetfile")
+				(value "fpga.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "R res resistor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "R_*")
+			)
+			(sheetpath
+				(names "/FPGA, memory, clocks, configuration/")
+				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
+			)
+			(tstamps "32549c27-2db6-3c07-8a2b-579fceb390ad")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R5425")
+			(value "10k")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
+			(fields
+				(field
+					(name "LCSC") "C25804")
+				(field
+					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description")
+				)
+			)
+			(libsource
+				(lib "Device")
+				(part "R")
+				(description "Resistor")
+			)
+			(property
+				(name "LCSC")
+				(value "C25804")
+			)
+			(property
+				(name "Sheetname")
+				(value "FPGA, memory, clocks, configuration")
+			)
+			(property
+				(name "Sheetfile")
+				(value "fpga.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "R res resistor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "R_*")
+			)
+			(sheetpath
+				(names "/FPGA, memory, clocks, configuration/")
+				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
+			)
+			(tstamps "210faec1-13d0-2f87-57ce-edcbb11b19a2")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R5426")
+			(value "10k")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
+			(fields
+				(field
+					(name "LCSC") "C25804")
+				(field
+					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description")
+				)
+			)
+			(libsource
+				(lib "Device")
+				(part "R")
+				(description "Resistor")
+			)
+			(property
+				(name "LCSC")
+				(value "C25804")
+			)
+			(property
+				(name "Sheetname")
+				(value "FPGA, memory, clocks, configuration")
+			)
+			(property
+				(name "Sheetfile")
+				(value "fpga.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "R res resistor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "R_*")
+			)
+			(sheetpath
+				(names "/FPGA, memory, clocks, configuration/")
+				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
+			)
+			(tstamps "f5afde38-381c-e20a-8003-6e25f9667fa0")
 			(units
 				(unit
 					(name "A")
@@ -5037,7 +5217,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "8a5d3bff-4860-4765-c3b8-b6fb7ce84052")
+			(tstamps "e184dc81-33b2-06ca-9f0e-5f57123b110f")
 			(units
 				(unit
 					(name "A")
@@ -5097,7 +5277,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "6b6b1621-d82b-e22b-3f4c-4ef24f7463cf")
+			(tstamps "de7e8fe2-7d36-d5f8-722d-0a7255b6de5a")
 			(units
 				(unit
 					(name "A")
@@ -5157,7 +5337,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "999dc771-545a-e737-7287-e708ac076028")
+			(tstamps "d76c2e84-d349-229c-6d84-7d563774325e")
 			(units
 				(unit
 					(name "A")
@@ -5217,7 +5397,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "5ad9589a-fd07-803f-d0c5-a21f621f3dab")
+			(tstamps "105249a8-f545-bba6-4843-99c24caaa8e6")
 			(units
 				(unit
 					(name "A")
@@ -5277,7 +5457,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "18375d42-41ff-e277-248f-3c2109d28129")
+			(tstamps "c7add43a-952b-798a-fcb1-152aa5d380a2")
 			(units
 				(unit
 					(name "A")
@@ -5337,7 +5517,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "1388d3de-62fa-ee2e-d2d6-57c53158816b")
+			(tstamps "e70df1ce-c773-e015-21f4-fccb97f13706")
 			(units
 				(unit
 					(name "A")
@@ -5397,7 +5577,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "31a516d0-254f-0e1c-0ef0-cb99995b587b")
+			(tstamps "47dae212-c59c-a764-47c4-ed78825c3250")
 			(units
 				(unit
 					(name "A")
@@ -5457,7 +5637,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "a0c26bc2-2599-a91b-520f-51ce6c79c2ed")
+			(tstamps "cc3309bb-b4ea-8240-c603-6ee0c6fce9f3")
 			(units
 				(unit
 					(name "A")
@@ -5517,7 +5697,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "e3fa134a-ff7d-f604-15e4-c678bacfaa46")
+			(tstamps "99fbd3db-ecf8-7233-bd1b-87e6030ba86e")
 			(units
 				(unit
 					(name "A")
@@ -5577,7 +5757,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "a24876d8-b36b-2b38-2782-19490d7c4751")
+			(tstamps "0e2eae05-9fb9-9c86-4bd8-1cfa7f0634d1")
 			(units
 				(unit
 					(name "A")
@@ -5637,7 +5817,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "1a8bfa49-4127-f743-7631-2b1ccfff9400")
+			(tstamps "6af25b7a-35b9-cba8-081e-16a8b5bad5e4")
 			(units
 				(unit
 					(name "A")
@@ -5697,7 +5877,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "241e285d-aeb3-10c6-e06c-015ae71a2da8")
+			(tstamps "0fbd84d3-fcae-226a-0982-886e1459b8f3")
 			(units
 				(unit
 					(name "A")
@@ -5757,7 +5937,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "7175dd22-528d-4ba5-5693-3c5d58868601")
+			(tstamps "93ab1bce-8548-2350-b402-c07fa619c158")
 			(units
 				(unit
 					(name "A")
@@ -5817,7 +5997,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "5b86b0b6-e66a-8f3c-5565-cd898e76348e")
+			(tstamps "c99b9581-be52-a564-7d3d-067e5ff927cc")
 			(units
 				(unit
 					(name "A")
@@ -5877,7 +6057,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "54894bb3-360f-6188-77e3-9b1b85845134")
+			(tstamps "f044bc64-7369-c4a4-eec8-e6f84b114101")
 			(units
 				(unit
 					(name "A")
@@ -5937,7 +6117,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "d4b73049-f9bd-ef08-14a0-510b9fdde866")
+			(tstamps "b8c36be1-015b-fcfa-96ec-97836b093b41")
 			(units
 				(unit
 					(name "A")
@@ -5997,7 +6177,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "7fa1a04b-06fe-801c-0428-05b9b058c6db")
+			(tstamps "c27bab0d-0968-3345-4ca7-871ca7fc52b4")
 			(units
 				(unit
 					(name "A")
@@ -6057,7 +6237,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "10e22b0d-4d39-4b8e-ed5e-0ddceaacb002")
+			(tstamps "df26da76-b136-7b2b-4aaa-5670d62261ac")
 			(units
 				(unit
 					(name "A")
@@ -6117,7 +6297,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "4441c1e7-6795-a883-9e82-f8081086e22e")
+			(tstamps "d8ac9597-b6a3-68d1-48df-13cc35f2876e")
 			(units
 				(unit
 					(name "A")
@@ -6177,7 +6357,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "12541a30-85bb-b86f-a6ec-22cd11914f87")
+			(tstamps "1dd685b4-48d7-2024-d996-a8ba261a9fd9")
 			(units
 				(unit
 					(name "A")
@@ -6237,7 +6417,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "fb0a8692-33e2-0983-d794-d542ad42a297")
+			(tstamps "bf24cc70-2d97-fa16-d9f6-49925a88cb0d")
 			(units
 				(unit
 					(name "A")
@@ -6297,7 +6477,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "09a0d1c9-0e49-6c33-110e-2952194a4f01")
+			(tstamps "dec9ee45-8934-9d76-1a21-1b572e20d787")
 			(units
 				(unit
 					(name "A")
@@ -6357,7 +6537,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "0fb1d8f3-30d6-87bb-a406-727583f68f87")
+			(tstamps "92990ab6-1752-de0f-20ca-bc0dad2a39e7")
 			(units
 				(unit
 					(name "A")
@@ -6417,7 +6597,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "a54949c0-2df7-1510-442e-fc7cf588cad7")
+			(tstamps "c7db9aff-5e29-07eb-8ecd-6069bee0add6")
 			(units
 				(unit
 					(name "A")
@@ -6477,7 +6657,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "ff675639-d1a2-640e-cce1-e513bcda0b49")
+			(tstamps "6c730164-3540-769f-ee20-b268250b64a1")
 			(units
 				(unit
 					(name "A")
@@ -6537,7 +6717,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "25805940-6006-8463-31cc-b0121f8e2999")
+			(tstamps "370ee3d9-f7e2-89e6-00dd-502be6ac0d74")
 			(units
 				(unit
 					(name "A")
@@ -6597,7 +6777,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "c7065c48-b84e-9f73-2d64-37aca8546615")
+			(tstamps "a44539a0-7cb8-e751-5a22-23a1357a7316")
 			(units
 				(unit
 					(name "A")
@@ -6657,7 +6837,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "4bf7449f-bdc2-6633-550d-5b465be20747")
+			(tstamps "da427026-c097-07a8-e0cf-c11ba9eafc69")
 			(units
 				(unit
 					(name "A")
@@ -6717,7 +6897,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "85f03448-f830-9db5-2d28-19b5f7c2a2ad")
+			(tstamps "2e1fc7f9-1a90-d8ed-c1e9-b291f24770c0")
 			(units
 				(unit
 					(name "A")
@@ -6777,7 +6957,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "cbba9094-9f32-aefb-8497-796e1662502d")
+			(tstamps "a3c2a81d-bf4c-0991-aab6-ff17e827befb")
 			(units
 				(unit
 					(name "A")
@@ -6837,7 +7017,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "0bfcc093-ca29-e231-d1f2-dcf63b529127")
+			(tstamps "37d8c613-df24-2e40-a592-5f17f3464c7b")
 			(units
 				(unit
 					(name "A")
@@ -6897,7 +7077,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "c8613c29-ca6e-3215-c72f-1ee743e19e09")
+			(tstamps "f312f281-84d4-517f-8876-32d15b12fa24")
 			(units
 				(unit
 					(name "A")
@@ -6957,7 +7137,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "043f4d1f-65a8-2379-e4fa-7c40a9ddd423")
+			(tstamps "6463faf4-465d-27c2-4414-1fd5aab636ce")
 			(units
 				(unit
 					(name "A")
@@ -7017,7 +7197,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "a45eee40-a9f8-66e3-7472-bab0795419dd")
+			(tstamps "8e104885-cc0e-750e-8adb-59b5d482e555")
 			(units
 				(unit
 					(name "A")
@@ -7077,7 +7257,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "81b2f97d-eb8b-0e11-d7e8-c3b068f42e47")
+			(tstamps "4ddb4714-814b-dff6-63b2-ebd655dbe4bb")
 			(units
 				(unit
 					(name "A")
@@ -7137,7 +7317,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "faf90bf1-2b40-eb4c-4200-66a1741616ea")
+			(tstamps "58286518-d0c5-6c6c-8453-73e79210819d")
 			(units
 				(unit
 					(name "A")
@@ -7197,7 +7377,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "bf91cac6-7d5d-a951-b7a3-efa9be0aa885")
+			(tstamps "ae415faa-ca20-b23e-49a3-e5d232e34c0b")
 			(units
 				(unit
 					(name "A")
@@ -7257,7 +7437,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "59ff71a6-35e6-1717-80a7-832cee6e9c9c")
+			(tstamps "4a604caf-d3a1-31b2-a009-967b1053763a")
 			(units
 				(unit
 					(name "A")
@@ -7317,7 +7497,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "268b93a4-95eb-b42e-3719-a55b60518354")
+			(tstamps "0d960de6-6b24-d5ba-cada-9aef29cf9a9d")
 			(units
 				(unit
 					(name "A")
@@ -7377,7 +7557,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "81e9cadd-d470-fda0-22fa-8f90253d972a")
+			(tstamps "5d93bb6f-daec-c973-3f6b-bf4e801b76d2")
 			(units
 				(unit
 					(name "A")
@@ -7433,7 +7613,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "948b871a-5a34-0d68-cfad-2bce0f9ca080")
+			(tstamps "1edc96a4-79fe-99f5-7234-40b3a4d719f6")
 			(units
 				(unit
 					(name "A")
@@ -7489,7 +7669,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "af547786-b595-0e6b-b7b3-aec3ef768880")
+			(tstamps "cbba82eb-8a38-8a25-d997-cc4fbccfe231")
 			(units
 				(unit
 					(name "A")
@@ -7545,7 +7725,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "a71b582a-7dca-0bcb-1839-3b9b7f0e1a23")
+			(tstamps "acb369a3-d03b-8ffe-dde0-04dd5f74030b")
 			(units
 				(unit
 					(name "A")
@@ -7597,10 +7777,10 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "748efba1-1b54-8f09-119b-c4c43b510a0a" "b9ff17d7-0178-9473-c256-ab4681667bbc"
-				"c6e87bf8-3e88-37cf-b96c-2782cd9a7ccf" "cfb12166-35b6-b0dc-85d6-24f052b67ee5"
-				"5dbeaa98-4d02-b3f9-5b10-6c00996afd93" "c696a5c6-6b73-f870-d01e-021d4282df49"
-				"3fe4ed4b-f443-f933-1591-2f698915f106" "32f34add-ad27-e29f-c32d-1a99f25e6e46"
+			(tstamps "cfb12166-35b6-b0dc-85d6-24f052b67ee5" "c6e87bf8-3e88-37cf-b96c-2782cd9a7ccf"
+				"32f34add-ad27-e29f-c32d-1a99f25e6e46" "3fe4ed4b-f443-f933-1591-2f698915f106"
+				"b9ff17d7-0178-9473-c256-ab4681667bbc" "c696a5c6-6b73-f870-d01e-021d4282df49"
+				"748efba1-1b54-8f09-119b-c4c43b510a0a" "0c3f95af-6e56-6fda-edf0-b74d307f1d4c"
 			)
 			(units
 				(unit
@@ -8499,13 +8679,13 @@
 		)
 		(comp
 			(ref "U302")
-			(value "SN74LVC1GU04DBVR")
-			(footprint "Package_TO_SOT_SMD:SOT-23-5")
+			(value "TLV3501AIDBVR")
+			(footprint "Package_TO_SOT_SMD:SOT-23-6")
 			(fields
 				(field
-					(name "LCSC") "C81934")
+					(name "LCSC") "C193413")
 				(field
-					(name "Footprint") "Package_TO_SOT_SMD:SOT-23-5")
+					(name "Footprint") "Package_TO_SOT_SMD:SOT-23-6")
 				(field
 					(name "Datasheet")
 				)
@@ -8514,13 +8694,13 @@
 				)
 			)
 			(libsource
-				(lib "74xGxx")
-				(part "74LVC1GU04")
-				(description "74LVC1G04, Single NOT Gate, Low-Voltage CMOS")
+				(lib "ours")
+				(part "TLV3501")
+				(description "comparator")
 			)
 			(property
 				(name "LCSC")
-				(value "C81934")
+				(value "C193413")
 			)
 			(property
 				(name "Sheetname")
@@ -8530,106 +8710,37 @@
 				(name "Sheetfile")
 				(value "fpga.kicad_sch")
 			)
-			(property
-				(name "ki_keywords")
-				(value "Single Gate NOT LVC CMOS")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "SOT* SG-*")
-			)
 			(sheetpath
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "3d9e93fc-a048-1ee6-2bd3-5281b52bab05")
+			(tstamps "aea9a45b-52f6-1c28-7e35-47e182d36961" "a8dca5b4-08a6-006b-7151-f2a9ef63b774")
 			(units
 				(unit
 					(name "A")
 					(pins
 						(pin
-							(num "2")
+							(num "3")
 						)
 						(pin
 							(num "1")
 						)
 						(pin
 							(num "5")
-						)
-						(pin
-							(num "3")
-						)
-						(pin
-							(num "4")
 						)
 					)
 				)
-			)
-		)
-		(comp
-			(ref "U303")
-			(value "SN74LVC1G17DBVR")
-			(footprint "Package_TO_SOT_SMD:SOT-23-5")
-			(fields
-				(field
-					(name "LCSC") "C7836")
-				(field
-					(name "Footprint") "Package_TO_SOT_SMD:SOT-23-5")
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "74xGxx")
-				(part "74LVC1G17")
-				(description "Single Schmitt Buffer Gate, Low-Voltage CMOS")
-			)
-			(property
-				(name "LCSC")
-				(value "C7836")
-			)
-			(property
-				(name "Sheetname")
-				(value "FPGA, memory, clocks, configuration")
-			)
-			(property
-				(name "Sheetfile")
-				(value "fpga.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "Single Gate Buff Schmitt LVC CMOS")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "SOT?23* SOT?553* Texas?R-PDSO-G5?DCK* Texas?R-PDSO-N5?DRL* Texas?X2SON*0.8x0.8mm*P0.48mm*")
-			)
-			(sheetpath
-				(names "/FPGA, memory, clocks, configuration/")
-				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
-			)
-			(tstamps "52d350ff-3f6f-1752-c5c1-91784a4af23f")
-			(units
 				(unit
-					(name "A")
+					(name "B")
 					(pins
 						(pin
-							(num "2")
-						)
-						(pin
-							(num "1")
-						)
-						(pin
-							(num "5")
-						)
-						(pin
-							(num "3")
+							(num "6")
 						)
 						(pin
 							(num "4")
+						)
+						(pin
+							(num "2")
 						)
 					)
 				)
@@ -8680,7 +8791,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "88a32dc4-860d-51e5-83e5-f69f938a752f")
+			(tstamps "09d92e46-9a9d-1314-c046-c4476a2c1624")
 			(units
 				(unit
 					(name "A")
@@ -8741,7 +8852,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "df78a155-9a74-fc3a-59ca-3ee5ad5e7751")
+			(tstamps "a24f47c0-c44c-5aef-f097-8934129505d9")
 			(units
 				(unit
 					(name "A")
@@ -8949,7 +9060,7 @@
 				(names "/FPGA, memory, clocks, configuration/")
 				(tstamps "/d6015b03-393a-002a-1e4b-a7b0e700df03/")
 			)
-			(tstamps "a92f755c-a49e-4fc0-9fe9-6f40a8a57d92")
+			(tstamps "6c47df68-d769-7bc5-738e-726c759493bc")
 			(units
 				(unit
 					(name "A")
@@ -9151,7 +9262,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "776d0daa-96a3-ec31-6424-59309a43889b")
+			(tstamps "18e3fed1-146e-833b-6182-6d1fe682ba52")
 			(units
 				(unit
 					(name "A")
@@ -9211,7 +9322,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "c3838adc-fd46-1625-9e18-a0ea5fb741df")
+			(tstamps "2df3841b-1ebc-122f-b367-f632f2ce6490")
 			(units
 				(unit
 					(name "A")
@@ -9271,7 +9382,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "e1b6e2fd-46d4-4ceb-c136-1476669ccfae")
+			(tstamps "b4177a87-3503-1713-749c-6e2e9bb057b8")
 			(units
 				(unit
 					(name "A")
@@ -9331,7 +9442,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "9a47db6f-1e84-5d0b-cb15-432d833e34dd")
+			(tstamps "2c9dfc5b-2c4c-b662-1524-ca4b13f58b70")
 			(units
 				(unit
 					(name "A")
@@ -9391,7 +9502,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "d2e54f16-8397-2531-132d-f37278dbcd02")
+			(tstamps "d4453d09-2a99-ad83-1b33-20d6aa984613")
 			(units
 				(unit
 					(name "A")
@@ -9451,7 +9562,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "b99ae592-8424-6f92-dffa-d921e99eb73f")
+			(tstamps "37b9080d-2fe4-2c18-95cd-3fb26097b650")
 			(units
 				(unit
 					(name "A")
@@ -9511,7 +9622,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "f2c9202f-18a3-4633-60a9-697aebbc76f0")
+			(tstamps "7e84cb2c-f131-95dc-7110-5cfa688c1012")
 			(units
 				(unit
 					(name "A")
@@ -9571,7 +9682,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "0af4bb14-5131-59fc-be80-abb90a16bc91")
+			(tstamps "e84e9022-7ee3-cda1-6cac-9b74dbf1a631")
 			(units
 				(unit
 					(name "A")
@@ -9631,7 +9742,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "028ba834-3110-76ed-5b19-0df9f80214b1")
+			(tstamps "6fb39858-c054-8a68-18a4-8df47028c289")
 			(units
 				(unit
 					(name "A")
@@ -9691,7 +9802,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "183503f5-e6a3-6b9d-b625-5e74903330d3")
+			(tstamps "8501287c-e7ef-2021-ae19-038570e98309")
 			(units
 				(unit
 					(name "A")
@@ -9751,7 +9862,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "50f9e951-b99b-43da-d1cf-2ebf8d9d6262")
+			(tstamps "7adffff7-ca9c-a519-0a92-c6e3e1809dee")
 			(units
 				(unit
 					(name "A")
@@ -9811,7 +9922,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "9e3206f7-dbe8-69b0-5c4b-d65a761274d1")
+			(tstamps "af2b3ef2-7279-dbbe-8908-c07245d287e9")
 			(units
 				(unit
 					(name "A")
@@ -9871,7 +9982,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "a8e4dbe9-633e-a53e-73af-f94193c6743b")
+			(tstamps "9502e239-866a-ce15-76d6-3ae07e6196a2")
 			(units
 				(unit
 					(name "A")
@@ -9931,7 +10042,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "931228c4-1448-f07c-b5f9-90f714c05a7e")
+			(tstamps "27311c9c-aab1-72af-5587-5c650df76ab1")
 			(units
 				(unit
 					(name "A")
@@ -9991,7 +10102,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "ab13649b-6f51-1678-6e04-84d28ec44f60")
+			(tstamps "9d97b978-dd29-7d34-e2e8-020b8d4aed64")
 			(units
 				(unit
 					(name "A")
@@ -10051,7 +10162,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "7619e697-0d34-11c9-178b-831fe3c2d93e")
+			(tstamps "77959dbc-c22b-4e48-744d-fb5426eeeb6f")
 			(units
 				(unit
 					(name "A")
@@ -10111,7 +10222,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "7a5118d9-2b80-1176-5d17-5e76fa261b5a")
+			(tstamps "6fc814a6-be3f-d70e-ab03-1c9f8d3c837a")
 			(units
 				(unit
 					(name "A")
@@ -10171,7 +10282,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "ba53e4fe-e187-ed09-4f0d-c00257d53ffb")
+			(tstamps "01bb77dc-3473-c04f-30c5-b147043b9e2f")
 			(units
 				(unit
 					(name "A")
@@ -10231,7 +10342,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "71a19792-0146-bf8a-60fe-8e050f77ce51")
+			(tstamps "827df6a0-bdd7-7fac-375f-5bb8188b717e")
 			(units
 				(unit
 					(name "A")
@@ -10291,7 +10402,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "2e49ac44-444e-b528-0e7c-e3a1fb543692")
+			(tstamps "bd9e7163-6c9e-9fe9-e761-edb96aa4dbc5")
 			(units
 				(unit
 					(name "A")
@@ -10351,7 +10462,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "4d415f79-3c6c-dff2-1513-08c09a8d8d32")
+			(tstamps "e49c2eaf-ab9b-cc44-02bb-c3c03b6d8355")
 			(units
 				(unit
 					(name "A")
@@ -10411,7 +10522,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "2674e714-818c-c3ce-ec2b-7eabeaaf0e13")
+			(tstamps "6c06d3e7-ce3f-6d1a-11e3-f87a31f5ddb3")
 			(units
 				(unit
 					(name "A")
@@ -10471,7 +10582,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "b43d1b3d-65fe-3ab7-062f-919efdac5db1")
+			(tstamps "b48b2c09-c8db-9851-a228-a71e63deff5d")
 			(units
 				(unit
 					(name "A")
@@ -10531,7 +10642,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "ef37df48-8397-0284-dc3a-d086e22446e0")
+			(tstamps "5b0746db-0fc9-e5c8-3a87-0ba8df84c069")
 			(units
 				(unit
 					(name "A")
@@ -10591,7 +10702,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "467061af-d1cb-2a8b-a609-adefe0368790")
+			(tstamps "96eb163f-d83d-d257-a91f-2ea27f2c3102")
 			(units
 				(unit
 					(name "A")
@@ -10651,7 +10762,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "62bd3748-c957-3619-7873-d0004068a213")
+			(tstamps "7768f887-4e70-2d71-393f-83ba49941136")
 			(units
 				(unit
 					(name "A")
@@ -10711,7 +10822,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "6c3feafb-c0d7-7982-9137-883895aad55b")
+			(tstamps "d646ab15-d2d5-f032-83b3-61e21c7c3388")
 			(units
 				(unit
 					(name "A")
@@ -10771,7 +10882,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "050b5f31-5953-8dd4-24ed-91ea7d3f7a31")
+			(tstamps "7d59e9f7-a8ae-d003-1ff6-20b11fa7dc4e")
 			(units
 				(unit
 					(name "A")
@@ -10831,7 +10942,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "4d50295b-b914-8ecc-5468-58f7a6ff8a45")
+			(tstamps "c36605b4-69b3-4c20-2bec-ebbadf7d309a")
 			(units
 				(unit
 					(name "A")
@@ -10891,7 +11002,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "87810d90-97a1-e0f0-5df9-16a4998b48ad")
+			(tstamps "ea49b61c-60df-6b6e-e804-142224c45d8b")
 			(units
 				(unit
 					(name "A")
@@ -10951,7 +11062,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "a52ac449-cdde-0bb9-15a1-7278ee47d668")
+			(tstamps "0b0723b3-e792-a069-ae04-0cab902914a2")
 			(units
 				(unit
 					(name "A")
@@ -11011,7 +11122,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "772f81f1-278d-bae1-200a-53f3a2766137")
+			(tstamps "b0cf38a7-6360-e387-49b1-681fc9065d51")
 			(units
 				(unit
 					(name "A")
@@ -11071,7 +11182,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "f6f6164d-c806-7ecd-3342-a20a6bf80c23")
+			(tstamps "e00e9ee2-71e2-4f6d-ee61-3ec67c5db982")
 			(units
 				(unit
 					(name "A")
@@ -11131,7 +11242,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "49b16c9f-151a-0ade-a979-d87dc523d821")
+			(tstamps "c2514c89-ab14-bef0-8734-309df87627a7")
 			(units
 				(unit
 					(name "A")
@@ -11254,7 +11365,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "dacbcdaf-ceb9-b923-67c7-17b20d442d0f")
+			(tstamps "3dc1027b-87c5-1e93-1a5d-104e900769ed")
 			(units
 				(unit
 					(name "A")
@@ -11313,13 +11424,123 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "4dba3edc-3881-a167-fdfb-81f8da8e4359")
+			(tstamps "29754612-d78b-86ff-b8ac-3130dfc71578")
 			(units
 				(unit
 					(name "A")
 					(pins
 						(pin
 							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "D111")
+			(value "BAV99")
+			(footprint "Package_TO_SOT_SMD:SOT-23")
+			(fields
+				(field
+					(name "LCSC") "C2500")
+				(field
+					(name "Footprint") "Package_TO_SOT_SMD:SOT-23")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description")
+				)
+			)
+			(libsource
+				(lib "ours")
+				(part "BAV99_antiparallel")
+				(description "dual diode wired anti-parallel")
+			)
+			(property
+				(name "LCSC")
+				(value "C2500")
+			)
+			(property
+				(name "Sheetname")
+				(value "ADC")
+			)
+			(property
+				(name "Sheetfile")
+				(value "adc.kicad_sch")
+			)
+			(sheetpath
+				(names "/ADC/")
+				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
+			)
+			(tstamps "042cf82d-aca3-1ca1-3f12-630266d7e247")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "3")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "D112")
+			(value "BAV99")
+			(footprint "Package_TO_SOT_SMD:SOT-23")
+			(fields
+				(field
+					(name "LCSC") "C2500")
+				(field
+					(name "Footprint") "Package_TO_SOT_SMD:SOT-23")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description")
+				)
+			)
+			(libsource
+				(lib "ours")
+				(part "BAV99_antiparallel")
+				(description "dual diode wired anti-parallel")
+			)
+			(property
+				(name "LCSC")
+				(value "C2500")
+			)
+			(property
+				(name "Sheetname")
+				(value "ADC")
+			)
+			(property
+				(name "Sheetfile")
+				(value "adc.kicad_sch")
+			)
+			(sheetpath
+				(names "/ADC/")
+				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
+			)
+			(tstamps "4397df61-4511-9b7e-5808-b2cba55caaaa")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "3")
 						)
 						(pin
 							(num "2")
@@ -11417,7 +11638,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "a5125f57-e07f-9186-fb18-6a7ac9d9b190")
+			(tstamps "6416e122-60fe-a96e-970e-23f95e48226c")
 			(units
 				(unit
 					(name "A")
@@ -11471,7 +11692,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "c8bf4136-841b-1d24-0a7c-6a921fc7a984")
+			(tstamps "dbc3673f-f8ea-2404-3d5d-ff5f71f64d56")
 			(units
 				(unit
 					(name "A")
@@ -11525,7 +11746,163 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "7a230d6a-5f03-5740-1fe3-ba022b9c2a16")
+			(tstamps "231a3aec-912d-80ce-3f53-fec05a0b19ee")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "J107")
+			(value "U.FL")
+			(footprint "ours:UFL_Hirose_U.FL-R-SMT-1")
+			(description "monitor tap: preamp output, through 49.9 R")
+			(fields
+				(field
+					(name "LCSC") "C88374")
+				(field
+					(name "Footprint") "ours:UFL_Hirose_U.FL-R-SMT-1")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "monitor tap: preamp output, through 49.9 R")
+			)
+			(libsource
+				(lib "ours")
+				(part "UFL_tap")
+				(description "")
+			)
+			(property
+				(name "LCSC")
+				(value "C88374")
+			)
+			(property
+				(name "Sheetname")
+				(value "ADC")
+			)
+			(property
+				(name "Sheetfile")
+				(value "adc.kicad_sch")
+			)
+			(sheetpath
+				(names "/ADC/")
+				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
+			)
+			(tstamps "04abd59e-a762-a235-8d5f-5741d8d65ee1")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "J108")
+			(value "U.FL")
+			(footprint "ours:UFL_Hirose_U.FL-R-SMT-1")
+			(description "monitor tap: preamp output, through 49.9 R")
+			(fields
+				(field
+					(name "LCSC") "C88374")
+				(field
+					(name "Footprint") "ours:UFL_Hirose_U.FL-R-SMT-1")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "monitor tap: preamp output, through 49.9 R")
+			)
+			(libsource
+				(lib "ours")
+				(part "UFL_tap")
+				(description "")
+			)
+			(property
+				(name "LCSC")
+				(value "C88374")
+			)
+			(property
+				(name "Sheetname")
+				(value "ADC")
+			)
+			(property
+				(name "Sheetfile")
+				(value "adc.kicad_sch")
+			)
+			(sheetpath
+				(names "/ADC/")
+				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
+			)
+			(tstamps "5510e7af-bcbc-69e1-de6a-d5e7de944524")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "J109")
+			(value "U.FL")
+			(footprint "ours:UFL_Hirose_U.FL-R-SMT-1")
+			(description "monitor tap: photodiode receiver output, through 49.9 R")
+			(fields
+				(field
+					(name "LCSC") "C88374")
+				(field
+					(name "Footprint") "ours:UFL_Hirose_U.FL-R-SMT-1")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "monitor tap: photodiode receiver output, through 49.9 R")
+			)
+			(libsource
+				(lib "ours")
+				(part "UFL_tap")
+				(description "")
+			)
+			(property
+				(name "LCSC")
+				(value "C88374")
+			)
+			(property
+				(name "Sheetname")
+				(value "ADC")
+			)
+			(property
+				(name "Sheetfile")
+				(value "adc.kicad_sch")
+			)
+			(sheetpath
+				(names "/ADC/")
+				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
+			)
+			(tstamps "192a7e35-62e7-1bc9-111b-98d49a5aba98")
 			(units
 				(unit
 					(name "A")
@@ -11798,7 +12175,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "d29a292c-2850-b755-7a11-8b9bfc198527")
+			(tstamps "9d26059a-97f3-60c3-dbae-3573541e3d50")
 			(units
 				(unit
 					(name "A")
@@ -11852,7 +12229,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "6ca84549-956c-b8cd-fa6c-a77b8f33113c")
+			(tstamps "a1c27174-2073-c218-d2c2-d1f9142d27b9")
 			(units
 				(unit
 					(name "A")
@@ -11909,7 +12286,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "2b975bec-853c-ab05-9821-d44e9b3a5c6c")
+			(tstamps "877619da-fde3-e726-f885-33af0e9b30bc")
 			(units
 				(unit
 					(name "A")
@@ -11963,7 +12340,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "02e80dad-2150-0201-2ac2-2184e8b62436")
+			(tstamps "638b3694-83a4-bb7b-7c11-a9086e23ff28")
 			(units
 				(unit
 					(name "A")
@@ -12017,7 +12394,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "b5f0231f-6617-5dfe-cf19-39621b8ed71a")
+			(tstamps "871ec18d-e270-87eb-0dd3-8c9ce82883cd")
 			(units
 				(unit
 					(name "A")
@@ -12098,12 +12475,12 @@
 		(comp
 			(ref "R1102")
 			(value "100R")
-			(footprint "Resistor_SMD:R_0603_1608Metric")
+			(footprint "Resistor_SMD:R_1206_3216Metric")
 			(fields
 				(field
-					(name "LCSC") "C22775")
+					(name "LCSC") "C17901")
 				(field
-					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
+					(name "Footprint") "Resistor_SMD:R_1206_3216Metric")
 				(field
 					(name "Datasheet")
 				)
@@ -12118,7 +12495,7 @@
 			)
 			(property
 				(name "LCSC")
-				(value "C22775")
+				(value "C17901")
 			)
 			(property
 				(name "Sheetname")
@@ -12440,7 +12817,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "e1bf0002-3b22-d2c5-4af3-dd836db4c03a")
+			(tstamps "3cb3d854-9418-9ae9-15ff-5e59154ac22c")
 			(units
 				(unit
 					(name "A")
@@ -12500,7 +12877,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "670a88c4-7ccb-2d09-2d2b-0d44a5ee0577")
+			(tstamps "34433f4d-2cc2-f48e-843d-4adbcfd21550")
 			(units
 				(unit
 					(name "A")
@@ -12560,7 +12937,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "9be1fb97-08f4-6cde-980a-5f2f65253c01")
+			(tstamps "2d081fb3-0bab-3461-2810-420c4e219543")
 			(units
 				(unit
 					(name "A")
@@ -12620,7 +12997,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "3a1d10f9-60db-0d2e-8252-56c6929c166a")
+			(tstamps "fb419943-cb4e-aa2f-7bc2-7915d0454915")
 			(units
 				(unit
 					(name "A")
@@ -12680,7 +13057,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "2449f931-a91e-e329-ab42-b25030942fae")
+			(tstamps "056c1644-416a-cc29-f0e3-45de9f2879e8")
 			(units
 				(unit
 					(name "A")
@@ -12740,7 +13117,67 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "9c90483a-2295-5270-5126-9d2e572645e3")
+			(tstamps "192b50e5-1f0e-0886-4462-977365997e32")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R1113")
+			(value "49.9R")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
+			(fields
+				(field
+					(name "LCSC") "C23185")
+				(field
+					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description")
+				)
+			)
+			(libsource
+				(lib "Device")
+				(part "R")
+				(description "Resistor")
+			)
+			(property
+				(name "LCSC")
+				(value "C23185")
+			)
+			(property
+				(name "Sheetname")
+				(value "ADC")
+			)
+			(property
+				(name "Sheetfile")
+				(value "adc.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "R res resistor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "R_*")
+			)
+			(sheetpath
+				(names "/ADC/")
+				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
+			)
+			(tstamps "b836f20f-73ef-788c-b315-423802fb1daf")
 			(units
 				(unit
 					(name "A")
@@ -12800,7 +13237,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "d0e213f8-00b4-03b8-2db6-2f9281e36cef")
+			(tstamps "7116ed6f-d29b-41d3-6198-f2624529eb4f")
 			(units
 				(unit
 					(name "A")
@@ -12818,12 +13255,12 @@
 		(comp
 			(ref "R1202")
 			(value "100R")
-			(footprint "Resistor_SMD:R_0603_1608Metric")
+			(footprint "Resistor_SMD:R_1206_3216Metric")
 			(fields
 				(field
-					(name "LCSC") "C22775")
+					(name "LCSC") "C17901")
 				(field
-					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
+					(name "Footprint") "Resistor_SMD:R_1206_3216Metric")
 				(field
 					(name "Datasheet")
 				)
@@ -12838,7 +13275,7 @@
 			)
 			(property
 				(name "LCSC")
-				(value "C22775")
+				(value "C17901")
 			)
 			(property
 				(name "Sheetname")
@@ -12860,7 +13297,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "42f93667-23af-3037-d68f-0ca128bcfa14")
+			(tstamps "b4a608f3-ee4e-b8eb-0f35-8ee4f4ac1c5f")
 			(units
 				(unit
 					(name "A")
@@ -12920,7 +13357,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "446a90d5-2c70-43aa-1ea2-07eb748a8e68")
+			(tstamps "c53efc74-6fda-fb43-7654-c59b76fd5df9")
 			(units
 				(unit
 					(name "A")
@@ -12980,7 +13417,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "5675ff04-608f-70c0-a91f-1ce0b5adf332")
+			(tstamps "0dde6d12-24fe-36c6-c3a1-0299a9c9c678")
 			(units
 				(unit
 					(name "A")
@@ -13040,7 +13477,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "63d51238-1eff-e88e-b3e7-08c4ca9e4b6b")
+			(tstamps "5e10eb43-152d-004e-7478-b95ac09ef448")
 			(units
 				(unit
 					(name "A")
@@ -13100,7 +13537,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "8d3ac2ef-4583-c171-e77f-156cf5ab8521")
+			(tstamps "e16ddc2e-6350-f23c-7522-7ed2e43c8146")
 			(units
 				(unit
 					(name "A")
@@ -13160,7 +13597,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "b5da6cd5-27bb-d3e7-96f4-a09c4c52466a")
+			(tstamps "67567dca-ddc7-2aaa-5bf4-8bfbd02d94bc")
 			(units
 				(unit
 					(name "A")
@@ -13220,7 +13657,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "520090a2-06ab-00a7-1621-4c7aae30df21")
+			(tstamps "7650447f-6ddf-01fd-1a59-adde1e2efd4b")
 			(units
 				(unit
 					(name "A")
@@ -13280,7 +13717,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "5e3bfc0d-198a-8d5f-9428-cadabb09abc1")
+			(tstamps "1b41822a-0f90-a906-daeb-1af38a93cef2")
 			(units
 				(unit
 					(name "A")
@@ -13340,7 +13777,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "9da3f4cf-e677-8f7a-97f6-5da0412f0a2a")
+			(tstamps "d524da21-1b73-485c-22a7-c26155e373b5")
 			(units
 				(unit
 					(name "A")
@@ -13400,7 +13837,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "86633053-8bfa-6601-4203-cba3c3bfa0e5")
+			(tstamps "52a035ad-d124-2eae-b52a-5c05acac6051")
 			(units
 				(unit
 					(name "A")
@@ -13460,7 +13897,67 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "554c2fe9-7486-15fc-2d44-79083c24bd48")
+			(tstamps "184b9bbf-6d39-f9cc-63f0-01824d258acc")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R1213")
+			(value "49.9R")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
+			(fields
+				(field
+					(name "LCSC") "C23185")
+				(field
+					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description")
+				)
+			)
+			(libsource
+				(lib "Device")
+				(part "R")
+				(description "Resistor")
+			)
+			(property
+				(name "LCSC")
+				(value "C23185")
+			)
+			(property
+				(name "Sheetname")
+				(value "ADC")
+			)
+			(property
+				(name "Sheetfile")
+				(value "adc.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "R res resistor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "R_*")
+			)
+			(sheetpath
+				(names "/ADC/")
+				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
+			)
+			(tstamps "62bbfe88-091d-49db-6160-8258388a6d56")
 			(units
 				(unit
 					(name "A")
@@ -13520,7 +14017,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "097d495a-593a-176a-dadd-c0654287f6fc")
+			(tstamps "7bfccfcf-9f8e-69b4-366b-60d2d754220c")
 			(units
 				(unit
 					(name "A")
@@ -13580,7 +14077,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "999845e4-6c42-b029-0b41-da22fd4a6988")
+			(tstamps "0d069618-7246-1a97-567d-9facf9f99ea0")
 			(units
 				(unit
 					(name "A")
@@ -13640,7 +14137,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "a1e5bbf6-28a5-9065-6c8b-ac350de4038f")
+			(tstamps "e5e4e2b2-00ae-16c9-49a8-ad467cb2e7bd")
 			(units
 				(unit
 					(name "A")
@@ -13700,7 +14197,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "5bd3ffc2-39f2-35b2-346d-5590d99adeb7")
+			(tstamps "b66bbf22-d7eb-3a58-4964-db52b429f01f")
 			(units
 				(unit
 					(name "A")
@@ -13760,7 +14257,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "24ea7cad-5673-fb5c-c73b-f6b943bfec01")
+			(tstamps "1c20d299-6b1c-0f7d-7402-415b856832cd")
 			(units
 				(unit
 					(name "A")
@@ -13820,7 +14317,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "f4d2d098-4f37-14bd-e230-6065915ae159")
+			(tstamps "2118418b-87d6-e375-d999-74fce0b6800b")
 			(units
 				(unit
 					(name "A")
@@ -13880,7 +14377,67 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "f8b15091-54a2-42b1-8333-26d53091a343")
+			(tstamps "f05b744f-0889-8db9-914e-244f395bada5")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R1406")
+			(value "49.9R")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
+			(fields
+				(field
+					(name "LCSC") "C23185")
+				(field
+					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description")
+				)
+			)
+			(libsource
+				(lib "Device")
+				(part "R")
+				(description "Resistor")
+			)
+			(property
+				(name "LCSC")
+				(value "C23185")
+			)
+			(property
+				(name "Sheetname")
+				(value "ADC")
+			)
+			(property
+				(name "Sheetfile")
+				(value "adc.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "R res resistor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "R_*")
+			)
+			(sheetpath
+				(names "/ADC/")
+				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
+			)
+			(tstamps "47f44597-185b-c547-316c-8139413a815b")
 			(units
 				(unit
 					(name "A")
@@ -13940,7 +14497,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "5cd05729-4f09-3b2c-da7f-31c806976a29")
+			(tstamps "5d06ea28-9384-7c0a-a91c-b07033a9d593")
 			(units
 				(unit
 					(name "A")
@@ -14010,8 +14567,8 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "bf407af5-588a-2b76-6e80-3cffae84d4f5" "88fc427d-e6ca-a561-86a3-fafb81d89545"
-				"68c4cd8c-e270-3747-d640-c22b0c456bec"
+			(tstamps "bf407af5-588a-2b76-6e80-3cffae84d4f5" "d1e6c795-f973-31ee-9f3f-ecf325cbd9f8"
+				"88fc427d-e6ca-a561-86a3-fafb81d89545"
 			)
 			(units
 				(unit
@@ -14092,8 +14649,8 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "e95ece31-e73c-82b7-3331-66f7fdb40210" "a9b280e7-35b7-4e38-140b-a76f93a1dadd"
-				"8a7e78e4-b6cf-3a95-35ce-3344179d1b58"
+			(tstamps "f74af58f-ef40-62d0-e645-132b4f72378b" "8c2dbefb-e9f9-4139-d834-3b7067cbffa6"
+				"52ec032f-b2b0-6644-cd73-4a3144b6498c"
 			)
 			(units
 				(unit
@@ -14174,8 +14731,8 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "7990fe80-553d-e89a-a220-376e9be320f5" "a04d58dd-6a32-99c9-2b41-8dff0163cfc8"
-				"52d05a0c-3845-345f-22af-5a011ec3140d"
+			(tstamps "6f3b6416-67f8-0e98-f866-b6c4e8fc74b6" "f08f976e-9eb7-7ddb-d3bd-225106e51266"
+				"66a1281b-e4a3-0ab1-37fb-ccb5738a96ec"
 			)
 			(units
 				(unit
@@ -14424,8 +14981,8 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "7888705e-9ea7-65d3-19f1-94ec4eee48a8" "6fa17707-b198-00e2-bc12-d393593baff5"
-				"57ec3594-bc84-2a2c-c745-24860a224e41"
+			(tstamps "f8ab2726-039b-9af8-d98c-09f8f76fe1be" "ece786e5-bb07-be49-4e70-55b0de9e49e3"
+				"4d14ede0-54a2-6e2e-28de-01d2df69704e"
 			)
 			(units
 				(unit
@@ -14506,7 +15063,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "df088856-5ad6-c442-fab9-645503d3f56a")
+			(tstamps "6c996471-d946-fbb5-67db-7364661d76e2")
 			(units
 				(unit
 					(name "A")
@@ -14576,7 +15133,7 @@
 				(names "/ADC/")
 				(tstamps "/bb1310ca-094a-6be8-b2c4-0f0b481605f0/")
 			)
-			(tstamps "c3c6907c-8c90-e19f-bd18-e652c931fc9a")
+			(tstamps "08c123e6-5bc1-9c5f-ff8c-9f9f257192be")
 			(units
 				(unit
 					(name "A")
@@ -14714,7 +15271,7 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "446b3573-8a92-fd75-c671-19daace64583")
+			(tstamps "e7afd512-e3b6-c7a4-eeb3-9830f8d31ef2")
 			(units
 				(unit
 					(name "A")
@@ -14774,7 +15331,7 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "768069d0-870d-d9c3-3324-e8986eb9ffc7")
+			(tstamps "0c589b94-7ea3-84b0-9117-911c9652877f")
 			(units
 				(unit
 					(name "A")
@@ -14834,7 +15391,7 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "19eace77-f2d1-1b3a-b20b-288a6614a2bc")
+			(tstamps "fc6b9556-625e-235c-79b6-4110cbf19863")
 			(units
 				(unit
 					(name "A")
@@ -14894,7 +15451,7 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "34c333ee-736d-31c6-4578-06a597a627ee")
+			(tstamps "14ac9e9f-f3e5-5cb0-f67d-9850dbaf4505")
 			(units
 				(unit
 					(name "A")
@@ -14954,7 +15511,7 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "b989e9e0-c55b-6852-eaa6-65dffac27bfa")
+			(tstamps "691518b0-7d04-3f18-de04-fa35f188b833")
 			(units
 				(unit
 					(name "A")
@@ -15014,7 +15571,67 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "d50a2371-ef18-2d8e-9cbd-d2920bf54f05")
+			(tstamps "0c1b9abc-c78b-08d9-eb5e-e867074e960d")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C2402")
+			(value "2.2pF")
+			(footprint "Capacitor_SMD:C_0402_1005Metric")
+			(fields
+				(field
+					(name "LCSC") "C1559")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0402_1005Metric")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description")
+				)
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "LCSC")
+				(value "C1559")
+			)
+			(property
+				(name "Sheetname")
+				(value "DAC")
+			)
+			(property
+				(name "Sheetfile")
+				(value "dac.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/DAC/")
+				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
+			)
+			(tstamps "6308ba0b-7b84-b764-e284-e020740eca33")
 			(units
 				(unit
 					(name "A")
@@ -15074,7 +15691,67 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "d8c63559-aac7-cfb0-2886-edb3b61b06bb")
+			(tstamps "e84daaf9-8197-aba4-c8e5-37ebd1564bd5")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C2502")
+			(value "2.2pF")
+			(footprint "Capacitor_SMD:C_0402_1005Metric")
+			(fields
+				(field
+					(name "LCSC") "C1559")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0402_1005Metric")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description")
+				)
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "LCSC")
+				(value "C1559")
+			)
+			(property
+				(name "Sheetname")
+				(value "DAC")
+			)
+			(property
+				(name "Sheetfile")
+				(value "dac.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/DAC/")
+				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
+			)
+			(tstamps "1ca90cd3-87b5-f542-a980-24aa95bced21")
 			(units
 				(unit
 					(name "A")
@@ -15134,7 +15811,7 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "ca710803-2502-d42e-3852-c0271170e940")
+			(tstamps "26adfa1d-3a1f-2a02-cc88-396886bc852c")
 			(units
 				(unit
 					(name "A")
@@ -15194,7 +15871,7 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "93399a4c-403e-bc55-78f6-6953a1e06650")
+			(tstamps "eb66d82f-60d5-c62e-8286-38ed98e1e8eb")
 			(units
 				(unit
 					(name "A")
@@ -15254,7 +15931,7 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "6e24f429-ba35-3a6a-5cfa-633fabe69fc3")
+			(tstamps "8d1be128-2495-0b52-c66e-c8a8a645cad0")
 			(units
 				(unit
 					(name "A")
@@ -15314,7 +15991,7 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "6f045a0b-34de-a788-1967-24b79ec1ea55")
+			(tstamps "77ee0109-90cd-0285-0ddf-bbcbedfc022e")
 			(units
 				(unit
 					(name "A")
@@ -15374,7 +16051,7 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "518b8e94-7f65-281b-1643-8a5833121dec")
+			(tstamps "2e3ff26c-8eb4-4e72-ed63-5ef7f1150b5f")
 			(units
 				(unit
 					(name "A")
@@ -15426,7 +16103,7 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "babb313d-128a-f3d8-6676-2992fef489b7")
+			(tstamps "a0540b15-dbd7-7040-de3e-ff19b786701f")
 			(units
 				(unit
 					(name "A")
@@ -15478,7 +16155,7 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "c4e75e4c-7789-78cb-8e23-661ade4bc16b")
+			(tstamps "33077a4f-c103-c87b-4719-06625882b592")
 			(units
 				(unit
 					(name "A")
@@ -15532,7 +16209,7 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "278c024f-5602-3b69-2ff8-a88321bc70d7")
+			(tstamps "2d14e814-5216-98fa-6479-44b98ad86fc3")
 			(units
 				(unit
 					(name "A")
@@ -15586,7 +16263,7 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "7fa3aac9-d245-1c18-b922-f3b958801df8")
+			(tstamps "d0379adb-c9b8-8878-fccf-a09b55e11d8c")
 			(units
 				(unit
 					(name "A")
@@ -15649,7 +16326,7 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "1390ceb0-6091-8e43-fd3f-ffeb136217d8")
+			(tstamps "3dcd00ae-fe47-922b-9969-1c14cb85b9a0")
 			(units
 				(unit
 					(name "A")
@@ -16492,7 +17169,7 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "d6144975-194b-b195-5ab5-3321a3cb4597")
+			(tstamps "4d11c7e0-cfae-f7a6-efd5-01ee53bd264f")
 			(units
 				(unit
 					(name "A")
@@ -16552,7 +17229,7 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "58bd74ad-c50a-6c24-7fcc-22b0f7580652")
+			(tstamps "8d43ee06-61c4-1f42-f765-f064854c3899")
 			(units
 				(unit
 					(name "A")
@@ -16612,7 +17289,7 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "43ce26af-a846-e384-8fa6-040a5eecf4b1")
+			(tstamps "8623c71e-5c17-402c-91c5-3a10c8e1dee9")
 			(units
 				(unit
 					(name "A")
@@ -16672,7 +17349,7 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "9e06aa7e-61bb-b4ac-3473-bc139b420c2a")
+			(tstamps "43b101fb-15c5-5307-5751-e683c94fe332")
 			(units
 				(unit
 					(name "A")
@@ -16732,7 +17409,7 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "224115ee-7b9a-d97e-e535-714aee45bcde")
+			(tstamps "42968798-d55b-9e5a-c0bc-542a8cb9be5c")
 			(units
 				(unit
 					(name "A")
@@ -16792,7 +17469,7 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "3bfdceff-d286-3430-c636-1200ce8c78b6")
+			(tstamps "a69408cc-4b0d-9290-6638-256b20d98c24")
 			(units
 				(unit
 					(name "A")
@@ -16852,7 +17529,7 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "114b5cd4-3e23-8a01-0b6e-ad7de62a363b")
+			(tstamps "fedcf8a8-f340-d6bc-cc90-49a1ed4b74ae")
 			(units
 				(unit
 					(name "A")
@@ -16912,7 +17589,7 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "e6818843-1cab-847b-e94c-b0757beab14e")
+			(tstamps "cc0589c2-4d4f-881f-f075-7f381db36392")
 			(units
 				(unit
 					(name "A")
@@ -16972,7 +17649,7 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "f4481200-afd2-aeba-74f9-fb96f11126a1")
+			(tstamps "f4fbf364-0c10-03c1-8658-a0fe06ba0b8a")
 			(units
 				(unit
 					(name "A")
@@ -17032,7 +17709,7 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "533c2fa2-5efa-5d19-df02-8dea3fc68f84")
+			(tstamps "1ffd4709-b9bf-29d3-016c-73bd959cb05e")
 			(units
 				(unit
 					(name "A")
@@ -17092,7 +17769,7 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "d613587b-087c-12cc-0dc1-730c91d6a376")
+			(tstamps "82370e11-0688-8e6a-3333-03b0f5b92de5")
 			(units
 				(unit
 					(name "A")
@@ -17346,8 +18023,8 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "fe67971e-a55d-7618-14bf-8a35c1acc830" "a14b188e-144b-724a-af8e-befe1e4939e8"
-				"6a9c1816-df4b-b235-f011-8cd60b72f20c"
+			(tstamps "fe67971e-a55d-7618-14bf-8a35c1acc830" "6a664b15-dc8a-1d72-3314-2f22fd891984"
+				"4924b310-85cb-e254-db8b-814da82c65e2"
 			)
 			(units
 				(unit
@@ -17428,8 +18105,8 @@
 				(names "/DAC/")
 				(tstamps "/ad20f7ba-2fba-b631-7b68-ae7a89750442/")
 			)
-			(tstamps "872f5faf-9f3e-eada-335c-39abc23bc1d6" "57465bcc-400f-fc75-ffd5-c3b6d48e3788"
-				"520251fd-f481-8d50-e806-f600a0c6af78"
+			(tstamps "b3b96685-3b17-5658-1eef-a34bb32dca72" "94439e7f-55fb-3aee-006e-0ef5adcec3e4"
+				"62aa4733-0cf4-a4aa-f6db-733007b293f5"
 			)
 			(units
 				(unit
@@ -17518,7 +18195,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "1cba01c0-2fa4-a6be-7470-cad1c0dd42f4")
+			(tstamps "23deaa90-df45-f73a-715c-fad29171368a")
 			(units
 				(unit
 					(name "A")
@@ -17578,7 +18255,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "445a556e-b1f8-6a81-ceac-2a2db3d3a120")
+			(tstamps "61db1a25-12a1-8d16-2220-15e4819a8aeb")
 			(units
 				(unit
 					(name "A")
@@ -17638,7 +18315,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "f1aa6509-1975-9785-47ca-7cf461bf3fa2")
+			(tstamps "31d14859-79ac-0035-db9c-4e90c8c8f96f")
 			(units
 				(unit
 					(name "A")
@@ -17698,7 +18375,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "4e6689f1-f6a8-a95c-93f8-46f63ba63ad0")
+			(tstamps "df08ae06-a89c-179c-fa66-f8cfd3b7d8ce")
 			(units
 				(unit
 					(name "A")
@@ -17758,7 +18435,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "c82db9e1-5c33-12e7-3c36-a54e4db590fa")
+			(tstamps "11c573d1-655e-0290-ab07-b8b4d50aacbb")
 			(units
 				(unit
 					(name "A")
@@ -17775,13 +18452,13 @@
 		)
 		(comp
 			(ref "C4951")
-			(value "1nF 2kV")
-			(footprint "Capacitor_SMD:C_1206_3216Metric")
+			(value "1nF 3kV")
+			(footprint "Capacitor_SMD:C_1812_4532Metric")
 			(fields
 				(field
-					(name "LCSC") "C53084552")
+					(name "LCSC") "C692296")
 				(field
-					(name "Footprint") "Capacitor_SMD:C_1206_3216Metric")
+					(name "Footprint") "Capacitor_SMD:C_1812_4532Metric")
 				(field
 					(name "Datasheet")
 				)
@@ -17796,7 +18473,7 @@
 			)
 			(property
 				(name "LCSC")
-				(value "C53084552")
+				(value "C692296")
 			)
 			(property
 				(name "Sheetname")
@@ -17818,7 +18495,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "24a792ae-8bd6-7c85-c0ef-79164aa54759")
+			(tstamps "c53d8e73-26dd-1f72-69ca-9325a86f484c")
 			(units
 				(unit
 					(name "A")
@@ -17878,7 +18555,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "5d2470c1-09e6-520e-06c4-3cb62431fa76")
+			(tstamps "ec806ae0-b2b9-72b3-67f6-961ed9478625")
 			(units
 				(unit
 					(name "A")
@@ -17938,7 +18615,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "fd6fbe9a-3991-e26e-30b3-821bd15a3577")
+			(tstamps "d0bbb885-1829-ce85-95ce-4627ec6e918e")
 			(units
 				(unit
 					(name "A")
@@ -17998,7 +18675,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "914b514c-cbe7-bb4f-b23f-c3781a23d8ce")
+			(tstamps "4ef1b671-bc35-1f6f-9710-bd135b19dc4c")
 			(units
 				(unit
 					(name "A")
@@ -18058,7 +18735,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "adaf8cef-c85b-d090-cf31-f9d6b24701cb")
+			(tstamps "ded4ac61-c68d-3abd-a26d-5a6b0a911c92")
 			(units
 				(unit
 					(name "A")
@@ -18118,7 +18795,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "8b02c018-fef1-61ba-7012-9b2abff50532")
+			(tstamps "06b28aa7-9cad-99d4-5a47-1b47873673b2")
 			(units
 				(unit
 					(name "A")
@@ -18178,7 +18855,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "1979bc25-f4d9-b7ed-3b08-e2ad8912b5a8")
+			(tstamps "54b1eb00-20d1-8252-f5ea-9375871c6423")
 			(units
 				(unit
 					(name "A")
@@ -18238,7 +18915,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "31fccacf-4e78-f2e5-5d8f-70730c7bf578")
+			(tstamps "891e6038-db16-f10e-dd8b-ee5eb67bed3b")
 			(units
 				(unit
 					(name "A")
@@ -18298,7 +18975,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "51d413a7-f5d9-5d59-fefa-93ecf2e8ebe6")
+			(tstamps "710abbbb-c039-7904-58e0-bef0b525b1af")
 			(units
 				(unit
 					(name "A")
@@ -18358,7 +19035,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "e53e0e7c-8093-37b5-c622-f35e3eca4ff0")
+			(tstamps "56c5f6ff-2082-c85b-5f24-c98832dab928")
 			(units
 				(unit
 					(name "A")
@@ -18418,7 +19095,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "76835040-d4e7-390c-4c28-47a66b3f8cae")
+			(tstamps "d3aa1f8d-c9b9-7029-861e-2fb9ddf86ee0")
 			(units
 				(unit
 					(name "A")
@@ -18478,7 +19155,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "c4a8e815-00e4-159a-7a6b-8944a944fe6a")
+			(tstamps "1cf0bfec-23f2-020e-c53f-ae9d5a8425a5")
 			(units
 				(unit
 					(name "A")
@@ -18538,7 +19215,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "2c364038-e8d7-f7b3-d316-1ce165c10bcb")
+			(tstamps "ea5c300f-f1e7-5d06-d908-f0cc81eb3493")
 			(units
 				(unit
 					(name "A")
@@ -18598,7 +19275,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "7df70744-7307-1a8b-149b-970c2a83e91f")
+			(tstamps "479646b7-f050-75e7-8f67-0332dc7b7812")
 			(units
 				(unit
 					(name "A")
@@ -18658,7 +19335,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "907b03b8-756b-917c-238b-a12fc5ab25e9")
+			(tstamps "e9df66fe-3184-22be-733e-27036f73ce6a")
 			(units
 				(unit
 					(name "A")
@@ -18718,7 +19395,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "5db72e07-16ab-42db-9d54-6c489b2d04f9")
+			(tstamps "7242786e-4c4a-4c9b-a7c6-d491295c42aa")
 			(units
 				(unit
 					(name "A")
@@ -18770,7 +19447,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "5bfab632-b14a-b8fc-91a4-32895d6ea4df")
+			(tstamps "b12e2b74-4ef4-c757-2035-e5ac385b4b81")
 			(units
 				(unit
 					(name "A")
@@ -18854,7 +19531,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "7836dd75-954c-8fdc-38e1-cbd829e7cbec")
+			(tstamps "f2d7fd5b-6ea2-ed2e-f080-804e3aa1f628")
 			(units
 				(unit
 					(name "A")
@@ -19454,7 +20131,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "a9097ca8-a95c-8094-441f-279438b0d63e")
+			(tstamps "da0d2ee0-a985-ad3a-660e-6c9d4fac277c")
 			(units
 				(unit
 					(name "A")
@@ -19514,7 +20191,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "5cef71a5-78b4-5ae7-e259-ead08adaf004")
+			(tstamps "8c4a6556-70c9-5e6f-908f-15c3c1b7758d")
 			(units
 				(unit
 					(name "A")
@@ -19574,7 +20251,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "93fafba0-0189-b0cd-e182-12a305ab8286")
+			(tstamps "2db438eb-54f5-dfd8-ae38-ea8a2785819f")
 			(units
 				(unit
 					(name "A")
@@ -19634,7 +20311,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "01f1c21f-88bd-3860-b584-c374f0667d45")
+			(tstamps "6d04929b-85f1-dfbe-47dc-193c5a32800c")
 			(units
 				(unit
 					(name "A")
@@ -19694,7 +20371,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "17270746-48dd-96a7-797d-2474e79c8923")
+			(tstamps "993a07bd-beb2-ae7e-176b-dce9a341ba94")
 			(units
 				(unit
 					(name "A")
@@ -19754,7 +20431,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "a8faf581-2630-dbce-cb42-56be49c87d56")
+			(tstamps "a3412a70-4b2a-1c01-7e05-9a49e8962749")
 			(units
 				(unit
 					(name "A")
@@ -19814,7 +20491,67 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "0f835daa-35be-83a1-0af4-310bef558300")
+			(tstamps "c4b01071-c113-5b04-1c88-8a3c7d50a4a9")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R4941")
+			(value "4.7k")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
+			(fields
+				(field
+					(name "LCSC") "C23162")
+				(field
+					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description")
+				)
+			)
+			(libsource
+				(lib "Device")
+				(part "R")
+				(description "Resistor")
+			)
+			(property
+				(name "LCSC")
+				(value "C23162")
+			)
+			(property
+				(name "Sheetname")
+				(value "Gigabit Ethernet")
+			)
+			(property
+				(name "Sheetfile")
+				(value "ethernet.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "R res resistor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "R_*")
+			)
+			(sheetpath
+				(names "/Gigabit Ethernet/")
+				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
+			)
+			(tstamps "7379cef2-eca5-6cf3-14f1-1dd8a8b787e5")
 			(units
 				(unit
 					(name "A")
@@ -19874,7 +20611,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "93ebb8c8-3304-9914-9774-5d87e2a0acec")
+			(tstamps "e7b20fb3-afa3-4372-080d-bba30fd80837")
 			(units
 				(unit
 					(name "A")
@@ -19934,7 +20671,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "ab4ec478-328c-cccb-bfbb-4c1c8f15db8a")
+			(tstamps "de9e5641-1d04-8950-60e4-684838126627")
 			(units
 				(unit
 					(name "A")
@@ -19994,7 +20731,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "b3c92391-7c42-73bd-8fcc-7cbec4d67a85")
+			(tstamps "7ce4808e-ef77-5b9c-7774-7c2e2ce35596")
 			(units
 				(unit
 					(name "A")
@@ -20054,7 +20791,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "b2707e68-19bc-42e6-1b3d-66182f8f84ec")
+			(tstamps "de4066cf-d438-67ab-039e-1216553b1680")
 			(units
 				(unit
 					(name "A")
@@ -20114,7 +20851,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "8163b806-5a8b-adad-5989-a3bd0831c393")
+			(tstamps "894f23e3-dd1c-b380-8381-359c8657e8d8")
 			(units
 				(unit
 					(name "A")
@@ -20174,7 +20911,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "04dc9f2a-b401-d30c-e468-4f8c1f52106a")
+			(tstamps "b8bd9021-9959-1087-b56e-d7c05631a11f")
 			(units
 				(unit
 					(name "A")
@@ -20234,7 +20971,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "c293d5a2-d94c-2b28-df71-1296d77cd332")
+			(tstamps "96e0b23d-9191-465b-91e0-bbcda4a83ed2")
 			(units
 				(unit
 					(name "A")
@@ -20294,7 +21031,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "c4062c5a-38b1-0b70-e05e-b766bfa21a41")
+			(tstamps "ab8d3420-ac65-d679-c14d-9d75c07f7733")
 			(units
 				(unit
 					(name "A")
@@ -20354,7 +21091,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "5c35db68-00f7-ab44-c239-396bf506de22")
+			(tstamps "fc026337-d359-05d8-f107-c7639b61c470")
 			(units
 				(unit
 					(name "A")
@@ -20414,7 +21151,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "bb8a0b40-aebe-2bc7-a474-e701e713585f")
+			(tstamps "3a0c7287-a244-8535-00db-ce21a78ec1fd")
 			(units
 				(unit
 					(name "A")
@@ -20474,7 +21211,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "cc04f1a6-5cea-fc15-fe5c-ebe9f609bc3d")
+			(tstamps "64b94e48-2a12-c7b0-40fc-98b9ae543836")
 			(units
 				(unit
 					(name "A")
@@ -20526,7 +21263,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "e6d8dadb-2158-6247-72ec-d0ac1ed34607")
+			(tstamps "1501f8f0-d814-b5b9-eb6f-4576100827f2")
 			(units
 				(unit
 					(name "A")
@@ -20644,8 +21381,8 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "d62410a3-7087-5193-1a7b-e39c16d13527" "db89c41b-f048-1194-0ed6-31479af793ea"
-				"43a40e73-1d6c-8627-15f6-afdef06ebe40"
+			(tstamps "df6a7b37-b44f-6a77-b110-ed193ddc8b11" "db89c41b-f048-1194-0ed6-31479af793ea"
+				"a16bb480-35c8-7e50-6d98-913f72502c19"
 			)
 			(units
 				(unit
@@ -20833,7 +21570,7 @@
 				(names "/Gigabit Ethernet/")
 				(tstamps "/f5b22cbc-3992-b4d6-658d-0d5b03fc11be/")
 			)
-			(tstamps "609065bb-eb47-ad81-702e-1cce12b4d8e9")
+			(tstamps "b949f4fe-59e7-dcd1-cf41-a0d4f9c0f415")
 			(units
 				(unit
 					(name "A")
@@ -26829,6 +27566,66 @@
 			)
 		)
 		(comp
+			(ref "C8305")
+			(value "10uF")
+			(footprint "Capacitor_SMD:C_0603_1608Metric")
+			(fields
+				(field
+					(name "LCSC") "C96446")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0603_1608Metric")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description")
+				)
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "LCSC")
+				(value "C96446")
+			)
+			(property
+				(name "Sheetname")
+				(value "Power")
+			)
+			(property
+				(name "Sheetfile")
+				(value "power.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/Power/")
+				(tstamps "/ad9afe6b-d7ed-ff77-9f27-01af9b8a7a59/")
+			)
+			(tstamps "83e4b128-2534-f7be-105d-a38791d258f9")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
 			(ref "D601")
 			(value "B5819W")
 			(footprint "Diode_SMD:D_SOD-123")
@@ -26933,7 +27730,7 @@
 				(names "/Power/")
 				(tstamps "/ad9afe6b-d7ed-ff77-9f27-01af9b8a7a59/")
 			)
-			(tstamps "eacd7a52-6ec3-89d3-31c4-e8392fecb693")
+			(tstamps "5935ae60-2912-bb86-f719-752e9ce84369")
 			(units
 				(unit
 					(name "A")
@@ -26993,7 +27790,7 @@
 				(names "/Power/")
 				(tstamps "/ad9afe6b-d7ed-ff77-9f27-01af9b8a7a59/")
 			)
-			(tstamps "cf9a1567-b3ad-dcc7-bde0-3cace4a78fed")
+			(tstamps "de8d1d24-637c-2a64-6fe6-6762e30b4e00")
 			(units
 				(unit
 					(name "A")
@@ -27053,7 +27850,7 @@
 				(names "/Power/")
 				(tstamps "/ad9afe6b-d7ed-ff77-9f27-01af9b8a7a59/")
 			)
-			(tstamps "6e5e93c3-8a5d-3f23-1be7-092cf764e23d")
+			(tstamps "5e2aeda4-0c21-68bb-d76b-309360eb6d28")
 			(units
 				(unit
 					(name "A")
@@ -27113,7 +27910,7 @@
 				(names "/Power/")
 				(tstamps "/ad9afe6b-d7ed-ff77-9f27-01af9b8a7a59/")
 			)
-			(tstamps "ce7e6374-7b9d-da82-b2be-aec4410050d6")
+			(tstamps "2d391d1a-8b14-fa9b-cafd-3fd648fe8309")
 			(units
 				(unit
 					(name "A")
@@ -27173,7 +27970,7 @@
 				(names "/Power/")
 				(tstamps "/ad9afe6b-d7ed-ff77-9f27-01af9b8a7a59/")
 			)
-			(tstamps "31c3ae81-a05a-c8f4-4770-f55ece64c48a")
+			(tstamps "ac96a3e7-91ab-e428-2464-200346de4f92")
 			(units
 				(unit
 					(name "A")
@@ -27233,7 +28030,7 @@
 				(names "/Power/")
 				(tstamps "/ad9afe6b-d7ed-ff77-9f27-01af9b8a7a59/")
 			)
-			(tstamps "114131ba-2bdc-abc6-c3e3-99cde34e7795")
+			(tstamps "26f62356-ec23-aa29-55f8-9a6458cf546d")
 			(units
 				(unit
 					(name "A")
@@ -27293,7 +28090,7 @@
 				(names "/Power/")
 				(tstamps "/ad9afe6b-d7ed-ff77-9f27-01af9b8a7a59/")
 			)
-			(tstamps "4eb2cb9f-29b4-169d-bd64-933d3982107b")
+			(tstamps "d443f3c5-7b82-7bb7-e52a-8dde9b6c8d4d")
 			(units
 				(unit
 					(name "A")
@@ -27353,7 +28150,7 @@
 				(names "/Power/")
 				(tstamps "/ad9afe6b-d7ed-ff77-9f27-01af9b8a7a59/")
 			)
-			(tstamps "6e0766a7-445a-7074-8696-0eeaa9999c9a")
+			(tstamps "ec4ff8d5-aaeb-b4a6-b3fb-785ac32c06bd")
 			(units
 				(unit
 					(name "A")
@@ -27669,6 +28466,66 @@
 			)
 		)
 		(comp
+			(ref "FB8301")
+			(value "600R@100MHz")
+			(footprint "Inductor_SMD:L_0603_1608Metric")
+			(fields
+				(field
+					(name "LCSC") "C85833")
+				(field
+					(name "Footprint") "Inductor_SMD:L_0603_1608Metric")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description")
+				)
+			)
+			(libsource
+				(lib "Device")
+				(part "FerriteBead")
+				(description "Ferrite bead")
+			)
+			(property
+				(name "LCSC")
+				(value "C85833")
+			)
+			(property
+				(name "Sheetname")
+				(value "Power")
+			)
+			(property
+				(name "Sheetfile")
+				(value "power.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "L ferrite bead inductor filter")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Inductor_* L_* *Ferrite*")
+			)
+			(sheetpath
+				(names "/Power/")
+				(tstamps "/ad9afe6b-d7ed-ff77-9f27-01af9b8a7a59/")
+			)
+			(tstamps "79191879-fddd-4194-1486-f2ab6387adc0")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
 			(ref "H1")
 			(value "M3")
 			(footprint "MountingHole:MountingHole_3.2mm_M3_Pad")
@@ -27699,7 +28556,7 @@
 				(names "/Power/")
 				(tstamps "/ad9afe6b-d7ed-ff77-9f27-01af9b8a7a59/")
 			)
-			(tstamps "2235f577-0691-2c1b-bbf4-b3c33da0d471")
+			(tstamps "5244ba7c-438e-d04e-b97e-822185e95176")
 			(units
 				(unit
 					(name "A")
@@ -27742,7 +28599,7 @@
 				(names "/Power/")
 				(tstamps "/ad9afe6b-d7ed-ff77-9f27-01af9b8a7a59/")
 			)
-			(tstamps "34703450-6d13-b7df-646c-7cca88ed104b")
+			(tstamps "c158fd30-389c-379d-d4e8-49b7dde3a7ec")
 			(units
 				(unit
 					(name "A")
@@ -27785,7 +28642,7 @@
 				(names "/Power/")
 				(tstamps "/ad9afe6b-d7ed-ff77-9f27-01af9b8a7a59/")
 			)
-			(tstamps "27310fa3-44bb-f747-ee17-560a02a8157d")
+			(tstamps "6650902b-efc4-240f-976d-ad7f4faed269")
 			(units
 				(unit
 					(name "A")
@@ -27828,7 +28685,7 @@
 				(names "/Power/")
 				(tstamps "/ad9afe6b-d7ed-ff77-9f27-01af9b8a7a59/")
 			)
-			(tstamps "225e1354-64e8-a790-4510-3c56763f9631")
+			(tstamps "d8d8bf31-53db-5683-e62e-481529f087f6")
 			(units
 				(unit
 					(name "A")
@@ -27897,10 +28754,10 @@
 		(comp
 			(ref "J602")
 			(value "RAILS")
-			(footprint "Connector_PinHeader_2.54mm:PinHeader_2x08_P2.54mm_Vertical")
+			(footprint "Connector_PinHeader_2.54mm:PinHeader_2x09_P2.54mm_Vertical")
 			(fields
 				(field
-					(name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_2x08_P2.54mm_Vertical")
+					(name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_2x09_P2.54mm_Vertical")
 				(field
 					(name "Datasheet")
 				)
@@ -27910,8 +28767,8 @@
 			)
 			(libsource
 				(lib "Connector_Generic")
-				(part "Conn_02x08_Odd_Even")
-				(description "Generic connector, double row, 02x08, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)")
+				(part "Conn_02x09_Odd_Even")
+				(description "Generic connector, double row, 02x09, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)")
 			)
 			(property
 				(name "Sheetname")
@@ -27933,7 +28790,7 @@
 				(names "/Power/")
 				(tstamps "/ad9afe6b-d7ed-ff77-9f27-01af9b8a7a59/")
 			)
-			(tstamps "c6b021b1-eaab-d93f-d206-24cd07056947")
+			(tstamps "25b2a9ce-a77a-4960-55a1-0fabb5802f29")
 			(units
 				(unit
 					(name "A")
@@ -27963,6 +28820,9 @@
 							(num "15")
 						)
 						(pin
+							(num "17")
+						)
+						(pin
 							(num "2")
 						)
 						(pin
@@ -27985,6 +28845,61 @@
 						)
 						(pin
 							(num "16")
+						)
+						(pin
+							(num "18")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "J603")
+			(value "U.FL")
+			(footprint "ours:UFL_Hirose_U.FL-R-SMT-1")
+			(description "monitor tap: the -4.2 V rail, through 49.9 R")
+			(fields
+				(field
+					(name "LCSC") "C88374")
+				(field
+					(name "Footprint") "ours:UFL_Hirose_U.FL-R-SMT-1")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "monitor tap: the -4.2 V rail, through 49.9 R")
+			)
+			(libsource
+				(lib "ours")
+				(part "UFL_tap")
+				(description "")
+			)
+			(property
+				(name "LCSC")
+				(value "C88374")
+			)
+			(property
+				(name "Sheetname")
+				(value "Power")
+			)
+			(property
+				(name "Sheetfile")
+				(value "power.kicad_sch")
+			)
+			(sheetpath
+				(names "/Power/")
+				(tstamps "/ad9afe6b-d7ed-ff77-9f27-01af9b8a7a59/")
+			)
+			(tstamps "0d8c0999-d3ec-fed1-a699-42eb5eea3623")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
 						)
 					)
 				)
@@ -28155,7 +29070,7 @@
 				(names "/Power/")
 				(tstamps "/ad9afe6b-d7ed-ff77-9f27-01af9b8a7a59/")
 			)
-			(tstamps "d022dbdf-65bd-4cc6-6a76-722dc7c7699a")
+			(tstamps "50cd6951-7c24-3b7e-23f5-30302033d67d")
 			(units
 				(unit
 					(name "A")
@@ -28218,7 +29133,7 @@
 				(names "/Power/")
 				(tstamps "/ad9afe6b-d7ed-ff77-9f27-01af9b8a7a59/")
 			)
-			(tstamps "ac6cddf6-de92-a16d-66a0-fa7792da83a4")
+			(tstamps "1f321b55-f38a-5115-0b20-16a6a1b27e59")
 			(units
 				(unit
 					(name "A")
@@ -28278,7 +29193,7 @@
 				(names "/Power/")
 				(tstamps "/ad9afe6b-d7ed-ff77-9f27-01af9b8a7a59/")
 			)
-			(tstamps "e7af59cd-38a0-b157-130e-1933498a6b71")
+			(tstamps "7daecd11-7e07-2942-448b-175b73c5a46f")
 			(units
 				(unit
 					(name "A")
@@ -28338,7 +29253,7 @@
 				(names "/Power/")
 				(tstamps "/ad9afe6b-d7ed-ff77-9f27-01af9b8a7a59/")
 			)
-			(tstamps "5a6d62b1-e35e-0a47-c0b8-a18d4d97a569")
+			(tstamps "67103ded-0637-7a7f-7b13-48df4eb12345")
 			(units
 				(unit
 					(name "A")
@@ -28398,7 +29313,7 @@
 				(names "/Power/")
 				(tstamps "/ad9afe6b-d7ed-ff77-9f27-01af9b8a7a59/")
 			)
-			(tstamps "2712616e-d236-6822-c1ee-b1e4969076ff")
+			(tstamps "8b025d87-169b-f084-059c-f49614a82007")
 			(units
 				(unit
 					(name "A")
@@ -28458,7 +29373,7 @@
 				(names "/Power/")
 				(tstamps "/ad9afe6b-d7ed-ff77-9f27-01af9b8a7a59/")
 			)
-			(tstamps "c5f8dd3e-935d-a158-b04a-95c622b12799")
+			(tstamps "c225e386-e61e-11ca-b308-52ea3bec173b")
 			(units
 				(unit
 					(name "A")
@@ -28638,7 +29553,7 @@
 				(names "/Power/")
 				(tstamps "/ad9afe6b-d7ed-ff77-9f27-01af9b8a7a59/")
 			)
-			(tstamps "5df3fe70-cfa2-f679-33ff-cd0c628a5299")
+			(tstamps "db426dc9-a53f-a6c0-7297-924ef02f44a8")
 			(units
 				(unit
 					(name "A")
@@ -28698,7 +29613,7 @@
 				(names "/Power/")
 				(tstamps "/ad9afe6b-d7ed-ff77-9f27-01af9b8a7a59/")
 			)
-			(tstamps "8fca2f5b-5387-0915-5656-8c5f0463c911")
+			(tstamps "6712b1df-5ae6-63c9-4d06-1b2af8276ffd")
 			(units
 				(unit
 					(name "A")
@@ -28758,7 +29673,7 @@
 				(names "/Power/")
 				(tstamps "/ad9afe6b-d7ed-ff77-9f27-01af9b8a7a59/")
 			)
-			(tstamps "35bd11e3-3b88-d9bb-6858-3749d331c383")
+			(tstamps "05646cef-0a12-3fe4-bfa0-694a02a0f0bf")
 			(units
 				(unit
 					(name "A")
@@ -28818,7 +29733,7 @@
 				(names "/Power/")
 				(tstamps "/ad9afe6b-d7ed-ff77-9f27-01af9b8a7a59/")
 			)
-			(tstamps "34d95040-1b55-48c5-aeb5-c8206891cf06")
+			(tstamps "d0b94931-f6b6-c0e0-5af2-57d261cf87d3")
 			(units
 				(unit
 					(name "A")
@@ -28955,11 +29870,11 @@
 		)
 		(comp
 			(ref "R8301")
-			(value "1.3M")
+			(value "1.2M")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
 			(fields
 				(field
-					(name "LCSC") "C13316")
+					(name "LCSC") "C22766")
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
 				(field
@@ -28976,7 +29891,7 @@
 			)
 			(property
 				(name "LCSC")
-				(value "C13316")
+				(value "C22766")
 			)
 			(property
 				(name "Sheetname")
@@ -29059,6 +29974,66 @@
 				(tstamps "/ad9afe6b-d7ed-ff77-9f27-01af9b8a7a59/")
 			)
 			(tstamps "f62d26c7-1613-8524-ff8e-db7391acfd0a")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R8303")
+			(value "49.9R")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
+			(fields
+				(field
+					(name "LCSC") "C23185")
+				(field
+					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description")
+				)
+			)
+			(libsource
+				(lib "Device")
+				(part "R")
+				(description "Resistor")
+			)
+			(property
+				(name "LCSC")
+				(value "C23185")
+			)
+			(property
+				(name "Sheetname")
+				(value "Power")
+			)
+			(property
+				(name "Sheetfile")
+				(value "power.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "R res resistor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "R_*")
+			)
+			(sheetpath
+				(names "/Power/")
+				(tstamps "/ad9afe6b-d7ed-ff77-9f27-01af9b8a7a59/")
+			)
+			(tstamps "d23aaad1-925a-a9e7-9bf3-c0a9b82d0933")
 			(units
 				(unit
 					(name "A")
@@ -29557,56 +30532,6 @@
 			)
 		)
 		(libpart
-			(lib "74xGxx")
-			(part "74LVC1GU04")
-			(description "74LVC1G04, Single NOT Gate, Low-Voltage CMOS")
-			(docs "http://www.ti.com/lit/sg/scyt129e/scyt129e.pdf")
-			(footprints
-				(fp "SOT*")
-				(fp "SG-*")
-			)
-			(fields
-				(field
-					(name "Reference") "U")
-				(field
-					(name "Value") "74LVC1GU04")
-				(field
-					(name "Footprint")
-				)
-				(field
-					(name "Datasheet") "http://www.ti.com/lit/sg/scyt129e/scyt129e.pdf")
-				(field
-					(name "Description") "74LVC1G04, Single NOT Gate, Low-Voltage CMOS")
-			)
-			(pins
-				(pin
-					(num "1")
-					(name "NC")
-					(type "no_connect")
-				)
-				(pin
-					(num "2")
-					(name "")
-					(type "input")
-				)
-				(pin
-					(num "3")
-					(name "GND")
-					(type "power_in")
-				)
-				(pin
-					(num "4")
-					(name "")
-					(type "output")
-				)
-				(pin
-					(num "5")
-					(name "VCC")
-					(type "power_in")
-				)
-			)
-		)
-		(libpart
 			(lib "Connector")
 			(part "USB_C_Receptacle_USB2.0_16P")
 			(description "USB 2.0-only 16P Type-C Receptacle connector")
@@ -29889,8 +30814,8 @@
 		)
 		(libpart
 			(lib "Connector_Generic")
-			(part "Conn_02x08_Odd_Even")
-			(description "Generic connector, double row, 02x08, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)")
+			(part "Conn_02x09_Odd_Even")
+			(description "Generic connector, double row, 02x09, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)")
 			(footprints
 				(fp "Connector*:*_2x??_*")
 			)
@@ -29898,7 +30823,7 @@
 				(field
 					(name "Reference") "J")
 				(field
-					(name "Value") "Conn_02x08_Odd_Even")
+					(name "Value") "Conn_02x09_Odd_Even")
 				(field
 					(name "Footprint")
 				)
@@ -29906,7 +30831,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "Generic connector, double row, 02x08, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)")
+					(name "Description") "Generic connector, double row, 02x09, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)")
 			)
 			(pins
 				(pin
@@ -29987,6 +30912,16 @@
 				(pin
 					(num "16")
 					(name "Pin_16")
+					(type "passive")
+				)
+				(pin
+					(num "17")
+					(name "Pin_17")
+					(type "passive")
+				)
+				(pin
+					(num "18")
+					(name "Pin_18")
 					(type "passive")
 				)
 			)
@@ -31949,6 +32884,42 @@
 					(num "48")
 					(name "MODE")
 					(type "input")
+				)
+			)
+		)
+		(libpart
+			(lib "ours")
+			(part "BAV99_antiparallel")
+			(description "dual diode wired anti-parallel")
+			(fields
+				(field
+					(name "Reference") "D")
+				(field
+					(name "Value") "BAV99")
+				(field
+					(name "Footprint")
+				)
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "dual diode wired anti-parallel")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "A1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "K2")
+					(type "passive")
+				)
+				(pin
+					(num "3")
+					(name "K1A2")
+					(type "passive")
 				)
 			)
 		)
@@ -34243,6 +35214,88 @@
 		)
 		(libpart
 			(lib "ours")
+			(part "TLV3501")
+			(description "comparator")
+			(fields
+				(field
+					(name "Reference") "U")
+				(field
+					(name "Value") "TLV3501AIDBVR")
+				(field
+					(name "Footprint")
+				)
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "comparator")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "-")
+					(type "input")
+				)
+				(pin
+					(num "2")
+					(name "V-")
+					(type "power_in")
+				)
+				(pin
+					(num "3")
+					(name "+")
+					(type "input")
+				)
+				(pin
+					(num "4")
+					(name "V+")
+					(type "power_in")
+				)
+				(pin
+					(num "5")
+					(name "")
+					(type "output")
+				)
+				(pin
+					(num "6")
+					(name "SHDN")
+					(type "input")
+				)
+			)
+		)
+		(libpart
+			(lib "ours")
+			(part "UFL_tap")
+			(fields
+				(field
+					(name "Reference") "J")
+				(field
+					(name "Value") "U.FL")
+				(field
+					(name "Footprint")
+				)
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description")
+				)
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "ours")
 			(part "W25Q128JVS")
 			(description "16 MB quad SPI flash")
 			(fields
@@ -34763,6 +35816,12 @@
 				(pintype "passive")
 			)
 			(node
+				(ref "J602")
+				(pin "15")
+				(pinfunction "Pin_15_15")
+				(pintype "passive")
+			)
+			(node
 				(ref "L401")
 				(pin "2")
 				(pinfunction "2_2")
@@ -35051,16 +36110,6 @@
 			)
 			(node
 				(ref "C5411")
-				(pin "1")
-				(pintype "passive")
-			)
-			(node
-				(ref "C5422")
-				(pin "1")
-				(pintype "passive")
-			)
-			(node
-				(ref "C5423")
 				(pin "1")
 				(pintype "passive")
 			)
@@ -35576,18 +36625,6 @@
 				(pintype "power_in")
 			)
 			(node
-				(ref "U302")
-				(pin "5")
-				(pinfunction "VCC_5")
-				(pintype "power_in")
-			)
-			(node
-				(ref "U303")
-				(pin "5")
-				(pinfunction "VCC_5")
-				(pintype "power_in")
-			)
-			(node
 				(ref "U304")
 				(pin "5")
 				(pinfunction "VCC_5")
@@ -35742,6 +36779,11 @@
 				(pintype "passive")
 			)
 			(node
+				(ref "C5422")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
 				(ref "C8002")
 				(pin "1")
 				(pintype "passive")
@@ -35756,6 +36798,11 @@
 				(ref "J602")
 				(pin "9")
 				(pinfunction "Pin_9_9")
+				(pintype "passive")
+			)
+			(node
+				(ref "R5424")
+				(pin "1")
 				(pintype "passive")
 			)
 			(node
@@ -35817,6 +36864,12 @@
 				(pin "7")
 				(pinfunction "~{PD}_7")
 				(pintype "input")
+			)
+			(node
+				(ref "U302")
+				(pin "4")
+				(pinfunction "V+_4")
+				(pintype "power_in")
 			)
 			(node
 				(ref "U604")
@@ -36026,6 +37079,11 @@
 			)
 			(node
 				(ref "R4916")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "R4941")
 				(pin "1")
 				(pintype "passive")
 			)
@@ -36320,7 +37378,7 @@
 		)
 		(net
 			(code "14")
-			(name "-4V4")
+			(name "-4V2")
 			(class "Default")
 			(node
 				(ref "C1102")
@@ -36348,7 +37406,7 @@
 				(pintype "passive")
 			)
 			(node
-				(ref "C8304")
+				(ref "C8305")
 				(pin "1")
 				(pintype "passive")
 			)
@@ -36371,6 +37429,11 @@
 				(pintype "passive")
 			)
 			(node
+				(ref "FB8301")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
 				(ref "J106")
 				(pin "1")
 				(pinfunction "Pin_1_1")
@@ -36378,8 +37441,8 @@
 			)
 			(node
 				(ref "J602")
-				(pin "15")
-				(pinfunction "Pin_15_15")
+				(pin "17")
+				(pinfunction "Pin_17_17")
 				(pintype "passive")
 			)
 			(node
@@ -36388,7 +37451,7 @@
 				(pintype "passive")
 			)
 			(node
-				(ref "R8301")
+				(ref "R8303")
 				(pin "1")
 				(pintype "passive")
 			)
@@ -36421,12 +37484,6 @@
 				(pin "4")
 				(pinfunction "V-_4")
 				(pintype "power_in")
-			)
-			(node
-				(ref "U606")
-				(pin "4")
-				(pinfunction "VOUT_4")
-				(pintype "power_out")
 			)
 		)
 		(net
@@ -39799,6 +40856,27 @@
 		)
 		(net
 			(code "220")
+			(name "/Gigabit Ethernet/TXDLY")
+			(class "Default")
+			(node
+				(ref "R4909")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R4941")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "U401")
+				(pin "24")
+				(pinfunction "RXD1/TXDLY_24")
+				(pintype "output")
+			)
+		)
+		(net
+			(code "221")
 			(name "/Power/VBUS")
 			(class "Default")
 			(node
@@ -39838,7 +40916,7 @@
 			)
 		)
 		(net
-			(code "221")
+			(code "222")
 			(name "GND")
 			(class "Power")
 			(node
@@ -40017,6 +41095,16 @@
 				(pintype "passive")
 			)
 			(node
+				(ref "C2402")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "C2502")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
 				(ref "C2601")
 				(pin "2")
 				(pintype "passive")
@@ -40142,7 +41230,7 @@
 				(pintype "passive")
 			)
 			(node
-				(ref "C5423")
+				(ref "C5424")
 				(pin "2")
 				(pintype "passive")
 			)
@@ -40178,6 +41266,11 @@
 			)
 			(node
 				(ref "C5701")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C5711")
 				(pin "2")
 				(pintype "passive")
 			)
@@ -40562,6 +41655,11 @@
 				(pintype "passive")
 			)
 			(node
+				(ref "C8305")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
 				(ref "D301")
 				(pin "1")
 				(pinfunction "K_1")
@@ -40661,6 +41759,21 @@
 				(ref "J105")
 				(pin "1")
 				(pinfunction "Pin_1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "J107")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "J108")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "J109")
+				(pin "2")
 				(pintype "passive")
 			)
 			(node
@@ -40883,6 +41996,12 @@
 			)
 			(node
 				(ref "J602")
+				(pin "18")
+				(pinfunction "Pin_18_18")
+				(pintype "passive")
+			)
+			(node
+				(ref "J602")
 				(pin "2")
 				(pinfunction "Pin_2_2")
 				(pintype "passive")
@@ -40903,6 +42022,11 @@
 				(ref "J602")
 				(pin "8")
 				(pinfunction "Pin_8_8")
+				(pintype "passive")
+			)
+			(node
+				(ref "J603")
+				(pin "2")
 				(pintype "passive")
 			)
 			(node
@@ -41021,6 +42145,11 @@
 			)
 			(node
 				(ref "R4983")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R5425")
 				(pin "2")
 				(pintype "passive")
 			)
@@ -41453,15 +42582,15 @@
 			)
 			(node
 				(ref "U302")
-				(pin "3")
-				(pinfunction "GND_3")
+				(pin "2")
+				(pinfunction "V-_2")
 				(pintype "power_in")
 			)
 			(node
-				(ref "U303")
-				(pin "3")
-				(pinfunction "GND_3")
-				(pintype "power_in")
+				(ref "U302")
+				(pin "6")
+				(pinfunction "SHDN_6")
+				(pintype "input")
 			)
 			(node
 				(ref "U304")
@@ -41699,7 +42828,7 @@
 			)
 		)
 		(net
-			(code "222")
+			(code "223")
 			(name "Net-(C2401-Pad2)")
 			(class "Default")
 			(node
@@ -41724,7 +42853,7 @@
 			)
 		)
 		(net
-			(code "223")
+			(code "224")
 			(name "Net-(C2501-Pad2)")
 			(class "Default")
 			(node
@@ -41749,7 +42878,7 @@
 			)
 		)
 		(net
-			(code "224")
+			(code "225")
 			(name "Net-(C4951-Pad1)")
 			(class "Default")
 			(node
@@ -41779,7 +42908,7 @@
 			)
 		)
 		(net
-			(code "225")
+			(code "226")
 			(name "Net-(C5421-Pad1)")
 			(class "Default")
 			(node
@@ -41796,26 +42925,6 @@
 				(ref "R5421")
 				(pin "1")
 				(pintype "passive")
-			)
-		)
-		(net
-			(code "226")
-			(name "Net-(C5421-Pad2)")
-			(class "Default")
-			(node
-				(ref "C5421")
-				(pin "2")
-				(pintype "passive")
-			)
-			(node
-				(ref "R5422")
-				(pin "1")
-				(pintype "passive")
-			)
-			(node
-				(ref "U302")
-				(pin "2")
-				(pintype "input")
 			)
 		)
 		(net
@@ -41853,6 +42962,126 @@
 		)
 		(net
 			(code "228")
+			(name "Net-(D111-A1)")
+			(class "Default")
+			(node
+				(ref "D111")
+				(pin "1")
+				(pinfunction "A1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "D111")
+				(pin "2")
+				(pinfunction "K2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R1108")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R1110")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U111")
+				(pin "1")
+				(pinfunction "-_1")
+				(pintype "input")
+			)
+		)
+		(net
+			(code "229")
+			(name "Net-(D111-K1A2)")
+			(class "Default")
+			(node
+				(ref "D111")
+				(pin "3")
+				(pinfunction "K1A2_3")
+				(pintype "passive")
+			)
+			(node
+				(ref "R1107")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R1109")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U111")
+				(pin "8")
+				(pinfunction "+_8")
+				(pintype "input")
+			)
+		)
+		(net
+			(code "230")
+			(name "Net-(D112-A1)")
+			(class "Default")
+			(node
+				(ref "D112")
+				(pin "1")
+				(pinfunction "A1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "D112")
+				(pin "2")
+				(pinfunction "K2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R1208")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R1210")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U112")
+				(pin "1")
+				(pinfunction "-_1")
+				(pintype "input")
+			)
+		)
+		(net
+			(code "231")
+			(name "Net-(D112-K1A2)")
+			(class "Default")
+			(node
+				(ref "D112")
+				(pin "3")
+				(pinfunction "K1A2_3")
+				(pintype "passive")
+			)
+			(node
+				(ref "R1207")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R1209")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U112")
+				(pin "8")
+				(pinfunction "+_8")
+				(pintype "input")
+			)
+		)
+		(net
+			(code "232")
 			(name "Net-(D201-K)")
 			(class "Default")
 			(node
@@ -41869,7 +43098,7 @@
 			)
 		)
 		(net
-			(code "229")
+			(code "233")
 			(name "Net-(D301-A)")
 			(class "Default")
 			(node
@@ -41885,7 +43114,7 @@
 			)
 		)
 		(net
-			(code "230")
+			(code "234")
 			(name "Net-(D302-A)")
 			(class "Default")
 			(node
@@ -41901,7 +43130,7 @@
 			)
 		)
 		(net
-			(code "231")
+			(code "235")
 			(name "Net-(D303-A)")
 			(class "Default")
 			(node
@@ -41917,7 +43146,7 @@
 			)
 		)
 		(net
-			(code "232")
+			(code "236")
 			(name "Net-(D304-A)")
 			(class "Default")
 			(node
@@ -41933,7 +43162,7 @@
 			)
 		)
 		(net
-			(code "233")
+			(code "237")
 			(name "Net-(D305-A)")
 			(class "Default")
 			(node
@@ -41949,7 +43178,7 @@
 			)
 		)
 		(net
-			(code "234")
+			(code "238")
 			(name "Net-(D306-A)")
 			(class "Default")
 			(node
@@ -41965,7 +43194,7 @@
 			)
 		)
 		(net
-			(code "235")
+			(code "239")
 			(name "Net-(D307-A)")
 			(class "Default")
 			(node
@@ -41981,7 +43210,7 @@
 			)
 		)
 		(net
-			(code "236")
+			(code "240")
 			(name "Net-(D308-A)")
 			(class "Default")
 			(node
@@ -41997,7 +43226,7 @@
 			)
 		)
 		(net
-			(code "237")
+			(code "241")
 			(name "Net-(D309-B)")
 			(class "Default")
 			(node
@@ -42013,7 +43242,7 @@
 			)
 		)
 		(net
-			(code "238")
+			(code "242")
 			(name "Net-(D309-G)")
 			(class "Default")
 			(node
@@ -42029,7 +43258,7 @@
 			)
 		)
 		(net
-			(code "239")
+			(code "243")
 			(name "Net-(D309-R)")
 			(class "Default")
 			(node
@@ -42045,7 +43274,7 @@
 			)
 		)
 		(net
-			(code "240")
+			(code "244")
 			(name "Net-(D401-K)")
 			(class "Default")
 			(node
@@ -42061,7 +43290,7 @@
 			)
 		)
 		(net
-			(code "241")
+			(code "245")
 			(name "Net-(D402-A)")
 			(class "Default")
 			(node
@@ -42077,7 +43306,7 @@
 			)
 		)
 		(net
-			(code "242")
+			(code "246")
 			(name "Net-(D403-A)")
 			(class "Default")
 			(node
@@ -42093,7 +43322,7 @@
 			)
 		)
 		(net
-			(code "243")
+			(code "247")
 			(name "Net-(D501-A)")
 			(class "Default")
 			(node
@@ -42109,7 +43338,7 @@
 			)
 		)
 		(net
-			(code "244")
+			(code "248")
 			(name "Net-(D601-A)")
 			(class "Default")
 			(node
@@ -42126,7 +43355,7 @@
 			)
 		)
 		(net
-			(code "245")
+			(code "249")
 			(name "Net-(D602-K)")
 			(class "Default")
 			(node
@@ -42142,7 +43371,7 @@
 			)
 		)
 		(net
-			(code "246")
+			(code "250")
 			(name "Net-(D603-K)")
 			(class "Default")
 			(node
@@ -42158,7 +43387,7 @@
 			)
 		)
 		(net
-			(code "247")
+			(code "251")
 			(name "Net-(D604-K)")
 			(class "Default")
 			(node
@@ -42174,7 +43403,7 @@
 			)
 		)
 		(net
-			(code "248")
+			(code "252")
 			(name "Net-(D605-K)")
 			(class "Default")
 			(node
@@ -42190,7 +43419,7 @@
 			)
 		)
 		(net
-			(code "249")
+			(code "253")
 			(name "Net-(D606-K)")
 			(class "Default")
 			(node
@@ -42206,7 +43435,7 @@
 			)
 		)
 		(net
-			(code "250")
+			(code "254")
 			(name "Net-(D607-K)")
 			(class "Default")
 			(node
@@ -42222,7 +43451,7 @@
 			)
 		)
 		(net
-			(code "251")
+			(code "255")
 			(name "Net-(D608-K)")
 			(class "Default")
 			(node
@@ -42238,7 +43467,7 @@
 			)
 		)
 		(net
-			(code "252")
+			(code "256")
 			(name "Net-(D609-A)")
 			(class "Default")
 			(node
@@ -42254,7 +43483,7 @@
 			)
 		)
 		(net
-			(code "253")
+			(code "257")
 			(name "Net-(D609-K)")
 			(class "Default")
 			(node
@@ -42271,7 +43500,7 @@
 			)
 		)
 		(net
-			(code "254")
+			(code "258")
 			(name "Net-(J101-Pad1)")
 			(class "Default")
 			(node
@@ -42291,7 +43520,7 @@
 			)
 		)
 		(net
-			(code "255")
+			(code "259")
 			(name "Net-(J102-Pad1)")
 			(class "Default")
 			(node
@@ -42311,7 +43540,7 @@
 			)
 		)
 		(net
-			(code "256")
+			(code "260")
 			(name "Net-(J105-Pin_2)")
 			(class "Default")
 			(node
@@ -42354,7 +43583,52 @@
 			)
 		)
 		(net
-			(code "257")
+			(code "261")
+			(name "Net-(J107-Pad1)")
+			(class "Default")
+			(node
+				(ref "J107")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "R1113")
+				(pin "2")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "262")
+			(name "Net-(J108-Pad1)")
+			(class "Default")
+			(node
+				(ref "J108")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "R1213")
+				(pin "2")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "263")
+			(name "Net-(J109-Pad1)")
+			(class "Default")
+			(node
+				(ref "J109")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "R1406")
+				(pin "2")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "264")
 			(name "Net-(J204-Pad1)")
 			(class "Default")
 			(node
@@ -42369,7 +43643,7 @@
 			)
 		)
 		(net
-			(code "258")
+			(code "265")
 			(name "Net-(J205-Pad1)")
 			(class "Default")
 			(node
@@ -42384,7 +43658,7 @@
 			)
 		)
 		(net
-			(code "259")
+			(code "266")
 			(name "Net-(J210-Pin_2)")
 			(class "Default")
 			(node
@@ -42401,7 +43675,7 @@
 			)
 		)
 		(net
-			(code "260")
+			(code "267")
 			(name "Net-(J302-Pad1)")
 			(class "Default")
 			(node
@@ -42416,7 +43690,7 @@
 			)
 		)
 		(net
-			(code "261")
+			(code "268")
 			(name "Net-(J303-Pin_1)")
 			(class "Default")
 			(node
@@ -42432,7 +43706,7 @@
 			)
 		)
 		(net
-			(code "262")
+			(code "269")
 			(name "Net-(J303-Pin_2)")
 			(class "Default")
 			(node
@@ -42448,7 +43722,7 @@
 			)
 		)
 		(net
-			(code "263")
+			(code "270")
 			(name "Net-(J303-Pin_3)")
 			(class "Default")
 			(node
@@ -42464,7 +43738,7 @@
 			)
 		)
 		(net
-			(code "264")
+			(code "271")
 			(name "Net-(J303-Pin_4)")
 			(class "Default")
 			(node
@@ -42480,7 +43754,7 @@
 			)
 		)
 		(net
-			(code "265")
+			(code "272")
 			(name "Net-(J303-Pin_5)")
 			(class "Default")
 			(node
@@ -42496,7 +43770,7 @@
 			)
 		)
 		(net
-			(code "266")
+			(code "273")
 			(name "Net-(J303-Pin_6)")
 			(class "Default")
 			(node
@@ -42512,7 +43786,7 @@
 			)
 		)
 		(net
-			(code "267")
+			(code "274")
 			(name "Net-(J303-Pin_7)")
 			(class "Default")
 			(node
@@ -42528,7 +43802,7 @@
 			)
 		)
 		(net
-			(code "268")
+			(code "275")
 			(name "Net-(J303-Pin_8)")
 			(class "Default")
 			(node
@@ -42544,7 +43818,7 @@
 			)
 		)
 		(net
-			(code "269")
+			(code "276")
 			(name "Net-(J304-Pin_1)")
 			(class "Default")
 			(node
@@ -42560,7 +43834,7 @@
 			)
 		)
 		(net
-			(code "270")
+			(code "277")
 			(name "Net-(J304-Pin_2)")
 			(class "Default")
 			(node
@@ -42576,7 +43850,7 @@
 			)
 		)
 		(net
-			(code "271")
+			(code "278")
 			(name "Net-(J304-Pin_3)")
 			(class "Default")
 			(node
@@ -42592,7 +43866,7 @@
 			)
 		)
 		(net
-			(code "272")
+			(code "279")
 			(name "Net-(J304-Pin_4)")
 			(class "Default")
 			(node
@@ -42608,7 +43882,7 @@
 			)
 		)
 		(net
-			(code "273")
+			(code "280")
 			(name "Net-(J304-Pin_5)")
 			(class "Default")
 			(node
@@ -42624,7 +43898,7 @@
 			)
 		)
 		(net
-			(code "274")
+			(code "281")
 			(name "Net-(J304-Pin_6)")
 			(class "Default")
 			(node
@@ -42640,7 +43914,7 @@
 			)
 		)
 		(net
-			(code "275")
+			(code "282")
 			(name "Net-(J304-Pin_7)")
 			(class "Default")
 			(node
@@ -42656,7 +43930,7 @@
 			)
 		)
 		(net
-			(code "276")
+			(code "283")
 			(name "Net-(J304-Pin_8)")
 			(class "Default")
 			(node
@@ -42672,7 +43946,7 @@
 			)
 		)
 		(net
-			(code "277")
+			(code "284")
 			(name "Net-(J501-CC1)")
 			(class "Default")
 			(node
@@ -42688,7 +43962,7 @@
 			)
 		)
 		(net
-			(code "278")
+			(code "285")
 			(name "Net-(J501-CC2)")
 			(class "Default")
 			(node
@@ -42704,7 +43978,7 @@
 			)
 		)
 		(net
-			(code "279")
+			(code "286")
 			(name "Net-(J501-D+-PadA6)")
 			(class "Default")
 			(node
@@ -42727,7 +44001,7 @@
 			)
 		)
 		(net
-			(code "280")
+			(code "287")
 			(name "Net-(J501-D--PadA7)")
 			(class "Default")
 			(node
@@ -42750,7 +44024,7 @@
 			)
 		)
 		(net
-			(code "281")
+			(code "288")
 			(name "Net-(J502-CC1)")
 			(class "Default")
 			(node
@@ -42766,7 +44040,7 @@
 			)
 		)
 		(net
-			(code "282")
+			(code "289")
 			(name "Net-(J502-CC2)")
 			(class "Default")
 			(node
@@ -42782,7 +44056,7 @@
 			)
 		)
 		(net
-			(code "283")
+			(code "290")
 			(name "Net-(J502-D+-PadA6)")
 			(class "Default")
 			(node
@@ -42805,7 +44079,7 @@
 			)
 		)
 		(net
-			(code "284")
+			(code "291")
 			(name "Net-(J502-D--PadA7)")
 			(class "Default")
 			(node
@@ -42828,7 +44102,7 @@
 			)
 		)
 		(net
-			(code "285")
+			(code "292")
 			(name "Net-(J503-+5V)")
 			(class "Default")
 			(node
@@ -42844,7 +44118,7 @@
 			)
 		)
 		(net
-			(code "286")
+			(code "293")
 			(name "Net-(J503-CEC)")
 			(class "Default")
 			(node
@@ -42860,7 +44134,7 @@
 			)
 		)
 		(net
-			(code "287")
+			(code "294")
 			(name "Net-(J503-CK+)")
 			(class "Default")
 			(node
@@ -42876,7 +44150,7 @@
 			)
 		)
 		(net
-			(code "288")
+			(code "295")
 			(name "Net-(J503-CK-)")
 			(class "Default")
 			(node
@@ -42892,7 +44166,7 @@
 			)
 		)
 		(net
-			(code "289")
+			(code "296")
 			(name "Net-(J503-D0+)")
 			(class "Default")
 			(node
@@ -42908,7 +44182,7 @@
 			)
 		)
 		(net
-			(code "290")
+			(code "297")
 			(name "Net-(J503-D0-)")
 			(class "Default")
 			(node
@@ -42924,7 +44198,7 @@
 			)
 		)
 		(net
-			(code "291")
+			(code "298")
 			(name "Net-(J503-D1+)")
 			(class "Default")
 			(node
@@ -42940,7 +44214,7 @@
 			)
 		)
 		(net
-			(code "292")
+			(code "299")
 			(name "Net-(J503-D1-)")
 			(class "Default")
 			(node
@@ -42956,7 +44230,7 @@
 			)
 		)
 		(net
-			(code "293")
+			(code "300")
 			(name "Net-(J503-D2+)")
 			(class "Default")
 			(node
@@ -42972,7 +44246,7 @@
 			)
 		)
 		(net
-			(code "294")
+			(code "301")
 			(name "Net-(J503-D2-)")
 			(class "Default")
 			(node
@@ -42988,7 +44262,7 @@
 			)
 		)
 		(net
-			(code "295")
+			(code "302")
 			(name "Net-(J503-HPD)")
 			(class "Default")
 			(node
@@ -43004,7 +44278,7 @@
 			)
 		)
 		(net
-			(code "296")
+			(code "303")
 			(name "Net-(J503-SCL)")
 			(class "Default")
 			(node
@@ -43026,7 +44300,7 @@
 			)
 		)
 		(net
-			(code "297")
+			(code "304")
 			(name "Net-(J503-SDA)")
 			(class "Default")
 			(node
@@ -43048,7 +44322,22 @@
 			)
 		)
 		(net
-			(code "298")
+			(code "305")
+			(name "Net-(J603-Pad1)")
+			(class "Default")
+			(node
+				(ref "J603")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "R8303")
+				(pin "2")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "306")
 			(name "Net-(JP101-B)")
 			(class "Default")
 			(node
@@ -43064,7 +44353,7 @@
 			)
 		)
 		(net
-			(code "299")
+			(code "307")
 			(name "Net-(JP102-B)")
 			(class "Default")
 			(node
@@ -43086,7 +44375,7 @@
 			)
 		)
 		(net
-			(code "300")
+			(code "308")
 			(name "Net-(JP102-C)")
 			(class "Default")
 			(node
@@ -43103,7 +44392,7 @@
 			)
 		)
 		(net
-			(code "301")
+			(code "309")
 			(name "Net-(JP103-A)")
 			(class "Default")
 			(node
@@ -43130,7 +44419,7 @@
 			)
 		)
 		(net
-			(code "302")
+			(code "310")
 			(name "Net-(JP103-B)")
 			(class "Default")
 			(node
@@ -43157,7 +44446,7 @@
 			)
 		)
 		(net
-			(code "303")
+			(code "311")
 			(name "Net-(JP104-A)")
 			(class "Default")
 			(node
@@ -43184,7 +44473,7 @@
 			)
 		)
 		(net
-			(code "304")
+			(code "312")
 			(name "Net-(JP104-B)")
 			(class "Default")
 			(node
@@ -43204,13 +44493,18 @@
 				(pintype "passive")
 			)
 			(node
+				(ref "R1113")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
 				(ref "U101")
 				(pin "7")
 				(pintype "output")
 			)
 		)
 		(net
-			(code "305")
+			(code "313")
 			(name "Net-(JP201-B)")
 			(class "Default")
 			(node
@@ -43226,7 +44520,7 @@
 			)
 		)
 		(net
-			(code "306")
+			(code "314")
 			(name "Net-(JP202-B)")
 			(class "Default")
 			(node
@@ -43248,7 +44542,7 @@
 			)
 		)
 		(net
-			(code "307")
+			(code "315")
 			(name "Net-(JP202-C)")
 			(class "Default")
 			(node
@@ -43265,7 +44559,7 @@
 			)
 		)
 		(net
-			(code "308")
+			(code "316")
 			(name "Net-(JP203-A)")
 			(class "Default")
 			(node
@@ -43292,7 +44586,7 @@
 			)
 		)
 		(net
-			(code "309")
+			(code "317")
 			(name "Net-(JP203-B)")
 			(class "Default")
 			(node
@@ -43319,7 +44613,7 @@
 			)
 		)
 		(net
-			(code "310")
+			(code "318")
 			(name "Net-(JP204-A)")
 			(class "Default")
 			(node
@@ -43346,7 +44640,7 @@
 			)
 		)
 		(net
-			(code "311")
+			(code "319")
 			(name "Net-(JP204-B)")
 			(class "Default")
 			(node
@@ -43366,13 +44660,18 @@
 				(pintype "passive")
 			)
 			(node
+				(ref "R1213")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
 				(ref "U102")
 				(pin "7")
 				(pintype "output")
 			)
 		)
 		(net
-			(code "312")
+			(code "320")
 			(name "Net-(JP1203-A)")
 			(class "Default")
 			(node
@@ -43392,13 +44691,18 @@
 				(pintype "passive")
 			)
 			(node
+				(ref "R1406")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
 				(ref "U105")
 				(pin "1")
 				(pintype "output")
 			)
 		)
 		(net
-			(code "313")
+			(code "321")
 			(name "Net-(JP1203-C)")
 			(class "Default")
 			(node
@@ -43415,7 +44719,7 @@
 			)
 		)
 		(net
-			(code "314")
+			(code "322")
 			(name "Net-(JP2009-C)")
 			(class "Default")
 			(node
@@ -43432,7 +44736,7 @@
 			)
 		)
 		(net
-			(code "315")
+			(code "323")
 			(name "Net-(JP3001-B)")
 			(class "Default")
 			(node
@@ -43448,7 +44752,7 @@
 			)
 		)
 		(net
-			(code "316")
+			(code "324")
 			(name "Net-(Q201-B)")
 			(class "Default")
 			(node
@@ -43464,7 +44768,7 @@
 			)
 		)
 		(net
-			(code "317")
+			(code "325")
 			(name "Net-(Q201-E)")
 			(class "Default")
 			(node
@@ -43486,7 +44790,7 @@
 			)
 		)
 		(net
-			(code "318")
+			(code "326")
 			(name "Net-(Q601-B)")
 			(class "Default")
 			(node
@@ -43502,7 +44806,7 @@
 			)
 		)
 		(net
-			(code "319")
+			(code "327")
 			(name "Net-(R1109-Pad2)")
 			(class "Default")
 			(node
@@ -43522,7 +44826,7 @@
 			)
 		)
 		(net
-			(code "320")
+			(code "328")
 			(name "Net-(R1110-Pad2)")
 			(class "Default")
 			(node
@@ -43542,7 +44846,7 @@
 			)
 		)
 		(net
-			(code "321")
+			(code "329")
 			(name "Net-(R1209-Pad2)")
 			(class "Default")
 			(node
@@ -43562,7 +44866,7 @@
 			)
 		)
 		(net
-			(code "322")
+			(code "330")
 			(name "Net-(R1210-Pad2)")
 			(class "Default")
 			(node
@@ -43582,7 +44886,7 @@
 			)
 		)
 		(net
-			(code "323")
+			(code "331")
 			(name "Net-(R1401-Pad2)")
 			(class "Default")
 			(node
@@ -43597,7 +44901,7 @@
 			)
 		)
 		(net
-			(code "324")
+			(code "332")
 			(name "Net-(R1402-Pad2)")
 			(class "Default")
 			(node
@@ -43612,7 +44916,7 @@
 			)
 		)
 		(net
-			(code "325")
+			(code "333")
 			(name "Net-(R1403-Pad2)")
 			(class "Default")
 			(node
@@ -43627,7 +44931,7 @@
 			)
 		)
 		(net
-			(code "326")
+			(code "334")
 			(name "Net-(R1404-Pad2)")
 			(class "Default")
 			(node
@@ -43642,7 +44946,7 @@
 			)
 		)
 		(net
-			(code "327")
+			(code "335")
 			(name "Net-(R2508-Pad1)")
 			(class "Default")
 			(node
@@ -43657,27 +44961,7 @@
 			)
 		)
 		(net
-			(code "328")
-			(name "Net-(R5422-Pad2)")
-			(class "Default")
-			(node
-				(ref "R5422")
-				(pin "2")
-				(pintype "passive")
-			)
-			(node
-				(ref "U302")
-				(pin "4")
-				(pintype "output")
-			)
-			(node
-				(ref "U303")
-				(pin "2")
-				(pintype "input")
-			)
-		)
-		(net
-			(code "329")
+			(code "336")
 			(name "Net-(R5423-Pad1)")
 			(class "Default")
 			(node
@@ -43686,13 +44970,13 @@
 				(pintype "passive")
 			)
 			(node
-				(ref "U303")
-				(pin "4")
+				(ref "U302")
+				(pin "5")
 				(pintype "output")
 			)
 		)
 		(net
-			(code "330")
+			(code "337")
 			(name "Net-(R5431-Pad1)")
 			(class "Default")
 			(node
@@ -43707,7 +44991,7 @@
 			)
 		)
 		(net
-			(code "331")
+			(code "338")
 			(name "Net-(R5441-Pad1)")
 			(class "Default")
 			(node
@@ -43723,7 +45007,7 @@
 			)
 		)
 		(net
-			(code "332")
+			(code "339")
 			(name "Net-(R5442-Pad1)")
 			(class "Default")
 			(node
@@ -43739,7 +45023,7 @@
 			)
 		)
 		(net
-			(code "333")
+			(code "340")
 			(name "Net-(R5451-Pad2)")
 			(class "Default")
 			(node
@@ -43761,7 +45045,7 @@
 			)
 		)
 		(net
-			(code "334")
+			(code "341")
 			(name "Net-(R5452-Pad2)")
 			(class "Default")
 			(node
@@ -43783,7 +45067,7 @@
 			)
 		)
 		(net
-			(code "335")
+			(code "342")
 			(name "Net-(R6311-Pad1)")
 			(class "Default")
 			(node
@@ -43804,7 +45088,7 @@
 			)
 		)
 		(net
-			(code "336")
+			(code "343")
 			(name "Net-(R6321-Pad1)")
 			(class "Default")
 			(node
@@ -43825,7 +45109,7 @@
 			)
 		)
 		(net
-			(code "337")
+			(code "344")
 			(name "Net-(T401-MCT1)")
 			(class "Default")
 			(node
@@ -43841,7 +45125,7 @@
 			)
 		)
 		(net
-			(code "338")
+			(code "345")
 			(name "Net-(T401-MCT2)")
 			(class "Default")
 			(node
@@ -43857,7 +45141,7 @@
 			)
 		)
 		(net
-			(code "339")
+			(code "346")
 			(name "Net-(T401-MCT3)")
 			(class "Default")
 			(node
@@ -43873,7 +45157,7 @@
 			)
 		)
 		(net
-			(code "340")
+			(code "347")
 			(name "Net-(T401-MCT4)")
 			(class "Default")
 			(node
@@ -43889,7 +45173,7 @@
 			)
 		)
 		(net
-			(code "341")
+			(code "348")
 			(name "Net-(T401-TCT1)")
 			(class "Default")
 			(node
@@ -43905,7 +45189,7 @@
 			)
 		)
 		(net
-			(code "342")
+			(code "349")
 			(name "Net-(T401-TCT2)")
 			(class "Default")
 			(node
@@ -43921,7 +45205,7 @@
 			)
 		)
 		(net
-			(code "343")
+			(code "350")
 			(name "Net-(T401-TCT3)")
 			(class "Default")
 			(node
@@ -43937,7 +45221,7 @@
 			)
 		)
 		(net
-			(code "344")
+			(code "351")
 			(name "Net-(T401-TCT4)")
 			(class "Default")
 			(node
@@ -43953,7 +45237,7 @@
 			)
 		)
 		(net
-			(code "345")
+			(code "352")
 			(name "Net-(U1-PadA2)")
 			(class "Default")
 			(node
@@ -43969,7 +45253,7 @@
 			)
 		)
 		(net
-			(code "346")
+			(code "353")
 			(name "Net-(U1C-C7_PCLK)")
 			(class "Default")
 			(node
@@ -43985,7 +45269,7 @@
 			)
 		)
 		(net
-			(code "347")
+			(code "354")
 			(name "Net-(U1C-D7_PCLK)")
 			(class "Default")
 			(node
@@ -44001,7 +45285,7 @@
 			)
 		)
 		(net
-			(code "348")
+			(code "355")
 			(name "Net-(U1C-E7_PCLK)")
 			(class "Default")
 			(node
@@ -44017,7 +45301,7 @@
 			)
 		)
 		(net
-			(code "349")
+			(code "356")
 			(name "Net-(U1G-N9_CCLK{slash}MCLK)")
 			(class "Default")
 			(node
@@ -44034,7 +45318,7 @@
 			)
 		)
 		(net
-			(code "350")
+			(code "357")
 			(name "Net-(U1G-P9_DONE)")
 			(class "Default")
 			(node
@@ -44050,9 +45334,14 @@
 			)
 		)
 		(net
-			(code "351")
+			(code "358")
 			(name "Net-(U1G-R9_PROGRAMN)")
 			(class "Default")
+			(node
+				(ref "C5711")
+				(pin "1")
+				(pintype "passive")
+			)
 			(node
 				(ref "R5711")
 				(pin "2")
@@ -44072,7 +45361,7 @@
 			)
 		)
 		(net
-			(code "352")
+			(code "359")
 			(name "Net-(U1G-T9_INITN)")
 			(class "Default")
 			(node
@@ -44088,7 +45377,7 @@
 			)
 		)
 		(net
-			(code "353")
+			(code "360")
 			(name "Net-(U103A-CLK_A)")
 			(class "Default")
 			(node
@@ -44104,7 +45393,7 @@
 			)
 		)
 		(net
-			(code "354")
+			(code "361")
 			(name "Net-(U103A-VIN+_A)")
 			(class "Default")
 			(node
@@ -44125,7 +45414,7 @@
 			)
 		)
 		(net
-			(code "355")
+			(code "362")
 			(name "Net-(U103A-VIN-_A)")
 			(class "Default")
 			(node
@@ -44146,7 +45435,7 @@
 			)
 		)
 		(net
-			(code "356")
+			(code "363")
 			(name "Net-(U103B-CLK_B)")
 			(class "Default")
 			(node
@@ -44162,7 +45451,7 @@
 			)
 		)
 		(net
-			(code "357")
+			(code "364")
 			(name "Net-(U103B-VIN+_B)")
 			(class "Default")
 			(node
@@ -44183,7 +45472,7 @@
 			)
 		)
 		(net
-			(code "358")
+			(code "365")
 			(name "Net-(U103B-VIN-_B)")
 			(class "Default")
 			(node
@@ -44204,7 +45493,7 @@
 			)
 		)
 		(net
-			(code "359")
+			(code "366")
 			(name "Net-(U103C-REFB_A)")
 			(class "Default")
 			(node
@@ -44230,7 +45519,7 @@
 			)
 		)
 		(net
-			(code "360")
+			(code "367")
 			(name "Net-(U103C-REFB_B)")
 			(class "Default")
 			(node
@@ -44256,7 +45545,7 @@
 			)
 		)
 		(net
-			(code "361")
+			(code "368")
 			(name "Net-(U103C-REFT_A)")
 			(class "Default")
 			(node
@@ -44282,7 +45571,7 @@
 			)
 		)
 		(net
-			(code "362")
+			(code "369")
 			(name "Net-(U103C-REFT_B)")
 			(class "Default")
 			(node
@@ -44308,7 +45597,7 @@
 			)
 		)
 		(net
-			(code "363")
+			(code "370")
 			(name "Net-(U103C-VREF)")
 			(class "Default")
 			(node
@@ -44329,7 +45618,7 @@
 			)
 		)
 		(net
-			(code "364")
+			(code "371")
 			(name "Net-(U105B--)")
 			(class "Default")
 			(node
@@ -44345,49 +45634,7 @@
 			)
 		)
 		(net
-			(code "365")
-			(name "Net-(U111-+)")
-			(class "Default")
-			(node
-				(ref "R1107")
-				(pin "2")
-				(pintype "passive")
-			)
-			(node
-				(ref "R1109")
-				(pin "1")
-				(pintype "passive")
-			)
-			(node
-				(ref "U111")
-				(pin "8")
-				(pinfunction "+_8")
-				(pintype "input")
-			)
-		)
-		(net
-			(code "366")
-			(name "Net-(U111--)")
-			(class "Default")
-			(node
-				(ref "R1108")
-				(pin "2")
-				(pintype "passive")
-			)
-			(node
-				(ref "R1110")
-				(pin "1")
-				(pintype "passive")
-			)
-			(node
-				(ref "U111")
-				(pin "1")
-				(pinfunction "-_1")
-				(pintype "input")
-			)
-		)
-		(net
-			(code "367")
+			(code "372")
 			(name "Net-(U111-VOCM)")
 			(class "Default")
 			(node
@@ -44403,49 +45650,7 @@
 			)
 		)
 		(net
-			(code "368")
-			(name "Net-(U112-+)")
-			(class "Default")
-			(node
-				(ref "R1207")
-				(pin "2")
-				(pintype "passive")
-			)
-			(node
-				(ref "R1209")
-				(pin "1")
-				(pintype "passive")
-			)
-			(node
-				(ref "U112")
-				(pin "8")
-				(pinfunction "+_8")
-				(pintype "input")
-			)
-		)
-		(net
-			(code "369")
-			(name "Net-(U112--)")
-			(class "Default")
-			(node
-				(ref "R1208")
-				(pin "2")
-				(pintype "passive")
-			)
-			(node
-				(ref "R1210")
-				(pin "1")
-				(pintype "passive")
-			)
-			(node
-				(ref "U112")
-				(pin "1")
-				(pinfunction "-_1")
-				(pintype "input")
-			)
-		)
-		(net
-			(code "370")
+			(code "373")
 			(name "Net-(U112-VOCM)")
 			(class "Default")
 			(node
@@ -44461,7 +45666,7 @@
 			)
 		)
 		(net
-			(code "371")
+			(code "374")
 			(name "Net-(U201A-CLK1{slash}IQCLK)")
 			(class "Default")
 			(node
@@ -44477,7 +45682,7 @@
 			)
 		)
 		(net
-			(code "372")
+			(code "375")
 			(name "Net-(U201A-IOUTA1)")
 			(class "Default")
 			(node
@@ -44498,7 +45703,7 @@
 			)
 		)
 		(net
-			(code "373")
+			(code "376")
 			(name "Net-(U201A-IOUTB1)")
 			(class "Default")
 			(node
@@ -44519,7 +45724,7 @@
 			)
 		)
 		(net
-			(code "374")
+			(code "377")
 			(name "Net-(U201A-WRT1{slash}IQWRT)")
 			(class "Default")
 			(node
@@ -44535,7 +45740,7 @@
 			)
 		)
 		(net
-			(code "375")
+			(code "378")
 			(name "Net-(U201B-CLK2{slash}IQRESET)")
 			(class "Default")
 			(node
@@ -44551,7 +45756,7 @@
 			)
 		)
 		(net
-			(code "376")
+			(code "379")
 			(name "Net-(U201B-IOUTA2)")
 			(class "Default")
 			(node
@@ -44578,7 +45783,7 @@
 			)
 		)
 		(net
-			(code "377")
+			(code "380")
 			(name "Net-(U201B-IOUTB2)")
 			(class "Default")
 			(node
@@ -44599,7 +45804,7 @@
 			)
 		)
 		(net
-			(code "378")
+			(code "381")
 			(name "Net-(U201B-WRT2{slash}IQSEL)")
 			(class "Default")
 			(node
@@ -44615,7 +45820,7 @@
 			)
 		)
 		(net
-			(code "379")
+			(code "382")
 			(name "Net-(U201C-FSADJ1)")
 			(class "Default")
 			(node
@@ -44631,7 +45836,7 @@
 			)
 		)
 		(net
-			(code "380")
+			(code "383")
 			(name "Net-(U201C-FSADJ2)")
 			(class "Default")
 			(node
@@ -44647,7 +45852,7 @@
 			)
 		)
 		(net
-			(code "381")
+			(code "384")
 			(name "Net-(U201C-REFIO)")
 			(class "Default")
 			(node
@@ -44663,9 +45868,14 @@
 			)
 		)
 		(net
-			(code "382")
+			(code "385")
 			(name "Net-(U202A-+)")
 			(class "Default")
+			(node
+				(ref "C2402")
+				(pin "2")
+				(pintype "passive")
+			)
 			(node
 				(ref "R2403")
 				(pin "2")
@@ -44684,7 +45894,7 @@
 			)
 		)
 		(net
-			(code "383")
+			(code "386")
 			(name "Net-(U202A--)")
 			(class "Default")
 			(node
@@ -44710,7 +45920,7 @@
 			)
 		)
 		(net
-			(code "384")
+			(code "387")
 			(name "Net-(U202B--)")
 			(class "Default")
 			(node
@@ -44726,9 +45936,14 @@
 			)
 		)
 		(net
-			(code "385")
+			(code "388")
 			(name "Net-(U203A-+)")
 			(class "Default")
+			(node
+				(ref "C2502")
+				(pin "2")
+				(pintype "passive")
+			)
 			(node
 				(ref "R2503")
 				(pin "2")
@@ -44747,7 +45962,7 @@
 			)
 		)
 		(net
-			(code "386")
+			(code "389")
 			(name "Net-(U203A--)")
 			(class "Default")
 			(node
@@ -44773,7 +45988,7 @@
 			)
 		)
 		(net
-			(code "387")
+			(code "390")
 			(name "Net-(U301-CLK0)")
 			(class "Default")
 			(node
@@ -44789,7 +46004,7 @@
 			)
 		)
 		(net
-			(code "388")
+			(code "391")
 			(name "Net-(U301-CLK1)")
 			(class "Default")
 			(node
@@ -44805,7 +46020,7 @@
 			)
 		)
 		(net
-			(code "389")
+			(code "392")
 			(name "Net-(U301-CLK2)")
 			(class "Default")
 			(node
@@ -44821,7 +46036,7 @@
 			)
 		)
 		(net
-			(code "390")
+			(code "393")
 			(name "Net-(U301-XA)")
 			(class "Default")
 			(node
@@ -44838,7 +46053,7 @@
 			)
 		)
 		(net
-			(code "391")
+			(code "394")
 			(name "Net-(U301-XB)")
 			(class "Default")
 			(node
@@ -44855,7 +46070,59 @@
 			)
 		)
 		(net
-			(code "392")
+			(code "395")
+			(name "Net-(U302A-+)")
+			(class "Default")
+			(node
+				(ref "C5421")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R5426")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U302")
+				(pin "3")
+				(pinfunction "+_3")
+				(pintype "input")
+			)
+		)
+		(net
+			(code "396")
+			(name "Net-(U302A--)")
+			(class "Default")
+			(node
+				(ref "C5424")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "R5424")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R5425")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "R5426")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "U302")
+				(pin "1")
+				(pinfunction "-_1")
+				(pintype "input")
+			)
+		)
+		(net
+			(code "397")
 			(name "Net-(U306-DI{slash}IO0)")
 			(class "Default")
 			(node
@@ -44872,7 +46139,7 @@
 			)
 		)
 		(net
-			(code "393")
+			(code "398")
 			(name "Net-(U306-DO{slash}IO1)")
 			(class "Default")
 			(node
@@ -44889,7 +46156,7 @@
 			)
 		)
 		(net
-			(code "394")
+			(code "399")
 			(name "Net-(U306-~{CS})")
 			(class "Default")
 			(node
@@ -44911,7 +46178,7 @@
 			)
 		)
 		(net
-			(code "395")
+			(code "400")
 			(name "Net-(U306-~{HOLD}{slash}IO3)")
 			(class "Default")
 			(node
@@ -44933,7 +46200,7 @@
 			)
 		)
 		(net
-			(code "396")
+			(code "401")
 			(name "Net-(U306-~{WP}{slash}IO2)")
 			(class "Default")
 			(node
@@ -44955,7 +46222,7 @@
 			)
 		)
 		(net
-			(code "397")
+			(code "402")
 			(name "Net-(U401A-PHYRSTB)")
 			(class "Default")
 			(node
@@ -44981,7 +46248,7 @@
 			)
 		)
 		(net
-			(code "398")
+			(code "403")
 			(name "Net-(U401A-RXCTL{slash}PHYAD2)")
 			(class "Default")
 			(node
@@ -44997,7 +46264,7 @@
 			)
 		)
 		(net
-			(code "399")
+			(code "404")
 			(name "Net-(U401A-RXC{slash}PHYAD1)")
 			(class "Default")
 			(node
@@ -45013,7 +46280,7 @@
 			)
 		)
 		(net
-			(code "400")
+			(code "405")
 			(name "Net-(U401A-RXD0{slash}RXDLY)")
 			(class "Default")
 			(node
@@ -45029,23 +46296,7 @@
 			)
 		)
 		(net
-			(code "401")
-			(name "Net-(U401A-RXD1{slash}TXDLY)")
-			(class "Default")
-			(node
-				(ref "R4909")
-				(pin "2")
-				(pintype "passive")
-			)
-			(node
-				(ref "U401")
-				(pin "24")
-				(pinfunction "RXD1/TXDLY_24")
-				(pintype "output")
-			)
-		)
-		(net
-			(code "402")
+			(code "406")
 			(name "Net-(U401A-RXD2{slash}PLLOFF)")
 			(class "Default")
 			(node
@@ -45061,7 +46312,7 @@
 			)
 		)
 		(net
-			(code "403")
+			(code "407")
 			(name "Net-(U401A-RXD3{slash}PHYAD0)")
 			(class "Default")
 			(node
@@ -45077,7 +46328,7 @@
 			)
 		)
 		(net
-			(code "404")
+			(code "408")
 			(name "Net-(U401A-TXC)")
 			(class "Default")
 			(node
@@ -45093,7 +46344,7 @@
 			)
 		)
 		(net
-			(code "405")
+			(code "409")
 			(name "Net-(U401A-TXCTL)")
 			(class "Default")
 			(node
@@ -45109,7 +46360,7 @@
 			)
 		)
 		(net
-			(code "406")
+			(code "410")
 			(name "Net-(U401A-TXD0)")
 			(class "Default")
 			(node
@@ -45125,7 +46376,7 @@
 			)
 		)
 		(net
-			(code "407")
+			(code "411")
 			(name "Net-(U401A-TXD1)")
 			(class "Default")
 			(node
@@ -45141,7 +46392,7 @@
 			)
 		)
 		(net
-			(code "408")
+			(code "412")
 			(name "Net-(U401A-TXD2)")
 			(class "Default")
 			(node
@@ -45157,7 +46408,7 @@
 			)
 		)
 		(net
-			(code "409")
+			(code "413")
 			(name "Net-(U401A-TXD3)")
 			(class "Default")
 			(node
@@ -45173,7 +46424,7 @@
 			)
 		)
 		(net
-			(code "410")
+			(code "414")
 			(name "Net-(U401B-LED0{slash}CFG_EXT)")
 			(class "Default")
 			(node
@@ -45194,7 +46445,7 @@
 			)
 		)
 		(net
-			(code "411")
+			(code "415")
 			(name "Net-(U401B-LED1{slash}CFG_LDO0)")
 			(class "Default")
 			(node
@@ -45215,7 +46466,7 @@
 			)
 		)
 		(net
-			(code "412")
+			(code "416")
 			(name "Net-(U401B-LED2{slash}CFG_LDO1)")
 			(class "Default")
 			(node
@@ -45236,7 +46487,7 @@
 			)
 		)
 		(net
-			(code "413")
+			(code "417")
 			(name "Net-(U401B-XTAL_IN)")
 			(class "Default")
 			(node
@@ -45258,7 +46509,7 @@
 			)
 		)
 		(net
-			(code "414")
+			(code "418")
 			(name "Net-(U401B-XTAL_OUT)")
 			(class "Default")
 			(node
@@ -45280,7 +46531,7 @@
 			)
 		)
 		(net
-			(code "415")
+			(code "419")
 			(name "Net-(U401C-REG_OUT)")
 			(class "Default")
 			(node
@@ -45297,7 +46548,7 @@
 			)
 		)
 		(net
-			(code "416")
+			(code "420")
 			(name "Net-(U401C-RSET)")
 			(class "Default")
 			(node
@@ -45313,7 +46564,7 @@
 			)
 		)
 		(net
-			(code "417")
+			(code "421")
 			(name "Net-(U502-ADBUS0)")
 			(class "Default")
 			(node
@@ -45329,7 +46580,7 @@
 			)
 		)
 		(net
-			(code "418")
+			(code "422")
 			(name "Net-(U502-ADBUS1)")
 			(class "Default")
 			(node
@@ -45345,7 +46596,7 @@
 			)
 		)
 		(net
-			(code "419")
+			(code "423")
 			(name "Net-(U502-ADBUS2)")
 			(class "Default")
 			(node
@@ -45361,7 +46612,7 @@
 			)
 		)
 		(net
-			(code "420")
+			(code "424")
 			(name "Net-(U502-ADBUS3)")
 			(class "Default")
 			(node
@@ -45377,7 +46628,7 @@
 			)
 		)
 		(net
-			(code "421")
+			(code "425")
 			(name "Net-(U502-BDBUS0)")
 			(class "Default")
 			(node
@@ -45393,7 +46644,7 @@
 			)
 		)
 		(net
-			(code "422")
+			(code "426")
 			(name "Net-(U502-BDBUS1)")
 			(class "Default")
 			(node
@@ -45409,7 +46660,7 @@
 			)
 		)
 		(net
-			(code "423")
+			(code "427")
 			(name "Net-(U502-BDBUS2)")
 			(class "Default")
 			(node
@@ -45425,7 +46676,7 @@
 			)
 		)
 		(net
-			(code "424")
+			(code "428")
 			(name "Net-(U502-BDBUS4)")
 			(class "Default")
 			(node
@@ -45441,7 +46692,7 @@
 			)
 		)
 		(net
-			(code "425")
+			(code "429")
 			(name "Net-(U502-DM)")
 			(class "Default")
 			(node
@@ -45458,7 +46709,7 @@
 			)
 		)
 		(net
-			(code "426")
+			(code "430")
 			(name "Net-(U502-DP)")
 			(class "Default")
 			(node
@@ -45475,7 +46726,7 @@
 			)
 		)
 		(net
-			(code "427")
+			(code "431")
 			(name "Net-(U502-EECLK)")
 			(class "Default")
 			(node
@@ -45492,7 +46743,7 @@
 			)
 		)
 		(net
-			(code "428")
+			(code "432")
 			(name "Net-(U502-EECS)")
 			(class "Default")
 			(node
@@ -45509,7 +46760,7 @@
 			)
 		)
 		(net
-			(code "429")
+			(code "433")
 			(name "Net-(U502-EEDATA)")
 			(class "Default")
 			(node
@@ -45536,7 +46787,7 @@
 			)
 		)
 		(net
-			(code "430")
+			(code "434")
 			(name "Net-(U502-OSCI)")
 			(class "Default")
 			(node
@@ -45558,7 +46809,7 @@
 			)
 		)
 		(net
-			(code "431")
+			(code "435")
 			(name "Net-(U502-OSCO)")
 			(class "Default")
 			(node
@@ -45580,7 +46831,7 @@
 			)
 		)
 		(net
-			(code "432")
+			(code "436")
 			(name "Net-(U502-REF)")
 			(class "Default")
 			(node
@@ -45596,7 +46847,7 @@
 			)
 		)
 		(net
-			(code "433")
+			(code "437")
 			(name "Net-(U502-VPHY)")
 			(class "Default")
 			(node
@@ -45623,7 +46874,7 @@
 			)
 		)
 		(net
-			(code "434")
+			(code "438")
 			(name "Net-(U502-~{RESET})")
 			(class "Default")
 			(node
@@ -45639,7 +46890,7 @@
 			)
 		)
 		(net
-			(code "435")
+			(code "439")
 			(name "Net-(U503-DO)")
 			(class "Default")
 			(node
@@ -45655,7 +46906,7 @@
 			)
 		)
 		(net
-			(code "436")
+			(code "440")
 			(name "Net-(U504-VBUS)")
 			(class "Default")
 			(node
@@ -45695,7 +46946,7 @@
 			)
 		)
 		(net
-			(code "437")
+			(code "441")
 			(name "Net-(U505-EN)")
 			(class "Default")
 			(node
@@ -45717,7 +46968,7 @@
 			)
 		)
 		(net
-			(code "438")
+			(code "442")
 			(name "Net-(U601-FB)")
 			(class "Default")
 			(node
@@ -45738,7 +46989,7 @@
 			)
 		)
 		(net
-			(code "439")
+			(code "443")
 			(name "Net-(U601-SW)")
 			(class "Default")
 			(node
@@ -45755,7 +47006,7 @@
 			)
 		)
 		(net
-			(code "440")
+			(code "444")
 			(name "Net-(U602-FB)")
 			(class "Default")
 			(node
@@ -45776,7 +47027,7 @@
 			)
 		)
 		(net
-			(code "441")
+			(code "445")
 			(name "Net-(U602-SW)")
 			(class "Default")
 			(node
@@ -45793,7 +47044,7 @@
 			)
 		)
 		(net
-			(code "442")
+			(code "446")
 			(name "Net-(U606-C+)")
 			(class "Default")
 			(node
@@ -45809,7 +47060,7 @@
 			)
 		)
 		(net
-			(code "443")
+			(code "447")
 			(name "Net-(U606-C-)")
 			(class "Default")
 			(node
@@ -45825,7 +47076,7 @@
 			)
 		)
 		(net
-			(code "444")
+			(code "448")
 			(name "Net-(U606-CPOUT)")
 			(class "Default")
 			(node
@@ -45841,7 +47092,7 @@
 			)
 		)
 		(net
-			(code "445")
+			(code "449")
 			(name "Net-(U606-VFB)")
 			(class "Default")
 			(node
@@ -45862,7 +47113,33 @@
 			)
 		)
 		(net
-			(code "446")
+			(code "450")
+			(name "Net-(U606-VOUT)")
+			(class "Default")
+			(node
+				(ref "C8304")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "FB8301")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "R8301")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U606")
+				(pin "4")
+				(pinfunction "VOUT_4")
+				(pintype "power_out")
+			)
+		)
+		(net
+			(code "451")
 			(name "Net-(X301-OUT)")
 			(class "Default")
 			(node
@@ -45878,7 +47155,7 @@
 			)
 		)
 		(net
-			(code "447")
+			(code "452")
 			(name "unconnected-(J501-SBU1-PadA8)")
 			(class "Default")
 			(node
@@ -45889,7 +47166,7 @@
 			)
 		)
 		(net
-			(code "448")
+			(code "453")
 			(name "unconnected-(J501-SBU2-PadB8)")
 			(class "Default")
 			(node
@@ -45900,7 +47177,7 @@
 			)
 		)
 		(net
-			(code "449")
+			(code "454")
 			(name "unconnected-(J502-SBU1-PadA8)")
 			(class "Default")
 			(node
@@ -45911,7 +47188,7 @@
 			)
 		)
 		(net
-			(code "450")
+			(code "455")
 			(name "unconnected-(J502-SBU2-PadB8)")
 			(class "Default")
 			(node
@@ -45922,7 +47199,7 @@
 			)
 		)
 		(net
-			(code "451")
+			(code "456")
 			(name "unconnected-(J503-UTIL-Pad17)")
 			(class "Default")
 			(node
@@ -45933,7 +47210,7 @@
 			)
 		)
 		(net
-			(code "452")
+			(code "457")
 			(name "unconnected-(J504-CD1-Pad9)")
 			(class "Default")
 			(node
@@ -45944,7 +47221,7 @@
 			)
 		)
 		(net
-			(code "453")
+			(code "458")
 			(name "unconnected-(J504-CD2-Pad10)")
 			(class "Default")
 			(node
@@ -45955,7 +47232,7 @@
 			)
 		)
 		(net
-			(code "454")
+			(code "459")
 			(name "unconnected-(U1-PadF5)")
 			(class "Default")
 			(node
@@ -45966,7 +47243,7 @@
 			)
 		)
 		(net
-			(code "455")
+			(code "460")
 			(name "unconnected-(U1-PadH5)")
 			(class "Default")
 			(node
@@ -45977,7 +47254,7 @@
 			)
 		)
 		(net
-			(code "456")
+			(code "461")
 			(name "unconnected-(U1-PadH12)")
 			(class "Default")
 			(node
@@ -45988,7 +47265,7 @@
 			)
 		)
 		(net
-			(code "457")
+			(code "462")
 			(name "unconnected-(U1-PadM8)")
 			(class "Default")
 			(node
@@ -45999,7 +47276,7 @@
 			)
 		)
 		(net
-			(code "458")
+			(code "463")
 			(name "unconnected-(U1-PadM11)")
 			(class "Default")
 			(node
@@ -46010,7 +47287,7 @@
 			)
 		)
 		(net
-			(code "459")
+			(code "464")
 			(name "unconnected-(U1-PadN11)")
 			(class "Default")
 			(node
@@ -46021,7 +47298,7 @@
 			)
 		)
 		(net
-			(code "460")
+			(code "465")
 			(name "unconnected-(U1-PadP11)")
 			(class "Default")
 			(node
@@ -46032,7 +47309,7 @@
 			)
 		)
 		(net
-			(code "461")
+			(code "466")
 			(name "unconnected-(U1A-J1_PCLK-PadJ1)")
 			(class "Default")
 			(node
@@ -46043,7 +47320,7 @@
 			)
 		)
 		(net
-			(code "462")
+			(code "467")
 			(name "unconnected-(U1A-J2_PCLK-PadJ2)")
 			(class "Default")
 			(node
@@ -46054,7 +47331,7 @@
 			)
 		)
 		(net
-			(code "463")
+			(code "468")
 			(name "unconnected-(U103C-DNC-Pad23)")
 			(class "Default")
 			(node
@@ -46065,7 +47342,7 @@
 			)
 		)
 		(net
-			(code "464")
+			(code "469")
 			(name "unconnected-(U103C-DNC-Pad24)")
 			(class "Default")
 			(node
@@ -46076,7 +47353,7 @@
 			)
 		)
 		(net
-			(code "465")
+			(code "470")
 			(name "unconnected-(U103C-DNC-Pad42)")
 			(class "Default")
 			(node
@@ -46087,7 +47364,7 @@
 			)
 		)
 		(net
-			(code "466")
+			(code "471")
 			(name "unconnected-(U103C-DNC-Pad43)")
 			(class "Default")
 			(node
@@ -46098,29 +47375,7 @@
 			)
 		)
 		(net
-			(code "467")
-			(name "unconnected-(U302-NC-Pad1)")
-			(class "Default")
-			(node
-				(ref "U302")
-				(pin "1")
-				(pinfunction "NC_1")
-				(pintype "no_connect")
-			)
-		)
-		(net
-			(code "468")
-			(name "unconnected-(U303-NC-Pad1)")
-			(class "Default")
-			(node
-				(ref "U303")
-				(pin "1")
-				(pinfunction "NC_1")
-				(pintype "no_connect")
-			)
-		)
-		(net
-			(code "469")
+			(code "472")
 			(name "unconnected-(U304-NC-Pad1)")
 			(class "Default")
 			(node
@@ -46131,7 +47386,7 @@
 			)
 		)
 		(net
-			(code "470")
+			(code "473")
 			(name "unconnected-(U305-NC-Pad40)")
 			(class "Default")
 			(node
@@ -46142,7 +47397,7 @@
 			)
 		)
 		(net
-			(code "471")
+			(code "474")
 			(name "unconnected-(U401B-CLKOUT-Pad35)")
 			(class "Default")
 			(node
@@ -46153,7 +47408,7 @@
 			)
 		)
 		(net
-			(code "472")
+			(code "475")
 			(name "unconnected-(U502-ACBUS0-Pad26)")
 			(class "Default")
 			(node
@@ -46164,7 +47419,7 @@
 			)
 		)
 		(net
-			(code "473")
+			(code "476")
 			(name "unconnected-(U502-ACBUS1-Pad27)")
 			(class "Default")
 			(node
@@ -46175,7 +47430,7 @@
 			)
 		)
 		(net
-			(code "474")
+			(code "477")
 			(name "unconnected-(U502-ACBUS2-Pad28)")
 			(class "Default")
 			(node
@@ -46186,7 +47441,7 @@
 			)
 		)
 		(net
-			(code "475")
+			(code "478")
 			(name "unconnected-(U502-ACBUS3-Pad29)")
 			(class "Default")
 			(node
@@ -46197,7 +47452,7 @@
 			)
 		)
 		(net
-			(code "476")
+			(code "479")
 			(name "unconnected-(U502-ACBUS4-Pad30)")
 			(class "Default")
 			(node
@@ -46208,7 +47463,7 @@
 			)
 		)
 		(net
-			(code "477")
+			(code "480")
 			(name "unconnected-(U502-ACBUS5-Pad32)")
 			(class "Default")
 			(node
@@ -46219,7 +47474,7 @@
 			)
 		)
 		(net
-			(code "478")
+			(code "481")
 			(name "unconnected-(U502-ACBUS6-Pad33)")
 			(class "Default")
 			(node
@@ -46230,7 +47485,7 @@
 			)
 		)
 		(net
-			(code "479")
+			(code "482")
 			(name "unconnected-(U502-ACBUS7-Pad34)")
 			(class "Default")
 			(node
@@ -46241,7 +47496,7 @@
 			)
 		)
 		(net
-			(code "480")
+			(code "483")
 			(name "unconnected-(U502-ADBUS4-Pad21)")
 			(class "Default")
 			(node
@@ -46252,7 +47507,7 @@
 			)
 		)
 		(net
-			(code "481")
+			(code "484")
 			(name "unconnected-(U502-ADBUS5-Pad22)")
 			(class "Default")
 			(node
@@ -46263,7 +47518,7 @@
 			)
 		)
 		(net
-			(code "482")
+			(code "485")
 			(name "unconnected-(U502-ADBUS6-Pad23)")
 			(class "Default")
 			(node
@@ -46274,7 +47529,7 @@
 			)
 		)
 		(net
-			(code "483")
+			(code "486")
 			(name "unconnected-(U502-ADBUS7-Pad24)")
 			(class "Default")
 			(node
@@ -46285,7 +47540,7 @@
 			)
 		)
 		(net
-			(code "484")
+			(code "487")
 			(name "unconnected-(U502-BCBUS0-Pad48)")
 			(class "Default")
 			(node
@@ -46296,7 +47551,7 @@
 			)
 		)
 		(net
-			(code "485")
+			(code "488")
 			(name "unconnected-(U502-BCBUS1-Pad52)")
 			(class "Default")
 			(node
@@ -46307,7 +47562,7 @@
 			)
 		)
 		(net
-			(code "486")
+			(code "489")
 			(name "unconnected-(U502-BCBUS2-Pad53)")
 			(class "Default")
 			(node
@@ -46318,7 +47573,7 @@
 			)
 		)
 		(net
-			(code "487")
+			(code "490")
 			(name "unconnected-(U502-BCBUS3-Pad54)")
 			(class "Default")
 			(node
@@ -46329,7 +47584,7 @@
 			)
 		)
 		(net
-			(code "488")
+			(code "491")
 			(name "unconnected-(U502-BCBUS4-Pad55)")
 			(class "Default")
 			(node
@@ -46340,7 +47595,7 @@
 			)
 		)
 		(net
-			(code "489")
+			(code "492")
 			(name "unconnected-(U502-BCBUS5-Pad57)")
 			(class "Default")
 			(node
@@ -46351,7 +47606,7 @@
 			)
 		)
 		(net
-			(code "490")
+			(code "493")
 			(name "unconnected-(U502-BCBUS6-Pad58)")
 			(class "Default")
 			(node
@@ -46362,7 +47617,7 @@
 			)
 		)
 		(net
-			(code "491")
+			(code "494")
 			(name "unconnected-(U502-BCBUS7-Pad59)")
 			(class "Default")
 			(node
@@ -46373,7 +47628,7 @@
 			)
 		)
 		(net
-			(code "492")
+			(code "495")
 			(name "unconnected-(U502-BDBUS3-Pad41)")
 			(class "Default")
 			(node
@@ -46384,7 +47639,7 @@
 			)
 		)
 		(net
-			(code "493")
+			(code "496")
 			(name "unconnected-(U502-BDBUS5-Pad44)")
 			(class "Default")
 			(node
@@ -46395,7 +47650,7 @@
 			)
 		)
 		(net
-			(code "494")
+			(code "497")
 			(name "unconnected-(U502-BDBUS6-Pad45)")
 			(class "Default")
 			(node
@@ -46406,7 +47661,7 @@
 			)
 		)
 		(net
-			(code "495")
+			(code "498")
 			(name "unconnected-(U502-BDBUS7-Pad46)")
 			(class "Default")
 			(node
@@ -46417,7 +47672,7 @@
 			)
 		)
 		(net
-			(code "496")
+			(code "499")
 			(name "unconnected-(U502-~{PWREN}-Pad60)")
 			(class "Default")
 			(node
@@ -46428,7 +47683,7 @@
 			)
 		)
 		(net
-			(code "497")
+			(code "500")
 			(name "unconnected-(U502-~{SUSPEND}-Pad36)")
 			(class "Default")
 			(node
@@ -46439,7 +47694,7 @@
 			)
 		)
 		(net
-			(code "498")
+			(code "501")
 			(name "unconnected-(U603-NC-Pad4)")
 			(class "Default")
 			(node
@@ -46450,7 +47705,7 @@
 			)
 		)
 		(net
-			(code "499")
+			(code "502")
 			(name "unconnected-(U604-NC-Pad4)")
 			(class "Default")
 			(node
@@ -46461,7 +47716,7 @@
 			)
 		)
 		(net
-			(code "500")
+			(code "503")
 			(name "unconnected-(U605-NC-Pad4)")
 			(class "Default")
 			(node

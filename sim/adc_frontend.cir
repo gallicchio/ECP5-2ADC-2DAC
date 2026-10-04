@@ -11,7 +11,7 @@ Dclp node vp5 D1
 Dcln vm5 node D1
 .model D1 D(IS=2.5e-9 N=1.8 RS=1)
 Vp5 vp5 0 5
-Vm5 vm5 0 -4.4
+Vm5 vm5 0 -4.15
 * ---- stage 1: OPA1612 non-inverting, 9.1k feedback, 1k to ground (jumper open = x10; shunt = x1) ----
 X1 node fb1 vp5 vm5 o1 OPA1612
 Rf1 o1 fb1 9.1k
@@ -28,6 +28,9 @@ Rgn 0 fn 499
 X3 fp fn vocm v33 0 on op THS4521
 Rfp fp on 499
 Rfn fn op 499
+* build 26: a BAV99 anti-parallel across the FDA's inputs bounds |fp - fn| to one diode drop in any overload
+Dq1 fp fn D1
+Dq2 fn fp D1
 Vocm vocm 0 1.65
 V33 v33 0 3.3
 * ---- RC into the converter --------------------------------------------------------

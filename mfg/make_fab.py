@@ -154,7 +154,7 @@ def cost(rows, boards, refresh=False):
 def code_value_check(smt, refresh=False):
     """Every ordered code's JLCPCB description must carry the value the schematic gives the part (passives: the
     number and unit; parts with a part-number value: the part number) and its package.  Returns the offenders."""
-    pkg = {"R_0603_1608Metric": "0603", "C_0402_1005Metric": "0402", "C_0402_1005Metric_BGA": "0402", "C_0603_1608Metric": "0603",
+    pkg = {"R_0603_1608Metric": "0603", "R_1206_3216Metric": "1206", "C_1812_4532Metric": "1812", "C_0402_1005Metric": "0402", "C_0402_1005Metric_BGA": "0402", "C_0603_1608Metric": "0603",
            "C_0805_2012Metric": "0805", "L_0603_1608Metric": "0603", "C_1206_3216Metric": "1206", "Fuse_1812_4532Metric": "1812"}
     unit = {"pf": ["pF"], "nf": ["nF"], "uf": ["uF", "\u00b5F"], "r": ["\u03a9"], "k": ["k\u03a9"], "m": ["M\u03a9"], "uh": ["uH", "\u00b5H"]}
     seen, out = {}, []

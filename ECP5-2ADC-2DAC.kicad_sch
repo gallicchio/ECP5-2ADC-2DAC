@@ -23,7 +23,7 @@
 		)
 		(uuid "3ed6ebfd-fe6b-d8aa-04ba-90b26c7031b5")
 	)
-	(text "Each box is a sheet; every signal that crosses between sheets is drawn here as a wire or a bus. Power rails (+5V, +3V3, +1V1, +2V5, +3V3_ADC, +3V3_DAC, +5VA, -4V4, ...) are global power symbols."
+	(text "Each box is a sheet; every signal that crosses between sheets is drawn here as a wire or a bus. Power rails (+5V, +3V3, +1V1, +2V5, +3V3_ADC, +3V3_DAC, +5VA, -4V2, ...) are global power symbols."
 		(exclude_from_sim no)
 		(at 15.24 24.13 0)
 		(effects

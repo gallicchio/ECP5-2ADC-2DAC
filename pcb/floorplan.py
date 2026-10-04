@@ -42,7 +42,7 @@ ANCHORS = {
     "U401": (104.0 + E, 24.0, 180),                                # PHY: MDI east, TX north, RX west, crystal/straps south
     "T401": (128.0 + E, 19.0, 270, "B.Cu"), "J401": (139.6 + E, 19.0, 90),
     "U502": (115.0 + E, 46.0, 180),                                # FT2232H: USB east, UART west, JTAG north-east, EEPROM south
-    "J501": (145.5 + E, 34.5, 90), "J502": (145.5 + E, 48.0, 90), "J503": (145.0 + E, 62.0, 90),   # 13.5 mm between the USBs, 14 to the HDMI: spec-maximum plugs side by side
+    "J501": (147.68 + E, 34.5, 90), "J502": (147.68 + E, 48.0, 90), "J503": (145.93 + E, 62.0, 90),   # 13.5 mm between the USBs, 14 to the HDMI: spec-maximum plugs side by side.  Faces 1.9 (USB-C) and 0.75 mm (HDMI) past the edge (build 26): as far as their rear through-hole pads allow (0.35 mm to the edge); the end plates' cutouts admit the plugs' overmoulds
     "J304": (137.4 + E, 85.14, 180), "J303": (137.4 + E, 108.0, 180),   # Pmod B above Pmod A, 22.86 mm apart (0.9 inch)
     "J504": (106.0 + E, 84.0, 90, "B.Cu"),                          # microSD on the back, card toward the right edge
 }
@@ -200,15 +200,15 @@ def adc_strip(pl, ch):
     U_op, U_fda, D_cl = "U10%d" % n, "U11%d" % n, "D10%d" % n
     sma_net = pl.nets["J10%d" % n]["1"]
     # termination: 49.9 R lying above the line (SMA pad west), its jumper standing above it (ground pin up)
-    put_facing(pl, R(1), 10.5, y_s - 1.7, sma_net, "W")
+    put_facing(pl, R(1), 10.5, y_s - 2.0, sma_net, "W")
     put_facing(pl, JP(1), 11.27, y_s - 5.5, net_of(pl, JP(1), 1), "W")   # TERM jumper lying along the row, its 50 R pin west
-    # the 100 R in line; the clamp below the node after it, common pin up, rail pins down
-    put_facing(pl, R(2), 12.5, y_s, sma_net, "W")
-    put_facing(pl, D_cl, 16.0, y_s + 2.3, net_of(pl, D_cl, 3), "N")
+    # the 100 R in line (a 1206 since build 26: 0.25 W); the clamp below the node after it, common pin up, rail pins down
+    put_facing(pl, R(2), 12.3, y_s, sma_net, "W")
+    put_facing(pl, D_cl, 16.9, y_s + 2.3, net_of(pl, D_cl, 3), "N")
     # the source jumper under the line: pin 3 (from the clamp node) west, pin 1 (the alternate) east
     put_facing(pl, JP(2), 26.0, y_s + 4.6, net_of(pl, JP(2), 3), "W")
     if ch == "B":
-        put_facing(pl, "JP1203", 23.0, y_s + 10.1, net_of(pl, "JP1203", 1), "W")     # ALT: PHOTODIODE pin west, NOISE pin east, under the SRC jumper (in the strip's notch, its choices off its ends)
+        put_facing(pl, "JP1203", 21.5, y_s + 10.1, net_of(pl, "JP1203", 1), "W")      # (1.5 mm west since build 26: the tap's U.FL sits east of it)     # ALT: PHOTODIODE pin west, NOISE pin east, under the SRC jumper (in the strip's notch, its choices off its ends)
     # stage 1: in+ (pin 3) on the line
     x_u = 27.0
     put(pl, U_op, x_u, y_s - 0.64, 0)
@@ -216,7 +216,7 @@ def adc_strip(pl, ch):
     put_facing(pl, R(3), 22.4, y_s - 3.0, in1n, "S")               # 9.1 k standing: in- pad down, out pad up
     put_facing(pl, JP(3), 19.86, y_s - 6.5, out1, "E")             # GAIN jumper on top, out pin over the resistor's out pad
     put_facing(pl, R(4), 18.0, y_s - 3.38, in1n, "E")              # 1 k to ground, west of the in- node
-    put_facing(pl, C(2), 22.6, y_s + 1.7, "-4V4", "N")             # V- (pin 4) 100 nF standing below-left of the chip (clear of the SRC jumper)
+    put_facing(pl, C(2), 22.6, y_s + 1.7, "-4V2", "N")             # V- (pin 4) 100 nF standing below-left of the chip (clear of the SRC jumper)
     # stage 2: in- (pin 6) on the line, out (pin 7) one row up, the 9.1 k on the line, 1 k hanging below,
     # the GAIN jumper under the chip, the 499 R into the FDA on the out row
     in2n, out2 = net_of(pl, U_op, 6), net_of(pl, U_op, 7)
@@ -230,6 +230,16 @@ def adc_strip(pl, ch):
     fda_inp, fda_inn = net_of(pl, U_fda, 8), net_of(pl, U_fda, 1)
     put(pl, U_fda, x_f, y_s, 90)                                   # in+ NW, in- SW, OUT- NE, OUT+ SE
     put_facing(pl, R(8), 35.3, y_s + 2.3, fda_inn, "E")            # 499 R to ground on the in- row
+    put_facing(pl, "D11%d" % n, 37.8, y_s, fda_inp, "N", "B.Cu")    # the BAV99 across the FDA's inputs: on the back under its input pins, common pad (IN+) north
+    # the monitor tap: 49.9 R from the second stage's output into a U.FL (A: above the strip, B: in the strip's
+    # notch below the SRC jumper -- above B is the converter)
+    out2_ = net_of(pl, U_op, 7)
+    if ch == "A":
+        put_facing(pl, R(13), 34.9, y_s - 3.3, out2_, "E")           # lying under the U.FL, its out2 pad east toward the 499 R
+        put_facing(pl, "J107", 33.3, y_s - 5.7, net_of(pl, "J107", 1), "S")      # (its silkscreen outline reaches 2.35 mm above its anchor: clear of the box's top line)
+    else:
+        put_facing(pl, R(13), 29.6, y_s + 5.9, out2_, "N")
+        put_facing(pl, "J108", 16.3, y_s + 9.6, net_of(pl, "J108", 1), "S")      # (the strip's empty bottom-left corner since build 27: "TAP B" stands over it; beside R1213 there was no room for the name)
     outn, outp = net_of(pl, U_fda, 5), net_of(pl, U_fda, 4)
     put_facing(pl, R(9), 39.4, y_s - 5.4, fda_inp, "W")            # feedback along the north side
     put_facing(pl, R(10), 39.4, y_s + 5.4, fda_inn, "W")           # feedback along the south side
@@ -314,7 +324,8 @@ def dac_strip(pl, port):
     put_facing(pl, R(3), x_o + 9.5, y_s - 2.63, inp, "W")           # 499 R into in+ (its far pad at 38.32)
     put_facing(pl, R(4), x_o + 7.0, y_s - 1.1, inn, "W")            # 499 R into in- (its far pad at 35.82), clear of the 2 k
     put_facing(pl, R(5), x_o + 4.6, y_s - 3.1, inp, "S")            # 2 k to ground above in+
-    put_facing(pl, cv_n, x_o + 8.6, y_s - 6.4, "-4V4", "S")         # V- (pin 4) capacitor above the 499 R row, east of the ALT jumper's notch
+    put_facing(pl, "C%d" % (base + 2), x_o + 5.9, y_s - 3.1, inp, "S")   # its 2.2 pF (build 26: the AC balance of the difference amplifier)
+    put_facing(pl, cv_n, x_o + 8.6, y_s - 6.4, "-4V2", "S")         # V- (pin 4) capacitor above the 499 R row, east of the ALT jumper's notch
     put_facing(pl, R(6), x_o + 5.5, y_s + 0.9, inn, "E")            # 2 k feedback: in- east, out west
     put_facing(pl, C1, x_o + 5.5, y_s + 2.2, inn, "E")              # 2.2 pF in parallel
     put_facing(pl, cv_p, x_o - 2.5, y_s + 2.9, "+5VA", "N")         # V+ (pin 8) capacitor standing under the pin
@@ -406,12 +417,16 @@ def clocks(pl):
     put_facing(pl, "R5421", 10.5, y - 1.4, n0, "W")
     put_facing(pl, "JP3001", 11.27, y - 5.0, net_of(pl, "JP3001", 1), "W")
     put_facing(pl, "C5421", 12.8, y, n0, "W")
-    put(pl, "U302", 16.0, y, 0)                                       # in (pin 2) on the line, out (pin 4) east bottom
-    put_facing(pl, "R5422", 16.0, y + 2.9, net_of(pl, "U302", 2), "W")   # 1 M feedback under the gate: in pad west, out pad east
-    put_facing(pl, "C5422", 17.6, y - 2.8, "+3V3", "S")              # the gate's 100 nF above its supply pin (room for the TERM jumper's label)
-    put(pl, "U303", 21.5, y + 0.95, 0)                                # in (pin 2) on the inverter's out row
-    put_facing(pl, "C5423", 22.64, y - 2.0, "+3V3", "S")
-    put_facing(pl, "R5423", 25.6, y + 1.9, net_of(pl, "U303", 4), "W")  # 33 R on the Schmitt's out row -> CLK_EXT
+    # the TLV3501 (build 26) at rot 180: +IN (3) north-west on the line's row, -IN (1) north-east, V- (2) north
+    # centre; V+ (4) south-west, OUT (5) south centre, SHDN (6) south-east.  Its 10 k to +IN west of it, the
+    # mid-rail divider and its 100 nF north-east, the supply 100 nF south-west, the 33 R on the OUT row
+    put(pl, "U302", 17.6, y + 0.5, 180)
+    put_facing(pl, "R5426", 13.9, y - 1.6, net_of(pl, "U302", 3), "E")      # 10 k lying between the TERM jumper and the 10 nF: +IN pad east toward pin 3
+    put_facing(pl, "R5424", 20.6, y - 3.2, "+3V3_ADC", "N")                   # 10 k from +3V3_ADC (pad north) to the mid-rail
+    put_facing(pl, "R5425", 22.3, y - 3.2, "GND", "N")                        # 10 k from the mid-rail to ground
+    put_facing(pl, "C5424", 24.0, y - 3.2, "GND", "N")                        # the mid-rail's 100 nF
+    put_facing(pl, "C5422", 15.4, y + 3.6, "+3V3_ADC", "E")                   # the supply 100 nF at V+ (pin 4, south-west)
+    put_facing(pl, "R5423", 21.6, y + 2.4, net_of(pl, "U302", 5), "W")        # 33 R on the OUT row -> CLK_EXT
     # CLK OUT at y 29: the buffer faces the SMA
     SECTION[0] = "CLK OUT"
     y = SMA_Y["J302"]
@@ -461,11 +476,13 @@ def noise_pd(pl):
     xo, yo = 40.0, 108.5
     put(pl, "U105", xo, yo, 0)
     put_facing(pl, "D103", xo - 8.5, yo - 0.64, net_of(pl, "D103", 1), "E")      # pad 1 = cathode (summing node)
-    put_facing(pl, "J106", xo - 16.0, yo + 1.5, net_of(pl, "J106", 1), "N")      # PD EXT: the -4.4 V (anode) pin up, K below
+    put_facing(pl, "J106", xo - 17.3, yo + 1.5, net_of(pl, "J106", 1), "N")      # PD EXT: the -4.2 V (anode) pin up, K below (1.5 west since build 26: its name stands east of it, before the tap's U.FL)
     put_facing(pl, "R1405", xo - 1.0, yo - 4.3, net_of(pl, "U105", 2), "W")     # 10 k feedback above the chip: in- west, out east
     put_facing(pl, "C1401", xo - 1.0, yo - 5.6, net_of(pl, "U105", 2), "W")     # 2.2 pF above it
+    put_facing(pl, "J109", xo - 7.0, yo + 4.4, net_of(pl, "J109", 1), "S")      # the monitor tap (build 26): the U.FL in the box's bottom row between the PD EXT header's name and the chip (the box's name needs its top edge clear; its outline clear of the photodiode's)
+    put_facing(pl, "R1406", xo - 7.0, yo + 4.4, net_of(pl, "U105", 1), "N", "B.Cu")  # its 49.9 R on the back under it
     put_facing(pl, "C1402", xo + 4.8, yo + 1.9, "+5VA", "W")                    # V+ (pin 8) capacitor
-    put_facing(pl, "C1403", xo - 4.8, yo + 1.9, "-4V4", "E")                    # V- (pin 4) capacitor
+    put_facing(pl, "C1403", xo - 2.4, yo + 2.3, "-4V2", "E", "B.Cu")            # V- (pin 4) capacitor: on the back under the pin since build 26 (the tap's U.FL took its place)
 
 
 # --- analog power: the two LDOs on the back under the strips, the charge pump and the +5VA ferrite ---------
@@ -485,15 +502,17 @@ def analog_power(pl):
     put_facing(pl, "C8201", 61.8, 50.0, "+3V3_DRV", "N", "B.Cu")
     put_facing(pl, "FB8211", 59.6, 98.0, "+3V3_DAC_D", "W", "B.Cu")   # +3V3 -> +3V3_DAC_D, behind the DAC's south-east corner, south of its back lanes
     put_facing(pl, "C8211", 63.0, 98.0, "+3V3_DAC_D", "W", "B.Cu")
-    SECTION[0] = "-4.4 V"
+    SECTION[0] = "-4.2 V"
     xp, yp = 53.5, 105.3
     put(pl, "U606", xp, yp, 0)                                         # +5V/GND/CPOUT/-4V4 west (top to bottom), VFB/+5V/C-/C+ east
     put_facing(pl, "C8302", xp + 2.6, yp - 0.5, net_of(pl, "U606", 8), "N")    # flying 1 u: C+ up at pin 8's row, C- down at pin 7's
     put_facing(pl, "C8301", xp - 3.6, yp - 1.6, "+5V", "E")            # 10 u in, at pin 1
     put_facing(pl, "C8303", xp - 3.6, yp + 0.1, net_of(pl, "U606", 3), "E")    # 10 u on CPOUT (pin 3)
-    put_facing(pl, "C8304", xp - 3.6, yp + 1.8, "-4V4", "E")           # 10 u out, at pin 4
-    put_facing(pl, "R8301", xp + 3.6, yp + 2.6, "-4V4", "W")           # 1.3 M: -4V4 west, VFB east
+    put_facing(pl, "C8304", xp - 3.6, yp + 1.8, net_of(pl, "U606", 4), "E")   # 10 u out, at pin 4 (the pump's own output, before the bead)
+    put_facing(pl, "R8301", xp + 3.6, yp + 2.6, net_of(pl, "U606", 4), "W")   # 1.2 M: pump output west, VFB east
     put_facing(pl, "R8302", xp + 3.6, yp + 4.1, net_of(pl, "U606", 5), "W")    # 499 k: VFB west, ground east
+    put_facing(pl, "FB8301", xp - 3.6, yp + 1.8, net_of(pl, "C8304", 1), "E", "B.Cu")   # the bead (build 26) on the back under the pump's output capacitor, pump side east
+    put_facing(pl, "C8305", xp - 3.6, yp + 4.0, "-4V2", "E", "B.Cu")                     # the rail's 10 u after it, on the back too
     put_facing(pl, "FB8231", xp - 3.6, yp + 4.5, "+5V", "W")           # +5V -> +5VA, under the pump's west capacitors
     put_facing(pl, "C8231", xp + 0.2, yp + 5.5, "+5VA", "W")
 
@@ -513,6 +532,7 @@ def phy(pl):
     for ref, x, y in (("R4905", 98.5, 17.0), ("R4906", 98.5, 15.5), ("R4904", 98.5, 14.0), ("R4903", 98.5, 12.5), ("R4902", 98.5, 11.0), ("R4901", 98.5, 9.5),
                       ("R4907", 95.0, 18.0), ("R4908", 95.0, 19.5), ("R4909", 95.0, 21.0), ("R4910", 95.0, 22.5), ("R4912", 95.0, 24.0), ("R4911", 95.0, 25.5)):
         put(pl, ref, x, y, 0)
+    put_facing(pl, "R4941", 97.6, 21.0, "+3V3_ETH", "E", "B.Cu")       # the TXDLY strap's 4.7 k (build 26): on the back just east of RXD1's series resistor, its RXD1 pad west (the river's layer-change via sits west of the column at x 93.6)
     # crystal and loads.  Pins 36 (XTAL_IN, x 104.2) and 37 (XTAL_OUT, x 104.6) run straight down the gap
     # between the crystal's north-row pads 4 (GND) and 3 (XTAL_OUT): the crystal is centred 0.3 mm east of
     # the PHY so that gap sits under the two pins; XTAL_IN turns west into pad 1 on the south row.  All of
@@ -601,15 +621,15 @@ def phy(pl):
     # island rule).
     rs = ("R4951", "R4952", "R4953", "R4954")
     order = sorted(rs, key=lambda r: -pad_of(pl, "T401", net_of(pl, r, 1))[1])     # the lowest tap first: outermost column, westmost resistor
-    put_facing(pl, "C4951", 128.4 + E, 4.9, "GND", "W", "B.Cu")      # ground pad at x 126.4-127.5 over the planes (island edge 127.3), hot pad 2.0 mm inside
+    put_facing(pl, "C4951", 128.4 + E, 5.3, "GND", "W", "B.Cu")      # 1812 (build 26): ground pad over the planes, hot pad inside the island, its body 3.7 mm from the edge
     cmt = net_of(pl, "C4951", 1)
-    HAND.append(("B.Cu", cmt, [pad_of(pl, "C4951", cmt), (137.6 + E, 4.9)], 0.25))
+    HAND.append(("B.Cu", cmt, [pad_of(pl, "C4951", cmt), (138.4 + E, 5.3)], 0.25))
     for k, r in enumerate(order):
-        x, y_turn, x_col = 132.5 + E + 1.7 * k, 8.4 + 0.4 * k, 130.0 + E + 0.4 * k     # columns 2.6+ mm inside the island's edge (tx - 0.7), 0.3 mm off the pads' west ends (131.6)
+        x, y_turn, x_col = 133.3 + E + 1.7 * k, 8.4 + 0.4 * k, 130.0 + E + 0.4 * k     # columns 2.6+ mm inside the island's edge (tx - 0.7), 0.3 mm off the pads' west ends (131.6); the row 0.8 east of the 1812
         put_facing(pl, r, x, 7.0, net_of(pl, r, 1), "S", "B.Cu")
         tap = net_of(pl, r, 1); tp = pad_of(pl, "T401", tap)
         HAND.append(("B.Cu", tap, [tp, (x_col, tp[1]), (x_col, y_turn), (x, y_turn), (x, 7.8)], 0.2))
-        HAND.append(("B.Cu", cmt, [(x, 4.9), (x, 6.2)], 0.25))
+        HAND.append(("B.Cu", cmt, [(x, 5.3), (x, 6.2)], 0.25))
     # the jack's shield pads (13 north, 14 south): no plane reaches them inside the island, so a track on the back
     # takes the north one into the corner hole's ring and the south one to a via just outside the island
     HAND.append(("B.Cu", "GND", [(141.9 + E, 10.9), (141.9 + E, 8.4), (144.4 + E, 5.9)], 0.3))      # into the corner hole's ring
@@ -693,7 +713,7 @@ def ftdi_usb(pl):
     put_facing(pl, "R6421", hx - 6.0, hy + 6.5, "+5V", "N")            # 4.7 k to +5 V on the jack side, standing
     put_facing(pl, "R6422", hx - 7.6, hy + 6.5, "+5V", "N")
     put_facing(pl, "R6441", hx - 9.4, hy + 6.5, "+5V", "N")            # 200 k EN/VREF2
-    put(pl, "F501", hx - 0.5, hy, 0, "B.Cu")                           # 0.5 A polyfuse to the jack's +5 V: on the back under the jack
+    put(pl, "F501", hx - 2.2, hy, 0, "B.Cu")                           # 0.5 A polyfuse to the jack's +5 V: on the back under the jack (the jack stands past the edge since build 26)
     put_facing(pl, "R6431", hx - 12.5, hy + 1.3, "+3V3", "W")          # 3.3 k pull-ups on the FPGA side, a column
     put_facing(pl, "R6432", hx - 12.5, hy + 2.8, "+3V3", "W")
     put_facing(pl, "R6411", hx - 12.5, hy + 4.3, net_of(pl, "J503", 14), "E")   # 470 R CEC
@@ -750,15 +770,17 @@ def power(pl):
         put_facing(pl, rt, x - 1.2, y - 2.6, vout, "W")                      # the divider's top beside the chip: Vout west, FB east
         put_facing(pl, rb, x + 3.0, y - 2.6, "GND", "E")                     # bottom: FB west, ground east
         put_facing(pl, ci, x + 3.7, y + 0.95, "+5V", "W")                    # input 10 u at VIN
-    put_facing(pl, "D601", 110.3, 101.0, net_of(pl, "D601", 2), "S")         # Schottky: anode down to the header
-    put_facing(pl, "J601", 110.3, 108.0, "GND", "S")                         # 5 V IN: +5V pin up, ground pin down
-    put_facing(pl, "C7601", 113.5, 100.0, "+5V", "N"); put_facing(pl, "C7602", 116.0, 100.0, "+5V", "N")
-    put(pl, "J602", 61.0, 110.5, 90)                                         # RAILS: odd pins (the rails) in the bottom row, even (ground) in the top; the names stand over it
+    put_facing(pl, "D601", 111.8, 101.0, net_of(pl, "D601", 2), "S")         # Schottky: anode down to the header
+    put_facing(pl, "J601", 111.8, 108.0, "GND", "S")                         # 5 V IN: +5V pin up, ground pin down
+    put_facing(pl, "C7601", 114.2, 100.0, "+5V", "N"); put_facing(pl, "C7602", 116.7, 100.0, "+5V", "N")
+    put(pl, "J602", 61.0, 110.5, 90)                                         # RAILS (2x9 since build 26: +1V0_PHY): odd pins (the rails) in the bottom row, even (ground) in the top; the names stand over it
+    put_facing(pl, "J603", 117.3, 105.9, net_of(pl, "J603", 1), "S")       # the -4V2 monitor tap (build 26): a U.FL at the section's east end, its 49.9 R lying under it
+    put_facing(pl, "R8303", 117.3, 110.0, "-4V2", "W")
     for i, (d, r) in enumerate((("D602", "R7651"), ("D603", "R7661"), ("D604", "R7671"), ("D605", "R7681"), ("D606", "R7691"), ("D607", "R7703"), ("D608", "R7711"), ("D609", "R7722"))):
-        x = 82.0 + 3.0 * i
+        x = 84.1 + 3.0 * i                                                   # (2.1 mm east of builds 1-25: the header is a column longer)
         put_facing(pl, d, x, 107.8, net_of(pl, d, 1), "S")                   # cathode down to its resistor
         put_facing(pl, r, x, 111.1, net_of(pl, d, 1) if d != "D609" else net_of(pl, d, 2), "N")
-    put(pl, "Q601", 106.3, 111.1, 0); put_facing(pl, "R7721", 106.3, 107.8, "+1V1", "W")
+    put(pl, "Q601", 107.95, 111.1, 0); put_facing(pl, "R7721", 107.95, 107.8, "+1V1", "W")
 
 
 # --- flash, configuration, JTAG, the SDRAM's decoupling --------------------------------------------------
@@ -770,6 +792,7 @@ def memory(pl):
     put_facing(pl, "C5701", fx + 6.4, fy - 2.5, "+3V3", "W")                 # VCC (pin 8, east top)
     sx, sy = ANCHORS["SW303"][0], ANCHORS["SW303"][1]
     put_facing(pl, "R5711", sx - 2.0, sy - 3.6, "+3V3", "N")                 # PROGRAMN  (J305 sits at y 72.6 above these, its pull-ups east of them)
+    put_facing(pl, "C5711", sx - 3.5, sy - 3.6, "GND", "N")                  # its 100 nF (build 26): ground pad north, PROGRAMN pad south
     put_facing(pl, "R5712", sx + 0.0, sy - 3.6, "+3V3", "N")                 # INITN
     put_facing(pl, "R5713", sx + 2.0, sy - 3.6, "+3V3", "N")                 # DONE
     jx, jy = ANCHORS["J305"][0], ANCHORS["J305"][1]
@@ -940,11 +963,11 @@ SECTION_BOX = {
     # (a notch at the bottom left: the noise resistors' values stand over them, inside the NOISE box's raised corner)
     "DAC 1 OUT": [(8.8, 88.6), (44.6, 88.6), (44.6, 101.1), (20.7, 101.1), (20.7, 99.15), (8.8, 99.15)],
     "NOISE + PHOTODIODE": [(8.6, 99.4), (20.7, 99.4), (20.7, 101.35), (46.9, 101.35), (46.9, 114.9), (8.6, 114.9)],
-    "-4.4 V": [(47.2, 101.8), (58.6, 101.8), (58.6, 112.6), (47.2, 112.6)],
-    "POWER": [(58.9, 95.2), (118.4, 95.2), (118.4, 114.3), (58.9, 114.3)],
+    "-4.2 V": [(47.2, 101.8), (58.6, 101.8), (58.6, 112.6), (47.2, 112.6)],
+    "POWER": [(58.9, 95.2), (121.6, 95.2), (121.6, 114.3), (58.9, 114.3)],
     "ETHERNET": [(87.0 + E, 4.2), (134.8 + E, 4.2), (134.8 + E, 28.0), (114.5 + E, 28.0), (114.5 + E, 36.0), (87.0 + E, 36.0)],
     "FTDI + USB": [(112.5 + E, 28.6), (140.9 + E, 28.6), (140.9 + E, 54.4), (136.6 + E, 54.4), (136.6 + E, 57.4), (103.6 + E, 57.4), (103.6 + E, 36.5), (112.5 + E, 36.5)],
-    "HDMI": [(133.5 + E, 57.6), (141.2 + E, 57.6), (141.2 + E, 70.3), (130.6 + E, 70.3), (130.6 + E, 61.2), (133.5 + E, 61.2)],
+    "HDMI": [(133.5 + E, 57.6), (142.2 + E, 57.6), (142.2 + E, 70.3), (130.6 + E, 70.3), (130.6 + E, 61.2), (133.5 + E, 61.2)],
     "PMODS": [(128.0 + E, 70.6), (143.5 + E, 70.6), (143.5 + E, 109.4), (142.2 + E, 109.4), (142.2 + E, 116.0), (133.6 + E, 116.0), (133.6 + E, 109.6), (128.0 + E, 109.6)],
     "RGB LED": [(119.0 + E, 109.4), (129.6 + E, 109.4), (129.6 + E, 114.5), (119.0 + E, 114.5)],
     "LEDS": [(29.3, 4.0), (58.3, 4.0), (58.3, 16.6), (29.3, 16.6)],

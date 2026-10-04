@@ -267,8 +267,8 @@
    },
    "south": {
     "balls": 23,
-    "length_after_mm": 818.3,
-    "length_before_mm": 818.3,
+    "length_after_mm": 822.0,
+    "length_before_mm": 822.0,
     "moved": 0,
     "signals": 19
    },

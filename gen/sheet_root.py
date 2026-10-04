@@ -9,7 +9,7 @@ def draw(root, pins_by_sheet, SHEETS):
     s = root
     s.text(15, 18, "ECP5 + 2 ADC + 2 DAC  --  block diagram (rev A, 2026-10-04)", size=3.5, bold=True)
     s.text(15, 24, "Each box is a sheet; every signal that crosses between sheets is drawn here as a wire or a bus. "
-                   "Power rails (+5V, +3V3, +1V1, +2V5, +3V3_ADC, +3V3_DAC, +5VA, -4V4, ...) are global power symbols.", size=1.2)
+                   "Power rails (+5V, +3V3, +1V1, +2V5, +3V3_ADC, +3V3_DAC, +5VA, -4V2, ...) are global power symbols.", size=1.2)
     byfile = {fn: (sch, title, page, hp) for fn, (sch, title, page, hp) in pins_by_sheet.items()}
     fpga = byfile["fpga.kicad_sch"]
     fnames = {n for n, _ in fpga[3]}

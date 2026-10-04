@@ -88,6 +88,7 @@ def main():
     print("%d sheets written; %d accidental touches; %d layout complaints" % (len(sheets) + 1, len(touch), len(msgs)))
     for m in touch:
         print("  TOUCH", m)
+    open(os.path.join(ROOT, "build", "sch_layout.txt"), "w").write("\n".join(msgs) + "\n")   # every complaint, for grepping
     if "--layout" in sys.argv:
         for m in msgs[:80]:
             print("   ", m)

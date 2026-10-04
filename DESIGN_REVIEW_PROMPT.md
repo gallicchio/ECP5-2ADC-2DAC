@@ -113,17 +113,17 @@ measured on the extrusion.
 ## 4. The physical board
 
 158 x 119 mm, 6 layers (F.Cu signals / In1 GND / In2 signals / In3 signals / In4 power planes / B.Cu),
-JLCPCB stackup JLC06161H-7628, ENIG, 0.8 mm BGA with filled-and-capped via-in-pad.  About 450 parts, 421
-SMT placements on 84 BOM lines; the SMAs, headers, Pmod sockets, DIP switch and RJ45 are hand soldered.
+JLCPCB stackup JLC06161H-7628, ENIG, 0.8 mm BGA with filled-and-capped via-in-pad.  About 450 parts, 438
+SMT placements on 85 BOM lines; the SMAs, headers, Pmod sockets, DIP switch and RJ45 are hand soldered.
 The In4 planes: 3.3 V under almost everything, a 1.1 V patch under the core's balls with a corridor to its
 buck, a 5 V corridor from the USB jacks down the right edge and along the bottom to the analog side.  Every
 signal via has a ground via within 1.5 mm.  The analog strips (one per SMA, 17 mm pitch) run straight from
 the SMAs to the converters down the left side; digital nets may not cross them.
 
-State at the time of writing (build 25, 2026-10-04): ERC 0, DRC 0 errors and 0 unconnected at all severities
+State at the time of writing (build 27, 2026-10-04): ERC 0, DRC 0 errors and 0 unconnected at all severities
 with the project's own rules (JLCPCB's capabilities or stricter, all silkscreen and courtyard checks as errors),
-two warnings (ground return vias north-west of the FPGA that touch only the In1 plane); every net routed by the
-build's own router or by hand; 3D renders in `docs/images/`.
+three warnings (two ground return vias north-west of the FPGA that touch only the In1 plane, one 0.2 mm -4V2
+stub); every net routed by the build's own router or by hand (412 of 412); 3D renders in `docs/images/`.
 
 ## 5. How the project is built -- this deserves its own scrutiny
 
@@ -217,8 +217,17 @@ Ordered by how much it would cost to be wrong.  These are the author's own least
 * Two ground return vias north-west of the FPGA touch the In1 plane only (KiCad "dangling").  Cosmetic.
 * `gateware/` holds a pin proof (yosys + nextpnr with a stub design) and a generated LiteX platform
   file, not a working SoC.  The TCXO drives the FPGA directly, so the board boots and runs with no
-  software for the Si5351 (which only needs programming to use its three outputs).
-* The CPL rotation table has entries for the SOT-23-5, VSSOP-8, TSOP-II-54 and the wide SOIC-8 only.
+  software for the Si5351 (which only needs programming to use its three outputs).  Both RGMII delays are
+  inside the PHY since build 26, so the gateware's RGMII PHY must be configured with none.
+* The CPL rotation table has entries for the SOT-23-5, VSSOP-8, TSOP-II-54 and the wide SOIC-8 only
+  (deferred by the author to the day of ordering, with the placement-preview reading; the U.FL jacks and the
+  SOT-23-6 comparator are new packages for it).
+* Left as they were after the reviews, with the reasoning in the response's section 5: the ADC input pair's
+  9-10 mm length mismatch with the 22 pF capacitors 10 mm from the pins (the first board's SFDR decides), and
+  DAC_CLK1 / DAC_WRT1 on In3 crossing the In4 +1V1 patch (the core's decoupling is the return path).
+* The BAV99 across each THS4521's inputs is insurance against a failure mode no behavioural model shows: with
+  the author's and Gemini's own decks the loop holds the differential input under 0.45 V in every overload,
+  and the diodes carry nothing; they matter only if the real part misbehaves outside its common-mode range.
 
 ## 8. What has been verified, but is important enough to re-check
 
@@ -243,6 +252,15 @@ code named the wrong part (the 2.2 pF capacitors a
 1206 resistor, the DAC loads 470 kΩ, the pump divider's 1.3 MΩ a 27 kΩ so the rail would have been -1.3 V,
 the PHY's RSET 270 kΩ, the USB series resistors 240 Ω, the Bob Smith 75 Ω 5.62 kΩ), found by reading each
 code's land pattern and description back from JLCPCB.
+
+Changed in build 26 after the five reviews (the reconciliation is section 5 of the response): a BAV99
+anti-parallel across each THS4521's inputs; 1206 input resistors; a bead and 10 µF on the op-amp rail, now
+-4.15 V; a 1 nF 3 kV 1812 Bob Smith capacitor and no 1500 V claim; both RGMII delays in the PHY (TXDLY = 1);
+the DAC difference amplifier's AC balance and honest ±0.9 / ±1.8 V labels; a TLV3501 comparator for CLK IN;
+100 nF on PROGRAMN; the USB-C and HDMI jacks out to the edge with cutouts that pass the plugs; +1V0_PHY on the
+RAILS header; four U.FL monitor taps; the SMA feeds at their 50 Ω width.  Each of those is a new place to look.
+Build 27 (same day) changed no circuit: the TAP B jack moved to its strip's bottom-left corner so its silkscreen
+name fits beside it, and a dozen schematic labels that sat on symbols or wires were moved.
 
 ## 9. How to look at it
 
@@ -309,7 +327,8 @@ measured or ran.
 | `design_review_CopilotSDK/` | CopilotSDK | Do not order unchanged: C4951 is a general-purpose 2 kV MLCC, not a safety capacitor, so the 1500 V claim is unsupported; the DAC stage has no slew margin at 13 MHz; CLK IN is a squarer, not a reference input; RGMII TX delay has no gateware; USB-C current is not negotiated.  ADC bias, Master-SPI order, SDRAM/HDMI skew, ERC/DRC and the fab checks pass. |
 | `design_review_Gemini_3.8_Flash/` | Gemini 3.8 Flash | Twelve findings: THS4521 overdrive puts 2.27 V across its inputs (1 V abs max) when a preamp saturates; ADC input traces 9-10 mm mismatched with the 22 pF caps 10 mm from the pins; DAC_CLK1/WRT1 cross the In4 plane split; USB-C recessed 2.7 mm behind the end plate; no filter on -4.4 V; DAC difference amp AC-unbalanced; squarer on the digital 3.3 V; RGMII skew and RXC in bank 1; C4951 1206 gap; narrow SOIC-8 rotation; USB FPGA port cannot be a host. |
 | `design_review_Grok4.7/` | Grok 4.7 | Do not start over, do not hold the fab: the chains work; fix the claims.  -4.4 V shared 2 MHz spur under the noise lab (no ferrite); silkscreen ±1 V / ±2 V vs simulated ±0.91 / ±1.82 V; power sheet's "no order requirement" sentence is wrong; isolation gap is bench clearance, not 1500 V; RGMII TX delay missing in gateware; a ±10 V source into the high-Z input opens the 100 Ω shunt.  Disputes Gemini on the THS4521 overdrive (recoverable, under 1 V differential). |
-| `DESIGN_REVIEW_RESPONSE.md` | the author | Findings 1-11, 4b, 4c with dispositions; fixed in builds 21-25; §4 is what only Jason can check. |
+| `design_review_Claude-ultrareview/` | Claude Code's cloud review of PR #2 | A code review: six Python findings, two real (a clone could not build: the pinout CSV was ignored by git; the SMA feeds were routed at 0.15 mm because the first routing pass skipped the RF set), four nits.  Nothing about the circuit. |
+| `DESIGN_REVIEW_RESPONSE.md` | the author | Findings 1-11, 4b, 4c with dispositions, fixed in builds 21-25; section 5 reconciles the five reviews into builds 26-27; §4 is what only Jason can check. |
 
 Where the reviewers disagree -- the THS4521 overdrive, whether the DAC stage needs a respin or a label, whether
 the 1500 V claim should be dropped or the capacitor changed -- the useful answer is the one with the datasheet

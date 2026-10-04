@@ -1765,3 +1765,107 @@ Apply the fixes and commit the CSV. Then do the reconciliation. Then spend whate
 
 *(completed a moment later:)* from OpticsPCBs/util_bench_instruments. (Sorry I hit enter early.)
 
+
+## Response 21 2026-10-04 10:53 - 13:50 Claude Fable 5.1 Max
+
+Done: the six cloud-review fixes and the pinout CSV committed first; the five reviews reconciled into one
+table (`DESIGN_REVIEW_RESPONSE.md` §5, seventeen rows, each with its disposition and the reason); build 26
+implements every "fix" row; four U.FL monitor taps are on the board; the documents, sheets and silkscreen say
+what the circuit now does.  Build 27, the same day, is the repository: DRC 0 errors and 0 unconnected at every severity (the same three cosmetic warnings: two In1-only ground return vias and a 0.2 mm -4V2 stub), 412 of 412 nets, 438 SMT placements on 85 BOM lines, every ordered part on a land pattern that fits it, the Ethernet moat 2.30 mm at its capacitor, the release and end plates regenerated, ~$209 per board for five.
+
+### What build 26 changes, and why
+
+* **The THS4521 overdrive (Gemini vs Grok).**  A BAV99 wired anti-parallel across each FDA's inputs: pin 3 on
+  IN+, pins 1 and 2 on IN-.  Whatever the amplifier does outside its common-mode range, the inputs cannot be
+  more than a diode drop apart.  In use they are within millivolts, so the diodes carry nanoamps.  I ran
+  Gemini's own overload deck with and without them: the behavioural model holds 0.45 V in every overload and
+  never reaches their 2.27 V, so the diodes are insurance against the real part, not a model's prediction.
+  A Schottky pair was considered and rejected (at 20 MHz the FDA's loop gain is ~6 and the differential error
+  0.17 V peak: a Schottky would already conduct).
+* **The input series resistor** is a 1206 (0.25 W): a ±10 V source into the clamp is 43 mA and 0.18 W, where
+  the 0603 was the fuse (Grok).  The sheet says ±10 V max.
+* **The op-amp rail.**  A ferrite bead and 10 µF between the LM27761 and the op amps, so the pump's 2 MHz is
+  not common to both noise channels (Grok, Gemini); the divider's 1.3 MΩ is 1.2 MΩ, -4.15 V instead of
+  -4.4, which gives the LDO 0.45 V of headroom from a 4.75 V USB supply (Grok's dropout point).  The net is
+  `-4V2` everywhere.  Every op amp still has 9.2 V across it and the DAC stage 2.3 V below its swing.
+* **The Bob Smith capacitor** is a 1 nF 3 kV X7R in 1812 (C692296).  The sheet, README and prompt say the
+  magnetics are the isolation per IEEE 802.3, the capacitor the designed bridge, and that the board has not
+  been hipot-tested.  No 1500 V claim remains (CopilotSDK, Gemini, Grok).
+* **RGMII.**  RXD1 pulled up to DVDD_RG through 4.7 kΩ: TXDLY = 1 as well as RXDLY = 1, both 2 ns delays
+  inside the PHY (the "rgmii-id" convention), so the gateware adds none (LiteEth tx_delay = rx_delay = 0;
+  a note in the platform file).  All four reviews had the TX delay with no gateware to make it.
+* **The DAC stage.**  2.2 pF across the 2 kΩ to ground (the AC balance Gemini found missing); the sheet,
+  silkscreen and README say ±0.9 V into 50 Ω, ±1.8 V unloaded, full scale to 10 MHz, -3 dB at 13.5 MHz
+  (Grok, Gemini, CopilotSDK).  The resistors stay.
+* **CLK IN** is a TLV3501 comparator on the ADC's low-noise 3.3 V (4.5 ns, 6 mV of hysteresis, rail-to-rail
+  inputs): 50 Ω / TERM jumper as before, 10 nF into IN+, IN+ biased through 10 kΩ from a 10k/10k mid-rail
+  divider that also feeds IN- (100 nF on it), SHDN grounded, 33 Ω into the FPGA.  The inverter, its 1 MΩ and
+  the Schmitt buffer are gone (every review).
+* **Sequencing.**  100 nF on PROGRAMN (with its 4.7 kΩ, configuration cannot start until ~0.5 ms after the
+  3.3 V rail that feeds VCCIO8 and the flash is up); the power sheet's note states the datasheet's rule and
+  why the tree meets it (Grok, Gemini; CopilotSDK agreed it passes).
+* **The right-edge jacks** stand out to the edge: the USB-C 1.9 mm and the mini-HDMI 0.75 mm past it, as far
+  as their rear through-hole pads allow at 0.35 mm from the edge (I wanted 2.5 and the pads said no); since
+  the plate is 1.45 mm and the board floats up to 2 mm between the plates, the end-plate cutouts now pass the
+  plugs' overmoulds (12.8 x 6.8 and 14 x 8 mm), so a plug seats however the board sits (Gemini).
+* **RAILS** is 2 x 9 with `+1V0_PHY` (my own note: the PHY's rail had no pin).
+* **Monitor taps** (your request): four Hirose U.FL jacks (C88374), each through 49.9 Ω: TAP A and TAP B at
+  each ADC channel's second preamp output, before the FDA; TAP TIA at the photodiode receiver's output;
+  TAP -4V2 on the op-amp rail after its bead.  A U.FL-SMA pigtail into a 50 Ω scope input sees half the
+  signal, a 1 MΩ input (ADALM2000) all of it; no probe to hold, nothing to solder.  No 10x probe is needed
+  for these: the tapped nodes are op-amp outputs that drive 100 Ω without complaint, and the rail tap into
+  50 Ω costs 42 mA the pump can spare.  I did not tap the clock chain (CLK OUT, driven from the FPGA, is
+  the better place to measure the squared clock) or the FDA outputs (the ADC is their measurement).
+* **Deferred, with reasons** in §5: the ADC input pair's length mismatch (60 ps against a 7.7 ns aperture;
+  the first board's SFDR decides), the DAC clocks over the In4 patch (the core decoupling is the return
+  path), the CPL rotation table (yours, on the day of ordering).
+
+### How it went
+
+The schematic side took three rounds to ERC 0; the placement twelve passes of placer-and-DRC, because every
+strip was already full and the taps, the 1206, the 1812, the comparator's six parts and the longer rails
+header all had to find room.  One DRC lied for an hour: `silk_overlap` named J603 against lines 100 mm away;
+the board writer had been copying the library footprint's primitive uuids into every instance (142
+duplicates), and KiCad attributed J107's and J109's real overlaps to J603.  `pcb/board.py` now gives every
+primitive its own uuid.  Simulations re-run: nothing moved except what was meant to.
+
+### Build 27: the last pass, by eye
+
+Build 26 came back clean (DRC 0 errors and 0 unconnected at every severity, 412 of 412 nets, the release
+built, every ordered part on a land pattern that fits it), so the last pass was the one DRC cannot do: the
+finished silkscreen and the sheets as pictures, every changed area cropped at 200 dpi.  It found "TAP B"
+printed inside the DAC 2 OUT box 6 mm from its jack (the ADC B strip's notch left no free cell beside J108 and
+the placer's fallback is "anywhere"), "TAP -4V2" 6 mm below its jack, and on the sheets a dozen labels on top of
+something: the CLK IN note over the mid-rail divider's ground symbols, the comparator's power-unit designator
+on its capacitor's ground, the RAILS header's designator inside its body, the Bob Smith and PROGRAMN notes
+through a ground wire, the DAC's output note on the +5VA flag and its Vout note under it, the gain note on
+C1101's value, "to JP203" on R1406's value, the DAC and TIA feedback capacitors' values on their resistors'
+designators, the TAP A and TAP -4V2 notes through a wire.  Each was moved in
+the generators and checked in a 40-second regenerate-and-crop loop before the build; J108 moved to the
+strip's empty bottom-left corner after a placement-plus-silkscreen dry run (45 s, no routing) showed the
+occupancy grid had room for the jack and its name there and nowhere else in the strip.  One of my own tools
+had been lying by omission: `pcb/plot.py` drew every designator white, including the ones the silkscreen
+placer sends to the fab layer because they do not fit (not printed), so its crops showed collisions that are
+not on the board; it draws those dim now, and the README's board pictures come from it.  The sheets' layout
+checker counts 299 complaints (294 before build 26, 309 after it).
+
+### Verified on build 27 (13:25-13:47)
+
+* ERC 0; DRC 0 errors, 0 unconnected at every severity with the project's rules (three warnings: two In1-only
+  ground return vias north-west of the FPGA and a 0.2 mm -4V2 stub at (15.0, 59.6), all cosmetic); 412 of 412 nets;
+  the RF-width gate passes (every SMA feed at 0.35 mm).
+* The release built with the LCSC code checks (every SMT part has a code whose JLCPCB description matches its
+  value and package); `mfg/footprint_check.py`: every ordered part fits its land pattern (twelve pad-centre
+  differences under 0.4 mm, one datum offset); the Ethernet moat 2.30 mm at C4951's hot pad; the end plates with
+  no warning; 438 SMT placements on 85 BOM lines, ~$209 per board for five (AD9238 stock 21).
+* By eye: the silkscreen crops of every changed area (both ADC strips, CLK IN, the power section, the noise lab,
+  Ethernet, USB) and the 3D renders -- every tap name beside its jack; the sheets' changed areas at 200 dpi -- no
+  label on a symbol or wire; the layout checker's complaints 299 (294 before build 26).
+* `build/scratch/final27.*` holds the board, DRC and report; the dry-run tools are `build/scratch/silk/occ_probe.py`
+  (placement + silkscreen without routing, 45 s) and `build/scratch/review/check27.sh`.
+
+### What is yours
+
+Measure the extrusion's slot, read JLCPCB's placement preview for the polarised packages (the U.FL and the
+comparator are new to the rotation table), order one board, and bring it up in the order §4 of the response
+gives -- with the pigtails.

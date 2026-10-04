@@ -27,7 +27,7 @@ def draw(sch, ids, fpga):
                       "(3.3 V I/O pads), PHY address 1, TX delay off, RX delay on (the gateware's RGMII PHY expects "
                       "the 2 ns receive delay in the PHY and adds its own transmit delay). The magnetics are a G2406S "
                       "module: each chip-side centre tap gets its own 100 nF to ground, as a voltage-mode driver wants; "
-                      "the line-side taps go to a Bob Smith termination (75 Ω each, 1 nF / 2 kV to ground).",
+                      "the line-side taps go to a Bob Smith termination (75 Ω each, 1 nF / 3 kV 1812 to ground).",
          w=340, size=1.1)
     hp = []
     # ---- unit A: RGMII and management ------------------------------------------------
@@ -39,8 +39,11 @@ def draw(sch, ids, fpga):
         members = []
         for pin_, nm in group:
             p = ph.pin(pin_)
-            r = R(ctx, 900, "22R", p[0] - 8.89, p[1], horiz=True, ref_at=(p[0] - 11.5, p[1] - 1.5), val_at=(p[0] - 5.0, p[1] - 1.5))
+            r = R(ctx, 900, "22R", p[0] - 8.89, p[1], horiz=True, ref_at=(p[0] - 11.5, p[1] - 1.5),
+                  val_at=(p[0] - 5.0, p[1] - 1.5) if nm != "ETH_RXD1" else (p[0] - 8.5, p[1] + 0.8))
             s.wire(*r.pin(2), *p)
+            if nm == "ETH_RXD1":
+                s.label(p[0] - 5.08, p[1], "TXDLY", size=0.7)                 # the strap's pull-up is drawn below the chip (build 26)
             if "TXD" in nm or "RXD" in nm:
                 members.append((r.pin(1)[0], p[1], nm))
             else:
@@ -164,9 +167,10 @@ def draw(sch, ids, fpga):
     s.wire(xbs, ybs, xbs + 3 * 7.62 + 10.16, ybs)
     for i in range(1, 4):
         s.junction(xbs + i * 7.62, ybs)
-    cbs = C(ctx, 950, "1nF 2kV", xbs + 3 * 7.62 + 10.16, ybs + 5.08, fp="C_1206", side="right")
+    cbs = C(ctx, 950, "1nF 3kV", xbs + 3 * 7.62 + 10.16, ybs + 5.08, fp="C_1812", side="right")      # 1812, 3 kV since build 26 (reviews, R4)
     s.wire(xbs + 3 * 7.62 + 10.16, ybs, *cbs.pin(1)); gnd(ctx, *cbs.pin(2), stub=1.27)
-    label_node(ctx, xbs, ybs + 12.0, "Bob Smith termination; the jack's shield goes to the same ground", side="right", size=0.85)
+    label_node(ctx, xbs, ybs + 17.0, "Bob Smith termination; the jack's shield goes to the same ground. The magnetics are the isolation (IEEE 802.3); "
+                                     "this 1 nF / 3 kV 1812 is the designed bridge across it. The board has not been hipot-tested.", side="right", size=0.85)
 
     # ---- unit C: power, regulator, RSET --------------------------------------------------
     pw = part(ctx, ids["phy"], "U401", "RTL8211F-CG", "WQFN40", 150.0, 300.0, unit=3, ref_at=(125.0, 298.0), val_at=(125.0, 301.0))
@@ -195,9 +199,16 @@ def draw(sch, ids, fpga):
     label_node(ctx, lb[0] + 8.0, lb[1] + 0.5, "internal 1.0 V switcher output: feeds only this chip; the inductor must take 600 mA (a power inductor, not a chip one)", side="right", size=0.85)
     rr_ = R(ctx, 980, "2.49k", rs[0] + 7.62, rs[1] + 5.08, side="right"); s.wire(*rs, rs[0] + 7.62, rs[1]); s.wire(rs[0] + 7.62, rs[1], *rr_.pin(1)); gnd(ctx, *rr_.pin(2), stub=1.27)
     label_node(ctx, rs[0] + 12.0, rs[1] + 0.5, "line driver current reference, 1 %", side="right", size=0.85)
+    # the TXDLY strap (build 26): RXD1 pulled up through 4.7 k to DVDD_RG, so the PHY adds the 2 ns transmit delay as
+    # well as the receive one -- both RGMII delays inside the PHY ("rgmii-id"), the gateware adds none (reviews, R5)
+    s.label(330.0, 300.0, "TXDLY", size=0.8)
+    s.wire(330.0, 300.0, 340.36, 300.0)
+    pullup(ctx, 940, 340.36, 300.0, "4.7k", "+3V3_ETH")
+    label_node(ctx, 330.0, 304.0, "RXD1 strap: TXDLY = 1 (4.7 k to DVDD_RG)", side="right", size=0.85)
     decouple(ctx, 985, 230.0, 335.0, "+3V3_ETH", ["10uF", "100nF", "100nF", "100nF", "100nF"], label="AVDD33 x2, DVDD33, DVDD_RG: 100 nF each at the pin")
     decouple(ctx, 990, 230.0, 362.0, "+1V0_PHY", ["10uF", "100nF", "100nF", "100nF", "100nF"], label="switcher output 10 µF X5R, 100 nF per 1.0 V pin")
     note(ctx, 330.0, 335.0, "+3V3_ETH is +3V3 through a ferrite bead (power sheet). The PHY address strap is the default "
-                            "(RXD3 pulled up internally): PHYAD = 1. No strap resistors on RXD0/RXD1: TXDLY = 0, RXDLY = 1.",
+                            "(RXD3 pulled up internally): PHYAD = 1. RXD1 pulled up (4.7 k): TXDLY = 1; RXD0 at its internal pull-up: RXDLY = 1 -- "
+                            "both 2 ns RGMII delays inside the PHY, so the gateware adds none (LiteEth tx_delay = rx_delay = 0).",
          w=120, size=0.95)
     return hp

@@ -205,22 +205,34 @@ def draw(sch, ids, fpga):
     label_node(ctx, xe + 15.5, ye + 22.0, "shunt in = 50 Ω", side="right", size=0.9)
     ce = C(ctx, 2420, "10nF", xe + 22.86, ye, horiz=True, ref_at=(xe + 20.0, ye - 1.8), val_at=(xe + 20.0, ye + 2.0))
     s.wire(xe + 12.7, ye, *ce.pin(1)); s.junction(xe + 12.7, ye)
-    inv_ = part(ctx, "74xGxx:74LVC1GU04", "U302", "SN74LVC1GU04DBVR", "SOT23-5", xe + 55.88, ye, ref_at=(xe + 46.0, ye - 12.0), val_at=(xe + 46.0, ye + 12.5))
-    s.wire(*ce.pin(2), *inv_.pin("2"))
-    rfb = R(ctx, 2420, "1M", inv_.x, ye - 20.32, horiz=True)
-    s.wire(inv_.pin("2")[0] - 2.54, ye, inv_.pin("2")[0] - 2.54, ye - 20.32); s.wire(inv_.pin("2")[0] - 2.54, ye - 20.32, *rfb.pin(1))
-    s.junction(inv_.pin("2")[0] - 2.54, ye)
-    s.wire(*rfb.pin(2), inv_.pin("4")[0] + 2.54, ye - 20.32); s.wire(inv_.pin("4")[0] + 2.54, ye - 20.32, inv_.pin("4")[0] + 2.54, ye); s.wire(*inv_.pin("4"), inv_.pin("4")[0] + 2.54, ye)
-    s.junction(inv_.pin("4")[0] + 2.54, ye)
-    s.nc(*inv_.pin("1")); gate_supply(ctx, 2420, inv_)
-    sch_ = part(ctx, "74xGxx:74LVC1G17", "U303", "SN74LVC1G17DBVR", "SOT23-5", xe + 95.0, ye, ref_at=(xe + 86.0, ye - 12.0), val_at=(xe + 86.0, ye + 12.5))
-    s.wire(inv_.pin("4")[0] + 2.54, ye, *sch_.pin("2"))
-    s.nc(*sch_.pin("1")); gate_supply(ctx, 2420, sch_)
-    re_ = R(ctx, 2420, "33R", sch_.pin("4")[0] + 8.89, ye, horiz=True, ref_at=(sch_.pin("4")[0] + 6.3, ye - 1.5), val_at=(sch_.pin("4")[0] + 12.8, ye - 1.5))
-    s.wire(*sch_.pin("4"), *re_.pin(1)); to_bank("CLK_EXT", *re_.pin(2))
-    note(ctx, xe - 15.0, ye + 28.0, "10 MHz sine from a GPSDO, or any 0.5 to 3.3 V square wave up to 100 MHz. 50 Ω if the shunt is in. AC coupled into an "
-                                   "unbuffered inverter biased at its own threshold by the 1 MΩ, then a Schmitt buffer: the GPSDO board's front end. "
-                                   "The FPGA's PLL locks to it (8 MHz minimum).", w=175, size=0.9)
+    # build 26: a TLV3501 comparator (4.5 ns, 6 mV of hysteresis, rail-to-rail inputs) on the ADC's quiet 3.3 V, in
+    # place of the self-biased inverter + Schmitt buffer of builds 1-25, whose threshold moved with the digital rail
+    # (every review).  +IN takes the signal through the 10 nF and sits at mid-rail through 10 k; -IN is the mid-rail
+    # itself (10k/10k, 100 nF).  SHDN grounded.
+    cmp_ = part(ctx, ids["cmp"], "U302", "TLV3501AIDBVR", "SOT23-6", xe + 60.96, ye, unit=1, ref_at=(xe + 52.5, ye - 12.0), val_at=(xe + 52.5, ye + 10.5))
+    cp, cn, co = cmp_.pin("3"), cmp_.pin("1"), cmp_.pin("5")
+    xs = cp[0] - 2.54                                                   # the signal node: 10 nF in, +IN up, the 10 k bias down
+    s.wire(*ce.pin(2), xs, ye); s.wire(xs, ye, xs, cp[1]); s.wire(xs, cp[1], *cp); s.junction(xs, ye)
+    yb = ye + 15.24                                                     # the mid-rail node's row
+    rb3 = R(ctx, 2420, "10k", xs, ye + 7.62, side="right", ref="R5426"); s.wire(xs, ye, *rb3.pin(1)); s.wire(*rb3.pin(2), xs, yb)
+    s.wire(xs - 15.24, yb, xs, yb)
+    rb1 = R(ctx, 2420, "10k", xs - 15.24, yb - 7.62, side="left", ref="R5424"); s.wire(*rb1.pin(2), xs - 15.24, yb); rail(ctx, *rb1.pin(1), "+3V3_ADC", stub=2.54)
+    rb2 = R(ctx, 2420, "10k", xs - 15.24, yb + 7.62, side="left", ref="R5425"); s.wire(xs - 15.24, yb, *rb2.pin(1)); gnd(ctx, *rb2.pin(2), stub=1.27)
+    cb = C(ctx, 2420, "100nF", xs - 7.62, yb + 7.62, side="right", ref="C5424"); s.wire(xs - 7.62, yb, *cb.pin(1)); gnd(ctx, *cb.pin(2), stub=1.27)
+    s.junction(xs - 15.24, yb); s.junction(xs - 7.62, yb); s.junction(xs, yb)
+    s.wire(*cn, xs - 5.08, cn[1]); s.wire(xs - 5.08, cn[1], xs - 5.08, yb); s.junction(xs - 5.08, yb)        # -IN to the mid-rail
+    label_node(ctx, xs - 30.0, yb + 14.2, "mid-rail 1.65 V: -IN directly, +IN through 10 k", side="right", size=0.85)
+    pu = part(ctx, ids["cmp"], "U302", "TLV3501AIDBVR", "SOT23-6", co[0] + 25.4, ye + 12.7, unit=2, ref_at=(co[0] + 31.0, ye + 18.0), val_at=(co[0] + 31.0, ye + 20.0))      # (below the box: beside it they sat on C5422's ground symbol)
+    rail(ctx, *pu.pin("4"), "+3V3_ADC", stub=3.81); gnd(ctx, *pu.pin("2"), stub=3.81)
+    s.wire(*pu.pin("6"), pu.pin("6")[0] - 2.54, pu.pin("6")[1]); gnd(ctx, pu.pin("6")[0] - 2.54, pu.pin("6")[1], stub=2.54)
+    cs_ = C(ctx, 2420, "100nF", pu.pin("4")[0] + 7.62, pu.pin("4")[1] - 3.81 + 3.81, side="right", ref="C5422")
+    s.wire(pu.pin("4")[0], pu.pin("4")[1] - 3.81, pu.pin("4")[0] + 7.62, pu.pin("4")[1] - 3.81); s.wire(pu.pin("4")[0] + 7.62, pu.pin("4")[1] - 3.81, *cs_.pin(1)); gnd(ctx, *cs_.pin(2), stub=0)
+    s.junction(pu.pin("4")[0], pu.pin("4")[1] - 3.81)
+    re_ = R(ctx, 2420, "33R", co[0] + 8.89, ye, horiz=True, ref="R5423", ref_at=(co[0] + 6.3, ye - 1.5), val_at=(co[0] + 12.8, ye - 1.5))
+    s.wire(*co, *re_.pin(1)); to_bank("CLK_EXT", *re_.pin(2))
+    note(ctx, xe - 15.0, ye + 34.0, "10 MHz sine from a GPSDO (0.3 V peak or more), or any 0.5 to 3.3 V square wave to 80 MHz. 50 Ω if the shunt is in. "
+                                   "AC coupled into a TLV3501 comparator on the ADC's low-noise 3.3 V: +IN biased to mid-rail through 10 kΩ, -IN at "
+                                   "mid-rail, 6 mV of hysteresis inside, 4.5 ns. The FPGA's PLL locks to it (8 MHz minimum).", w=175, size=0.9)
     # clock out
     yo = 230.0
     s.text(xe - 15.0, yo - 25.0, "CLK OUT: sync a second board", size=1.2, bold=True)
@@ -489,6 +501,11 @@ def draw(sch, ids, fpga):
     s.wire(*t9, t9[0] + 12.7, t9[1]); s.wire(*d9, d9[0] + 20.32, d9[1])
     ladder(ctx, 2710, [(p9[0] + 5.08, p9[1]), (t9[0] + 12.7, t9[1], "end"), (d9[0] + 20.32, d9[1], "end")], "4.7k", "+3V3",
            label="PROGRAMN, INITN, DONE: 4.7 k to VCCIO8")
+    # 100 nF on PROGRAMN (build 26): with the 4.7 k, configuration cannot start until ~0.5 ms after the 3.3 V rail
+    # -- VCCIO8 and the flash's supply -- is up, whatever the 1.1 V buck does (Master SPI's power-up rule; reviews, R8)
+    cpg = C(ctx, 2710, "100nF", p9[0] + 22.86, p9[1] + 6.35, side="right")
+    s.wire(p9[0] + 22.86, p9[1], *cpg.pin(1)); gnd(ctx, *cpg.pin(2), stub=1.27); s.junction(p9[0] + 22.86, p9[1])
+    label_node(ctx, p9[0] + 14.0, p9[1] + 19.5, "100 nF: configuration starts 0.5 ms after VCCIO8", side="right", size=0.8)
     swp = part(ctx, "Switch:SW_Push", "SW303", "SW_Push", "SW_1088", p9[0] + 30.48, p9[1], rot=0, ref_at=(p9[0] + 26.5, p9[1] - 2.6), val_at=(p9[0] + 26.5, p9[1] + 1.6))
     l_, r_ = sorted([swp.pin(1), swp.pin(2)])
     s.wire(*r_, r_[0] + 2.54, r_[1]); gnd(ctx, r_[0] + 2.54, r_[1], stub=2.54)

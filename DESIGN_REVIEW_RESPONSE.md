@@ -16,8 +16,9 @@ through 470 Ω; the board would have stood its magnetics on the enclosure floor 
 1.0 V switcher ran through an 0805 chip inductor rated 50 mA; and seven of the BOM's LCSC codes (eight entries of
 the parts table) were the wrong part -- the DAC's 24.9 Ω loads were a 470 kΩ, the PHY's 2.49 kΩ bias resistor a 270 kΩ, the -4.4 V pump's 1.3 MΩ a
 27 kΩ (a -1.3 V rail), the USB port's 27 Ω a 240 Ω, the 2.2 pF feedback capacitors a 1206 resistor.  All six
-are fixed in builds 21-25 and the checks that would have caught them now run in every build.  Build 25 is the
-repository: DRC clean at every severity, 407 of 407 router nets, 421 placements on 84 BOM lines, 158 x 119 mm.  The things
+are fixed in builds 21-25 and the checks that would have caught them now run in every build; the five reviews of
+build 25 are reconciled in §5 and built as builds 26-27.  Build 27 is the repository: DRC 0 errors and 0 unconnected at
+every severity, 412 of 412 router nets, 438 SMT placements on 85 BOM lines, 158 x 119 mm.  The things
 that cannot be checked from here are listed in §4 for Jason.
 
 ## 1. Findings, ranked
@@ -106,3 +107,100 @@ failure: a code is a name, and nothing else in the pipeline ever looked at what 
       with nothing plugged in (rail LEDs: all nine on; RAILS header: +5V, +3V3, +1V1, +2V5, 3V3A, 3V3D, +5VA,
       -4V4), then USB PROG (the FT2232H enumerates with a blank EEPROM), then `openFPGALoader -c ft2232` a
       blinker, then the flash, then Ethernet with `ping`, then the SMAs.
+
+## 5. The five reviews reconciled, and builds 26-27 (2026-10-04, from 10:53)
+
+Four outside reviews of build 25 (`design_review_CopilotSDK/`, `design_review_Gemini_3.8_Flash/`,
+`design_review_Grok4.7/`, `design_review_Claude-ultrareview/`) and this one.  Every finding, what it costs to be
+wrong, and what build 26 does about it.  "Fix" = changed in the generators and rebuilt; "label" = the
+documents, sheet notes and silkscreen now say what the circuit does; "defer" = left for the first board, with
+the measurement that decides.  Jason's own addition: U.FL monitor taps, so the first board's questions are
+answered by plugging a pigtail into a scope, not by holding a probe.
+
+| # | Finding (who) | Disposition in build 26 |
+|---|---|---|
+| R1 | THS4521 overdrive: when a preamp saturates to -4.2 V, Gemini computes 2.27 V across the FDA's inputs (abs max 1 V); Grok says the loop keeps it under 1 V.  Both assume something about an amplifier driven outside its input range | **Fix, by construction**: a BAV99 wired anti-parallel across each FDA's two inputs (pin 3 to IN+, pins 1 and 2 to IN-).  Whatever the amplifier does, the differential input cannot exceed one diode drop (0.8-0.9 V at the 7-10 mA the 499 Ω networks allow).  In normal operation the inputs sit within millivolts of each other, so the diodes carry nanoamps and add 1.5 pF across a virtual short.  A Schottky pair was considered and rejected: at 20 MHz the FDA's loop gain is ~6, the differential error ~0.17 V peak, and a Schottky would already conduct tens of µA there |
+| R2 | A ±10 V source into the high-Z input burns the 100 Ω 0603 (Grok) | **Fix**: 100 Ω 1206 (0.25 W; 43 mA, 0.18 W at ±10 V); the sheet says ±10 V max instead of ±8 |
+| R3 | -4.4 V rail: the LM27761's 2 MHz ripple is common to both noise channels, no ferrite (Grok, Gemini); the LDO is in dropout from a 4.5-4.75 V USB supply (Grok) | **Fix**: a ferrite bead and 10 µF between the pump and the op amps (the rail is now `-4V2`, after the bead; the divider still senses the pump's own output), and the divider's 1.3 MΩ becomes 1.2 MΩ: -1.22 x (1.2M + 499k) / 499k = **-4.15 V**, 0.45 V of LDO headroom from a 4.75 V input.  Every op amp still has 9.2 V across it (minimum 4.5) and 2.3 V of headroom below the DAC stage's -1.8 V swing.  A U.FL tap on the rail |
+| R4 | Bob Smith capacitor C4951 is a general-purpose 2 kV 1206 MLCC, 1.4 mm pad gap, 1.9 mm to the plane: not evidence of 1500 Vrms (CopilotSDK, Gemini, Grok) | **Fix + label**: a 1 nF **3 kV** X7R in **1812** (C692296: 4.5 x 3.2 mm, ~2.3 mm between its own terminals, the plane edge further from its hot pad); the sheet, README and prompt now say the magnetics are the isolation per IEEE 802.3, the capacitor is the designed bridge, and the board has not been hipot-tested.  No 1500 V claim remains |
+| R5 | RGMII TX delay: TXDLY = 0 expects the gateware to shift TXC by 2 ns; the shipped platform is a pin proof, so the first gateware to run would not link at 1 Gb/s (all four) | **Fix**: RXD1 pulled up with 4.7 kΩ to DVDD_RG (+3V3_ETH): TXDLY = 1 as well as RXDLY = 1 -- both 2 ns delays inside the PHY, the "rgmii-id" convention, and the gateware adds none (LiteEth `tx_delay = rx_delay = 0`; note in `gateware/litex/ecp5_2adc_2dac.py`).  Copper skew (TX 2.6 mm, RX 7-10 mm: Grok; 23 mm clock-to-farthest-data: CopilotSDK/Gemini) is 20-150 ps against a 2 ns shift: not the risk |
+| R6 | DAC stage: ±0.913 V into 50 Ω and ±1.825 V open circuit, not the ±1 / ±2 V on the sheet and silkscreen (Grok, Gemini); 149 of 180 V/µs of slew at 13 MHz full scale (CopilotSDK, Gemini); no capacitor across the 2 kΩ on the non-inverting input, so the HF common-mode balance is lost (Gemini) | **Fix + label**: 2.2 pF across the 2 kΩ to ground (the AC balance); the sheet, silkscreen and README say ±0.9 V into 50 Ω, ±1.8 V unloaded, full-scale sine to 10 MHz, -3 dB at 13.5 MHz.  The resistors stay: 0.91 V is a fine teaching full scale once the label is honest, and a bigger swing would eat the slew margin |
+| R7 | CLK IN: an unbuffered inverter biased at its own threshold, which moves with the digital 3.3 V rail: 250 ps to nanoseconds of edge movement on a 10 MHz sine (all three) | **Fix**: a TLV3501 comparator (4.5 ns, 6 mV internal hysteresis, rail-to-rail inputs; C193413) on the ADC's low-noise 3.3 V rail: 50 Ω / TERM jumper as before, 10 nF coupling into IN+, IN+ biased through 10 kΩ from a 10k/10k mid-rail divider that also feeds IN- (100 nF on that node), SHDN grounded, 33 Ω into the FPGA.  The Schmitt buffer and the 1 MΩ go.  Square waves to 80 MHz (the comparator's toggle rate); a 10 MHz sine of 0.3 V peak or more |
+| R8 | Power sheet says "the ECP5 has no order requirement"; the datasheet's Master-SPI rule is VCCIO8 above the flash's VIH before the FIRST of VCC and VCCAUX reaches VPORUP (Grok, Gemini); CopilotSDK and Grok agree the tree as built almost certainly meets it | **Fix + label**: 100 nF from PROGRAMN to ground (with its 4.7 kΩ: configuration cannot start until ~0.5 ms after the 3.3 V rail, which is VCCIO8 and the flash's supply, is up); the note now states the rule and why the tree meets it.  Scope +3V3 against +1V1 on the first board |
+| R9 | USB-C receptacles recessed 0.32 mm inside the board edge, the mini-HDMI 0.18 mm; behind a 1.45 mm end plate a USB-C plug's shroud cannot reach (Gemini) | **Fix**: the two USB-C jacks and the HDMI jack moved east so their faces stand **2.5 mm** past the board edge.  Hammond's plates are 1.45 mm thick and the board floats up to 2 mm between them (160 mm extrusion, 158 mm board, the SMA nuts do not locate it), so the faces land between 1 mm inside and 1 mm outside the plate's outer surface: 5.5 mm or more of a USB-C plug's 6.5 mm shroud enters in the worst case.  The RJ45's and Pmods' cutouts are the whole jack body, so their recess does not matter.  `end_panels.py` follows the placement |
+| R10 | ADC input traces: VIN+/VIN- mismatched by 9-10 mm with the 22 pF caps 10 mm from the pins (Gemini) | **Defer**: a 10 mm mismatch is 60 ps against a 7.7 ns aperture, and ~10 nH is 1.3 Ω at 20 MHz, below the 33 Ω series resistor's tolerance; the kickback pole (33 Ω + 22 pF) is at 219 MHz.  The first board's SFDR at 1 and 10 MHz, x1, decides; the fix would be the capacitors on the back under the pins |
+| R11 | DAC_CLK1 / DAC_WRT1 on In3 cross the In4 +1V1 patch boundary (Gemini) | **Defer with reasoning**: In3's nearer reference is the In1 ground plane through In2 as much as In4; the +1V1 patch is 4 x 4 mm under the core balls with the FPGA's decoupling capacitors on its edge, which is the return path the crossing uses; the clock is 33 Ω-damped and 65-125 MHz.  Watch the DAC's spurs on the first board |
+| R12 | USB-C power is not negotiated; a 2 A PTC is not a current limiter (CopilotSDK) | **Label**: the legend and README already say a USB-C or USB 3 port or the 5 V IN header; the README now says why (0.7 A before any enumeration) |
+| R13 | RGMII RXC on bank 1 while the data is on bank 2 (Gemini) | **No change**: E8 is a primary clock input; the clock goes to the global network and reaches bank 2's IDDRs like any PCLK; LiteEth's ECP5 PHY handles the input delay (DELAYG).  Gateware, not board |
+| R14 | Narrow SOIC-8 has no CPL rotation entry (Gemini) | **Parked by Jason** for the day of ordering, with the rest of the placement-preview reading |
+| R15 | The FPGA USB port cannot be a host (Gemini) | **No change**: it is a device port by design; the README says so |
+| R16 | A clone cannot build (pinout CSV ignored); SMA feeds routed at 0.15 mm; four nits (Claude ultrareview) | **Fixed** in commit dd8a89d: the CSV is tracked, `width_of` serves both routing passes and the build fails if an RF net is not 0.35 mm, the nits cleaned |
+| R17 | Debugging without soldering or holding a probe (Jason) | **Add**: four U.FL (Hirose U.FL-R-SMT-1, C88374) monitor taps, each through 49.9 Ω so a 50 Ω scope input sees half the signal and a 1 MΩ input (ADALM2000) sees all of it: ADC A and B after the second preamp (before the FDA), the photodiode receiver's output, and the -4.2 V rail.  `+1V0_PHY` and `+1V8_FTDI` join the RAILS header (now 2 x 10).  A pigtail into the Siglent scope controlled from `util_bench_instruments/` closes R1, R3, R7 and R10 |
+
+Builds: 26 is all of the above.  The log of the work follows.
+
+### Build 26 log
+
+* 10:53-13:00: everything in the table implemented in `gen/` (sheets: ADC, DAC, FPGA, power, Ethernet),
+  `pcb/floorplan.py` (every new part placed by hand), `pcb/build_pcb.py` (silkscreen strings, the tap names,
+  the rails header's ninth name), `mfg/end_panels.py` (cutouts), `sim/` (the decks follow the circuit), the
+  parts table (TLV3501AIDBVR C193413, U.FL-R-SMT-1(80) C88374, 1 nF 3 kV 1812 C692296, 100 R 1206 C17901,
+  1.2 M C22766) and `library/ours.pretty` (the U.FL land pattern from EasyEDA with both ground pads numbered 2,
+  its 3D model in `ours.3dshapes`).  Two generated symbols were added for the schematic: a BAV99 drawn as the
+  anti-parallel pair it is wired as (gen.py's checker rejects a two-unit symbol sharing pin 3), and a
+  comparator triangle with its supply box.
+* The schematic side: ERC 0 after three rounds (a power flag for the rail behind the bead; the rails header's
+  negative flag hung into the next row, so the negative rail is last; explicit designators for the new parts
+  so the strips' R1..R12 and the DAC's C1 keep their numbers, which the floorplan indexes).
+* The placement took twelve passes of `build_pcb.py --place` + DRC: the 1206 needed the clamp and the
+  termination jumper moved; the taps had to find room in strips that were full (A's above its strip, B's in
+  the notch below the SRC jumper, the TIA's in the box's bottom row, the rail's at the power section's east
+  end); the rails header grew a column, so the LED row, the 1.1 V-good transistor and the bench header moved
+  east; the 1812 pushed the Bob Smith row 0.8 mm east.  Two silkscreen lessons: a U.FL's outline reaches
+  2.35 mm above its anchor, past its courtyard; and a box name that is short enough for a notch's corner
+  piece takes it and evicts the noise resistors' values, so the name stays long.
+* A DRC that lied: `silk_overlap` named J603 against lines 100 mm away.  The board writer had copied the
+  library footprint's primitive uuids into every instance (142 duplicates), and KiCad attributed J109's and
+  J107's real overlaps to J603.  `pcb/board.py` now gives every primitive a per-instance uuid; both real
+  overlaps were fixed.
+* Simulations re-run: ADC chain -6.03 dB from the source (the 50 Ω divider) and 23.1 MHz, unchanged by the
+  diodes; DAC 1.825 V unloaded / 0.913 V into 50 Ω and 13.4 MHz with the balance capacitor; TIA 6.8 MHz,
+  3.5 dB of peaking; LED driver 48 mA.  Gemini's overload deck (`design_review_Gemini_3.8_Flash/test_ovld.cir`),
+  re-run at -4.15 V with and without the BAV99 across the inputs: at ±5 V in the loop holds |IN+ - IN-| at
+  0.45 V and the diodes carry nothing -- the 2.27 V in their report is not what their own deck computes; the
+  diodes are insurance for the real part outside its common-mode range, which no behavioural model shows.
+* The right-edge connectors: 2.5 mm of protrusion was the plan; the USB-C shells' rear through-hole pads and the
+  mini-HDMI's legs limit it to 1.9 and 0.75 mm at 0.35 mm from the edge, so the end plates' cutouts take the
+  plugs' overmoulds instead (12.8 x 6.8 and 14 x 8 mm).
+* 12:38: the full build 26 started; 13:04 it routed 411 of 412 nets and stopped on the new RF-width gate.
+  Three things: (1) the gate counted the router's 0.127 mm pad-entry necks as violations -- it now ignores
+  segments under 1.5 mm; (2) the TXDLY pull-up on the back under RXD1's series resistor sat on the RGMII river's
+  layer-change via (a short: `shorting_items`) -- it is east of the column now; (3) the flash's CS and WP pull-ups'
+  3.3 V pads at x 73.3 lay over the 1.1 V corridor's east part with no room for an edge via between them and the
+  flash, and the router could not reach them (build 25 had joined the two pads and found a way; build 26's
+  retry burnt 1.2 M pops and gave up) -- the corridor's east edge is 72.6 mm now, so both pads are over the 3.3 V
+  plane with their own vias.  Build 26 restarted 13:15.
+
+### Build 27 log (13:40 -)
+
+* Build 26 came back clean (DRC 0 errors, 0 unconnected, 412 of 412 nets, the release built, every ordered part
+  on a land pattern that fits it), so the last pass was the one a reviewer cannot do from the files: the
+  finished silkscreen and the sheets as pictures, every changed area cropped at 200 dpi.  It found the kind of
+  thing DRC does not: "TAP B" printed inside the DAC 2 OUT box 6 mm from its jack (the ADC B strip's notch left
+  no free cell beside J108, and the placer's fallback is "anywhere"), "TAP -4V2" 6 mm below its jack, and on the
+  sheets a dozen labels on top of something -- the CLK IN note over the mid-rail divider's ground symbols, the
+  comparator's power-unit designator on its capacitor's ground, the RAILS header's designator inside its body,
+  the Bob Smith and PROGRAMN notes through a ground wire, the DAC's output note on the +5VA flag and its Vout
+  note under it, the gain note on C1101's value, "to JP203" on R1406's value, the DAC and TIA feedback
+  capacitors' values on the resistors' designators, the TAP A and TAP -4V2 notes through a wire.  Each was moved in the generators and checked in a 40-second regenerate-and-crop loop
+  (`gen/gen.py`, `kicad-cli sch export pdf`, `pdftoppm`) before the build; J108 moved to the strip's empty
+  bottom-left corner after a placement-plus-silkscreen dry run (`build/scratch/silk/occ_probe.py`, 45 s, no
+  routing) showed the occupancy grid had room for the jack and its name there and nowhere else in the strip.
+* A tool that lied by omission: `pcb/plot.py` drew every designator white, including the ones the silkscreen
+  placer had sent to the fab layer because they did not fit (not printed), so its crops showed collisions that
+  do not exist on the board.  It draws those dim now; the README's board pictures come from it.
+* 13:25-13:43: build 27 (1096 s): DRC 0 errors and 0 unconnected at every severity, the same three warnings as
+  build 26 (two In1-only ground return vias north-west of the FPGA, a 0.2 mm -4V2 stub at (15.0, 59.6)); 412 of 412
+  nets; 438 SMT placements on 85 BOM lines; every ordered part on a land pattern that fits it; the Ethernet moat
+  2.30 mm at C4951's hot pad; the end plates unchanged; the release at ~$209 per board for five.  The crops and the
+  3D render show every tap name beside its jack.  Build 27 is the repository.
