@@ -1,0 +1,409 @@
+{
+ "buses": {
+  "J303": {
+   "nets": [
+    "/FPGA, memory, clocks, configuration/PMODA_0",
+    "/FPGA, memory, clocks, configuration/PMODA_1",
+    "/FPGA, memory, clocks, configuration/PMODA_2",
+    "/FPGA, memory, clocks, configuration/PMODA_3",
+    "/FPGA, memory, clocks, configuration/PMODA_4",
+    "/FPGA, memory, clocks, configuration/PMODA_5",
+    "/FPGA, memory, clocks, configuration/PMODA_6",
+    "/FPGA, memory, clocks, configuration/PMODA_7",
+    "/FPGA, memory, clocks, configuration/PMODB_0",
+    "/FPGA, memory, clocks, configuration/PMODB_1",
+    "/FPGA, memory, clocks, configuration/PMODB_2",
+    "/FPGA, memory, clocks, configuration/PMODB_3",
+    "/FPGA, memory, clocks, configuration/PMODB_4",
+    "/FPGA, memory, clocks, configuration/PMODB_5",
+    "/FPGA, memory, clocks, configuration/PMODB_6",
+    "/FPGA, memory, clocks, configuration/PMODB_7"
+   ],
+   "report": {
+    "adapter_height": 56.07500000000001,
+    "chip": "J303",
+    "corridors": {},
+    "face": "E",
+    "free_exits": {
+     "B.Cu": [
+      "K12",
+      "K13",
+      "M12"
+     ],
+     "F.Cu": [],
+     "In2.Cu": [],
+     "In3.Cu": [
+      "N13"
+     ]
+    },
+    "ground_stubs": 0,
+    "lanes": 16,
+    "layout": "pmod",
+    "max_adapter_shift": 0.0,
+    "per_layer": {
+     "B.Cu": 0,
+     "F.Cu": 9,
+     "In2.Cu": 4,
+     "In3.Cu": 3
+    },
+    "rot": 0,
+    "to_extra_face": 0,
+    "vias": 16
+   },
+   "rot": 0
+  },
+  "J503": {
+   "nets": [
+    "/FPGA, memory, clocks, configuration/GPDI_CK_N",
+    "/FPGA, memory, clocks, configuration/GPDI_CK_P",
+    "/FPGA, memory, clocks, configuration/GPDI_D0_N",
+    "/FPGA, memory, clocks, configuration/GPDI_D0_P",
+    "/FPGA, memory, clocks, configuration/GPDI_D1_N",
+    "/FPGA, memory, clocks, configuration/GPDI_D1_P",
+    "/FPGA, memory, clocks, configuration/GPDI_D2_N",
+    "/FPGA, memory, clocks, configuration/GPDI_D2_P"
+   ],
+   "report": {
+    "adapter_height": 60.300000000000004,
+    "chip": "J503",
+    "corridors": {},
+    "face": "E",
+    "free_exits": {
+     "B.Cu": [],
+     "F.Cu": [],
+     "In2.Cu": [],
+     "In3.Cu": []
+    },
+    "ground_stubs": 8,
+    "lanes": 8,
+    "layout": "hdmi",
+    "max_adapter_shift": 0.0,
+    "per_layer": {
+     "B.Cu": 0,
+     "F.Cu": 4,
+     "In2.Cu": 2,
+     "In3.Cu": 2
+    },
+    "rot": 0,
+    "to_extra_face": 0,
+    "vias": 4
+   },
+   "rot": 0
+  },
+  "U103": {
+   "nets": [
+    "/ADC/ADC_A_D0",
+    "/ADC/ADC_A_D1",
+    "/ADC/ADC_A_D10",
+    "/ADC/ADC_A_D11",
+    "/ADC/ADC_A_D2",
+    "/ADC/ADC_A_D3",
+    "/ADC/ADC_A_D4",
+    "/ADC/ADC_A_D5",
+    "/ADC/ADC_A_D6",
+    "/ADC/ADC_A_D7",
+    "/ADC/ADC_A_D8",
+    "/ADC/ADC_A_D9",
+    "/ADC/ADC_A_OTR",
+    "/ADC/ADC_B_D0",
+    "/ADC/ADC_B_D1",
+    "/ADC/ADC_B_D10",
+    "/ADC/ADC_B_D11",
+    "/ADC/ADC_B_D2",
+    "/ADC/ADC_B_D3",
+    "/ADC/ADC_B_D4",
+    "/ADC/ADC_B_D5",
+    "/ADC/ADC_B_D6",
+    "/ADC/ADC_B_D7",
+    "/ADC/ADC_B_D8",
+    "/ADC/ADC_B_D9",
+    "/ADC/ADC_B_OTR"
+   ],
+   "report": {
+    "adapter_height": 8.175000000000004,
+    "chip": "U103",
+    "corridors": {
+     "F.Cu": [
+      [
+       58.913000000000004,
+       59.487
+      ],
+      [
+       59.313,
+       59.887
+      ]
+     ]
+    },
+    "face": "W",
+    "free_exits": {
+     "B.Cu": [
+      "F5"
+     ],
+     "F.Cu": [
+      "H5",
+      "J1",
+      "J2"
+     ],
+     "In2.Cu": [],
+     "In3.Cu": []
+    },
+    "ground_stubs": 4,
+    "lanes": 26,
+    "layout": "chip",
+    "max_adapter_shift": 2.769999999999996,
+    "per_layer": {
+     "B.Cu": 1,
+     "F.Cu": 12,
+     "In2.Cu": 9,
+     "In3.Cu": 4
+    },
+    "rot": 0,
+    "to_extra_face": 0,
+    "vias": 14
+   },
+   "rot": 0
+  },
+  "U201": {
+   "nets": [
+    "/DAC/DAC_CLK1",
+    "/DAC/DAC_CLK2",
+    "/DAC/DAC_P1_D0",
+    "/DAC/DAC_P1_D1",
+    "/DAC/DAC_P1_D10",
+    "/DAC/DAC_P1_D11",
+    "/DAC/DAC_P1_D12",
+    "/DAC/DAC_P1_D13",
+    "/DAC/DAC_P1_D2",
+    "/DAC/DAC_P1_D3",
+    "/DAC/DAC_P1_D4",
+    "/DAC/DAC_P1_D5",
+    "/DAC/DAC_P1_D6",
+    "/DAC/DAC_P1_D7",
+    "/DAC/DAC_P1_D8",
+    "/DAC/DAC_P1_D9",
+    "/DAC/DAC_P2_D0",
+    "/DAC/DAC_P2_D1",
+    "/DAC/DAC_P2_D10",
+    "/DAC/DAC_P2_D11",
+    "/DAC/DAC_P2_D12",
+    "/DAC/DAC_P2_D13",
+    "/DAC/DAC_P2_D2",
+    "/DAC/DAC_P2_D3",
+    "/DAC/DAC_P2_D4",
+    "/DAC/DAC_P2_D5",
+    "/DAC/DAC_P2_D6",
+    "/DAC/DAC_P2_D7",
+    "/DAC/DAC_P2_D8",
+    "/DAC/DAC_P2_D9",
+    "/DAC/DAC_WRT1",
+    "/DAC/DAC_WRT2"
+   ],
+   "report": {
+    "adapter_height": 7.900000000000006,
+    "chip": "U201",
+    "corridors": {
+     "F.Cu": [
+      [
+       58.913000000000004,
+       59.487
+      ],
+      [
+       59.313,
+       59.887
+      ]
+     ]
+    },
+    "face": "W",
+    "free_exits": {
+     "B.Cu": [],
+     "F.Cu": [
+      "R2"
+     ],
+     "In2.Cu": [],
+     "In3.Cu": []
+    },
+    "ground_stubs": 6,
+    "lanes": 32,
+    "layout": "dac",
+    "max_adapter_shift": 0.0,
+    "per_layer": {
+     "B.Cu": 4,
+     "F.Cu": 12,
+     "In2.Cu": 10,
+     "In3.Cu": 6
+    },
+    "rot": 0,
+    "to_extra_face": 13,
+    "vias": 20
+   },
+   "rot": 0
+  },
+  "U305": {
+   "nets": [
+    "/FPGA, memory, clocks, configuration/SDRAM_A0",
+    "/FPGA, memory, clocks, configuration/SDRAM_A1",
+    "/FPGA, memory, clocks, configuration/SDRAM_A10",
+    "/FPGA, memory, clocks, configuration/SDRAM_A11",
+    "/FPGA, memory, clocks, configuration/SDRAM_A12",
+    "/FPGA, memory, clocks, configuration/SDRAM_A2",
+    "/FPGA, memory, clocks, configuration/SDRAM_A3",
+    "/FPGA, memory, clocks, configuration/SDRAM_A4",
+    "/FPGA, memory, clocks, configuration/SDRAM_A5",
+    "/FPGA, memory, clocks, configuration/SDRAM_A6",
+    "/FPGA, memory, clocks, configuration/SDRAM_A7",
+    "/FPGA, memory, clocks, configuration/SDRAM_A8",
+    "/FPGA, memory, clocks, configuration/SDRAM_A9",
+    "/FPGA, memory, clocks, configuration/SDRAM_BA0",
+    "/FPGA, memory, clocks, configuration/SDRAM_BA1",
+    "/FPGA, memory, clocks, configuration/SDRAM_CAS_N",
+    "/FPGA, memory, clocks, configuration/SDRAM_CKE",
+    "/FPGA, memory, clocks, configuration/SDRAM_CLK",
+    "/FPGA, memory, clocks, configuration/SDRAM_CS_N",
+    "/FPGA, memory, clocks, configuration/SDRAM_DQ0",
+    "/FPGA, memory, clocks, configuration/SDRAM_DQ1",
+    "/FPGA, memory, clocks, configuration/SDRAM_DQ10",
+    "/FPGA, memory, clocks, configuration/SDRAM_DQ11",
+    "/FPGA, memory, clocks, configuration/SDRAM_DQ12",
+    "/FPGA, memory, clocks, configuration/SDRAM_DQ13",
+    "/FPGA, memory, clocks, configuration/SDRAM_DQ14",
+    "/FPGA, memory, clocks, configuration/SDRAM_DQ15",
+    "/FPGA, memory, clocks, configuration/SDRAM_DQ2",
+    "/FPGA, memory, clocks, configuration/SDRAM_DQ3",
+    "/FPGA, memory, clocks, configuration/SDRAM_DQ4",
+    "/FPGA, memory, clocks, configuration/SDRAM_DQ5",
+    "/FPGA, memory, clocks, configuration/SDRAM_DQ6",
+    "/FPGA, memory, clocks, configuration/SDRAM_DQ7",
+    "/FPGA, memory, clocks, configuration/SDRAM_DQ8",
+    "/FPGA, memory, clocks, configuration/SDRAM_DQ9",
+    "/FPGA, memory, clocks, configuration/SDRAM_DQMH",
+    "/FPGA, memory, clocks, configuration/SDRAM_DQML",
+    "/FPGA, memory, clocks, configuration/SDRAM_RAS_N",
+    "/FPGA, memory, clocks, configuration/SDRAM_WE_N"
+   ],
+   "report": {
+    "adapter_height": 1.5999999999999943,
+    "chip": "U305",
+    "corridors": {
+     "B.Cu": [
+      [
+       70.113,
+       70.68700000000001
+      ],
+      [
+       70.913,
+       71.48700000000001
+      ]
+     ],
+     "In2.Cu": [
+      [
+       70.113,
+       70.68700000000001
+      ]
+     ],
+     "In3.Cu": [
+      [
+       70.113,
+       70.68700000000001
+      ]
+     ]
+    },
+    "face": "N",
+    "free_exits": {
+     "B.Cu": [
+      "E5",
+      "E6",
+      "E10",
+      "E11",
+      "E12"
+     ],
+     "F.Cu": [
+      "A2",
+      "B3",
+      "A3",
+      "A14",
+      "B14",
+      "A15"
+     ],
+     "In2.Cu": [],
+     "In3.Cu": []
+    },
+    "lanes": 39,
+    "layout": "river",
+    "max_adapter_shift": 0.0,
+    "per_layer": {
+     "B.Cu": 0,
+     "F.Cu": 21,
+     "In2.Cu": 9,
+     "In3.Cu": 9
+    },
+    "rot": 0,
+    "slots": {
+     "B.Cu": 5,
+     "F.Cu": 21,
+     "In2.Cu": 9,
+     "In3.Cu": 9
+    },
+    "vias": 18
+   },
+   "rot": 0
+  },
+  "U401": {
+   "nets": [
+    "/FPGA, memory, clocks, configuration/ETH_RXD0",
+    "/FPGA, memory, clocks, configuration/ETH_RXD1",
+    "/FPGA, memory, clocks, configuration/ETH_RXD2",
+    "/FPGA, memory, clocks, configuration/ETH_RXD3",
+    "/FPGA, memory, clocks, configuration/ETH_RX_CTL",
+    "/FPGA, memory, clocks, configuration/ETH_TXC",
+    "/FPGA, memory, clocks, configuration/ETH_TXD0",
+    "/FPGA, memory, clocks, configuration/ETH_TXD1",
+    "/FPGA, memory, clocks, configuration/ETH_TXD2",
+    "/FPGA, memory, clocks, configuration/ETH_TXD3",
+    "/FPGA, memory, clocks, configuration/ETH_TX_CTL"
+   ],
+   "report": {
+    "adapter_height": 6.875000000000007,
+    "chip": "U401",
+    "corridors": {},
+    "face": "E",
+    "free_exits": {
+     "B.Cu": [
+      "F12",
+      "G12"
+     ],
+     "F.Cu": [
+      "E16",
+      "F15",
+      "F16",
+      "G15",
+      "G16",
+      "H15",
+      "H12"
+     ],
+     "In2.Cu": [
+      "G14",
+      "H14"
+     ],
+     "In3.Cu": [
+      "G13",
+      "H13"
+     ]
+    },
+    "ground_stubs": 11,
+    "lanes": 11,
+    "layout": "phy",
+    "max_adapter_shift": 0.0,
+    "per_layer": {
+     "B.Cu": 0,
+     "F.Cu": 6,
+     "In2.Cu": 4,
+     "In3.Cu": 1
+    },
+    "rot": 180,
+    "to_extra_face": 0,
+    "vias": 5
+   },
+   "rot": 180
+  }
+ }
+}

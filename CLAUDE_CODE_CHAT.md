@@ -1584,3 +1584,12 @@ stays).  What goes in: 210 files, 148 MB, of which 123 MB is the 88 EasyEDA foot
 the Icepi project's models are) -- the rest is the seven sheets, the board, the project files, the
 generators, the release, the renders, the documents and this log.  The other projects' uncommitted changes
 in the repository (GPSDO-PYNQ-Z2, SyzygyRadioDrivers) are not mine and are not touched.
+
+## Prompt 17
+
+The other LLMs' reviews are in. Check in everything that is relevant, including anything in ../GPSDO-PYNQ-Z2 and anything in the other LLMs' responses that would be required for a clean push up to github and a remote cloud ultrareview. At that point, I'll ask you to run /ultrareview, which I believe will spawn a new agent in the cloud to do a review. That review should do its own review and also take into account the other LLMs' responses. I've never done this, so tell me if there are explitict caveats worth knowing about. I'll deal with the JLCPCB rotation later so no need to ask me about it. I'll come back to you with rotation issues when I'm closer to actually ordering.
+
+*(sent while the survey was running:)* wait, the I am uploading the other LLMs' reviews now.
+
+*(and then:)* ok, they all should be on the `bell` computer.
+

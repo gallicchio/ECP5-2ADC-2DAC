@@ -1,0 +1,123 @@
+FOOTPRINT vs ORDERED PART -- does the part fit the copper?
+=========================================================
+
+board  ../ECP5-2ADC-2DAC.kicad_pcb
+BOM    release/ECP5-2ADC-2DAC_bom.csv
+run    2026-10-04T08:35:30-07:00
+452 footprint(s) placed, 1259 drill(s) on the board
+
+  ok C1525       C_0402_1005Metric                            C0402              32 placement(s)
+  ok C1525       C_0402_1005Metric                            C0402              32 placement(s) bottom
+  ok C1525       C_0402_1005Metric_BGA                        C0402              21 placement(s) bottom
+  ok C23140      R_0603_1608Metric                            R0603              39 placement(s)
+  ok C96446      C_0603_1608Metric                            C0603              8 placement(s)
+  ok C96446      C_0603_1608Metric                            C0603              26 placement(s) bottom
+  ok C23162      R_0603_1608Metric                            R0603              22 placement(s)
+  ok C25804      R_0603_1608Metric                            R0603              14 placement(s)
+  ok C25804      R_0603_1608Metric                            R0603              2 placement(s) bottom
+  ok C1532       C_0402_1005Metric                            C0402              8 placement(s)
+  ok C1532       C_0402_1005Metric_BGA                        C0402              7 placement(s) bottom
+  ok C21190      R_0603_1608Metric                            R0603              14 placement(s)
+  ok C137714     R_0603_1608Metric                            R0603              12 placement(s)
+  ok C23345      R_0603_1608Metric                            R0603              12 placement(s)
+  ok C2290       LED_0603_1608Metric                          LED0603-R-RD_WHITE 8 placement(s)
+  ok C2286       LED_0603_1608Metric                          LED-SMD_L1.6-W0.8- 8 placement(s)
+  ok C45783      C_0805_2012Metric                            C0805              6 placement(s)
+  ok C45783      C_0805_2012Metric                            C0805              1 placement(s) bottom
+  ok C23138      R_0603_1608Metric                            R0603              7 placement(s)
+  ok C85833      L_0603_1608Metric                            L0603              3 placement(s)
+  ok C85833      L_0603_1608Metric                            L0603              3 placement(s) bottom
+  ok C23185      R_0603_1608Metric                            R0603              6 placement(s)
+  ok C22975      R_0603_1608Metric                            R0603              4 placement(s)
+  ok C22975      R_0603_1608Metric                            R0603              2 placement(s) bottom
+  ok C52923      C_0402_1005Metric                            C0402              2 placement(s)
+  ok C52923      C_0402_1005Metric                            C0402              3 placement(s) bottom
+  ok C25819      R_0603_1608Metric                            R0603              5 placement(s) bottom
+  ok C1555       C_0402_1005Metric                            C0402              4 placement(s)
+  ok C22775      R_0603_1608Metric                            R0603              4 placement(s)
+  ok C23260      R_0603_1608Metric                            R0603              4 placement(s)
+  ok C22916      R_0603_1608Metric                            R0603              4 placement(s)
+  ok C4275       R_0603_1608Metric                            R0603              4 placement(s) bottom
+  ok C23186      R_0603_1608Metric                            R0603              4 placement(s)
+  ok C1559       C_0402_1005Metric                            C0402              3 placement(s)
+  ok C12624      LED_0603_1608Metric                          LED0603-RD         3 placement(s)
+  ok C279948     IND-SMD_L4.0-W4.0                            IND-SMD_L4.0-W4.0  2 placement(s)
+  ok C279948     IND-SMD_L4.0-W4.0                            IND-SMD_L4.0-W4.0  1 placement(s) bottom
+  ok C4190       R_0603_1608Metric                            R0603              3 placement(s)
+  ok C22809      R_0603_1608Metric                            R0603              1 placement(s)
+  ok C22809      R_0603_1608Metric                            R0603              2 placement(s) bottom
+  ok C22978      R_0603_1608Metric                            R0603              3 placement(s)
+  ok C720477     SW-SMD_L3.9-W3.0-P4.45                       SW-SMD_L3.9-W3.0-P 3 placement(s)
+  ok C1849413    SOIC-8_3.9x4.9mm_P1.27mm                     SOIC-8_L4.9-W3.9-P 3 placement(s)
+  ok C1549       C_0402_1005Metric                            C0402              2 placement(s)
+  ok C1557       C_0402_1005Metric                            C0402              2 placement(s)
+  ok C19666      C_0603_1608Metric                            C0603              1 placement(s)
+  ok C19666      C_0603_1608Metric                            C0603              1 placement(s) bottom
+  !! C2500       SOT-23                                       SOT-23-3_L2.9-W1.6 2 placement(s)
+       land  worst pad-centre miss 0.396 mm (pad 3) at 180 deg, 3 pad(s) matched by name
+  !! C5184243    USB_C_Receptacle_GCT_USB4105-xx-A_16P_TopMnt USB-C-SMD_MC-311D  2 placement(s)
+       datum their origin is (+0.000, +1.303) mm from ours; the CPL says where OUR origin goes
+  ok C2150       SOT-23                                       SOT-23-3_L2.9-W1.3 2 placement(s)
+  ok C22790      R_0603_1608Metric                            R0603              2 placement(s)
+  ok C25190      R_0603_1608Metric                            R0603              2 placement(s)
+  !! C94590      SOIC-8_3.9x4.9mm_P1.27mm                     SOIC-8_L5.0-W4.0-P 2 placement(s)
+       land  worst pad-centre miss 0.230 mm (pad 1) at 90 deg, 8 pad(s) matched by name
+  ok C170157     MSOP-8_3x3mm_P0.65mm                         VSSOP-8_L3.0-W3.0- 2 placement(s)
+  !! C7836       SOT-23-5                                     SOT-23-5_L3.0-W1.7 2 placement(s)
+       land  worst pad-centre miss 0.196 mm (pad 4) at 180 deg, 5 pad(s) matched by name
+  ok C2827654    SOT-23-6                                     SOT-23-6_L2.9-W1.6 2 placement(s)
+  !! C141836     SOT-23-5                                     SOT-23-5_L3.0-W1.7 2 placement(s)
+       land  worst pad-centre miss 0.196 mm (pad 4) at 180 deg, 5 pad(s) matched by name
+  ok C2862740    SOT-23-5                                     SOT-23-5_L2.9-W1.6 2 placement(s) bottom
+  ok C53084552   C_1206_3216Metric                            C1206              1 placement(s) bottom
+  ok C15195      C_0402_1005Metric                            C0402              1 placement(s)
+  ok C145262     VBPW34S_K1_A2                                SENSOR-SMD_L4.4-W3 1 placement(s)
+  ok C2843878    LED-SMD_L3.5-W2.8-RD                         LED-SMD_L3.5-W2.8- 1 placement(s)
+  ok C965840     LED-ARRAY-SMD_4P-L1.6-W1.5-BR_XL-1615RGBC-RF LED-ARRAY-SMD_4P-L 1 placement(s)
+  ok C81598      D_SOD-123                                    SOD-123F_L2.7-W1.6 1 placement(s)
+  ok C8598       D_SOD-123                                    SOD-123_L2.7-W1.6- 1 placement(s)
+  !! C17313      Fuse_1812_4532Metric                         F1812              1 placement(s) bottom
+       land  worst pad-centre miss 0.283 mm (pad 2) at 180 deg, 2 pad(s) matched by name
+  !! C210837     Fuse_1812_4532Metric                         F1812              1 placement(s)
+       land  worst pad-centre miss 0.283 mm (pad 2) at 0 deg, 2 pad(s) matched by name
+  ok C2682170    HDMI-SMD_A71-05H4-111N1                      HDMI-SMD_A71-05H4- 1 placement(s)
+  ok C91145      TF-SMD_TF-01A                                TF-SMD_TF-01A      1 placement(s) bottom
+  ok C21189      R_0603_1608Metric                            R0603              1 placement(s)
+  ok C22859      R_0603_1608Metric                            R0603              1 placement(s)
+  ok C22908      R_0603_1608Metric                            R0603              1 placement(s)
+  ok C22935      R_0603_1608Metric                            R0603              1 placement(s)
+  ok C25803      R_0603_1608Metric                            R0603              1 placement(s)
+  ok C23179      R_0603_1608Metric                            R0603              1 placement(s)
+  ok C25811      R_0603_1608Metric                            R0603              1 placement(s)
+  ok C13316      R_0603_1608Metric                            R0603              1 placement(s)
+  ok C26751      R_0603_1608Metric                            R0603              1 placement(s)
+  ok C507595     SMD-24_L15.1-W7.1-P1.00-LS10.0-BL            SMD-24_L15.1-W7.1- 1 placement(s) bottom
+  ok C1521614    BGA-256_14.0x14.0mm_Layout16x16_P0.8mm_Ball0 CABGA-256_L14.0-W1 1 placement(s)
+  !! C514277     LQFP-64_7x7mm_P0.4mm                         LQFP-64_L7.0-W7.0- 1 placement(s)
+       land  worst pad-centre miss 0.156 mm (pad 15) at 90 deg, 64 pad(s) matched by name
+  ok C653820     LQFP-48_7x7mm_P0.5mm                         LQFP-48_L7.0-W7.0- 1 placement(s)
+  ok C504891     MSOP-10_3x3mm_P0.5mm                         MSOP-10_L3.0-W3.0- 1 placement(s)
+  !! C81934      SOT-23-5                                     SOT-23-5_L3.0-W1.7 1 placement(s)
+       land  worst pad-centre miss 0.196 mm (pad 4) at 180 deg, 5 pad(s) matched by name
+  ok C62246      TSOP-II-54_22.2x10.16mm_P0.8mm               TSOP-54_L22.2-W10. 1 placement(s)
+  ok C97521      SOIC-8_5.3x5.3mm_P1.27mm                     SOIC-8_L5.3-W5.3-P 1 placement(s)
+  ok C187932     QFN-40-1EP_5x5mm_P0.4mm_EP3.6x3.6mm          WQFN-40_L5.0-W5.0- 1 placement(s)
+  ok C27882      LQFP-64_10x10mm_P0.5mm                       LQFP-64_L10.0-W10. 1 placement(s)
+  !! C190271     SOT-23-6                                     SOT-23-6_L2.9-W1.6 1 placement(s)
+       land  worst pad-centre miss 0.213 mm (pad 4) at 180 deg, 6 pad(s) matched by name
+  ok C5119911    VSSOP-8_2.3x2mm_P0.5mm                       VSSOP-8_L2.4-W2.1- 1 placement(s)
+  !! C165132     SOT-23-5                                     SOT-23-5_L3.0-W1.7 1 placement(s) bottom
+       land  worst pad-centre miss 0.196 mm (pad 5) at 0 deg, 5 pad(s) matched by name
+  ok C129351     DFN-8-1EP_2x2mm_P0.5mm_EP0.9x1.6mm           WSON-8_L2.0-W2.0-P 1 placement(s)
+  ok C5742665    Oscillator_SMD_Fox_FT5H_5.0x3.2mm            OSC-SMD_4P-L5.0-W3 1 placement(s)
+  ok C362338     Crystal_SMD_3225-4Pin_3.2x2.5mm              CRYSTAL-SMD_4P-L3. 1 placement(s)
+  ok C9006       Crystal_SMD_3225-4Pin_3.2x2.5mm              CRYSTAL-SMD_4P-L3. 1 placement(s)
+  ok C9002       Crystal_SMD_3225-4Pin_3.2x2.5mm              CRYSTAL-SMD_4P-L3. 1 placement(s)
+
+worth a look: datum x1, land x10
+  land  a pad centre out by less than half a millimetre
+  datum the two libraries measure from different zeroes; their
+        drawing sits somewhere else, the part still fits
+  names the pads line up but the pin NUMBERS disagree
+
+every ordered part fits the footprint it is going on.

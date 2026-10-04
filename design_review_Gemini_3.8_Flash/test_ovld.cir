@@ -1,0 +1,36 @@
+
+.include ../sim/opamps.lib
+Vin in 0 DC 5
+Rsrc in sma 50
+Rterm sma 0 49.9
+R100 sma node 100
+Dclp node vp5 D1
+Dcln vm5 node D1
+.model D1 D(IS=2.5e-9 N=1.8 RS=1)
+Vp5 vp5 0 5
+Vm5 vm5 0 -4.4
+X1 node fb1 vp5 vm5 o1 OPA1612
+Rf1 o1 fb1 9.1k
+Rg1 fb1 0 1k
+Rj1 o1 fb1 1e-3
+X2 o1 fb2 vp5 vm5 o2 OPA1612
+Rf2 o2 fb2 9.1k
+Rg2 fb2 0 1k
+Rj2 o2 fb2 1e-3
+Rgp o2 fp 499
+Rgn 0 fn 499
+X3 fp fn vocm v33 0 on op THS4521
+Rfp fp on 499
+Rfn fn op 499
+Vocm vocm 0 1.65
+V33 v33 0 3.3
+.control
+op
+echo "o2="
+print v(o2)
+echo "fp="
+print v(fp)
+echo "fn="
+print v(fn)
+.endc
+.end

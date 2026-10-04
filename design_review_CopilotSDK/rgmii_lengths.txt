@@ -1,0 +1,16 @@
+MAC-to-PHY transmit
+  ETH_TXC     R4905 MAC  57.880 mm/12 segment(s), PHY  28.205 mm/9 segment(s), total  86.085 mm
+  ETH_TX_CTL  R4906 MAC  57.428 mm/11 segment(s), PHY  34.014 mm/7 segment(s), total  91.443 mm
+  ETH_TXD0    R4904 MAC  57.543 mm/11 segment(s), PHY  37.797 mm/7 segment(s), total  95.340 mm
+  ETH_TXD1    R4903 MAC  59.023 mm/12 segment(s), PHY  41.697 mm/7 segment(s), total 100.720 mm
+  ETH_TXD2    R4902 MAC  58.571 mm/11 segment(s), PHY  45.397 mm/7 segment(s), total 103.968 mm
+  ETH_TXD3    R4901 MAC  60.051 mm/12 segment(s), PHY  49.214 mm/7 segment(s), total 109.265 mm
+  copper spread: min 86.085 mm, max 109.265 mm, skew 23.180 mm
+PHY-to-MAC receive
+  ETH_RXC     R4911 MAC  45.878 mm/10 segment(s), PHY  14.512 mm/6 segment(s), total  60.390 mm
+  ETH_RX_CTL  R4912 MAC  55.730 mm/15 segment(s), PHY  27.766 mm/8 segment(s), total  83.495 mm
+  ETH_RXD0    R4910 MAC  55.015 mm/15 segment(s), PHY  14.338 mm/5 segment(s), total  69.354 mm
+  ETH_RXD1    R4909 MAC  54.301 mm/15 segment(s), PHY  14.794 mm/5 segment(s), total  69.095 mm
+  ETH_RXD2    R4908 MAC  53.587 mm/15 segment(s), PHY  15.250 mm/5 segment(s), total  68.837 mm
+  ETH_RXD3    R4907 MAC  52.873 mm/13 segment(s), PHY  15.705 mm/5 segment(s), total  68.578 mm
+  copper spread: min 60.390 mm, max 83.495 mm, skew 23.105 mm

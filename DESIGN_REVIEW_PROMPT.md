@@ -60,6 +60,13 @@ and the author will read every report side by side.  So:
    would cost to be wrong, with a "confirmed by" column that says what you actually checked), then the
    detail.  Numbers beat adjectives.  Say what you checked and found correct as well as what you found
    wrong; a review that approves everything cannot be told from one that read nothing.
+8. **If you are a cloud review working from the git branch alone** (Claude Code's `/code-review ultra`, or
+   anyone who cloned): you have everything the build makes, because it is committed -- the sheets, the board
+   with its zones filled, `mfg/release/`, `docs/`, and the small build results in `build/` (`netlist.net`,
+   `drc.json`, `erc.json`, `route_report.json`, `placement.json`, `lcsc.json`, `pin_swaps.json`).  You do not
+   have the datasheet PDFs; you have their text in `docs/datasheets/txt/` and the picture-only pages in
+   `docs/datasheets/drawings/`.  You cannot run KiCad; you do not need to.  §11 lists the reviews that already
+   exist: form your own findings first, then read them and reconcile, as in point 6.
 
 ---
 
@@ -257,10 +264,12 @@ run).  The repository is `OpticsPCBs`, this project is its `ECP5-2ADC-2DAC/` dir
   plates.
 * `datasheets/` -- every datasheet cited anywhere.  It is in the working tree but not in git (144 MB of
   other people's copyright): `python3 tools/jlc_datasheet.py <LCSC code>` refetches the LCSC ones from
-  JLCPCB; the Lattice, Hammond and Analog Devices documents came from their makers' sites.  If
-  `build/scratch/review/txt/` exists, it holds a `pdftotext` of each one.
-* `build/` (ignored by git, present in the shared tree) -- the netlist (`build/netlist.net`), `lcsc.json`,
-  `placement.json`, `pin_swaps.json`, `drc.json`, `route_report.json`, and `build/scratch/final<N>.*`, the
+  JLCPCB; the Lattice, Hammond and Analog Devices documents came from their makers' sites.
+  `docs/datasheets/txt/` (in git) is a `pdftotext` of every one of them, and `docs/datasheets/drawings/` the
+  pages that are only pictures.
+* `build/` -- mostly ignored by git, but the small results a reviewer needs are committed: the netlist
+  (`build/netlist.net`), `drc.json`, `erc.json`, `route_report.json`, `placement.json`, `lcsc.json`,
+  `pin_swaps.json`, `bus_plan.json`.  In the shared working tree it also holds `build/scratch/final<N>.*`, the
   board and reports of every numbered build.
 
 Read-only commands worth running, all writing into your own directory:
@@ -289,3 +298,19 @@ The board file holds its zones filled (the build's DRC refills and saves them), 
 * The RGMII timing split (§6.4) and the isolation.
 * Anything in the copper you would not sign off: the rivers, the hand-laid lines, the planes.
 * What you would refuse to order.  The board has not been fabricated and nothing in it is sacred.
+
+## 11. Reviews received so far (build 25, 2026-10-04)
+
+Read these after your own first pass (§0.6).  Each directory holds the reviewer's report and whatever it
+measured or ran.
+
+| Directory | Reviewer | Verdict in one line |
+|---|---|---|
+| `design_review_CopilotSDK/` | CopilotSDK | Do not order unchanged: C4951 is a general-purpose 2 kV MLCC, not a safety capacitor, so the 1500 V claim is unsupported; the DAC stage has no slew margin at 13 MHz; CLK IN is a squarer, not a reference input; RGMII TX delay has no gateware; USB-C current is not negotiated.  ADC bias, Master-SPI order, SDRAM/HDMI skew, ERC/DRC and the fab checks pass. |
+| `design_review_Gemini_3.8_Flash/` | Gemini 3.8 Flash | Twelve findings: THS4521 overdrive puts 2.27 V across its inputs (1 V abs max) when a preamp saturates; ADC input traces 9-10 mm mismatched with the 22 pF caps 10 mm from the pins; DAC_CLK1/WRT1 cross the In4 plane split; USB-C recessed 2.7 mm behind the end plate; no filter on -4.4 V; DAC difference amp AC-unbalanced; squarer on the digital 3.3 V; RGMII skew and RXC in bank 1; C4951 1206 gap; narrow SOIC-8 rotation; USB FPGA port cannot be a host. |
+| `design_review_Grok4.7/` | Grok 4.7 | Do not start over, do not hold the fab: the chains work; fix the claims.  -4.4 V shared 2 MHz spur under the noise lab (no ferrite); silkscreen ±1 V / ±2 V vs simulated ±0.91 / ±1.82 V; power sheet's "no order requirement" sentence is wrong; isolation gap is bench clearance, not 1500 V; RGMII TX delay missing in gateware; a ±10 V source into the high-Z input opens the 100 Ω shunt.  Disputes Gemini on the THS4521 overdrive (recoverable, under 1 V differential). |
+| `DESIGN_REVIEW_RESPONSE.md` | the author | Findings 1-11, 4b, 4c with dispositions; fixed in builds 21-25; §4 is what only Jason can check. |
+
+Where the reviewers disagree -- the THS4521 overdrive, whether the DAC stage needs a respin or a label, whether
+the 1500 V claim should be dropped or the capacitor changed -- the useful answer is the one with the datasheet
+numbers in it.
