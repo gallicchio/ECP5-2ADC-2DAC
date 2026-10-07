@@ -175,7 +175,7 @@ USER"; the microSD says "contacts toward the board" and "card slides in here"; t
 (HEADERS above the POWER box the headers live in, USB under the FT2232H's box; builds to 27 asked for 150 mm
 lines, found no room, and printed no legend at all); the title carries the build date.  `tools/power_path.py`
 measures the DC resistance from every rail's source to every supply pin along the copper the board has
-(Prompts 28-29: the worst is the ADC's AVDD at 45 mΩ, 9 mV at its 200 mA; the FPGA's planes are 2.5-4.5 mΩ; it joins copper by overlap, as KiCad's connectivity does).  Rails: the router had narrowed every rail that touches one fine pin (+3V3_ADC, +5V, +3V3) to
+(Prompts 28-30: after build 30's analog planes the worst supply pin on the board is a 33 mΩ digital one, under a millivolt at its current; the FPGA's planes are 2.5-4.5 mΩ; it joins copper by overlap, as KiCad's connectivity does).  Rails: the router had narrowed every rail that touches one fine pin (+3V3_ADC, +5V, +3V3) to
 that pad's width over its whole length, 0.23-0.28 mm for 150-200 mm.  It still routes them that way (every
 other rule tried moved the problem into the router: three runs lost two to five nets to the room the wide
 tracks took), and afterwards `pcb/fatten.py` widens every rail track toward its class width as far as the
@@ -190,7 +190,10 @@ Moving them to bank 7's two spare balls was tried and reverted: the swap that fo
 balls and cost other nets at the margin -- a rev B item.
 
 Build 29 (the same day) moved two silkscreen paragraphs to their homes and changed nothing else; its routing
-came out identical.  Responses 27 and 28 in `CLAUDE_CODE_CHAT.md` answer the FT601 question (layout, cost,
+came out identical.  Build 30 (the same day, Prompt 30) gave the analog supplies planes on In4: the op amps'
+rails had been 60-70 mm of 0.4 mm trace from one bead, 176-206 mΩ, and the converters' AVDD 16 mm from their
+LDOs, 42-45 mΩ; they are 5-8 mΩ now (Response 30 has the table), the digital supplies stay on traces, and the
+routing finished in half the time.  Responses 27 and 28 in `CLAUDE_CODE_CHAT.md` answer the FT601 question (layout, cost,
 the pin budget, what it buys against the ADALM2000 and the Red Pitaya) and the power-delivery one.
 
 Answers in Response 26 of `CLAUDE_CODE_CHAT.md`: the LED is red (615-630 nm) and the VBPW34S sees it at
@@ -310,8 +313,10 @@ load the 24.9 Ω, which is why it is not ±2 / ±1 V -- flat to 13.5 MHz, a full
 
 158 x 119 mm, 6 layers, JLCPCB JLC06161H-7628: F.Cu signals / In1 GND / In2 signals / In3 signals / In4 power planes / B.Cu.
 In4 carries a 1.1 V patch under the core's 1.1 V balls with a corridor to its buck, the 5 V plane from the
-USB-C down the right edge to both bucks' input sides, and 3.3 V under everything else (ground fills what they
-leave); every rail pad over its plane has a via into it (a pad off its plane gets one at the plane's edge,
+USB-C down the right edge to both bucks' input sides, 3.3 V under everything else, and since build 30 the
+analog side's own planes: -4V2 under the strips west of x 27 (every op amp's V- pin), +5VA east of it to the
+converters (their V+ pins, the THS4521s, the TIA), and the AD9238's and AD9767's AVDD as patches from their
+LDOs on the back to the chips (ground fills what they leave); every rail pad over its plane has a via into it (a pad off its plane gets one at the plane's edge,
 dropped again when the router joins the pad elsewhere), and the other rails are 0.4 mm traces.  The 3.3 V
 VCCIO balls are joined by an island on In3 under the core, fed from the 3.3 V plane through three vias in the
 ball gaps at the core's east edge; VCCAUX's two balls leave the via field on a hand-laid 0.127 mm track

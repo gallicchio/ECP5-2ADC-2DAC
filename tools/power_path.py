@@ -150,14 +150,27 @@ for net in RAILS:
     if plane in adj: src.append(plane)
     if not src:
         print("%-11s no source found" % net); continue
-    dist = {s_: 0.0 for s_ in src}; pq = [(0.0, s_) for s_ in src]
+    dist = {s_: 0.0 for s_ in src}; pq = [(0.0, s_) for s_ in src]; prev = {}
     while pq:
         d, u = heapq.heappop(pq)
         if d > dist.get(u, 1e9): continue
         for v, r in adj[u]:
             nd_ = d + r
             if nd_ < dist.get(v, 1e9):
-                dist[v] = nd_; heapq.heappush(pq, (nd_, v))
+                dist[v] = nd_; prev[v] = (u, r); heapq.heappush(pq, (nd_, v))
+    if "--path" in sys.argv and net in sys.argv:
+        # the worst pin of each chip: its path back to the source, step by step
+        for (ref, num), nd in sorted(pad_nodes.items()):
+            if ref not in CHIPS or dist.get(nd, float("inf")) == float("inf"): continue
+            worst = max((dist.get(n2, 0), k2) for k2, n2 in pad_nodes.items() if k2[0] == ref)
+            if worst[1] != (ref, num): continue
+            print("   path to %s.%s (%.1f mOhm):" % (ref, num, dist[nd] * 1e3))
+            u = nd; steps = []
+            while u in prev:
+                v, r = prev[u]; steps.append((v, u, r)); u = v
+            for v, u2, r in reversed(steps):
+                if r >= 0.0005:
+                    print("      %-7s (%.1f,%.1f)->(%.1f,%.1f)  %.1f mm  %5.1f mOhm" % (v[0] if v[0] != "PLANE" else "plane", v[1] if v[0] != "PLANE" else 0, v[2] if v[0] != "PLANE" else 0, u2[1], u2[2], math.hypot(u2[1] - v[1], u2[2] - v[2]) if v[0] != "PLANE" else 0, r * 1e3))
     out = collections.defaultdict(list)
     for (ref, num), nd in pad_nodes.items():
         if ref in CHIPS:

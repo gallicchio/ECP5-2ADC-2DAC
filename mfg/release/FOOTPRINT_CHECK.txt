@@ -3,8 +3,8 @@ FOOTPRINT vs ORDERED PART -- does the part fit the copper?
 
 board  ../ECP5-2ADC-2DAC.kicad_pcb
 BOM    release/ECP5-2ADC-2DAC_bom.csv
-run    2026-10-07T13:19:15-07:00
-470 footprint(s) placed, 1271 drill(s) on the board
+run    2026-10-07T16:02:50-07:00
+470 footprint(s) placed, 1294 drill(s) on the board
 
   ok C1525       C_0402_1005Metric                            C0402              32 placement(s)
   ok C1525       C_0402_1005Metric                            C0402              33 placement(s) bottom

@@ -9,7 +9,7 @@ Photodiode D103 uses ours:VBPW34S_K1_A2 (LCSC's footprint with pads renumbered s
 The mini-HDMI jack is wired with type C pin numbering (shield first in each pair, DDC ground 13, CEC 14); its four shell tabs (pads 20-23) are grounded.
 Minimum track/space on the board: 0.100 mm (inside the BGA fan-out; 0.127 mm elsewhere).  Via sizes: 0.3/0.15, 0.45/0.25.  Smallest drill 0.15 mm.
 Impedance: ask for controlled impedance with the JLC06161H-7628 calculator: 50 ohm single-ended (SMA runs, 0.3 mm drawn) and 100 ohm differential (Ethernet MDI, 0.2 mm / 0.2 mm drawn), referenced to In1.
-The shipped board file holds 305 filled zone polygons; DRC 0 errors / 0 unconnected (build/drc.json).
+The shipped board file holds 356 filled zone polygons; DRC 0 errors / 0 unconnected (build/drc.json).
 
 Assembly (JLCPCB Standard, SMT both sides + through-hole on top): 438 SMT placements and 28 through-hole parts on 91 BOM lines, 46 of them Extended parts (each carries a one-off loading fee).
 Through-hole, fitted by JLCPCB (Jason, 2026-10-06): the six SMA jacks, the RJ45, the DIP switch, the 2.54 mm headers (ordered as 1x40 / 2x40 strips the assembler snaps to length, as on the GPSDO board) and the two Pmod sockets.  146 through-hole joints incl. the USB-C shells.

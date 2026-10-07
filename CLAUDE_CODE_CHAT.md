@@ -2446,3 +2446,54 @@ millivolt at its 14 mA, and nothing on the board drops more than 9 mV at its dat
 CLAUDE_PCB.md: a connectivity model of one's own must join copper by overlap, as KiCad does, or it will report
 opens that are not there -- and the honest thing to do with such a report is to find the construct, not to
 explain it away.
+
+## Prompt 30
+
+The fact that the biggest drops on are on the analog voltages is not a good sign. Maybe 9 mV is small in the grand scheme of things, but it's still many codes. Why can't this drop be smaller?
+
+## Response 30 2026-10-07 13:40 - 16:04 Claude Fable 5.1 Max
+
+You are right that it is the wrong place for the biggest drops, and it can be smaller: the copper, not physics,
+set it.  Where the 45 mΩ to the ADC's AVDD came from, step by step (`tools/power_path.py --path +3V3_ADC`):
+
+* the ADC's LDO (U604) sits on the back 16 mm west of the chip, under the channel B op amps, because the back
+  under the ADC itself is full of its reference capacitors;
+* from its output pad: 12.6 mm of 0.4 mm track on B.Cu (16 mΩ), up a via to the front, 8 mm of 0.4 mm track
+  that wanders round the strip's parts (11 mΩ), down a via to In2 for the last 3.3 mm at 0.4 mm (8 mΩ: the inner
+  layers are 0.5 oz, twice the resistance of the outer 1 oz), and the pad entries at the pin's width.
+
+The DAC's AVDD is the same story from U605 (42 mΩ, 16 mm of B.Cu and 5 mm of In2).  The op amps are worse for a
+different reason: their ±rails come from one bead and the charge pump at the bottom of the board and run
+60-70 mm up the strips, half on In3 (176-206 mΩ to the OPA1612s), so a current pulse in one channel's output
+stage modulates the rail every amplifier shares.
+
+What the drop does and does not do.  The 9 mV is static: the AD9238's current is set by its clock, not the
+signal, and its reference is internal.  Its PSRR is ±0.01 % of full scale per % of supply, so 9 mV of 3.3 V,
+0.27 %, moves the transfer function 0.003 % of full scale, 0.06 LSB.  The DAC's analog current is constant
+(current steering), 3 mV static, nothing.  So "many codes" it is not, by itself -- what the thin rails cost is
+the shared-impedance coupling between channels and the op amps' supply ripple at the signal frequency (±20 mA
+into 0.2 Ω is 4 mV on +5VA; the OPA1612's PSRR takes that to microvolts, below the ADC's 0.5 mV LSB, but
+falling with frequency).  Analog rails deserve a plane regardless, and the board has the layer for it.
+
+The fix, built as build 30: four more planes on In4, the power layer, under the analog side.  -4V2 west of
+x 27 (every op amp's V- pin sits there), +5VA east of it to the converters (the V+ pins, the THS4521s, the
+TIA), and the converters' AVDD rails as patches from their LDOs to the chips, cut into the +5VA plane.  The
+plane mechanism was already there for 1.1 V, 5 V and 3.3 V (`build_pcb.RAIL_ZONES`): every pad over its plane
+gets a via into it, a pad beside it a via at the plane's edge.  In1 stays the unbroken ground under the strips;
+In4 under them was unused 3.3 V plane and ground fill.  Build 30 (15:52-16:03): DRC 0 errors and 0 unconnected, every net routed, and the routing finished in half
+the time, since the rails no longer wander.  Measured again on the finished board:
+
+| rail → pins | build 29 | build 30 | at the datasheet current |
+|---|---|---|---|
+| +3V3_ADC → AD9238 AVDD (6) | 45 mΩ worst, 30 median | 23 worst, 5 median | 0.8 mV per pin at 33 mA each; 4.5 mV if one pin carried all 200 (was 9) |
+| +3V3_ADC → THS4521 | 32 | 12 | 0.3 mV |
+| +3V3_DAC → AD9767 AVDD | 42 | 8 | 0.6 mV at 71 mA (was 3) |
+| +5VA → the OPA1612s, OPA2810s, TIA | 93-206 | 5-7 | 0.1 mV |
+| -4V2 → the same | 109-177 | 5-26 | 0.1-0.3 mV |
+
+The model counts a plane as zero between its vias; a 0.5 oz pour of these sizes adds a few milliohms of its own,
+so read the second column as "five to ten".  The digital supplies (DRVDD, DVDD: 33 and 52 mΩ at 14-15 mA, under
+a millivolt) stay on traces.  What the planes change beyond the numbers: the op amps of both channels now share
+a plane, not a 0.2 Ω trace, so one channel's output current no longer modulates the other's rail; and the ADC's
+and DAC's AVDD come from their own patches with the LDO's output a via away.  In1 is still the one unbroken
+ground under the strips.  `README.md` and `DESIGN_REVIEW_PROMPT.md` say so; committed, nothing pushed.

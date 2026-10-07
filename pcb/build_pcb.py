@@ -47,6 +47,16 @@ RAIL_ZONES = [
     # (its bottom follows the 5 V corridor's top edge: build 18's polygon ran to y 115, and the 3 mm band left under
     #  the corridor was an island of the fill that the RAILS header's 3.3 V via landed on)
     ("+3V3", [(8.0, 3.0), (P.BW, 3.0), (P.BW, 104.0), (116.0 + E, 104.0), (116.0 + E, 107.0), (36.0, 107.0), (36.0, 33.0), (8.0, 33.0)], 1),
+    # the analog side (Prompt 30, 2026-10-07): the op amps' rails as planes under the strips, -4V2 west of x 27
+    # (the OPA1612s' and OPA2810s' V- pins at x 24.5-25.5), +5VA east of it (their V+ pins at 29.5-30.5, the
+    # THS4521s, the TIA), and the converters' analog supplies as patches from their LDOs on the back (U604, U605
+    # at x 30) to the chips, cut into the +5VA plane.  Builds to 29 fed the op amps 60-70 mm of 0.4 mm trace from
+    # one bead at the bottom, half of it on 0.5 oz inner layers (176-206 mOhm, tools/power_path.py), and the
+    # AD9238's AVDD 16 mm of the same (45 mOhm); a pad over its plane gets a via into it instead.
+    ("-4V2", [(7.0, 36.0), (27.0, 36.0), (27.0, 112.0), (7.0, 112.0)], 3),
+    ("+5VA", [(27.0, 36.0), (46.0, 36.0), (46.0, 107.0), (27.0, 107.0)], 3),
+    ("+3V3_ADC", [(31.0, 47.5), (57.0, 47.5), (57.0, 61.5), (31.0, 61.5)], 4),
+    ("+3V3_DAC", [(31.0, 82.0), (57.0, 82.0), (57.0, 94.0), (31.0, 94.0)], 4),
 ]
 RAIL_W = 0.4                # the other rails: 0.4 mm traces (Rail class minimum 0.3)
 THIN_RAILS = {"+2V5_AUX"}   # rails routed at 0.2 mm: they must thread the BGA's via field
