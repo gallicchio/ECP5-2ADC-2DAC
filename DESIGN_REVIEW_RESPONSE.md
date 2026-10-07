@@ -104,8 +104,8 @@ failure: a code is a name, and nothing else in the pipeline ever looked at what 
       SOD-123s, the LEDs, the SOT-23s and SOT-23-6s, the magnetics, the photodiode, the TCXO.  The polarised
       ones are the ones that matter.
 - [ ] Order one board, assembled, and bring it up in this order: 5 V IN from a bench supply at 0.8 A limit
-      with nothing plugged in (rail LEDs: all nine on; RAILS header: +5V, +3V3, +1V1, +2V5, 3V3A, 3V3D, +5VA,
-      -4V4), then USB PROG (the FT2232H enumerates with a blank EEPROM), then `openFPGALoader -c ft2232` a
+      with nothing plugged in (rail LEDs D601-D609: all nine on; RAILS header: +5V, +3V3, +1V1, +2V5, 3V3A, 3V3D,
+      +5VA, 1V0, -4V2), then USB PROG (the FT2232H enumerates with a blank EEPROM), then `openFPGALoader -c ft2232` a
       blinker, then the flash, then Ethernet with `ping`, then the SMAs.
 
 ## 5. The five reviews reconciled, and builds 26-27 (2026-10-04, from 10:53)

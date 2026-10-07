@@ -1913,3 +1913,48 @@ Committed on master, my files only: the chat log (Prompts 22-23) and the root `C
 project lives on the branch.  Not pushed.  Left for you: the branch `ecp5-2adc-2dac` still exists here and on
 GitHub; delete both when you like.  The other sessions' GPSDO work and `GPiBridge/` are untouched and
 uncommitted.
+
+## Prompt 24
+
+What is the status of this board now? Are there particular things I should look at by eye in KiCAD? Should I upload the gerbers and bom and stuff to JLCPCB? If  I should upload, give me all of the relevant paths here.
+
+## Response 24 2026-10-06 20:40 - 21:47 Claude Fable 5.1 Max
+
+**Status.**  Build 27 is the board, on master and merged; `mfg/release/` is its output (2026-10-04 13:44) and
+matches git.  DRC 0 errors and 0 unconnected at every severity (three cosmetic warnings), 412 of 412 nets,
+438 SMT placements on 85 BOM lines (40 Extended), every ordered part on a land pattern that fits it, the five
+reviews reconciled, about $209 a board for five.  Nothing has been fabricated.
+
+**By eye in KiCad**, the things no check here can judge:
+1. The 3D viewer, top and bottom, for every polarised part's orientation against its silkscreen mark and the
+   sheet: the RGB LED D309 (the pin-1 dot), the SOD-123 diodes, the photodiode D103 (pad 1 is the cathode; the
+   anode side faces -4.2 V), the BAV99 pairs D111/D112, the nineteen 0603 LEDs, the TCXO X301, the magnetics
+   T401, the comparator U302, the four U.FL jacks.
+2. The silkscreen as it prints: F.Silkscreen with F.Fab hidden.  The 146 designators on F.Fab are the ones that
+   did not fit and are not printed.
+3. The ADC strips at full zoom: the 1206 input resistor, the clamp, the taps.  TAP B's trace from R1213 to the
+   relocated J108 is 16.7 mm on the front copper, no vias, between the SRC and ALT jumper rows (checked; fine
+   for a tap behind 49.9 Ω, but look).
+4. The inner layers one at a time over the Ethernet corner (x > 127 mm, y 3-29): only the Bob Smith net and the
+   magnetics' line side; the ground fills stop 2.30 mm short at C4951.
+5. The right edge: the USB-C shells 1.9 mm and the mini-HDMI 0.75 mm past the edge, by design; the SMA barrels
+   on the left; compare with `mfg/release/end_panels.txt`.
+6. The BGA from the back: 0402s on pairs of ball vias, which is why filled-and-capped vias are mandatory.
+7. Inspect > DRC: two In1-only ground vias north-west of the FPGA and a 0.2 mm -4V2 stub at (15.0, 59.6).
+
+**Upload: yes**, with the order options in `FABRICATION_NOTES.txt` (6 layers JLC06161H-7628, 1.6 mm, ENIG,
+epoxy-filled and capped vias, green/white, controlled impedance 50 Ω single-ended and 100 Ω differential
+referenced to In1), both-side assembly, the smallest assembled run first.  Between upload and "place order" is
+the step that was parked: JLCPCB's placement preview.  The CPL rotations are KiCad native with the corrections in
+`mfg/jlc_rotation.py`; the notes list the 24 package types never verified against JLCPCB's conventions, and the
+polarised ones matter (the BGA, LQFPs, QFN, MSOPs, DFN, SOD-123s, LEDs, SOT-23s, the magnetics, photodiode,
+TCXO, U.FL, USB-C, HDMI, microSD).  Anything turned: edit the CPL's Rotation column, or tell me the package and
+the angle and I put it in the table.  AD9238 stock is 21; order before it moves.
+
+**Paths** (all under `/home/jason/mudd/OpticsPCBs/ECP5-2ADC-2DAC/mfg/release/`):
+`ECP5-2ADC-2DAC_gerbers.zip` (six copper layers, mask, paste, silk, edge, drill, drill map, job file),
+`ECP5-2ADC-2DAC_bom.csv`, `ECP5-2ADC-2DAC_cpl.csv`, `FABRICATION_NOTES.txt` (the order options),
+`hand_solder_bom.csv` (the loose parts: six SMAs C496551, the RJ45 C386757, the DIP switch C99418, the 2.54 mm
+headers and Pmod sockets), `ECP5-2ADC-2DAC_assembly_top.pdf` / `_bottom.pdf` for your own eye,
+`end_panel_left/right.svg|.dxf` and `end_panels.txt` for the enclosure, not JLCPCB, after the slot measurement.
+Also fixed: §4 of the response named build 25's eight rails; it lists the nine now.
