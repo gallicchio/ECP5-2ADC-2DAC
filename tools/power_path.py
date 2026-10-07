@@ -53,8 +53,8 @@ for node in doc:
             nt = kid(p, "net"); net = netname(nt) if nt else ""
             if not net: continue
             pa = kid(p, "at"); px, py = rot(float(atom(pa[1])), float(atom(pa[2])), fa)
-            kind = atom(p[2])
-            pads.append((ref, atom(p[1]), fx + px, fy + py, net, lyr, kind in ("thru_hole", "np_thru_hole")))
+            kind = atom(p[2]); sz = kid(p, "size")
+            pads.append((ref, atom(p[1]), fx + px, fy + py, net, lyr, kind in ("thru_hole", "np_thru_hole"), max(float(atom(sz[1])), float(atom(sz[2])))))
 print("%d segments, %d vias, %d pads, %d zones (%s)" % (len(segs), len(vias), len(pads), len(zones), sorted({(z[0], z[1]) for z in zones})))
 # the graph per net: nodes keyed by (layer, x, y) rounded; vias join all layers; plane zones join their vias/TH pads
 def key(L, x, y): return (L, round(x, 2), round(y, 2))
@@ -96,8 +96,21 @@ for net in RAILS:
                     length = math.sqrt(ll) * 1e-3; r = RHO * length / (w2 * 1e-3 * T.get(L2, 35e-6))
                     j = key(L2, qx, qy)
                     link(key(L2, u0, v0), j, r * t); link(j, key(L2, u1, v1), r * (1 - t)); link(key(L, px, py), j, 0.0)
-    # a track that ends on a via's rim rather than its centre is still joined to it in copper
+    # a via on a track's interior (the router drops vias on path points that simplify() folds into one straight
+    # segment): KiCad sees the annulus on the copper; an endpoint model saw nothing (the +3V3_DRV gap, Prompt 29)
     own_vias = [(x, y) for (x, y, n) in vias if n == net]
+    for (vx, vy) in own_vias:
+        for (L2, u0, v0, u1, v1, w2) in own:
+            dx, dy = u1 - u0, v1 - v0; ll = dx * dx + dy * dy
+            if ll < 1e-9: continue
+            t = ((vx - u0) * dx + (vy - v0) * dy) / ll
+            if t <= 0.02 or t >= 0.98: continue
+            qx, qy = u0 + t * dx, v0 + t * dy
+            if math.hypot(vx - qx, vy - qy) <= w2 / 2.0 + 0.2:
+                length = math.sqrt(ll) * 1e-3; r = RHO * length / (w2 * 1e-3 * T.get(L2, 35e-6))
+                j = key(L2, qx, qy)
+                link(key(L2, u0, v0), j, r * t); link(j, key(L2, u1, v1), r * (1 - t)); link(key(L2, vx, vy), j, 0.0002)
+    # a track that ends on a via's rim rather than its centre is still joined to it in copper
     endpoints = collections.defaultdict(list)
     for (L, x0, y0, x1, y1, w) in own:
         endpoints[L].append((x0, y0)); endpoints[L].append((x1, y1))
@@ -107,7 +120,8 @@ for net in RAILS:
                 if 0 < math.hypot(ex - vx, ey - vy) <= 0.35:
                     link(key(L, ex, ey), key(L, vx, vy), 0.0002)
     pad_nodes = {}
-    for (ref, num, x, y, n, lyr, th) in pads:
+    pad_geom = []
+    for (ref, num, x, y, n, lyr, th, size) in pads:
         if n != net: continue
         if th:
             for i in range(len(layers) - 1):
@@ -118,15 +132,18 @@ for net in RAILS:
         else:
             node = key(lyr, x, y)
         pad_nodes[(ref, num)] = node
-    # tracks that end inside a pad but not exactly at its centre: join the pad's node to any node of the net within 0.9 mm on its layer
+        pad_geom.append((x, y, size / 2.0 + 0.1, layers if th else [lyr]))
+    # every node of the net inside a pad's copper joins the pad, on each layer the pad is on (a through-hole pad on all
+    # six): the +5VA gap of Prompt 29 was a B.Cu track ending inside the RAILS header's pin, joined on F.Cu only
     nodes_by_layer = collections.defaultdict(list)
     for k in list(adj.keys()):
         if k != plane: nodes_by_layer[k[0]].append(k)
-    for (ref, num), nd in pad_nodes.items():
-        if nd == plane: continue
-        for k in nodes_by_layer.get(nd[0], []):
-            if k != nd and abs(k[1] - nd[1]) < 1.6 and abs(k[2] - nd[2]) < 1.6:
-                link(nd, k, 0.0002)
+    for (x, y, r, lays) in pad_geom:
+        for lay in lays:
+            pn = key(lay, x, y)
+            for k in nodes_by_layer.get(lay, []):
+                if k != pn and math.hypot(k[1] - x, k[2] - y) <= r:
+                    link(pn, k, 0.0002)
     src_refs = sorted({ref for (ref, num) in pad_nodes if ref.startswith(("FB", "L6", "L4", "U60", "U8", "F5", "J601", "J501"))})
     src = [nd for (ref, num), nd in pad_nodes.items() if ref in src_refs]
     print("%-11s parts: %s; sources: %s" % (net, " ".join(sorted({ref for (ref, num) in pad_nodes if not ref.startswith(("C", "R", "JP", "J6", "TP"))})), " ".join(src_refs) or "-"))

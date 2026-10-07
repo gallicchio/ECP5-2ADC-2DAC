@@ -175,7 +175,7 @@ USER"; the microSD says "contacts toward the board" and "card slides in here"; t
 (HEADERS above the POWER box the headers live in, USB under the FT2232H's box; builds to 27 asked for 150 mm
 lines, found no room, and printed no legend at all); the title carries the build date.  `tools/power_path.py`
 measures the DC resistance from every rail's source to every supply pin along the copper the board has
-(Prompt 28: the worst is the ADC's AVDD at 43 mΩ, 9 mV at its 200 mA; the FPGA's planes are 2.5-4.5 mΩ).  Rails: the router had narrowed every rail that touches one fine pin (+3V3_ADC, +5V, +3V3) to
+(Prompts 28-29: the worst is the ADC's AVDD at 45 mΩ, 9 mV at its 200 mA; the FPGA's planes are 2.5-4.5 mΩ; it joins copper by overlap, as KiCad's connectivity does).  Rails: the router had narrowed every rail that touches one fine pin (+3V3_ADC, +5V, +3V3) to
 that pad's width over its whole length, 0.23-0.28 mm for 150-200 mm.  It still routes them that way (every
 other rule tried moved the problem into the router: three runs lost two to five nets to the room the wide
 tracks took), and afterwards `pcb/fatten.py` widens every rail track toward its class width as far as the

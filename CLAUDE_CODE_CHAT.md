@@ -2402,3 +2402,47 @@ TAPS says 50 Ω.  HEADERS sits above the POWER box (its east end is the microSD 
 55 characters in five lines west of them); USB sits under the FT2232H's box, between it and the Pmods' (four
 lines).  The TAPS paragraph took the free area east of the BGA and the JUMPERS paragraph, which had found no
 room before, the area under the LEDs.  Build 29 (12:57-13:20): the same board with the paragraphs moved -- the routing is deterministic and came out identical, DRC 0 errors and 0 unconnected, every net routed, the sheets' text check 0, the hand-solder BOM empty, the power paths above re-measured on it.  Committed; nothing pushed.
+
+## Prompt 29
+
+How did you have a lost link in the graph without failing a DRC?
+
+## Response 29 2026-10-07 13:25 - 15:41 Claude Fable 5.1 Max
+
+Because the graph was mine, not KiCad's.  DRC's connectivity is geometric: any two pieces of copper of a net that
+overlap on a layer are connected, and a via or a through-hole pad connects every layer it spans.  My resistance
+model joined copper only where it had put nodes: segment endpoints, T junctions where an endpoint touched a
+segment's interior, via centres, and pad centres with a proximity rule on the pad's own layer.  Two constructs on
+the board are copper to KiCad and nothing to that model:
+
+* **+3V3_DRV: a via on a track's interior.**  The router laid an F.Cu track from (51.2, 54.4) to (51.2, 57.0)
+  and dropped the via at (51.2, 55.4), a path point that `simplify()` had folded into the straight segment, so
+  the via sits in the middle of the track, not at an end.  KiCad sees the annulus on the copper.  The model had
+  the via's node with nothing on F.Cu attached to it, and the bead's side (B.Cu) was cut off from the ADC's.
+* **+5VA: a track ending inside a through-hole pad on the back.**  At the RAILS header's +5VA pin (J602.13, a
+  1.7 mm pad at (76.24, 110.50)) an F.Cu track and a B.Cu track both end at (76.2, 110.4), 0.1 mm from the pad's
+  centre and well inside its copper.  The model joined nodes inside a pad on F.Cu only, so the B.Cu track -- the
+  path on to OPA1612 B -- was an island.
+
+Both are now joined the way copper is: a via that lies on a segment's interior splits it there, and every node
+inside a pad's copper joins the pad on each layer the pad reaches (`tools/power_path.py`).  Every supply pin of
+every chip is reached; the numbers moved a little, because the old proximity rule had also joined a few things
+that do not touch:
+
+| rail | to | worst pin | current | drop |
+|---|---|---|---|---|
+| +1V1 (plane) | FPGA core | 2.5 mΩ | 300 mA busy | 0.8 mV |
+| +3V3 (plane) | FPGA VCCIO / SDRAM / FT2232H | 4.5 / 6.0 / 6.8 mΩ | ~100 mA | ≤ 0.7 mV |
+| +2V5_AUX | FPGA VCCAUX | 106 mΩ | 40 mA | 4 mV |
+| +3V3_ADC | AD9238 AVDD | 45 mΩ | 200 mA | 9 mV |
+| +3V3_DRV | AD9238 DRVDD | 33 mΩ | 14 mA | 0.5 mV |
+| +3V3_DAC | AD9767 AVDD | 42 mΩ | 71 mA | 3 mV |
+| +3V3_DAC_D | AD9767 DVDD | 54 mΩ | 15 mA | 0.8 mV |
+| +5VA / -4V2 | the two OPA1612s | 176-206 mΩ | ~10 mA | 2 mV |
+| +1V0_PHY, +3V3_ETH, +1V8_FTDI | PHY, FT2232H | 51-69 mΩ | ≤ 100 mA | ≤ 7 mV |
+
+So the answer to Prompt 28 stands with the bound replaced by the measurement: the ADC's DRVDD is 33 mΩ, half a
+millivolt at its 14 mA, and nothing on the board drops more than 9 mV at its datasheet current.  The lesson, in
+CLAUDE_PCB.md: a connectivity model of one's own must join copper by overlap, as KiCad does, or it will report
+opens that are not there -- and the honest thing to do with such a report is to find the construct, not to
+explain it away.
