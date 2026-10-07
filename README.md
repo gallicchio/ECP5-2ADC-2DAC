@@ -202,8 +202,8 @@ tap's 100 Ω without trouble; the data-rate and USB 3 questions, and the LPF jum
   x 14 bits 3.5 Gb/s.  Gigabit Ethernet carries about 940 Mb/s of payload (one ADC channel at full rate, or
   both at 30 MS/s), so streaming at full rate needs USB 3: an FT601 (USB 3.0 FIFO, 32-bit bus to the FPGA,
   up to 5 Gb/s on the wire, 3.2 Gb/s usable) on a USB-C wired for SuperSpeed pairs.  The ECP5-25F moves the
-  data easily (a 32-bit FIFO at 100 MHz); the SDRAM holds 8 s of both ADCs for capture-then-send, which is
-  what rev A does over Ethernet.
+  data easily (a 32-bit FIFO at 100 MHz); the SDRAM holds 16.8 M samples (0.13 s of both ADCs at full rate) for capture-then-send,
+  which is what rev A does over Ethernet.
 * The 45F/85F FPGA (a BOM change), DDR3 (a second BGA), the TX series resistors at the FPGA end of the
   RGMII lines, a damping leg on the converter clock lines: the items in Decisions and in the review
   responses.
@@ -248,7 +248,8 @@ The footprint is identical, so a rev B with a 45F/85F is a BOM change.
 | SDR SDRAM | 32 MB | W9825G6KH-6 | 8909 | $5.63 | litedram SDR PHY, used on ULX3S/Icepi Zero | low |
 | DDR3L | 256 MB | MT41K128M16JT-125 | 1989 | $19.07 | litedram ECP5 DDR3 PHY, marginal at speed grade -6 | high |
 
-32 MB holds 16 M samples (8 s of both ADCs at 65 MSPS, 2 min at 1 MSPS) and a Linux image.  DDR3 would hold
+32 MB holds 16.8 M 16-bit samples (0.13 s of both ADCs at 65 MS/s, 8 s of both at 1 MS/s, 17 s of one; a
+figure of "8 s at 65 MSPS" stood here until build 28) and a Linux image.  DDR3 would hold
 longer captures but the ECP5 -6 DDR3 PHY in litedram is the single biggest schedule risk on a one-night
 board, and the BGA-96 adds a second escape problem.  Rev B candidate.
 

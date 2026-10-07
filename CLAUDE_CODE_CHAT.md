@@ -2278,3 +2278,49 @@ Every item you called out, and what the checks found beyond them:
 * The silkscreen date is the build's, so the board file changes on every rebuild even when nothing else
   does.
 * The CPL rotation preview stays yours for the day of ordering.
+
+## Prompt 27
+
+Would streaming in and out over a FT601 to the non-PROG USB-C pin require a significant layout redesign? How much would that cost, and what would that buy in terms of the kinds of tutorials that we could do in version 2 of ~/icepi-zero-dac-adc?
+
+## Response 27 2026-10-07 09:46 - 12:39 Claude Fable 5.1 Max
+
+Short answer: the layout work is moderate, the FPGA's pin budget is the real cost, and what it buys is live
+full-rate streaming: a 32 MHz-wide software-defined radio and a DAC the laptop can drive continuously.
+
+**Layout.** Three things change on the east end.  (1) The USB USER jack: the GCT USB4105 is a 16-contact USB-C,
+USB 2.0 only; SuperSpeed needs the 24-contact kind, with two 90 Ω pairs (SSTX, SSRX) kept under about 25 mm and a
+USB 3 ESD array -- the jack stays where it is.  (2) The FT601Q itself: a 9 x 9 mm QFN-76 at 0.4 mm pitch (the
+PHY's pitch), with an internal 1.0 V regulator so it needs only 3.3 V, a crystal and its decoupling; it sits where
+the USER port's ESD diode and pull-up are now, beside J502.  (3) Its bus: 32 data lines, four byte enables, a
+100 MHz clock and seven control lines, about 44 signals into the FPGA's east face, a river like the SDRAM's.
+The generator does all of that; the pin plan is the hard part.  Bank 2 and bank 3, the east banks, have 34
+balls each and 31 and 29 are used: eight spare, not 44.  An FT601 means giving up the two Pmods (16) and the
+HDMI (12) and the RGB LED (3), plus the spare eight, or the FT600 (the 16-bit version, 26 signals: 200 MB/s,
+enough for both ADCs at 65 MS/s in one direction) for the price of the Pmods and the RGB LED.  The 45F and 85F
+in this package have the same 197 I/O; a bigger package is a different board.
+
+**Cost.** The FT601Q-B-T is C1550513 at LCSC, $14.00 each, $11.21 at 100; the FT600Q about $8; the 24-contact
+jack, the crystal and the ESD array a few dollars; three or four more extended codes at JLCPCB's fee.  Call it
+$25-30 on a $222 board.  The design work is a day or two in the generator (the pin plan, the east floorplan,
+one more river, the two pairs) and the build-and-review loop after it -- a rev B, not a patch.
+
+**Bandwidth.** The FT601's 32-bit bus does up to 400 MB/s, 3.2 Gb/s, and it is one bus for both directions.
+Both ADCs at full rate are 1.56 Gb/s; both DACs at full rate 3.5 Gb/s, so one DAC port streams at 125 MS/s or
+both at about 100; in and out at once share the 3.2.  On a USB 2 port it falls back to 480 Mb/s.  For scale:
+the board's gigabit Ethernet already carries about 940 Mb/s with LiteEth, one ADC channel at full rate or both at
+32 MS/s, at no cost; the FT2232H's channel B could have been a 35 MB/s FIFO but is wired as a UART; the USER
+port today is a 12 Mb/s soft device, which the FT601 would replace.
+
+**What it buys for the tutorials.** In `~/icepi-zero-dac-adc` the spine stops at captures that fit the
+board (1.06 Fast captures, 1.09 the spectrum analyzer, 1.10 the AM radio) and Chapter 6 lives on bursts from
+`awgcap.sv`.  With 1.5 Gb/s into the laptop: the spectrum analyzer and the AM radio run live at 65 MS/s, a
+32 MHz-wide SDR front end for GNU Radio and `learnSDR` (6.00-6.12 on real streams, not 60 ms bursts: eye
+diagrams and constellations that update, OFDM and LoRa frames of any length, the radar on a cable with long
+chirps); the DAC plays what the laptop computes for as long as it likes (the SDRAM holds 16.8 M samples,
+0.13 s of both ADCs at full rate -- the README said 8 s until today, fixed now); the noise and photodiode
+experiments average cross-spectra in Python without end; Chapter 5's two boards exchange real-time streams;
+and Chapter 3 gets a driver worth writing (3.02): a USB 3 instrument the kernel talks to by DMA.  What it
+takes away is the Pmods or the HDMI, and the "write your own USB device" exercise on the USER port.
+
+Logged here; the README's SDRAM figure corrected (two places) and committed with this entry.
