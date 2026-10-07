@@ -1869,3 +1869,47 @@ checker counts 299 complaints (294 before build 26, 309 after it).
 Measure the extrusion's slot, read JLCPCB's placement preview for the polarised packages (the U.FL and the
 comparator are new to the rotation table), order one board, and bring it up in the order §4 of the response
 gives -- with the pigtails.
+
+## Prompt 22
+
+Somewhere I saw a pull request go by for ecp5-2adc-2dac. What's going on with that? Where did it come from? Should I accept it?
+
+## Response 22 2026-10-06 20:26 - 20:28 Claude Fable 5.1 Max
+
+It is PR #2 on QuantumQuasars/OpticsPCBs, `ecp5-2adc-2dac` into `master`, and you opened it yourself on the 4th
+(Prompt 19/20): the bundled `/ultrareview` on the branch failed with "Repo is too large", the cloud review needs a
+pull request, so you pushed the branch and opened one with the title and body from
+`build/scratch/review/PR_BODY.md`, then ran `/ultrareview 2`.  The review posted its six findings as a comment on
+it; the two real ones are fixed (dd8a89d) and all six are saved in `design_review_Claude-ultrareview/`.
+
+What it contains now: since you merged master into the branch and pushed last night (537b948), the pull request is
+the whole project -- 386 files under `ECP5-2ADC-2DAC/` plus the root `CLAUDE.md`, `.gitignore` and
+`.gitattributes` -- builds 26 and 27 included.  It should show as mergeable with no conflicts.
+
+Accept it if you want the board on master beside the other projects; the branch only existed so the review could
+see one diff.  Use "Create a merge commit", not squash (squash flattens the ten commits and the chat-log history
+and makes the local branch diverge).  The title still says "build 25"; "builds 25-27" when you merge.  Afterwards
+pull master here and the last bullet of the root `CLAUDE.md` ("The project is on branch ...") needs rewriting; say
+so and I will.  Future cloud reviews: a fresh branch per build round, pull request against master.  Not merging is
+also fine: nothing depends on it and the branch is pushed.
+
+Untouched: your 18 uncommitted GPSDO files and `GPiBridge/`.  This entry is in the chat log, uncommitted.
+
+## Prompt 23
+
+I have accepted the pull request on github, There are changes from GPSDO-PYNQ-Z2 from another claude session plus one from you in ECP5-2ADC-2DAC/CLAUDE_CODE_CHAT.md and a totally new GPiBridge/. Only yours belongs on this branch. Should you be the one to change the branch to main here or one of the other claude sessions?
+
+## Response 23 2026-10-06 20:30 - 20:36 Claude Fable 5.1 Max
+
+Done: this checkout is on `master` at 8ecd406, the merge of PR #2 (the default branch is `master`, not `main`).
+I did it rather than another session because the switch could not touch their work: the overnight run
+(`overnight.py`, four hours in) writes untracked files, and their modified GPSDO files are identical on both
+branches, so git carried all nineteen uncommitted changes across unchanged and the run is still alive.  The
+steps: `git fetch origin` (this shell can fetch now), `git fetch origin master:master` to fast-forward the local
+master ref while it was not checked out (a plain checkout would have refused to delete the branch-only files,
+including the modified chat log), then `git checkout master`.
+
+Committed on master, my files only: the chat log (Prompts 22-23) and the root `CLAUDE.md` bullet that said the
+project lives on the branch.  Not pushed.  Left for you: the branch `ecp5-2adc-2dac` still exists here and on
+GitHub; delete both when you like.  The other sessions' GPSDO work and `GPiBridge/` are untouched and
+uncommitted.
