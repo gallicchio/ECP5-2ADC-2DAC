@@ -28,6 +28,7 @@ THT_PER_JOINT = 0.02      # an assumption to calibrate against the cart (CLAUDE_
 sys.path.insert(0, os.path.join(ROOT, "gen"))
 import parts as PARTS
 import footprint_check as FC
+import place as P
 FPKEY = {v: k for k, v in PARTS.FP.items()}          # footprint id -> the generator's key ("H1x2", "PMOD", ...)
 
 def cli():
@@ -53,6 +54,7 @@ def components():
         if not fpid or ref not in placed:
             continue
         x, y, rot, layer = placed[ref]
+        x, y = x + P.OX, y + P.OY                            # the page frame: the CPL must agree with the gerbers (pcb/place.py)
         fp = fplib.load(fpid)
         short = fpid.split(":", 1)[1]
         # the code the schematic carries, else the parts table's footprint default (the through-hole
@@ -94,14 +96,12 @@ def write_bom(rows, outdir):
             w.writerow([vals[0], ",".join(g["ref"] for g in group), fps[0], code])
     hand = os.path.join(outdir, "hand_solder_bom.csv")
     hrows = [r for r in rows if r["cls"] == "hand"]
-    if hrows:
-        with open(hand, "w", newline="", encoding="utf-8") as f:
-            w = csv.writer(f)
-            w.writerow(["Designator", "Value", "Footprint", "LCSC (to order loose)"])
-            for r in hrows:
-                w.writerow([r["ref"], r["value"], r["fpshort"], r["lcsc"]])
-    elif os.path.exists(hand):
-        os.remove(hand)
+    # always written, and meant to hold nothing but its header: everything is assembled (Jason, 2026-10-07)
+    with open(hand, "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(["Designator", "Value", "Footprint", "LCSC (to order loose)"])
+        for r in hrows:
+            w.writerow([r["ref"], r["value"], r["fpshort"], r["lcsc"]])
     return bom, hrows, len(asm), len(by)
 
 
@@ -432,8 +432,8 @@ def main(argv):
     notes.append("THEN READ THE PLACEMENT PREVIEW against PLACEMENT_CHECKS.txt: %d placements of %d part numbers have a predicted or unverified rotation; the bottom side's %d polarized parts hardest of all (this board stores its back-side pads mirrored left-right, %s)."
                  % (sum(len(g) for g in unchecked.values()), len(unchecked), len([r for r in tht + smt if r["side"] == "bottom" and r["fpshort"] not in jlc_rotation.ROTATION_NA]),
                     ("checked on %s" % convfp) if conv else "not checked"))
-    if hrows:
-        notes.append("Hand solder (hand_solder_bom.csv): %s." % ", ".join(r["ref"] for r in hrows))
+    notes.append("Hand solder (hand_solder_bom.csv): %s" % ((", ".join(r["ref"] for r in hrows) + ".") if hrows else "nothing -- every part is assembled by JLCPCB; the file is its header alone."))
+    notes.append("Coordinates: the board's corner is at (%g, %g) mm on KiCad's page (pcb/place.py OX, OY); the gerbers, the drill file and the CPL all use that frame, so they agree." % (P.OX, P.OY))
     notes.append("End plates: end_panel_left/right.svg and .dxf (1:1, viewed from outside) with every connector's cutout; end_panels.txt lists them.  MEASURE which slot the board rides in and set PCB_TOP_ABOVE_FLOOR in mfg/end_panels.py before milling.")
     notes.append("")
     notes.append("COST ESTIMATE for %d boards (JLCPCB list prices, parts from their live API on %s):" % (boards, datetime.date.today().isoformat()))

@@ -1,0 +1,53 @@
+Ferrite bead between a regulator's output and a load: impedance seen by the load vs frequency
+* BLM18KG601SN1 (600 R at 100 MHz, DCR 0.15 R max): DCR + (L || R_ac || C_par); at 100 MHz |Z| ~ 570 R
+.param cload=10u
+.subckt bead a b
+Rdc a m 0.15
+L1 m b 1.1u
+R2 m b 1000
+C2 m b 0.3p
+.ends
+* source side: the regulator's 10 uF + 100 nF (ESR/ESL as ceramics), the regulator itself as 20 mR
+Vsrc src 0 dc 0 ac 0
+Rreg src s1 0.02
+C10s s1 s1a 10u
+R10s s1a s1b 0.005
+L10s s1b 0 0.6n
+C1s s1 s1c 100n
+R1s s1c s1d 0.02
+L1s s1d 0 0.5n
+X1 s1 ld bead
+* load side: 10 uF bulk + n x 100 nF at the pins (ESL 0.5 nH each), a damping RC optionally
+Cb ld lda {cload}
+Rb lda ldb 0.005
+Lb ldb 0 0.6n
+C1l ld l1a 100n
+R1l l1a l1b 0.02
+L1l l1b 0 0.5n
+C2l ld l2a 100n
+R2l l2a l2b 0.02
+L2l l2b 0 0.5n
+C3l ld l3a 100n
+R3l l3a l3b 0.02
+L3l l3b 0 0.5n
+* the load draws 1 A AC: |V(ld)| is the impedance in ohms
+Iload 0 ld ac 1
+.control
+ac dec 40 1k 300meg
+let z = mag(v(ld))
+meas ac zpeak max z from=1k to=300meg
+meas ac fpeak when z=zpeak
+let z2m = z
+meas ac z_2meg find z at=2meg
+meas ac z_100k find z at=100k
+meas ac z_20meg find z at=20meg
+print zpeak fpeak z_2meg z_100k z_20meg
+* with a 10 uF + 1 R damping leg across the load
+alter Rb = 1.0
+ac dec 40 1k 300meg
+let z = mag(v(ld))
+meas ac zpeak2 max z from=1k to=300meg
+meas ac fpeak2 when z=zpeak2
+print zpeak2 fpeak2
+.endc
+.end

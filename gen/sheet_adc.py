@@ -23,7 +23,7 @@ def channel(ctx, tag, cl, base, alt_name, ids):
     gnd(ctx, *j.pin(2), stub=2.54)
     s.text(21.0, cl - 10.0, "ADC %s IN" % tag, size=1.8, bold=True)
     s.text(21.0, cl - 14.5, "±1 V MAX IN", size=2.2, bold=True)
-    s.text(21.0, cl + 15.5, "±1 V full scale at x1 (±0.1 V at x10)\n50 Ω or high-Z (JP%d)\nDC coupled; clamps at the rails (+5, -4.2 V)\n±10 V max (100 Ω 1206, 0.25 W)" % (base + 1), size=0.9, justify="left top")
+    s.text(21.0, cl + 15.5, "±1 V full scale at x1\n(±0.1 V at x10)\n50 Ω or high-Z: JP%d\nDC coupled; clamps at\nthe rails (+5, -4.2 V)\n±10 V max (100 Ω 1206)" % (base + 1), size=0.9, justify="left top")      # (six short lines since 2026-10-07: the long ones ran under the TERM jumper)
     xt = 45.72
     s.wire(n0[0], cl, xt, cl)
     rt = R(ctx, base, "49.9R", xt, cl + 6.35)
@@ -40,15 +40,15 @@ def channel(ctx, tag, cl, base, alt_name, ids):
     xc = 68.58
     s.wire(*rs.pin(2), xc, cl)
     d = part(ctx, "Diode:BAV99", "D%d" % (100 + n), "BAV99", "SOT23", xc, cl - 8.89, rot=0,
-             ref_at=(xc - 4.0, cl - 12.5), val_at=(xc + 1.0, cl - 12.5))
+             ref_at=(xc - 4.0, cl - 12.6), val_at=(xc - 4.0, cl - 12.3))      # (both left of the diodes since build 28: the NOISE line ran through "BAV99")
     s.wire(*d.pin(3), xc, cl)                       # common pin on the signal
     s.wire(*d.pin(1), d.pin(1)[0] - 2.54, d.pin(1)[1]); gnd(ctx, d.pin(1)[0] - 2.54, d.pin(1)[1], "-4V2", stub=3.81, up=True)
     s.wire(*d.pin(2), d.pin(2)[0] + 2.54, d.pin(2)[1]); rail(ctx, d.pin(2)[0] + 2.54, d.pin(2)[1], "+5VA", stub=3.81)
-    label_node(ctx, xc + 6.0, cl - 10.5, "clamps to\nthe rails", side="right", size=0.85)
+    label_node(ctx, xc + 8.5, cl - 10.5, "clamps to\nthe rails", side="right", size=0.85)
     # --- source select: B (top) = SMA, A (bottom) = alternate, C (right) = to the preamp ---
     xj = 81.28
     jsrc = part(ctx, "Jumper:Jumper_3_Open", "JP%d" % (base + 2), "SRC", "H1x3", xj, cl, rot=90,
-                ref_at=(xj - 1.5, cl + 9.0), val_at=(xj - 1.5, cl + 9.5), justify="right")
+                ref_at=(xj - 1.5, cl + 9.0), val_at=(xj - 1.5, cl + 9.5), justify="right", fsize=1.0)      # (1.0: at 1.27 the designator reached the NOISE line)
     pa, pb, pc = jsrc.pin(1), jsrc.pin(3), jsrc.pin(2)
     # up to the jumper's SMA pin on a jog clear of the clamp above the node
     s.junction(xc, cl)
@@ -64,7 +64,7 @@ def channel(ctx, tag, cl, base, alt_name, ids):
     prev = nin
     for st, (x0, unit) in enumerate([(x1, 1), (x1 + 45.72, 2)], 1):
         a_ = part(ctx, ids["opa1612"], u, "OPA1612", "SOIC8", x0, cl, unit=unit,
-                  ref_at=(x0 - 5.5, cl - 6.0), val_at=(x0 - 1.0, cl - 8.3))
+                  ref_at=(x0 - 1.0, cl - 6.0), val_at=(x0 - 1.0, cl - 5.7))      # designator over value, above the triangle's flat part (build 28)
         pp = a_.pin("3" if unit == 1 else "5"); pn = a_.pin("2" if unit == 1 else "6"); po = a_.pin("1" if unit == 1 else "7")
         s.wire(prev[0], prev[1], pp[0] - 2.54, prev[1]); s.wire(pp[0] - 2.54, prev[1], pp[0] - 2.54, pp[1]); s.wire(pp[0] - 2.54, pp[1], *pp)
         yf = cl + 11.43
@@ -87,7 +87,7 @@ def channel(ctx, tag, cl, base, alt_name, ids):
     # chain without a probe: a 50 R input sees half the signal, a 1 MR input (ADALM2000) all of it
     xtp = prev[0]
     s.junction(xtp, cl)
-    rtp = R(ctx, base, "49.9R", xtp, cl + 7.62, side="left", ref="R%d" % (1000 + base + 13))      # explicit: the strip's R1..R12 keep their numbers
+    rtp = R(ctx, base, "49.9R", xtp, cl + 7.62, side="right", ref="R%d" % (1000 + base + 13))     # explicit: the strip's R1..R12 keep their numbers; labels right, off the feedback path
     s.wire(xtp, cl, *rtp.pin(1))
     jtp = part(ctx, ids["ufl"], "J%d" % (106 + n), "U.FL", "UFL", xtp + 7.62, cl + 15.24,
                ref_at=(xtp + 10.0, cl + 13.5), val_at=(xtp + 10.0, cl + 15.5), desc="monitor tap: preamp output, through 49.9 R")
@@ -95,18 +95,26 @@ def channel(ctx, tag, cl, base, alt_name, ids):
     gnd(ctx, *jtp.pin(2), stub=2.54)
     s.text(xtp + 15.0, cl + 20.5, "TAP %s: preamp out, 49.9 Ω to a U.FL" % tag, size=0.85)      # (two lines right of the +5VA flag since build 27: one line ran through its stem)
     s.text(xtp + 15.0, cl + 22.5, "(50 Ω scope: x1/2)", size=0.85)
-    # power unit of the OPA1612 (unit 3)
-    xpw = x1 + 45.72 + 27.94
-    pw = part(ctx, ids["opa1612"], u, "OPA1612", "SOIC8", xpw, cl + 33.02, unit=3,
-              ref_at=(xpw + 6.0, cl + 32.0), val_at=(xpw + 6.0, cl + 33.0))
+    # what the pair does, centred under the pair (a block's label stands over the middle of its block)
+    ctext(ctx, x1 + 22.86, cl + 36.5, "x1 or x10 per stage by its jumper (9.1 kΩ / 1 kΩ: x10.1): x1, x10 or x100 in all; 1.1 nV/√Hz", 0.9)
+    # power unit of the OPA1612 (unit 3): under the gap between its two amplifiers, its capacitors to its left
+    xpw = x1 + 22.86 + 10.16
+    pw = part(ctx, ids["opa1612"], u, "OPA1612", "SOIC8", xpw, cl + 55.88, unit=3,
+              ref_at=(xpw + 6.0, cl + 54.9), val_at=(xpw + 6.0, cl + 55.9))      # (10 mm lower since build 28: the gain line ran through its +5VA flag and C1101's labels)
     rail(ctx, *pw.pin("8"), "+5VA", stub=3.81); gnd(ctx, *pw.pin("4"), "-4V2", stub=3.81)
-    c1 = C(ctx, base, "100nF", xpw - 12.7, pw.pin("8")[1] - 3.81 + 3.81, side="left")
+    c1 = C(ctx, base, "100nF", xpw - 12.7, pw.pin("8")[1] - 3.81 + 3.81, side="left",
+           ref_at=(xpw - 12.7 - 8.0, pw.pin("8")[1] - 1.5), val_at=(xpw - 12.7 - 8.0, pw.pin("8")[1] + 1.6))
     s.wire(pw.pin("8")[0], pw.pin("8")[1] - 3.81, xpw - 12.7, pw.pin("8")[1] - 3.81); s.wire(xpw - 12.7, pw.pin("8")[1] - 3.81, *c1.pin(1))
     gnd(ctx, *c1.pin(2), stub=0)
-    c2 = C(ctx, base, "100nF", xpw - 22.86, pw.pin("4")[1] + 3.81 - 3.81, side="left")
+    c2 = C(ctx, base, "100nF", xpw - 22.86, pw.pin("4")[1] + 3.81 - 3.81, side="left",
+           ref_at=(xpw - 22.86 - 8.0, pw.pin("4")[1] - 1.5), val_at=(xpw - 22.86 - 8.0, pw.pin("4")[1] + 1.6))     # labels 2 mm clear of the symbol
     s.wire(pw.pin("4")[0], pw.pin("4")[1] + 3.81, xpw - 22.86, pw.pin("4")[1] + 3.81); s.wire(xpw - 22.86, pw.pin("4")[1] + 3.81, *c2.pin(2))
     gnd(ctx, *c2.pin(1), stub=0, up=True)
-    label_node(ctx, xpw - 26.0, cl + 47.5, "one 100 nF per supply pin, at the pin", side="right", size=0.85)
+    label_node(ctx, xpw - 34.0, cl + 70.8, "one 100 nF per supply pin, at the pin", side="right", size=0.85)
+    # a dashed box round the chip's three units (A, B and the supply C), as the converters have
+    gx0, gx1, gy0, gy1 = x1 - 14.0, x1 + 45.72 + 6.5, cl - 11.0, cl + 73.0
+    s.rect(gx0, gy0, gx1 - gx0, gy1 - gy0, style="dash", width=0.2)
+    s.text(gx0 + 1.0, gy0 - 0.8, "%s OPA1612: one chip, drawn as its two amplifiers (A, B) and their supply (C)" % u, size=0.9, bold=True)
     # --- FDA: THS4521, gain 1, single-ended in, differential out ------------
     xf = 223.52
     f = part(ctx, ids["fda"], "U%d" % (110 + n), "THS4521", "MSOP8", xf, cl,
@@ -140,7 +148,8 @@ def channel(ctx, tag, cl, base, alt_name, ids):
         for x_ in xs_:
             if abs(x_ - (ip[0] - 2.54)) > 0.01:
                 s.junction(x_, row[1])                              # (the feedback code adds its own junction there)
-    label_node(ctx, xd - 24.0, cl - 29.5, "D%d: a BAV99 anti-parallel across the FDA's inputs keeps them within one diode drop in any overload" % (110 + n), side="right", size=0.8)
+    ctext(ctx, xf, cl - 33.5, "THS4521 fully differential driver, gain 1 (499 Ω / 499 Ω): 2 Vpp differential about VOCM", 0.9, bold=True)
+    ctext(ctx, xf, cl - 31.5, "D%d, a BAV99 anti-parallel across its inputs, holds them within one diode drop in any overload" % (110 + n), 0.8)
     yfa, yfb = cl - 25.4, cl + 25.4
     rfa = R(ctx, base, "499R", xf, yfa, horiz=True)
     s.junction(ip[0] - 2.54, ip[1]); s.wire(ip[0] - 2.54, ip[1], ip[0] - 2.54, yfa); s.wire(ip[0] - 2.54, yfa, *rfa.pin(1))
@@ -150,7 +159,7 @@ def channel(ctx, tag, cl, base, alt_name, ids):
     s.wire(*rfb.pin(2), op[0] + 2.54, yfb); s.wire(op[0] + 2.54, yfb, op[0] + 2.54, op[1]); s.wire(*op, op[0] + 2.54, op[1])
     label_node(ctx, xf + 9.0, yfa - 1.8, "gain = 499/499 = 1", side="right", size=0.85)
     vocm, pd, vsp, vsn = f.pin("2"), f.pin("7"), f.pin("3"), f.pin("6")
-    cv = C(ctx, base, "100nF", xf + 7.62, cl + 20.32, side="left")
+    cv = C(ctx, base, "100nF", xf + 7.62, cl + 20.32, side="right")      # (fields on the right since build 28: on the left they touched R1110's)
     s.wire(*vocm, vocm[0], cl + 16.51); s.wire(vocm[0], cl + 16.51, xf + 7.62, cl + 16.51); s.wire(xf + 7.62, cl + 16.51, *cv.pin(1))
     gnd(ctx, *cv.pin(2), stub=0)
     label_node(ctx, vocm[0] - 24.0, yfb + 5.5, "VOCM open = 1.65 V (internal divider)", side="right", size=0.85)
@@ -160,7 +169,7 @@ def channel(ctx, tag, cl, base, alt_name, ids):
     s.wire(vsp[0], vsp[1] - 3.81, vsp[0] + 12.7, vsp[1] - 3.81); s.wire(vsp[0] + 12.7, vsp[1] - 3.81, *cs.pin(2)); gnd(ctx, *cs.pin(1), stub=0, up=True)
     # --- series R and shunt C into the converter ------------------------------
     xr = on[0] + 2.54 + 8.89
-    ra = R(ctx, base, "33R", xr, on[1], horiz=True, ref_at=(xr - 2.6, on[1] - 1.6), val_at=(xr + 4.5, on[1] - 1.6))
+    ra = R(ctx, base, "33R", xr, on[1], horiz=True, ref_at=(xr - 2.6, on[1] - 1.6), val_at=(xr + 4.5, on[1] - 3.4))
     rb = R(ctx, base, "33R", xr, op[1], horiz=True, ref_at=(xr - 2.6, op[1] + 3.4), val_at=(xr + 4.5, op[1] + 1.6))
     s.wire(on[0] + 2.54, on[1], *ra.pin(1)); s.wire(op[0] + 2.54, op[1], *rb.pin(1))
     xo = xr + 8.89
@@ -175,14 +184,13 @@ def draw(sch, ids, fpga):
     ctx = Ctx(sch, "ADC")
     s = sch
     s.text(20, 22, "ADC: two DC-coupled 12-bit channels, AD9238, 65 MSPS", size=3.0, bold=True)
-    note(ctx, 20, 26, "Each channel: SMA (50 Ω or high-Z, jumper) -> 100 Ω + diode clamp to the ±4.5 V rails -> "
-                      "source jumper (SMA / noise resistor / photodiode) -> two OPA1612 stages, each x1 or x10 "
-                      "by jumper (so x1, x10, x100; 1.1 nV/√Hz) -> U.FL monitor tap -> THS4521 fully-differential driver at gain 1 (a BAV99 "
-                      "across its inputs keeps an overload under its 1 V differential limit) "
-                      "-> 33 Ω + 22 pF -> AD9238 (2 Vpp differential about 1.65 V = AVDD/2; -3 dB at 23 MHz at x1, sim/adc_frontend.cir). The ADC's internal "
-                      "1.0 V reference sets the 2 Vpp span (SENSE = GND); SHARED_REF ties both channels to one "
-                      "reference so their gains match for the cross-correlation experiment. Both sample clocks "
-                      "come from the FPGA so the gateware owns the phase.", w=340, size=1.1)
+    note(ctx, 20, 26, "Each channel, left to right: SMA (50 Ω or high-Z by jumper)\n"
+                      "-> 100 Ω and a diode clamp to the rails\n"
+                      "-> source jumper: the SMA, or NOISE (channel A) / ALT (channel B: NOISE or the photodiode)\n"
+                      "-> two OPA1612 stages, each x1 or x10 by jumper -> U.FL monitor tap\n"
+                      "-> THS4521 fully differential driver, gain 1 -> 33 Ω + 22 pF -> AD9238.\n"
+                      "-3 dB at 23 MHz at x1 (sim/adc_frontend.cir). The details stand beside each block.\n"
+                      "Both sample clocks come from the FPGA, so the gateware owns the phase.", w=200, size=1.1)
     clA, clB = 78.74, 215.9
     A = channel(ctx, "A", clA, 100, "NOISE", ids)
     B = channel(ctx, "B", clB, 200, "ALT", ids)
@@ -200,14 +208,16 @@ def draw(sch, ids, fpga):
             (2, B, "B", ("15", "14", "18"), [38, 37, 36, 35, 34, 33, 32, 31, 30, 27, 26, 25], ("39", "21", "22"))):
         yu = ch["out_n"][1] - pin_dy(LIB, unit, vn)
         tu = part(ctx, LIB, "U103", "AD9238", "LQFP64_7", xa, yu, unit=unit,
-                  ref_at=(xa - 20.0, yu - 24.0), val_at=(xa - 20.0, yu + 31.5))
+                  ref_at=(xa - 20.0, yu - 24.0), val_at=(xa - 20.0, yu - 21.5))      # (value under the designator since build 28: at yu + 31.5 it sat on the clock row)
         units[tagc] = tu
         s.wire(*ch["out_n"], *tu.pin(vn)); s.wire(*ch["out_p"], *tu.pin(vp))
-        p = tu.pin(clk)
-        r = R(ctx, 300, "33R", p[0] - 8.89, p[1], horiz=True, ref_at=(p[0] - 11.5, p[1] - 1.6), val_at=(p[0] - 4.4, p[1] - 1.6))
-        s.wire(*r.pin(2), *p)
-        s.wire(*r.pin(1), r.pin(1)[0] - 7.62, p[1]); s.hlabel(r.pin(1)[0] - 7.62, p[1], "ADC_%s_CLK" % tagc, shape="input", rot=180)
-        label_node(ctx, p[0] - 34.0, p[1] + 4.6, "sample clock from the FPGA (the gateware owns the phase)", side="right", size=0.85)
+        p = tu.pin(clk)                                                   # on the sloped bottom edge, pointing up
+        yk = p[1] + 7.62                                                  # the clock's row under the converter
+        s.wire(*p, p[0], yk)
+        r = R(ctx, 300, "33R", p[0] - 15.24, yk, horiz=True, ref_at=(p[0] - 17.8, yk - 1.6), val_at=(p[0] - 10.7, yk - 3.4))
+        s.wire(*r.pin(2), p[0], yk)
+        s.wire(*r.pin(1), r.pin(1)[0] - 10.16, yk); s.hlabel(r.pin(1)[0] - 10.16, yk, "ADC_%s_CLK" % tagc, shape="input", rot=180)
+        label_node(ctx, p[0] - 40.0, yk + 7.0, "sample clock from the FPGA, up into\nthe converter like a flip-flop's clock", side="right", size=0.85)      # (two short lines: one long one crossed the supply flags' stems)
         members = [(tu.pin(str(d))[0], tu.pin(str(d))[1], "ADC_%s_D%d" % (tagc, 11 - i)) for i, d in enumerate(data)]
         xb = tu.pin(str(data[0]))[0] + 38.1
         bus_out(ctx, xb, 0, "ADC_%s_D[11..0]" % tagc, members, x_end=xb + 22.86)
@@ -222,8 +232,9 @@ def draw(sch, ids, fpga):
 
     # the shared pins, between the channels
     ym = snap((units["A"].y + units["B"].y) / 2.0)
+    bc = unit_body(LIB, 3)
     cu = part(ctx, LIB, "U103", "AD9238", "LQFP64_7", xa, ym, unit=3,
-              ref_at=(xa - 20.0, ym - 20.0), val_at=(xa - 20.0, ym + 21.5))
+              ref_at=(xa - 20.0, ym + bc[1] - 0.6), val_at=(xa - 20.0, ym + bc[3] + 0.6))      # just outside the box, whatever its height
     # references: spread each REFT/REFB pair into two bars 10 mm apart
     xr = xa + 24.13
     for (pt, pb, base) in (("6", "7", 310), ("11", "10", 320)):
@@ -242,11 +253,11 @@ def draw(sch, ids, fpga):
     s.wire(*vref, xr + 30.48, vref[1])
     cv1 = C(ctx, 330, "1uF", xr + 20.32, vref[1] + 5.08, side="right"); s.wire(xr + 20.32, vref[1], *cv1.pin(1)); gnd(ctx, *cv1.pin(2), stub=0)
     cv2 = C(ctx, 330, "100nF", xr + 30.48, vref[1] + 5.08, side="right"); s.wire(xr + 30.48, vref[1], *cv2.pin(1)); gnd(ctx, *cv2.pin(2), stub=0)
-    label_node(ctx, xr + 37.0, vref[1] + 0.5, "1.0 V internal reference -> 2 Vpp span", side="right", size=0.85)
+    label_node(ctx, xr + 50.0, vref[1] + 0.5, "1.0 V internal reference -> 2 Vpp span", side="right", size=0.85)      # (right of C1324's fields)
     # the mode pins, on the left: SENSE to ground, SHARED_REF and MUX_SELECT high, DCS/DFS from the FPGA
     sense, shared, mux, dcs, dfs = (cu.pin(n) for n in ("9", "62", "61", "19", "20"))
     s.wire(*sense, sense[0] - 6.35, sense[1]); gnd(ctx, sense[0] - 6.35, sense[1], stub=2.54)
-    s.text(sense[0] - 12.0, sense[1] - 2.0, "SENSE = GND selects the internal 1.0 V reference", size=0.85, justify="right bottom")
+    s.text(sense[0] - 12.0, sense[1] - 6.5, "SENSE = GND selects the internal 1.0 V reference", size=0.85, justify="right bottom")      # (above SHARED_REF's +3V3_ADC flag)
     xs2 = shared[0] - 2.54
     s.wire(*shared, xs2, shared[1]); s.wire(xs2, shared[1], xs2, mux[1]); s.wire(*mux, xs2, mux[1]); s.junction(xs2, shared[1])
     s.wire(xs2, shared[1], xs2 - 12.7, shared[1]); rail(ctx, xs2 - 12.7, shared[1], "+3V3_ADC", stub=3.81)
@@ -286,12 +297,16 @@ def draw(sch, ids, fpga):
                             "analog side of the floorplan with the FPGA's bus the only digital thing near it.", w=110, size=0.95)
 
     # --- noise source block, bottom left -----------------------------------------
-    y0 = 300.0
-    s.text(20, y0 - 4, "Johnson-noise source (either channel can select it)", size=1.6, bold=True)
-    note(ctx, 20, y0, "A resistor at room temperature makes √(4kTR) of noise: 1.3 nV/√Hz at 100 Ω, 12.9 nV/√Hz at 10 kΩ. "
-                      "Switch one in (DIP) or plug your own into J5. With both channels on the same resistor, "
-                      "the cross-spectrum averages away each amplifier's own noise and leaves the resistor's. "
-                      "Switch 0 Ω in to measure the amplifiers alone.", w=108, size=0.95)
+    y0 = 306.0                                                       # (6 mm lower since build 28: channel B's preamp box ends at 288.9)
+    s.text(20, y0 - 4, "Johnson-noise source", size=1.6, bold=True)                 # (the title and the note end before the NOISE line at x = 73.7)
+    note(ctx, 20, y0, "Either channel can select it (its SRC / ALT jumper).\n"
+                      "A resistor at room temperature makes √(4kTR) of noise:\n"
+                      "1.3 nV/√Hz at 100 Ω, 12.9 nV/√Hz at 10 kΩ.\n"
+                      "Switch one in (the DIP switch) or plug your own\n"
+                      "into J105. With both channels on the same resistor,\n"
+                      "the cross-spectrum averages away each amplifier's\n"
+                      "own noise and leaves the resistor's. Switch 0 Ω in\n"
+                      "to measure the amplifiers alone.", w=100, size=0.95)
     sw = part(ctx, "Switch:SW_DIP_x04", "SW101", "DSWB04LHGET", "DIP4", 86.36, y0 + 45.72,
               ref_at=(78.0, y0 + 37.5), val_at=(78.0, y0 + 54.5))
     vals = ["0R", "100R", "1k", "10k"]
@@ -318,8 +333,9 @@ def draw(sch, ids, fpga):
     s.wire(nx, y0 + 16.0, nx, A["alt"][1]); s.wire(nx, A["alt"][1], *A["alt"])
     label_node(ctx, nx + 1.0, (y0 + 16.0 + clB) / 2, "NOISE", side="right", size=0.9)
     # channel B: a second jumper selects NOISE or the photodiode
-    jb = part(ctx, "Jumper:Jumper_3_Open", "JP1203", "ALT", "H1x3", B["alt"][0] + 10.16, B["alt"][1] + 7.62, rot=90,
-              ref_at=(B["alt"][0] + 15.0, B["alt"][1] + 6.5), val_at=(B["alt"][0] + 15.0, B["alt"][1] + 9.0))
+    jb = part(ctx, "Jumper:Jumper_3_Open", "JP1203", "ALT", "H1x3", B["alt"][0], B["alt"][1] + 17.78, rot=90,
+              ref_at=(B["alt"][0] - 1.8, B["alt"][1] + 16.0), val_at=(B["alt"][0] - 1.8, B["alt"][1] + 16.3),
+              justify="right", fsize=0.9)      # (under the SRC jumper since 2026-10-07; labels on its left since build 28: on the right they sat on R1204's)
     ja, jb3, jc = jb.pin(1), jb.pin(3), jb.pin(2)          # 1 = bottom, 3 = top, 2 = common (right)
     # the channel's ALT position goes to the jumper's COMMON pin; the two ends are NOISE and PHOTODIODE
     xcm = jc[0] + 2.54
@@ -331,17 +347,23 @@ def draw(sch, ids, fpga):
     s.wire(*ja, ja[0], ja[1] + 2.54)
     pdn = (ja[0], ja[1] + 2.54)
     label_node(ctx, ja[0] + 1.0, ja[1] + 1.2, "PHOTODIODE", side="right", size=0.85)
-    label_node(ctx, jb3[0] + 1.0, jb3[1] - 0.3, "NOISE", side="right", size=0.85)
-    label_node(ctx, xcm + 1.0, jc[1] + 0.5, "JP1203: channel B's ALT source", side="right", size=0.85)
+    label_node(ctx, nx + 0.5, jb3[1] - 0.3, "NOISE", side="right", size=0.85)
+    label_node(ctx, ja[0] + 1.0, ja[1] + 3.6, "JP1203: channel B's ALT source", side="right", size=0.85)
 
     # --- photodiode receiver (transimpedance), bottom middle ------------------------
-    yp = 300.0
+    yp = 306.0
     xp = 150.0
     s.text(xp, yp - 4, "Photodiode receiver (channel B, jumper PHOTODIODE)", size=1.6, bold=True)
-    note(ctx, xp, yp, "VBPW34S PIN photodiode, reverse biased 4.5 V, into a transimpedance amplifier: 10 kΩ -> 10 mV per µA, "
-                      "2.2 pF -> 6.8 MHz with 3.5 dB of peaking at 4 MHz (sim/tia.cir; 3.3 pF flattens it). Plug an external photodiode into J6 (cathode to the top pin). Light makes the "
-                      "output go positive. Aim it at the LED on another board's DAC 2 for the lock-in-across-the-room experiment.",
-         w=125, size=0.95)
+    note(ctx, xp, yp, "VBPW34S PIN photodiode: 430-1100 nm, 60 % of its peak at\n"       # (lines under 57 characters: the run to JP1203 passes at x = 221)
+                      "the red LED's 625 nm. Reverse biased 4.2 V into a\n"
+                      "transimpedance amplifier, 10 kΩ: 10 mV per µA.\n"
+                      "2.2 pF across it: 6.8 MHz, 3.5 dB of peaking at 4 MHz\n"
+                      "(sim/tia.cir; 3.3 pF flattens it).\n"
+                      "An external photodiode plugs into J106 (cathode to the\n"
+                      "top pin). Light makes the output go positive.\n"
+                      "Aim it at the LED on another board's DAC 1 for the\n"
+                      "lock-in-across-the-room experiment.",
+         w=100, size=0.95)
     tia = part(ctx, ids["opa2810"], "U105", "OPA2810", "SOIC8", xp + 55.88, yp + 48.26, unit=1,
                ref_at=(xp + 62.0, yp + 54.5), val_at=(xp + 62.0, yp + 55.0))
     tp, tm, to = tia.pin("3"), tia.pin("2"), tia.pin("1")
@@ -368,7 +390,7 @@ def draw(sch, ids, fpga):
     s.wire(tm[0] - 2.54, tm[1], tm[0] - 2.54, yf - 6.35); s.wire(tm[0] - 2.54, yf, *rf.pin(1)); s.wire(tm[0] - 2.54, yf - 6.35, *cf.pin(1))
     s.wire(*rf.pin(2), to[0] + 2.54, yf); s.wire(*cf.pin(2), to[0] + 2.54, yf - 6.35); s.wire(to[0] + 2.54, yf - 6.35, to[0] + 2.54, to[1]); s.wire(*to, to[0] + 2.54, to[1])
     ytt = to[1] - 10.16                                              # the tap's row, on the output's run up to the jumper
-    s.wire(to[0] + 2.54, to[1], to[0] + 7.62, to[1]); s.wire(to[0] + 7.62, to[1], to[0] + 7.62, ytt); s.wire(to[0] + 7.62, ytt, to[0] + 7.62, pdn[1] + 10.16)
+    s.wire(to[0] + 2.54, to[1], to[0] + 7.62, to[1]); s.wire(to[0] + 7.62, to[1], to[0] + 7.62, ytt)
     # monitor tap (build 26): the receiver's output through 49.9 R into a U.FL
     s.junction(to[0] + 7.62, ytt)
     rtt = R(ctx, 400, "49.9R", to[0] + 15.24, ytt, horiz=True)
@@ -377,10 +399,11 @@ def draw(sch, ids, fpga):
                desc="monitor tap: photodiode receiver output, through 49.9 R")
     s.wire(*rtt.pin(2), *jtt.pin(1)); gnd(ctx, *jtt.pin(2), stub=2.54)
     label_node(ctx, to[0] + 9.0, ytt - 4.0, "TAP TIA (50 Ω scope: x1/2)", side="right", size=0.85)
-    s.wire(to[0] + 7.62, pdn[1] + 10.16, pdn[0], pdn[1] + 10.16); s.wire(pdn[0], pdn[1] + 10.16, *pdn)
-    label_node(ctx, to[0] + 8.5, to[1] - 4.5, "to JP203", side="right", size=0.85)      # (between the output run and the tap row: on the tap row it sat on R1406's value)
+    y_run = 293.4                                                    # under channel B's preamp box (its bottom is at 288.9), above the bottom blocks' titles (300.2)
+    s.wire(to[0] + 7.62, ytt, to[0] + 7.62, y_run); s.wire(to[0] + 7.62, y_run, pdn[0], y_run); s.wire(pdn[0], y_run, *pdn)
+    label_node(ctx, to[0] + 8.6, y_run + 3.5, "to JP1203 (PHOTODIODE)", side="right", size=0.85)      # (beside the run's vertical, under its corner)
     ub = part(ctx, ids["opa2810"], "U105", "OPA2810", "SOIC8", xp + 55.88, yp + 73.66, unit=2,
-              ref_at=(xp + 50.5, yp + 68.0), val_at=(xp + 55.0, yp + 65.5))
+              ref_at=(xp + 54.9, yp + 67.66), val_at=(xp + 54.9, yp + 67.96))
     bp, bm, bo = ub.pin("5"), ub.pin("6"), ub.pin("7")
     s.wire(*bp, bp[0] - 2.54, bp[1]); gnd(ctx, bp[0] - 2.54, bp[1], stub=2.54)
     s.wire(*bm, bm[0] - 2.54, bm[1]); s.wire(bm[0] - 2.54, bm[1], bm[0] - 2.54, bm[1] + 6.35); s.wire(bm[0] - 2.54, bm[1] + 6.35, bo[0] + 2.54, bm[1] + 6.35); s.wire(bo[0] + 2.54, bm[1] + 6.35, bo[0] + 2.54, bo[1]); s.wire(*bo, bo[0] + 2.54, bo[1])

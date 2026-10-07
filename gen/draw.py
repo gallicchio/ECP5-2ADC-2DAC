@@ -39,20 +39,21 @@ def part(ctx, lib, ref, value, fp_key, x, y, rot=0, mirror=None, unit=1, desc=No
                      hide_ref=hide_ref, dnp=dnp, fields=fields, justify=justify, fsize=fsize)
 
 
-def R(ctx, base, value, x, y, horiz=False, ref=None, ref_at=None, val_at=None, fp="R0603", side="right", fsize=1.27):
+def R(ctx, base, value, x, y, horiz=False, ref=None, ref_at=None, val_at=None, fp="R0603", side="right", fsize=1.27, hide_value=False):
     """A resistor centred at (x, y).  Vertical by default (pin 1 up); horiz
     puts pin 1 on the LEFT.  Fields go beside it on `side`."""
     r = ref or ctx.ref("R", base)
     rot = 90 if horiz else 0
+    off = 1.9 if fsize >= 1.2 else 1.5                      # smaller fields sit closer (a 7.62 mm ladder pitch fits "R5721" at 1.0)
     if ref_at is None and val_at is None:
         if horiz:
             ref_at, val_at = (x - 2.6, y - 1.6), (x - 2.6, y + 1.3)
         elif side == "right":
-            ref_at, val_at = (x + 1.9, y - 0.3), (x + 1.9, y + 0.3)
+            ref_at, val_at = (x + off, y - 0.3), (x + off, y + 0.3)
         else:
-            ref_at, val_at = (x - 1.9, y - 0.3), (x - 1.9, y + 0.3)
+            ref_at, val_at = (x - off, y - 0.3), (x - off, y + 0.3)
     return part(ctx, "Device:R", r, value, fp, x, y, rot=rot, ref_at=ref_at, val_at=val_at,
-                justify="right" if (side == "left" and not horiz) else "left", fsize=fsize)
+                justify="right" if (side == "left" and not horiz) else "left", fsize=fsize, hide_value=hide_value)
 
 
 def C(ctx, base, value, x, y, horiz=False, ref=None, ref_at=None, val_at=None, fp="C0402", side="right", fsize=1.27):
@@ -62,9 +63,9 @@ def C(ctx, base, value, x, y, horiz=False, ref=None, ref_at=None, val_at=None, f
         if horiz:
             ref_at, val_at = (x - 2.6, y - 1.9), (x - 2.6, y + 2.0)
         elif side == "right":
-            ref_at, val_at = (x + 1.9, y - 0.3), (x + 1.9, y + 0.3)
+            ref_at, val_at = (x + 2.5, y - 0.3), (x + 2.5, y + 0.3)      # the plates are 4.06 mm wide: 2.5 clears them
         else:
-            ref_at, val_at = (x - 1.9, y - 0.3), (x - 1.9, y + 0.3)
+            ref_at, val_at = (x - 2.5, y - 0.3), (x - 2.5, y + 0.3)
     return part(ctx, "Device:C", r, value, fp, x, y, rot=rot, ref_at=ref_at, val_at=val_at,
                 justify="right" if (side == "left" and not horiz) else "left", fsize=fsize)
 
@@ -74,8 +75,8 @@ def FB(ctx, base, x, y, horiz=True, value="600R@100MHz", ref=None, fp="L0603"):
     rot = 90 if horiz else 0
     lc = "C85833" if fp == "L0603" else "C1017"
     return part(ctx, "Device:FerriteBead", r, value, fp, x, y, rot=rot, lcsc=lc,
-                ref_at=(x - 2.6, y - 1.9) if horiz else (x + 1.9, y - 0.3),
-                val_at=(x - 2.6, y + 1.6) if horiz else (x + 1.9, y + 0.3))
+                ref_at=(x - 3.0, y - 3.8) if horiz else (x + 2.7, y - 0.3),       # the bead is a slanted box, 2.2 x 2.75 mm each way
+                val_at=(x - 3.0, y + 3.3) if horiz else (x + 2.7, y + 0.3))
 
 
 def wire(ctx, *pts):
@@ -130,7 +131,7 @@ def decouple(ctx, base, x, y, railname, values, gndname="GND", pitch=10.16, labe
     ctx.s.wire(xs[0], y1, xs[-1], y1)
     for xi, v in zip(xs, values):
         fpk = small if v in ("100nF", "22nF", "10nF", "1uF", "1nF") else "C0603" if v in ("10uF", "4.7uF") else "C0805"
-        c = C(ctx, base, v, xi, y0 + 5.08, fp=fpk)
+        c = C(ctx, base, v, xi, y0 + 5.08, fp=fpk, fsize=1.0)       # (1.0: "100nF" at 1.27 is 6.1 mm, and the next plate is 6.1 mm away)
         ctx.s.wire(xi, y0, *c.pin(1)); ctx.s.wire(*c.pin(2), xi, y1)
     rail(ctx, xs[0], y0, railname, stub=0)
     gnd(ctx, xs[-1], y1, gndname, stub=0)
@@ -154,7 +155,7 @@ def pullup(ctx, base, x, y, value, railname, down=False, side="right"):
     return r
 
 
-def ladder(ctx, base, nodes, value, railname, y_bar=None, down=False, label=None, side="right", label_at=None):
+def ladder(ctx, base, nodes, value, railname, y_bar=None, down=False, label=None, side="right", label_at=None, fsize=1.27, flag_at="right"):
     """Pull-ups (or pull-downs) for several parallel wires: ONE rail bar at
     y_bar and a resistor per node hanging from it, each on its own x.
     A node is (x, y) for a point inside a wire (gets a junction dot) or
@@ -174,17 +175,21 @@ def ladder(ctx, base, nodes, value, railname, y_bar=None, down=False, label=None
         if len(n) < 3:
             s.junction(x, y)
         if not down:
-            r = R(ctx, base, value, x, y_bar + 3.81, side=side)
+            r = R(ctx, base, value, x, y_bar + 3.81, side=side, fsize=fsize)
             s.junction(x, y_bar) if x not in (min(xs), max(xs)) else None
             s.wire(*r.pin(2), x, y)
         else:
-            r = R(ctx, base, value, x, y_bar - 3.81, side=side)
+            r = R(ctx, base, value, x, y_bar - 3.81, side=side, fsize=fsize)
             s.junction(x, y_bar) if x not in (min(xs), max(xs)) else None
             s.wire(x, y, *r.pin(1))
     if not down:
         rail(ctx, min(xs), y_bar, railname, stub=2.54)
     elif railname.startswith("GND") or railname.startswith("-"):
         gnd(ctx, max(xs), y_bar, railname, stub=2.54)
+    elif flag_at == "left":
+        # the flag 5 mm past the FIRST resistor, where its name clears every resistor's fields
+        s.wire(min(xs) - 5.08, y_bar, min(xs), y_bar)
+        rail(ctx, min(xs) - 5.08, y_bar, railname, stub=2.54)
     else:
         # a supply bar BELOW its nodes (pull-ups drawn hanging, for rows too
         # dense to put anything above): the flag still points up, past the
@@ -200,6 +205,12 @@ def note(ctx, x, y, s, cols=None, size=1.27, w=120.0):
     """A wrapped note box of width w mm (the wrap is computed from w)."""
     cols = cols or max(20, int(w / (0.78 * size)))
     return ctx.s.note(x, y, s, size=size, cols=cols, w=w)
+
+
+def ctext(ctx, cx, y, s, size=0.9, bold=False):
+    """A label centred on cx (a block's label stands over the middle of its block, Jason 2026-10-07)."""
+    import kisch as _k
+    ctx.s.text(cx - _k.text_w(s, size) / 2.0, y, s, size=size, bold=bold)
 
 
 def label_node(ctx, x, y, s, side="above", size=1.0):
@@ -235,6 +246,18 @@ def bus_out(ctx, x, y, name, members, dx=12.7, rot=0, shape="output", x_end=None
         ctx.s.bus((x, top), (x_end, top))
         ctx.s.hlabel(x_end, top, name, shape=shape, rot=0 if x_end > x else 180)
     return top
+
+
+def unit_body(lib_id, unit):
+    """(x0, y0, x1, y1) of what a symbol unit DRAWS (its box, triangle or trapezoid; pins and fields left out),
+    relative to its anchor in sheet terms (y down): a label can sit just outside the body whatever height
+    the box grew to for its pin names."""
+    import kisch as _k
+    node, _ = _k.SYMS.get(lib_id)
+    pts = [p for shape in _k._body_shapes(node, unit) for p in shape]
+    if not pts:
+        return (-1.27, -1.27, 1.27, 1.27)
+    return (min(p[0] for p in pts), -max(p[1] for p in pts), max(p[0] for p in pts), -min(p[1] for p in pts))
 
 
 def pin_dy(lib_id, unit, pin):

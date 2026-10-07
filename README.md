@@ -104,7 +104,9 @@ pushing a U.FL-to-SMA pigtail into a scope or an ADALM2000, not by holding a pro
 (each ADC channel after its second preamp, before the fully differential driver), **TAP TIA** (the photodiode
 receiver's output) and **TAP -4V2** (the op-amp rail after its ferrite bead).  A 50 Ω scope input sees half
 the signal through the 49.9 Ω; a 1 MΩ input sees all of it (with the cable's capacitance as its load).  The
-rails themselves are on the RAILS header.
+rails themselves are on the RAILS header.  An OPA1612 drives a tap's 49.9 Ω plus a 50 Ω input (100 Ω to
+ground) without complaint: 10 mA at ±1 V, against the datasheet's ±55 / −62 mA short-circuit current and
+its 40 mA at the rails; the second preamp's own 49.9 Ω output resistor is in series as well.
 
 ## What build 26 changed (the reviews, reconciled)
 
@@ -132,6 +134,79 @@ the RJ45, the DIP switch, the 2.54 mm headers (ordered as 1x40 and 2x40 strips t
 length, as on the GPSDO board) and two stocked 2x6 right-angle sockets for the Pmods; nothing is left to
 hand-solder.  The next build widens every silkscreen line to 0.15 mm, the thinnest JLCPCB prints (the library
 outlines are 0.05 and 0.12 mm in build 27's gerbers), and carries the headers' codes in the sheets.
+
+## What build 28 changed (Prompt 26: the sheets and the silkscreen read as a student would)
+
+Circuit: the DAC difference amplifiers' gain resistor is 2.2 kΩ instead of 2 kΩ (gain 4.4), so the outputs are
+the round ±1 V into 50 Ω and ±2 V open that the silkscreen and the sheet now say (build 26 had printed the
+honest ±0.9 / ±1.8 V of gain 4); nothing else electrical.  The ferrite beads were simulated before being
+kept (`sim/pdn_bead.cir`: the BLM18KG601SN1 as DCR + L || R || C between a regulator's 10 µF + 100 nF and
+the load's 10 µF + 100 nF per pin; the impedance the load sees against frequency): each bead's ~1 µH
+resonates with its 10 µF near 50 kHz, a 0.7 Ω peak seen by the load, far below the 1.5 and 2 MHz
+switchers (5 mΩ there), and no regulator's feedback loop sits behind a bead (the LM27761's divider
+senses its own output, before the bead), so nothing can oscillate round one.  The power sheet's note
+says so; the damping-leg variants (`sim/pdn_leg_*.cir`) are there for a rev B if a 0.7 Ω peak at 50 kHz
+ever matters.
+
+Sheets: every converter is a MUX-style trapezoid (long side the bus, short side the analog, the clock in
+from below and turning up into it; the DAC's WRT and CLK come from the left, lower than the trapezoid);
+each dual op amp's three units sit in a dashed box with the power unit under the gap between the
+amplifier units; the long essays at the top of the ADC, DAC and Ethernet sheets are columns broken at
+sentences, and most of them moved to the blocks they describe (the gain and noise list under the two
+amplifiers, "THS4521 fully-differential driver at gain 1" over its block, the series-resistor placement
+notes beside the resistors, sideways); note boxes are sized to their text; the photodiode's footprint
+suffix, which printed as "K1A2" across the BAV99, is hidden; the Ethernet dashed box is bigger so no
+resistor sits on it; and three checks now gate the sheets: the generator's own overlap model (text against
+text, text against symbol bodies, wires through text, with KiCad's measured field extents), its page-margin
+check, and `gen/check_sch_text.py`, which reads the exported PDF back with `pdftotext -bbox` and fails on
+any two words that overlap or one past the frame.  Power symbols are numbered (`#PWR0001`...), which ends
+KiCad's "annotation errors" warning on every netlist export.
+
+Board: the board sits in the middle of a page with a 25 mm margin and the title block below it (the design
+keeps its own frame; only the written file is shifted, so gerbers, drill and CPL agree); DAC 1 is above
+DAC 2 (the strips swapped: port 2's lines now cross under port 1's on In2); every section's name is inside
+its box under the top edge; every part's designator is inside its section's box and every part is inside
+the box its designator is in, with both lists in `build/route_report.json`; every jumper says what it does
+beside itself ("50Ω IN / hiZ OUT", "x1 IN / x10 OUT", the 3-pin choices beside the outer pins with a tick
+through the centre pin) and the build fails on one more than a few millimetres away; the taps' names stand
+beside their jacks and their designators are not printed ("J107" read as a jumper); "USB FPGA" is "USB
+USER"; the microSD says "contacts toward the board" and "card slides in here"; the noise resistor header is
+"EXT R" with its pins named NOISE and GND; the legend is wrapped into columns that fit the free areas
+(builds to 27 asked for 150 mm lines, found no room, and printed no legend at all); the title carries the
+build date.  Rails: the router had narrowed every rail that touches one fine pin (+3V3_ADC, +5V, +3V3) to
+that pad's width over its whole length, 0.23-0.28 mm for 150-200 mm.  It still routes them that way (every
+other rule tried moved the problem into the router: three runs lost two to five nets to the room the wide
+tracks took), and afterwards `pcb/fatten.py` widens every rail track toward its class width as far as the
+copper round it allows -- the other nets' tracks, vias and pads on its layer, the holes, the board edge
+and the Ethernet island's 1.5 mm, each at KiCad's clearance; a track that ends in a pad stays no wider
+than the pad.  The routes do not change, so what routed still routes; `build/route_report.json` lists
+every rail's length at each width before (`rail_widths`) and the growth (`fattened`).  The release's hand-solder BOM is empty: everything is assembled.  ADC_DCS and
+ADC_PDWN_A, two static control lines with bank 8 balls on the FPGA's south face, are the two longest routes
+on the board (60 mm detours round the DAC on the back) and the router's fine-grid pass found them once, in
+build 27, and never again; they are laid by hand now on build 27's own routes (`floorplan.adc_control_lines`).
+Moving them to bank 7's two spare balls was tried and reverted: the swap that follows reshuffled a dozen other
+balls and cost other nets at the margin -- a rev B item.
+
+Answers in Response 26 of `CLAUDE_CODE_CHAT.md`: the LED is red (615-630 nm) and the VBPW34S sees it at
+about 60 % of its peak sensitivity; the "0 to +0.48 V" applies to each of IOUTA and IOUTB; J305 is the
+FT2232H's JTAG brought out, and an external programmer uses it with FTDI OFF fitted; an OPA1612 drives a
+tap's 100 Ω without trouble; the data-rate and USB 3 questions, and the LPF jumpers, are in the rev B list.
+
+## Rev B candidates
+
+* **Bypass jumpers for the DAC output and ADC input low-pass filters**, to show the DAC's images (zero-order
+  hold) on a spectrum analyser and aliasing on the ADC, or to run a higher Nyquist zone on purpose.  Not in
+  rev A: each filter sits in a 17 mm strip with no room for a 3-pin jumper and its labels, and a bypass
+  across an RC changes the strip's loading.
+* **The converters at full rate.** Both ADCs at 65 MS/s x 12 bits are 1.56 Gb/s and both DAC ports at 125 MS/s
+  x 14 bits 3.5 Gb/s.  Gigabit Ethernet carries about 940 Mb/s of payload (one ADC channel at full rate, or
+  both at 30 MS/s), so streaming at full rate needs USB 3: an FT601 (USB 3.0 FIFO, 32-bit bus to the FPGA,
+  up to 5 Gb/s on the wire, 3.2 Gb/s usable) on a USB-C wired for SuperSpeed pairs.  The ECP5-25F moves the
+  data easily (a 32-bit FIFO at 100 MHz); the SDRAM holds 8 s of both ADCs for capture-then-send, which is
+  what rev A does over Ethernet.
+* The 45F/85F FPGA (a BOM change), DDR3 (a second BGA), the TX series resistors at the FPGA end of the
+  RGMII lines, a damping leg on the converter clock lines: the items in Decisions and in the review
+  responses.
 
 ## Design reviews
 
@@ -250,7 +325,7 @@ cutouts (SVG and DXF, 1:1) from the placed board; the one number it cannot know 
 in, so measure the extrusion and set `PCB_TOP_ABOVE_FLOOR` before milling.  The east cluster (PHY, magnetics, jack, FTDI, USB, HDMI, Pmods, RGB LED,
 microSD) is drawn 8 mm east of its 150 mm coordinates (`floorplan.E`):
 
-* **left end**, 17 mm apart down the edge: CLK IN, CLK OUT, ADC A IN, ADC B IN, DAC 2 OUT, DAC 1 OUT, each
+* **left end**, 17 mm apart down the edge: CLK IN, CLK OUT, ADC A IN, ADC B IN, DAC 1 OUT, DAC 2 OUT, each
   name and its limit printed under its SMA, and each one's circuit in its own silkscreen box beside it (the
   termination jumper, series resistor (a 1206: 0.25 W, so a ±10 V source into the clamp does not open it) and
   clamp first, then the op amps with their passives in a straight run to the converter, a U.FL monitor tap on
@@ -259,9 +334,10 @@ microSD) is drawn 8 mm east of its 150 mm coordinates (`floorplan.E`):
   whether the amplifier would survive 2.27 V there; now it cannot see it); the two ADC strips are identical,
   and so are the two DAC strips);
 * **right end**, top to bottom: RJ45 (y 19), USB-C PROG (34.5; FTDI: JTAG, serial, and the board's 5 V),
-  USB-C FPGA (48; wired straight to the FPGA, a USB device once the gateware has a core), mini-HDMI (62),
+  USB-C USER (48; wired straight to the FPGA, a USB device once the gateware has a core), mini-HDMI (62),
   Pmod B and Pmod A 0.9 inch apart (a Digilent Pmod VGA or an icesugar PMOD-TFTLCD spans both) -- spaced
-  so that spec-maximum plugs fit side by side, "USB PROG" and "USB FPGA" standing beside their jacks;
+  so that spec-maximum plugs fit side by side, "USB PROG" and "USB USER" standing beside their jacks (it was
+  "USB FPGA" until build 28: a name that says whose port it is keeps the one cable out of the wrong jack);
   the microSD is on the back, inboard (there is no edge left, and a card is rarely changed), its card
   sliding in from the east over a strip of blank board that the build checks (`floorplan.SD_CARD_PATH`);
 * **the Ethernet line side is an isolation island**: from x 127.3 mm (under the magnetics' body, between its
@@ -276,7 +352,8 @@ microSD) is drawn 8 mm east of its 150 mm coordinates (`floorplan.E`):
   and the reviews called its 1.4 mm pad gap and the "1500 V" wording unsupported.  The jack's shell is
   grounded at its two shield legs, one into the corner mounting hole's ring, one to a ground via just outside
   the island;
-* the bottom edge, left to right: the noise-resistor DIP switch and NOISE R header, the photodiode and
+* the bottom edge, left to right: the noise-resistor DIP switch and EXT R header (your own noise
+  resistor, NOISE to GND), the photodiode and
   PD EXT header, the photodiode receiver's U.FL tap, the -4.2 V charge pump (its bead and 10 µF on the back
   under it), the RAILS header (2 x 9: the rails in the bottom row with their names standing over the pins,
   the whole top row ground, `+1V0_PHY` since build 26, so a probe reaches every rail), the two bucks, the
@@ -286,10 +363,12 @@ microSD) is drawn 8 mm east of its 150 mm coordinates (`floorplan.E`):
 * The FPGA is in the middle, the SDRAM above it facing its north banks, flash and the JTAG header below it;
   the AD9238 and AD9767 on the left facing its west banks with their front ends and output stages further
   left; the PHY and FTDI on the right.  The Ethernet magnetics sit on the back directly under the RJ45.
-  Every section is outlined on the silkscreen with its name set into its top edge (every line through the
-  name is cut round it, so two strips can share a boundary) and every part's designator kept inside its
-  section's box; every 3-pin jumper has its two choices printed under its two outer pins with a line
-  through its centre pin, every 2-pin jumper what a shunt does; the headers' pins are named; the chips
+  Every section is outlined on the silkscreen with its name inside, under its top edge (a name cut into
+  a line that two strips share read as either strip's), every part's designator kept inside its section's
+  box, and every part inside the box its designator is in (the build lists both kinds of stray); every
+  3-pin jumper has its two choices printed beside its two outer pins with a tick through its centre pin
+  between them, every 2-pin jumper what a shunt does, beside it ("50Ω IN / hiZ OUT", "x1 IN / x10 OUT");
+  the headers' pins are named; the chips
   carry their names and ratings and every clock its frequency; a legend in the largest free area says
   what each jumper and header does, and a longer one on the back says what the board is.
 

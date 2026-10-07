@@ -22,6 +22,12 @@ sys.path.insert(0, HERE)
 import fplib
 
 BW, BH = 158.0, 119.0        # Hammond 1455Q1601: a 120 mm wide board (slot-to-slot 120.5), up to 159 mm long between the end plates
+# The board on KiCad's page (Jason, 2026-10-07: the board must not sit on the page's border or its title block).  The
+# design frame is the board's own, (0..BW, 0..BH): the floorplan, the router, the silkscreen, placement.json and the end
+# plates all work in it.  Only the written .kicad_pcb -- and so the gerbers, the drill file and the CPL, which must agree
+# with them -- puts the board's corner at (OX, OY) on a custom page with 25 mm margins and the title block clear below.
+OX, OY = 25.0, 25.0
+PAGE_W, PAGE_H = BW + 2 * OX, BH + OY + 50.0      # 50 below the board: a 10 mm gap, KiCad's title block, the 10 mm border
 EDGE = 1.0                 # parts stay this far from the edge (copper-edge 0.3 + margin)
 SLOT = 3.5                 # the long edges (top, bottom) slide into an enclosure's PCB slots: no part this close to them
 POWER_PREFIX = ("+", "-", "GND")

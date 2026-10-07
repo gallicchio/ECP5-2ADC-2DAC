@@ -2015,3 +2015,266 @@ are out of KiCad, is 18 minutes and changes nothing else but the headers' codes 
 **CLAUDE_PCB.md** (the other session's file, untracked; edited, not committed): the through-hole fact under
 §8 with the strip and header-value lessons, and under CPL rotations the bottom-convention lesson, the
 in-build prediction with its cross-check, and the polarity-by-PNG trick.
+
+## Prompt 26
+
+Schematic issues and questions:
+
+Ferrite beads can cause oscillations and other trouble for power planes. Actually simulate the power distribution system as best you reasonably can, and make sure that the ferrite beads aren't causing more trouble than they are fixing.
+
+At some point in the past, you asked if I wanted to keep the non-round number like ±0.913 V into 50 Ω and ±1.825 V open circuit, rather than  ±1 / ±2 V that used to be on the sheet and silkscreen. If it was a matter of an additional 1-2% cost to use resistors that actually made everything nice around round  ±1 / ±2 V, let's switch to that and make sure the silk screen is accurate  either way.
+
+The new U.FL monitor tap in the schematic has a ground that overlaps with the OPA1612 op amp's power supply sub-symbol. In general, I don't love splitting chips like this, but if you do, draw a dotted box around all sub-symbol of the same chip if you can. At the very least, move things like U101C to be underneath the spot between the two op-amp symbols, and leave enough room that nothing overlaps. U102C has a horizontal wire through it from the photodiode block. There need to be better checks on the schematics to make sure that no labels or traces overlap in a confusing way. For example, the label and value for R1113 can be on the right and would not overlap the feedback path. The label for C1102 needs to be farther from the capacitor symbol. What's going on around R1204? What is the label "K1A2" right in the middle of the BAV99? Why is that there? Have a step where you check a bunch of these things both in python and visually to make sure that the schematic is clear and beautiful, with labels not overlapping and things aligned so that lines are reasonably straight. Actually look at the areas around the components I called out and make sure that your final arrangement is understandable. Put this requirement and lessons on how to do it in CLAUDE_PDB.md. Do that for all such requests and lessons.
+
+When I asked for the ADC and DAC to be drawn as trapezoids, I meant for the long horizontal side to be the digital bus and the short side to be the analog signals like a multiplexer and demultiplexer in digital logic. The clock should go in underneath and then turn up to go into the bottom of the trapezoid, like it does for the clock of a flip flop or the select lines of a MUX. Your ADC trapezoid is backwards from this and the clocks look like analog inputs. The DAC is at least oriented the right way, but could use the control lines and clock (WRT CLK) coming in from the left lower than the trapezoid and going up into it.
+
+Is the XL-2835SURC-05 LED red? Is the VBPW34S photodiode sensitive to red? Are these the best pair for these experiments? (I want the LED to be visible, not IR.)
+
+Does the DAC comment "0 to +0.48 V (19.2 mA x 24.9 Ω)" refer to each of the two lines (IOUTA1 and IOUTB1)? Or just A?
+
+The text box that starts "A resistor at room temperature" is informative, but look at it! The new lines lead to the word "to" being on its own line and words extending below the box. Your method for making these informative boxes needs to take into account how they end up looking. Same for the "VBPW34S PIN photodiode, reverse biased 4.5 V" box. Look at it. "(sim/tia.cir; <newline> 3.3 pF flattens it)" is nuts typographically. Part of your problem is that you include newlines in the text, but then you make the box too small and it wraps the ends of some lines. The box should be a reasonable size with newlines at logical places rather than "this line has a lot of characters" places.
+
+The very long text boxes at the top of each schematic are really hard to read. I have to zoom way in and then drag the whole schematic left and right just to read a relatively small amount of text. In general, I'd rather have shorter columns broken up at logical places (like after a sentence or before a formula.) The one at the top of the ADC should be split into many lines, most obviously at the arrows. (Splitting logically is preferred over splitting based on typographic filling of a column. What is the optimal number of characters in something like a newspaper column? Surely fewer than the number of characters in "Bob Smith termination; the jack's shield goes to the same ground. The magnetics are the isolation (IEEE 802.3); this 1 nF / 3 kV 1812 is the designed bridge across it. The board has not been hipot-tested." and "The FPGA writes 14 bits per port with its own WRT and CLK (dual-port mode; drive MODE low and the same four pins become IQWRT/IQCLK/IQRESET/IQSEL for interleaved I/Q). Each DAC sources 0-19.2 mA into 24.9 Ω (0-0.48 V) on complementary outputs; an OPA2810 takes the difference with gain 4 -- its 499 Ω inputs load the 24.9 Ω, so the output swings ±1.8 V unloaded, ±0.9 V into 50 Ω, DC coupled and", each which is currently one extremely long, hard to read line.) Even better, the schematic should just be clear enough not to need a big comment like this, but instead smaller "just in time" comments. For example, it obvious that things then go into a 100 ohm resistor and that the jumper optionally applies a 50 ohm terminator to the input. (Or at leats it would be more obvious if the blue text that starts "±1 V full scale at x1" did not overlap the jumper symbol.) However, the part of the comment that says, "x1 or x10 by jumper (so x1, x10, x100; 1.1 nV/√Hz)" is less obvious from the schematic because it gives a new piece of information (noise), gives a piece of information that would take more than a passing glance (10x gain each, which actually seems closer to 9.1x but who's counting), and gives information about the interaction between primitive building blocks (100x is two cascaded inverting amplifiers). That list of gains and noise should go below the *pair* of inverting amplifiers. The information that says, "THS4521 fully-differential driver at gain 1" is good, but should be right above or below the THS4521 block. I think you are doing a good job laying the circuit out in "logical groupings" or "building blocks", in this case like "op-amp inverting amplifier" and "fully-differential driver". It's good that each major component, like the driver, is surrounded in close proximity by all of its little entourage of passives. (Put the phrase "entourage of passives" in CLAUDE_PCB.md because I'm proud of it.) But a label that applies to the whole building block should go above or below the building block and be centered on the center of the block (or the center of the main chip for that block).
+
+The page size of the PCB "page" should allow the PCB to fit comfortably in the center of the page with a reasonable margin. Now, it starts at 0,0 and the page is huge. The problem with starting at 0,0 is that the border of the "page" overlaps all of the relevant PCB information. I don't actually care so much about this border, but the PCB shouldn't overlap the border and it shouldn't overlap the info box with the title and date and stuff. This desire should go into CLAUDE_PDB.md. As for the schematics, I'd make a similar request. I almost never print these out. There is always a tradeoff: a large "sheet"requires a lot of zooming and scrolling, which is slightly annoying, but it allows long signal paths and parallel signal paths to be on the same big sheet, which makes reading the schematic much nicer. In general, I don't like net labels that go off to some random other page (possibly more than one – who can tell?) Log that in CLAUDE_PDB.md too if it's not already there.
+
+R4913 and R4914 and R4983 are on the dotted line surrounding the ethernet "chip" schematic symbol. Move them farther away. There should also be comments about which series resistors should be near the PHY and which near the FPGA. These comments should be off somewhere else, but should be right next to the resistors they refer to. It's ok to rotate the comment sideways if you need to – I can read small amounts of sideways text.
+
+Can the OPA1612 handle 50+50 ohms to ground if I plug in the U.FL? If the silkscreen "TAP A" refers to the U.FL, why is it so far away? Same with the silkscreen J107, which looks like it refers to some jumper but I couldn't find the jumper because it's actually a U.FL tap.  Look at this area and make sure the labels make sense and are next to what they label. At least the silkscreen "TAP B" is near its U.FL.
+
+PCB comments and questions:
+
+Is the power distribution sufficient? Should the power traces be even wider or be coper pours in regions?
+
+Is the width of all other traces appropriate?
+
+In the ADC A IN box, there is a 3-pin jumper selector that is either SMA or NOISE. This is reasonably labeled. In ADC B IN, there are two such 3-pin jumper selectors right above each other with "PD" and "NOISE" silkscreen between them. Which 3-pin jumper selector do these labels refer to? What about the other one? What happens when I select the right pair or left pair on that? I don't know because there is no silkscreen.
+
+It's odd that ADC A is above ADC B, but DAC 2 is above DAC 1. Is this because of the way the pins on the DAC chip itself is arranged? This is going to lead to no end of student confusion and mistakes. Is there no way to swap the oder and still make the layout work?
+
+I like the outlines around groups like "CLK IN", "CLK OUT", "ADC A IN", "DAC 2 OUT", "NOISE + PHOTODIODE", etc. But the labels break up *both* lines – not just the line for the box that it's labeling, but the bottom of the box of the thing above it. This leads to a situation where the silkscreen for something like "ADC B IN" is exactly half way in between ADC A and ADC B. You can't tell from the silkscreen outlines nor can you tell from the placement which region this label refers to. This needs to be fixed.
+
+Minor point, but R4907 and the other RX resistors are on the white silkscreen line for the ethernet region, not inside of it. Similarly for stuff on the bottom. The mysterious "93LC56BT-I/OT" label, which is kind of far from its chip, should be inside of the ethernet silkscreen region. Look at this to confirm. You can make the region bigger. The label "RTL8211F PHY" is far away from the actual PHY. Why not bring it closer? Break it up into two lines and bring it to the right. In general, are you avoiding silkscreen on the back? I suppose this is kind for the person look at the "see through" view in pcbnew, but I can just as easily turn on only either the front or the back silkscreen and be just fine. Other labels outside of their silkscreen regions are R4971, C6263, R6232, R6231, R6313, R6431, R6432, R4971, R5417, C7802, TLV62569DBVR, Q601, J603
+
+Oppositely, there's a component, R2501, which is outside of the silkscreen bounding box, but whose label is inside. These components, which could be argued to be associated with the DAC chip rather than the analog conditioning circuit, might be fine outside the silkscreen region for "DAC 2 OUT", but having a component on one side of the region and its label on the other side is never good.
+
+Under the label "microSD", say "contacts down" or "contacts up" or whatever it should be for someone trying to shove a card into what's going to be a lightly difficult slot (since it doesn't stick out the end). You might need to move the "microSD" label up slightly and away from the FTDI header. I'm actually confused about that header. Is it what comes out of the FT2232H chip and goes into the flash and FPGA? Or can an external JTAG header be plugged on here to program the flash and FPGA without fighting the FT2232H outputs?
+
+When thinking about a revB, what would it take to send data to the DACs and get data from the ADCs at their maximum sample rates and bit widths? Can gigabit ethernet handle it? Would USB3.x over a differently-configured USB-C cable handle it? Can the FPGA handle it?
+
+Would it be possible to jumper in and out the low-pass filters at the DAC output and ADC input? This would be good to "see" the images from the DAC on an external spectrum analyzer (with the jumper set to the stair-steppy zero-order-hold mode) or to see the images get smaller with the filter in. Similarly for the ADC, it might be nice to experiment with aliasing, either for educational purposes or to operate it in a higher Nyquist zone on purpose. If this is not a reasonable change for revA at this point, add it to a list of possibilities for revB.
+
+Maybe change the name of "USB FPGA" to "USB USER", which I think will make students less likely to plug in their single USB-C cable into it when they should be plugging it into "USB PROG". What is the best use of this port in the spirit of the tutorials for which this board is intended?
+
+PCB: The jumpers don't all have what they do right next to them. There is a jumper right under where the silkscreen says, "ADC A IN". I think this is for 50 Ω (when jumper is plugged in), but the silkscreen "50 Ω" is far down and to the right. Why? Look at this region. The jumpers that say (x1) should say (x1 if in; x10 out).... at least the top one, above R1103 where there is silkscreen room.
+
+I don't want to hand solder anything. Everything should be assembled. The hand_solder_bom.csv file should end up empty.
+
+As you are making these changes, check anything else that comes up and seems relevant, including going back to the datasheets.
+
+## Response 26 2026-10-07 01:00 - 09:44 Claude Fable 5.1 Max
+
+Build 28.  Everything below is in the tree; the numbers are from the build log (`build/scratch/build28.log`,
+not committed) and `build/route_report.json`.
+
+### The answers first
+
+* **Ferrite beads.** Simulated before being kept (`sim/pdn_bead.cir`, ngspice): the BLM18KG601SN1 as
+  DCR 0.15 Ω + (1.1 µH || 1 kΩ || 0.3 pF) between a regulator's 10 µF + 100 nF and the load's 10 µF plus
+  the 100 nF at each pin, sweeping the impedance the load sees.  Each bead's ~1 µH resonates with its 10 µF
+  near 50 kHz, a 0.7 Ω peak, far below the switchers' 1.5 and 2 MHz (5 mΩ there), and no regulator's
+  feedback loop sits behind a bead: the LM27761's divider senses its own output, before the bead, and the
+  bucks feed planes, not beads.  So nothing can oscillate round one, and the worst a bead does is show a
+  step load 0.7 Ω at 50 kHz.  The power sheet's note says this; `sim/pdn_leg_*.cir` are the damping-leg
+  variants for a rev B if that ever matters.
+* **±1 V / ±2 V.** Yes: the DAC difference amplifiers' gain resistors (R2405/6, R2505/6) are 2.2 kΩ instead
+  of 2 kΩ (gain 4.4 on the 24.9 Ω loads with the 499 Ω inputs across them; `build/scratch/sim/dac_2.2k_24.9.cir`
+  against `dac_2k_24.9.cir`): ±2.0 V open, ±1.0 V into 50 Ω through the 49.9 Ω.  The 2.2 kΩ is the same Basic 0603 (C4190, $0.002) that three other resistors already use: no new BOM line, no extended-part fee.  The sheet and the
+  silkscreen say "±1 V into 50 Ω, ±2 V open" and the SMAs "±1V MAX".
+* **Is the LED red, does the photodiode see it?** XL-2835SURC-05: dominant wavelength 615-630 nm, peak
+  625 nm (its datasheet's table; "red light" in its header).  VBPW34S: 430-1100 nm, peak near 900 nm,
+  about 60 % of peak at 625 nm -- 0.4 A/W or so, fine for a TIA with 1 MΩ.  Is it the best pair?  For
+  seeing the light and the photodiode seeing it too, red is the right compromise: a green LED would be
+  brighter to the eye but the silicon's response at 525 nm is half what it is at 625; an IR LED would be
+  best for the diode and invisible.  Keep them.
+* **"0 to +0.48 V (19.2 mA x 24.9 Ω)"** is each line: IOUTA and IOUTB are complementary current sources,
+  each swinging 0-19.2 mA (code and 16383 - code), each into its own 24.9 Ω.  The note now says "IOUTA and
+  IOUTB each ...", under IOUTB.
+* **The OPA1612 and the taps.** Yes: a tap is the second preamp's output through 49.9 Ω into the U.FL;
+  a 50 Ω scope makes 100 Ω to ground, 10 mA at ±1 V, against the datasheet's +55 / -62 mA short-circuit
+  current (and 40 mA at the rails); the preamp's own 49.9 Ω output resistor is in series as well.  Nothing
+  to add to the sheet beyond the note that was there.
+* **J305 (the FTDI header).** It is the FT2232H's channel-A JTAG brought out (TCK, TMS, TDI, TDO, 3V3,
+  GND, named on the silkscreen now), going to the FPGA's JTAG pins -- the flash is programmed through the
+  FPGA.  With the FTDI OFF jumper fitted the FT2232H is held in reset and its pins float, so an external
+  programmer on J305 drives the chain.  The legend and the silkscreen say so ("FTDI OFF (shunt IN)").
+* **Rev B: full-rate data.** Both ADC channels at 65 MS/s x 12 bits are 1.56 Gb/s, both DAC ports at
+  125 MS/s x 14 bits 3.5 Gb/s.  Gigabit Ethernet carries about 940 Mb/s of payload: one ADC channel at full
+  rate, or both at 30 MS/s, or capture into the 32 MB SDRAM (8 s of both channels) and send.  USB 3 would do
+  it: an FT601 (USB 3.0 FIFO bridge, 32-bit bus to the FPGA, about 3.2 Gb/s usable) on a USB-C wired for
+  the SuperSpeed pairs -- the FT2232H and the FPGA's own full-speed port are 480 Mb/s and 12 Mb/s.  The
+  ECP5-25F moves the data easily (a 32-bit FIFO at 100 MHz is nothing).  In the README's rev B list.
+* **LPF bypass jumpers** (DAC output, ADC input): rev B.  Each filter sits in a 17 mm strip with no room
+  for a 3-pin jumper and its labels, and a bypass across an RC changes the strip's loading; the README's
+  rev B list has it, with the images / aliasing reasons.
+* **USB USER.** Renamed on the silkscreen, the end plate and the sheets.  What it is: the second USB-C goes
+  straight to FPGA pins (ULX3S style) -- 27 Ω series, 15 kΩ pull-downs, a 1.5 kΩ pull-up on D+ that an
+  FPGA pin switches, so the FPGA can be a full-speed (12 Mb/s) USB device in gateware (a CDC serial port, a
+  USB-TMC instrument, a HID): the tutorial use is "the board is the instrument a laptop talks to" without
+  the FTDI in the way.  High speed would need a ULPI PHY the board does not have.
+* **Power distribution.** The rails were narrower than the design said, and it was a bug, not a decision:
+  measured by net from build 27's shipped board, +3V3_ADC ran 205 mm at 0.23 mm, +5V 146 mm at
+  0.23 mm, +3V3 at 0.28 / 0.30 mm, +3V3_ETH, +3V3_DRV and +3V3_DAC_D the same way -- against a 0.4 mm rule
+  for rails and 0.5 mm for the Power class that every build log had claimed.  The router's "a track must not
+  be wider than the pad it enters" rule took the narrowest pad of the whole net, so one 0.25 mm pin (the
+  AD9238's, the LM27761's, the RTL8211F's) set every connection on the net, end to end.  I tried twice to fix
+  it in the router (route wide, narrow only near the fine pads, with and without a 4 mm zone round them) and
+  each time the wide tracks took the room the converters' own signals needed: three runs lost two to five
+  nets.  So the router lays the rails as it always did, and a pass after routing (`pcb/fatten.py`) widens
+  every rail track toward its class width as far as the copper round it allows -- the other nets' tracks,
+  vias and pads on its layer, the holes, the board edge, the Ethernet island's 1.5 mm, each at KiCad's
+  clearance; a track that ends in a pad stays no wider than the pad.  No route moves, so what routed still
+  routes; DRC on a widened copy of a finished board reported exactly what it reported on the original.
+  Build 28, by net (`build/route_report.json`: `rail_widths` as routed, `fattened` the growth; the 0.127 mm
+  entries are pad stubs and the VCCAUX feed through the via field):
+
+  | rail | at the rule's width | narrower, and where |
+  |---|---|---|
+  | +5V (rule 0.5) | 114 mm at 0.44-0.50 | 24 mm at 0.40, 11 mm at 0.30-0.35, 1 mm at 0.25: the LM27761's and the bucks' pins (build 27: 146 mm at 0.23) |
+  | +3V3 (0.5) | 60 mm at 0.45-0.50 | 52 mm at 0.28-0.30 under the FPGA (its 0.32 mm balls), 10 mm at 0.32-0.40 (build 27: 0.28 / 0.30 throughout) |
+  | +1V1 (0.5) | 101 mm at 0.50 | the core's plane patch carries the rest |
+  | +3V3_ADC (0.4) | 208 mm at 0.38-0.40 | 11 mm at 0.20-0.25: the AD9238's 0.25 mm pins (build 27: 205 mm at 0.23) |
+  | +3V3_DRV (0.4) | 43 mm at 0.38-0.40 | 10 mm at 0.20-0.27 at the AD9238 |
+  | +3V3_DAC (0.4) | 109 mm at 0.40 | 3 mm at 0.20 at the AD9767 |
+  | +3V3_DAC_D (0.4) | 38 mm at 0.35-0.40 | 9 mm at 0.19-0.30 at the AD9767 |
+  | +3V3_ETH (0.4) | 68 mm at 0.35-0.40 | 9 mm at 0.20-0.30: the RTL8211F's 0.25 mm pins |
+  | +1V0_PHY (0.4) | 163 mm at 0.40 | 10 mm at 0.20 at the PHY |
+  | +1V8_FTDI (0.4) | 25 mm at 0.40 | 20 mm at 0.25-0.34: the FT2232H's 0.3 mm pins |
+  | +2V5 (0.4) | 77 mm at 0.40 | -- |
+  | +2V5_AUX (0.2 by rule) | 28 mm at 0.20-0.25 | 13 mm at 0.127: the hand-laid feed through the BGA's via field |
+  | +5VA, -4V2 (0.4) | 181 and 213 mm at 0.40 | hand-laid, as before |
+
+  Is it sufficient?  The biggest currents are on planes: 5 V from the jacks to the bucks (In4 corridor), 3.3 V
+  under everything (In4) with 70 mm of 0.5 mm trace to the VCCIO island, 1.1 V under the core.  The 0.4 mm
+  rails carry the converters' and op amps' 100-200 mA: 0.4 mm of 1 oz copper is 1.2 Ω/m, so 200 mm of +3V3_ADC
+  drops 25 mV at 100 mA (it was 43 mV at 0.23 mm), and the LDO or bead feeding each rail sits before the drop.
+  No rail needs a pour it has not got; the gain is a narrower, honest margin and a table that says so.
+  The planes are as before (In4: 5 V from the USB jacks down the right edge, 1.1 V under the core, 3.3 V
+  everywhere else; the other rails 0.4 mm, 0.5 mm for the Power class).  The widths of the rest: signals
+  0.15 mm (the FPGA's few mA), the converter and SDRAM buses 0.127 mm inside their ribbons, the analog
+  strips 0.3 mm, the SMA feeds 0.35 mm (50 Ω over In1), Ethernet MDI and USB 0.2 mm differential, the
+  LAN side 0.25 mm; `gen/rules.py` is the table.  Nothing needs a pour that has not got one.
+* **ADC A over B, DAC 2 over 1.** Swapped: DAC 1 is above DAC 2 now (the AD9767's port 2 pins are the
+  northern ones, so port 2's IOUT pair crosses under port 1's lines on In2 inside its strip; the SMAs read
+  CLK IN, CLK OUT, ADC A, ADC B, DAC 1, DAC 2 down the edge).
+* **Hand soldering.** `mfg/release/hand_solder_bom.csv` is its header and nothing else (the file is its header line and nothing else); the release
+  notes say so.
+
+### The sheets
+
+Every item you called out, and what the checks found beyond them:
+
+* The tap's ground on the OPA1612's power unit, U102C's wire from the photodiode block, R1113's fields on
+  the feedback path, C1102's value on its plates, R1204 (the SRC jumper's labels sat on it), "K1A2" in the
+  BAV99 (the symbol's pin names printed; the footprint-style pin names are "~" now and print nothing):
+  all fixed, and each dual op amp's three units sit in a dashed box with the power unit under the gap
+  between the amplifier units, 10 mm lower than before.
+* **Checks.**  Three now gate the sheets.  (1) The generator's own overlap model, rewritten after measuring
+  KiCad on a calibration sheet: a field's anchor snaps to the 1.27 mm grid and a reference's glyphs run from
+  0.76 x size before the anchor to 0.23 x size after it, a value's from 0.38 x to 1.37 x after, whatever the
+  symbol's rotation; the model tests text against text, text against symbol bodies (rectangles, polylines,
+  circles) and wires through text, and the page's 11 mm margins and title block.  (2) The page is exported
+  and read back: `gen/check_sch_text.py` takes `pdftotext -bbox`'s word boxes and fails on any two that
+  overlap or one past the frame (0 complaints on build 28's PDF).  (3) Eyes: the regions you named were
+  cropped from the PDF and looked at after every change (`build/scratch/review/`).
+* **Trapezoids** the MUX way: the long side is the digital bus, the short side the analog pins, the clock
+  comes in from below and turns up into the bottom edge (`make_box` grows the body for pin names on its
+  top and bottom); the DAC's WRT and CLK come from the left, lower than the trapezoid, and turn up.
+* **Notes.** The top-of-sheet essays are gone: what survives at the top is a few short columns broken at
+  sentences; the rest moved to the blocks they describe (the gain and noise list under the two amplifiers,
+  "THS4521 fully-differential driver at gain 1" over its block, the block titles centred on their blocks,
+  the 22 Ω series-resistor notes beside the resistors, sideways where they had to be).  `wrap()` breaks at
+  sentences and formulas, and a box is sized to its longest line, so no "to" strands.  On column width:
+  typographers put the comfortable line at 45-75 characters (66 the classic); the notes are 50-70.
+* **Pages and labels.** Logged in `CLAUDE_PCB.md` §4: a big sheet that keeps a signal path together beats
+  several small ones, and net labels that leave for another page are the thing to avoid.  The seven sheets
+  stay (each is one complete path: ADC, DAC, FPGA, Ethernet, USB, power, root); the only cross-sheet nets
+  are the converter buses and clocks and the FPGA's I/O, as hierarchical labels at the sheet edges.
+* **R4913, R4914, R4983** are off the PHY's dashed box (the box is larger); the series resistors carry the
+  note of where they belong: the RX lines' 22 Ω at the PHY (it drives them), the TX lines' at the FPGA --
+  and on this board all twelve sit at the PHY, so "TX series resistors at the FPGA end" is in the rev B list.
+* Power symbols are numbered (`#PWR0001`...): seventy symbols all referenced "#PWR" had made every netlist
+  export warn "schematic has annotation errors".
+
+### The board
+
+* **Page.** The board sits at (25, 25) on a 208 x 194 mm page with the title block below it.  The design
+  keeps its own frame (the floorplan, router, silkscreen, `placement.json`, the end plates and the picture
+  crops all work with the board's corner at 0,0); only the written `.kicad_pcb` is shifted
+  (`board.shifted`), and the CPL and the KiCad pad check add the same offset, so gerbers, drill, CPL and
+  KiCad agree (checked on the release: R8303 at (118.5, 110.0) on the design is (143.5, -135.0) in both CPL files, and the paste gerber's flashes and the drill file sit at the same offset).  Logged in `CLAUDE_PCB.md` §5.
+* **Section names** are inside their boxes under the top edge, never cut into a line (a name in a shared
+  line read as either box's).  ETHERNET's name is the big one beside the jack.
+* **Jumpers.** "50Ω IN / hiZ OUT" and "x1 IN / x10 OUT" beside the 2-pin jumpers (one line where only one
+  fits: "50Ω IN" above JP101, "x1" beside JP104/JP204), "SMA | NOISE", "SMA | ALT", "PD [tick] NOISE" and
+  "LED | EXT" beside the outer pins of the 3-pin ones with a tick through the centre pin (the tick had never
+  printed: the 0.25 mm occupancy grid rounded the words' claims onto its cell; it is tested against the
+  words' exact boxes now).  A jumper label more than a few millimetres from its jumper fails the build
+  (`silk_jumper_far`).
+* **Labels in boxes.** `silk_label_outside_box` and `silk_part_outside_box` in `route_report.json`: 0 labels
+  outside, and the only parts not wholly inside a box are the six edge connectors, by design.  R4907 and the
+  RX resistors, R4971, C6263, R6232/1, R6313, R6431/2, R5417, C7802, Q601, J603: inside.  R2501 is inside
+  DAC 2's box with its label.  "RTL8211F / PHY" is two lines right of the PHY.  The EEPROM's value
+  (93LC56BT-I/OT) is 9 mm long and has no room inside the FTDI box: it is on F.Fab (the assembly drawing),
+  its designator U501 printed by the chip.
+* **Taps.** "TAP A" / "TAP B" / "TAP TIA" stand beside their U.FLs and the taps' designators are not printed
+  ("J107" read as a jumper), nor the SMAs'.
+* **microSD** (back): "microSD", "contacts toward the board", "card slides in here" at the card's end.
+* **USB USER**, **EXT R** (the noise-resistor header, its pins named NOISE and GND; it was "NOISE R" with a
+  pin called "R"), **5 V IN** by its header with +5V / GND at the pins, **TAP -4V2** over its jack.
+* **The legend.**  Builds to 27 had printed none: the four lines were 150 mm wide, no empty area is, and the
+  code gave up silently.  Now each paragraph is wrapped to the columns that fit the largest empty area left
+  (HEADERS, TAPS and USB on the front; the whole-board paragraph on the back); the JUMPERS paragraph found
+  no room and is reported -- the jumpers carry their own labels now.
+* **Two balls, not moved.** ADC_DCS and ADC_PDWN_A are on bank 8, the FPGA's south face, so each is a 60 mm
+  detour round the DAC on the back that only the fine-grid pass finds (build 27 found them; three build-28
+  runs with wide rails did not).  I moved them to bank 7's two spare balls (J5, K3; the face that looks at
+  the ADC, 10 mm from their pins) and the routes came out fine -- but the pin swap that follows a plan change
+  reshuffled a dozen other balls and three other nets then failed at the margin.  Reverted: the plan and the
+  swap file are build 27's and the rails are laid as build 27 laid them -- and the two detours did not route
+  as before (the rails had taken their corridor), so the two lines are laid by hand on build 27's own routes
+  (`floorplan.adc_control_lines`): the router cannot lose what it never has to find.  Rev B: put the ADC's
+  controls on the west face when the plan is first made.
+* **The title** carries the build's date.  KiCad's own rendering (`kicad-cli pcb export svg`) was the
+  judge of all of this: the quick matplotlib plot draws text at a third of its size and had said "fine".
+
+### Build 28 numbers
+
+* ERC 0.  DRC with the project's rules at every severity: 0 errors, 0 unconnected, three warnings -- the two
+  ground return vias north-west of the FPGA that touch only the In1 plane (build 27's), and a 0.2 mm +5VA
+  stub at the photodiode receiver's supply pin (build 27's was a -4V2 one).  Every net routed, two of them by
+  hand (DCS, PDWN_A).  The KiCad pad check: 470 footprints, 1764 pads, 0.0000 mm worst disagreement.  The silkscreen's own checks: every jumper's label beside it, 0 labels and 0 parts outside their boxes.  Parts: 5 boards about $1112 (~$222 each), every part on a JLCPCB code, the AD9238's stock still thin (21).
+* The widening: 659 mm of track on eight nets of rail that the router had laid below its class width grew; what is left narrow
+  is at the fine-pitch pins, under the FPGA, and the VCCAUX feed.
+* Ten runs of build 28 between 04:47 and 09:35: ERC (the bus alias), DRC (the DAC hop vias on the back-side
+  parts), the router (three width rules, two balls moved and moved back, two lines hand-laid), one ground pad.
+  Each is in the log above; none changed the circuit.
+
+### What I would still look at
+
+* The JUMPERS paragraph of the legend found no empty area and is not printed (the jumpers carry their own
+  labels now); `route_report.json` says so.  About 150 designators of the dense strips go to the fab layer, as
+  in every build since 20 -- the assembly drawing has them, the silkscreen has the ones that fit.
+* "PD EXT" stands beside its header rather than lying under it: the header's 6 mm courtyard reaches the
+  NOISE box's bottom edge.  Legible, but not the layout I asked for.
+* The DAC strips' hop vias now thread the gaps between the back-side bias parts under the AD9767 with
+  0.2-0.3 mm to spare (DRC's hole clearance is 0.2 mm): the first build-28 run drilled R2301, C2342 and R2321
+  before I measured the back row.  If the back parts ever move, the vias must move with them
+  (`floorplan.dac_strip`, the comment names the numbers).
+* `route_report.json`'s `failed_connections` lists first-pass failures, which the retry pass then routes
+  (build 27 carries the same dozen); DRC's unconnected count is the number to read.  `pcb/route_diag2.py`
+  mis-lifts a net's copper on this board (it reported "owned copper" 30 mm from the AD9238) -- it needs a
+  look before it is trusted again.
+* The silkscreen date is the build's, so the board file changes on every rebuild even when nothing else
+  does.
+* The CPL rotation preview stays yours for the day of ordering.

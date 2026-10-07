@@ -420,7 +420,37 @@ def rule_area(name, layers, poly, no_pour=False):
                  A("fill", A("thermal_gap", 0.5), A("thermal_bridge_width", 0.5)), A("polygon", pts)), 1)
 
 
+def shifted(txt, dx, dy):
+    """The written board moved by (dx, dy) on its page: every absolute coordinate of the top-level items (a
+    footprint's anchor, tracks, vias, graphics, texts, zone outlines), never the coordinates inside a footprint,
+    which are relative to its anchor.  The design frame stays the board's own (pcb/place.py OX, OY)."""
+    doc = parse(txt)[0]
+    def add(node, keys):
+        for k in keys:
+            for c in kids(node, k):
+                c[1] = ("atom", g(_f(c[1]) + dx)); c[2] = ("atom", g(_f(c[2]) + dy))
+    def add_pts(node):
+        for pts in kids(node, "pts"):
+            for xy in kids(pts, "xy"):
+                xy[1] = ("atom", g(_f(xy[1]) + dx)); xy[2] = ("atom", g(_f(xy[2]) + dy))
+    for n in doc:
+        if not isinstance(n, list):
+            continue
+        h = head(n)
+        if h in ("footprint", "via", "gr_text", "gr_text_box", "target"):
+            add(n, ["at"])
+        elif h in ("segment", "arc", "gr_line", "gr_arc", "gr_rect", "gr_circle", "gr_curve"):
+            add(n, ["start", "end", "mid", "center"])
+        elif h == "gr_poly":
+            add_pts(n)
+        elif h == "zone":
+            for p in kids(n, "polygon") + kids(n, "filled_polygon"):
+                add_pts(p)
+    return ser(doc, 0) + "\n"
+
+
 def document(body, numof, title_extra=""):
+    from place import PAGE_W, PAGE_H
     lay = "\n".join('\t\t(%d "%s" %s%s)' % (l[0], l[1], l[2], (' "%s"' % l[3]) if len(l) > 3 else "") for l in LAYERS)
     nets = "\n".join('\t(net %d "%s")' % (n, nm) for nm, n in sorted(numof.items(), key=lambda kv: kv[1]))
     st = ["\t\t(stackup"]
@@ -430,8 +460,9 @@ def document(body, numof, title_extra=""):
         else:
             st.append('\t\t\t(layer "dielectric %s" (type "%s") (thickness %g) (material "FR4") (epsilon_r 4.5) (loss_tangent 0.02))' % (nm[1:], kind, th))
     st.append('\t\t\t(copper_finish "ENIG")\n\t\t\t(dielectric_constraints no)\n\t\t)')
+    paper = '(paper "User" %g %g)' % (PAGE_W, PAGE_H)          # the board at (OX, OY) with 25 mm margins, the title block below it (pcb/place.py)
     return ('(kicad_pcb\n\t(version 20241229)\n\t(generator "ecp5-2adc-2dac")\n\t(generator_version "9.0")\n'
-            '\t(general (thickness 1.6) (legacy_teardrops no))\n\t(paper "A3")\n'
+            '\t(general (thickness 1.6) (legacy_teardrops no))\n\t' + paper + '\n'
             '\t(title_block (title "ECP5 + 2 ADC + 2 DAC%s") (rev "A") (company "Jason Gallicchio and Claude -- https://github.com/gallicchio"))\n'
             '\t(layers\n%s\n\t)\n\t(setup\n%s\n\t\t(pad_to_mask_clearance 0)\n'
             '\t\t(allow_soldermask_bridges_in_footprints no)\n\t)\n'

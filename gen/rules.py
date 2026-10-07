@@ -79,7 +79,7 @@ DRU = '''(version 1)
 '''
 
 
-def write_project(path, name):
+def write_project(path, name, bus_aliases=None):
     pro = {}
     if os.path.exists(path):
         try:
@@ -127,6 +127,9 @@ def write_project(path, name):
     # schematic settings: ERC severities, and the netlist export
     sch = pro.setdefault("schematic", {})
     sch.setdefault("meta", {"version": 1})
+    # bus aliases: KiCad 10 keeps them here, {name: [members]} (a {"members": [...]} shape is ignored), and
+    # `kicad-cli sch upgrade` drops the (bus_alias ...) a sheet carries -- build 28 found 26 "not a member" warnings
+    sch["bus_aliases"] = {k: list(v) for k, v in sorted((bus_aliases or {}).items())}
     pro.setdefault("libraries", {"pinned_footprint_libs": [], "pinned_symbol_libs": []})
     pro.setdefault("pcbnew", {"last_paths": {}, "page_layout_descr_file": ""})
     pro.setdefault("sheets", [])

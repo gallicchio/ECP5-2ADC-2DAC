@@ -72,12 +72,11 @@ def draw(sch, ids, fpga):
     units = ids["fpga_units"]
     FP_ = "BGA256"
     s.text(20, 22, "FPGA: Lattice ECP5 LFE5U-25F-6BG256C, 32 MB SDRAM, 16 MB flash, clocks, configuration", size=3.0, bold=True)
-    note(ctx, 20, 26, "One box per I/O bank, in the position the bank has on the package: 7 and 6 on the west (ADC above, "
-                      "DAC below), 0 and 1 on the north (clocks, I2C, LEDs, buttons; the SDRAM), 2 and 3 on the east (Ethernet and "
-                      "HDMI; SD card, USB, serial, Pmods), 8 on the south (the sysCONFIG pins: SPI flash, JTAG, slow "
-                      "controls). Every ball is named by its ball number; a PCLK is a primary clock input. The pin "
-                      "plan is generated (gen/fpga.py) and the same table writes the .lpf and the LiteX platform file.",
-         w=420, size=1.1)
+    note(ctx, 20, 26, "One box per I/O bank, in the position the bank has on the package:\n"
+                      "7 and 6 on the west (ADC above, DAC below); 0 and 1 on the north (clocks, I2C, LEDs, buttons; the SDRAM);\n"
+                      "2 and 3 on the east (Ethernet and HDMI; SD card, USB, serial, Pmods); 8 on the south (sysCONFIG: SPI flash, JTAG, slow controls).\n"
+                      "Every ball is named by its ball number; a PCLK is a primary clock input.\n"
+                      "The pin plan is generated (gen/fpga.py) and the same table writes the .lpf and the LiteX platform file.", w=260, size=1.1)
     hp = []
 
     assigned = set(inv.values())
@@ -146,27 +145,27 @@ def draw(sch, ids, fpga):
     # TCXO at the top left
     xe = 40.0
     yt = 62.0
-    tc = part(ctx, ids["tcxo"], "X301", "FT5HNBPK25.0-T1", "TCXO5032", xe + 20.0, yt, ref_at=(xe + 8.0, yt - 9.5), val_at=(xe + 8.0, yt + 9.0))
+    tc = part(ctx, ids["tcxo"], "X301", "FT5HNBPK25.0-T1", "TCXO5032", xe + 20.0, yt, ref_at=(xe + 8.0, yt - 9.5), val_at=(xe + 28.5, yt + 1.2))      # (value right of the body since build 28: below it, the ground stems ran through it)
     rail(ctx, *tc.pin("4"), "+3V3", stub=2.54); gnd(ctx, *tc.pin("2"), stub=2.54)
     s.wire(*tc.pin("1"), tc.pin("1")[0], tc.pin("2")[1] + 2.54); s.wire(tc.pin("1")[0], tc.pin("2")[1] + 2.54, tc.pin("2")[0], tc.pin("2")[1] + 2.54)
     ct = C(ctx, 2400, "100nF", tc.pin("4")[0] - 12.7, tc.pin("4")[1] - 2.54 + 3.81, side="left"); s.wire(tc.pin("4")[0], tc.pin("4")[1] - 2.54, tc.pin("4")[0] - 12.7, tc.pin("4")[1] - 2.54); s.wire(tc.pin("4")[0] - 12.7, tc.pin("4")[1] - 2.54, *ct.pin(1)); gnd(ctx, *ct.pin(2), stub=0)
     o = tc.pin("3")
-    rt = R(ctx, 2400, "33R", o[0] + 8.89, o[1], horiz=True, ref_at=(o[0] + 6.3, o[1] - 1.5), val_at=(o[0] + 12.8, o[1] - 1.5)); s.wire(*o, *rt.pin(1))
+    rt = R(ctx, 2400, "33R", o[0] + 8.89, o[1], horiz=True, ref_at=(o[0] + 6.3, o[1] - 1.5), val_at=(o[0] + 12.8, o[1] - 3.3)); s.wire(*o, *rt.pin(1))
     to_bank("CLK_TCXO", *rt.pin(2))
     s.text(xe - 15.0, yt - 14.0, "25 MHz TCXO ±2.5 ppm: the system clock", size=1.2, bold=True)
     # Si5351 below the TCXO: three outputs to the right, crystal and I2C on the left
     xsi, ysi = 100.0, 100.0
-    s.text(xe - 15.0, ysi - 24.5, "Si5351A: three programmable clocks, 2.5 kHz to 200 MHz, from a 25 MHz crystal", size=1.2, bold=True)
+    s.text(xe - 15.0, ysi - 15.0, "Si5351A: three programmable clocks, 2.5 kHz to 200 MHz", size=1.2, bold=True)      # (between the TCXO's ground and the Si5351's supply flag, short enough to end before the flag)
     si = part(ctx, "Oscillator:Si5351A-B-GT", "U301", "Si5351A-B-GTR", "MSOP10", xsi, ysi, ref_at=(xsi + 4.0, ysi + 14.5), val_at=(xsi + 4.0, ysi + 17.5))
     for k, sname in enumerate(("CLK_SI0", "CLK_SI1", "CLK_SI2")):
         po = si.pin(("10", "9", "6")[k])
-        r = R(ctx, 2410, "33R", po[0] + 8.89, po[1], horiz=True, ref_at=(po[0] + 6.3, po[1] - 1.5), val_at=(po[0] + 12.8, po[1] - 1.5))
+        r = R(ctx, 2410, "33R", po[0] + 8.89, po[1], horiz=True, ref_at=(po[0] + 6.3, po[1] - 1.5), val_at=(po[0] + 12.8, po[1] - 3.3))
         s.wire(*po, *r.pin(1)); to_bank(sname, *r.pin(2))
     xa, xb = si.pin("2"), si.pin("3")
     # a 3225 crystal has four pads: 1 and 3 are the crystal, 2 and 4 the grounded case (the YXC drawing;
     # the first draft used the two-pin symbol, whose pin 2 is the case pad)
     y = part(ctx, "Device:Crystal_GND24", "Y301", "25MHz", "XTAL3225", xa[0] - 10.16, (xa[1] + xb[1]) / 2, rot=270,
-             ref_at=(xa[0] - 13.0, xa[1] + 0.3), val_at=(xa[0] - 13.0, xa[1] + 3.3), lcsc="C362338", justify="right")
+             ref_at=(xa[0] - 13.6, (xa[1] + xb[1]) / 2 - 7.0), val_at=(xa[0] - 13.6, (xa[1] + xb[1]) / 2 - 6.7), lcsc="C362338", justify="right")      # (above left, stacked)
     y1, y2 = y.pin(1), y.pin(3)
     ya, yb = (y1, y2) if y1[1] < y2[1] else (y2, y1)
     # (KiCad draws the symbol's two ground pins on one point: one stub, pointing away from the crystal, serves both)
@@ -181,15 +180,15 @@ def draw(sch, ids, fpga):
     rail(ctx, xl, yb_, "+3V3", stub=0)
     # the 100 nF lies along the supply bar to the right, clear of the crystal on the left
     cs_ = C(ctx, 2410, "100nF", xr + 6.35, yb_, horiz=True)
-    s.wire(xr, yb_, *cs_.pin(1)); gnd(ctx, *cs_.pin(2), stub=0); s.junction(xr, yb_)
+    s.wire(xr, yb_, *cs_.pin(1)); s.wire(*cs_.pin(2), cs_.pin(2)[0] + 2.54, yb_); s.power("GND", cs_.pin(2)[0] + 2.54, yb_, down=True, rot=90); s.junction(xr, yb_)
     gnd(ctx, *si.pin("8"), stub=2.54)
     # I2C: out to the left, under the chip, and into two channels like the clocks
     for sname, sp, dx, yy in (("I2C_SDA", si.pin("5"), 17.78, 127.0), ("I2C_SCL", si.pin("4"), 20.32, 129.54)):
         xv = xsi - dx
         s.wire(*sp, xv, sp[1]); s.wire(xv, sp[1], xv, yy); to_bank(sname, xv, yy)
-    # the bus's pull-ups (4.7 k: a short bus with one slave), hanging below the two wires with their supply bar
-    # underneath -- above them is the crystal
-    ladder(ctx, 2415, [(xsi - 19.05, si.pin("4")[1]), (xsi - 13.97, si.pin("5")[1])], "4.7k", "+3V3", down=True, label="I2C pull-ups")
+    # the bus's pull-ups (4.7 k: a short bus with one slave) hang from the two runs under the chip, 8.89 apart with
+    # the flag on their left (beside the chip's pins, 5 mm apart, their names ran into each other and the flag)
+    ladder(ctx, 2415, [(xsi + 15.0, 127.0), (xsi + 23.89, 129.54)], "4.7k", "+3V3", down=True, label="I2C pull-ups", fsize=1.0, flag_at="left")
     label_node(ctx, xsi + 8.0, ysi + 21.5, "10 pF crystal, load capacitors inside; this I2C bus is the Si5351's alone (the HDMI DDC is a second bus)", side="right", size=0.85)
     # external clock in
     ye = 160.0
@@ -202,7 +201,7 @@ def draw(sch, ids, fpga):
     ta_, tb_ = jte.pin(1), jte.pin(2)
     tt, tb2 = (ta_, tb_) if ta_[1] < tb_[1] else (tb_, ta_)
     s.wire(*rte.pin(2), *tt); gnd(ctx, *tb2, stub=2.54)
-    label_node(ctx, xe + 15.5, ye + 22.0, "shunt in = 50 Ω", side="right", size=0.9)
+    label_node(ctx, xe + 15.5, ye + 24.5, "shunt in = 50 Ω", side="right", size=0.9)      # (a row under R5425's fields)
     ce = C(ctx, 2420, "10nF", xe + 22.86, ye, horiz=True, ref_at=(xe + 20.0, ye - 1.8), val_at=(xe + 20.0, ye + 2.0))
     s.wire(xe + 12.7, ye, *ce.pin(1)); s.junction(xe + 12.7, ye)
     # build 26: a TLV3501 comparator (4.5 ns, 6 mV of hysteresis, rail-to-rail inputs) on the ADC's quiet 3.3 V, in
@@ -221,21 +220,21 @@ def draw(sch, ids, fpga):
     cb = C(ctx, 2420, "100nF", xs - 7.62, yb + 7.62, side="right", ref="C5424"); s.wire(xs - 7.62, yb, *cb.pin(1)); gnd(ctx, *cb.pin(2), stub=1.27)
     s.junction(xs - 15.24, yb); s.junction(xs - 7.62, yb); s.junction(xs, yb)
     s.wire(*cn, xs - 5.08, cn[1]); s.wire(xs - 5.08, cn[1], xs - 5.08, yb); s.junction(xs - 5.08, yb)        # -IN to the mid-rail
-    label_node(ctx, xs - 30.0, yb + 14.2, "mid-rail 1.65 V: -IN directly, +IN through 10 k", side="right", size=0.85)
+    label_node(ctx, xs - 22.0, ye + 35.5, "mid-rail 1.65 V: -IN directly, +IN through 10 k", side="right", size=0.85)      # (under the divider's grounds since build 28: their stems ran through it)
     pu = part(ctx, ids["cmp"], "U302", "TLV3501AIDBVR", "SOT23-6", co[0] + 25.4, ye + 12.7, unit=2, ref_at=(co[0] + 31.0, ye + 18.0), val_at=(co[0] + 31.0, ye + 20.0))      # (below the box: beside it they sat on C5422's ground symbol)
     rail(ctx, *pu.pin("4"), "+3V3_ADC", stub=3.81); gnd(ctx, *pu.pin("2"), stub=3.81)
     s.wire(*pu.pin("6"), pu.pin("6")[0] - 2.54, pu.pin("6")[1]); gnd(ctx, pu.pin("6")[0] - 2.54, pu.pin("6")[1], stub=2.54)
     cs_ = C(ctx, 2420, "100nF", pu.pin("4")[0] + 7.62, pu.pin("4")[1] - 3.81 + 3.81, side="right", ref="C5422")
     s.wire(pu.pin("4")[0], pu.pin("4")[1] - 3.81, pu.pin("4")[0] + 7.62, pu.pin("4")[1] - 3.81); s.wire(pu.pin("4")[0] + 7.62, pu.pin("4")[1] - 3.81, *cs_.pin(1)); gnd(ctx, *cs_.pin(2), stub=0)
     s.junction(pu.pin("4")[0], pu.pin("4")[1] - 3.81)
-    re_ = R(ctx, 2420, "33R", co[0] + 8.89, ye, horiz=True, ref="R5423", ref_at=(co[0] + 6.3, ye - 1.5), val_at=(co[0] + 12.8, ye - 1.5))
+    re_ = R(ctx, 2420, "33R", co[0] + 8.89, ye, horiz=True, ref="R5423")      # (designator above, value below)
     s.wire(*co, *re_.pin(1)); to_bank("CLK_EXT", *re_.pin(2))
-    note(ctx, xe - 15.0, ye + 34.0, "10 MHz sine from a GPSDO (0.3 V peak or more), or any 0.5 to 3.3 V square wave to 80 MHz. 50 Ω if the shunt is in. "
+    note(ctx, xe - 15.0, ye + 38.0, "10 MHz sine from a GPSDO (0.3 V peak or more), or any 0.5 to 3.3 V square wave to 80 MHz. 50 Ω if the shunt is in. "
                                    "AC coupled into a TLV3501 comparator on the ADC's low-noise 3.3 V: +IN biased to mid-rail through 10 kΩ, -IN at "
                                    "mid-rail, 6 mV of hysteresis inside, 4.5 ns. The FPGA's PLL locks to it (8 MHz minimum).", w=175, size=0.9)
     # clock out
     yo = 230.0
-    s.text(xe - 15.0, yo - 25.0, "CLK OUT: sync a second board", size=1.2, bold=True)
+    s.text(xe - 15.0, yo - 22.0, "CLK OUT: sync a second board", size=1.2, bold=True)      # (under the CLK IN note)
     bo = part(ctx, "74xGxx:74LVC1G17", "U304", "SN74LVC1G17DBVR", "SOT23-5", xe + 55.88, yo, ref_at=(xe + 46.0, yo - 12.0), val_at=(xe + 46.0, yo + 12.5))
     xk = chan["CLK_OUT"]; xin = bo.pin("2")[0] - 5.08
     if elsewhere("CLK_OUT"):
@@ -246,11 +245,11 @@ def draw(sch, ids, fpga):
     s.wire(xk, yo - 20.32, xin, yo - 20.32)
     s.wire(xin, yo - 20.32, xin, yo); s.wire(xin, yo, *bo.pin("2"))
     s.nc(*bo.pin("1")); gate_supply(ctx, 2430, bo)
-    ro = R(ctx, 2430, "49.9R", bo.pin("4")[0] + 8.89, yo, horiz=True, ref_at=(bo.pin("4")[0] + 6.3, yo - 1.5), val_at=(bo.pin("4")[0] + 12.8, yo - 1.5))
+    ro = R(ctx, 2430, "49.9R", bo.pin("4")[0] + 8.89, yo, horiz=True)      # (designator above, value below: beside the body the value met the SMA's pin number)
     s.wire(*bo.pin("4"), *ro.pin(1))
     jo = part(ctx, ids["sma_out"], "J302", "SMA", "SMA", ro.pin(2)[0] + 7.62, yo, ref_at=(ro.pin(2)[0] + 9.5, yo - 6.0), val_at=(ro.pin(2)[0] + 9.5, yo + 4.0))
     s.wire(*ro.pin(2), *jo.pin(1)); gnd(ctx, *jo.pin(2), stub=2.54)
-    note(ctx, xe - 15.0, yo + 16.0, "Any FPGA clock, 50 Ω source terminated: 3.3 V open circuit, 1.65 V into 50 Ω; the other board's CLK IN squares it up.", w=110, size=0.9)
+    note(ctx, xe - 15.0, yo + 19.5, "Any FPGA clock, 50 Ω source terminated: 3.3 V open circuit, 1.65 V into 50 Ω; the other board's CLK IN squares it up.", w=110, size=0.9)      # (under the buffer's ground)
     # LEDs and buttons: the pins are on a 2.54 mm pitch, so the ten wires fan out below the symbol to a
     # row of circuits 8 mm apart.  Wire i leaves its pin to the left, drops down its own column (1.27 mm
     # apart, all left of the pin ends and right of the clock channels), turns on its own row and runs to
@@ -278,10 +277,10 @@ def draw(sch, ids, fpga):
         s.wire(*p, xd, p[1]); s.wire(xd, p[1], xd, turn[sname]); s.wire(xd, turn[sname], xc, turn[sname]); s.wire(xc, turn[sname], xc, ytop)
     for i in range(8):
         xc = cols["LED%d" % i]
-        r = R(ctx, 2440, "1k", xc, ytop + 5.08)
+        r = R(ctx, 2440, "1k", xc, ytop + 5.08, fsize=1.0)                 # (1.0: at 1.27 "R5441" reached the next column's body)
         s.wire(xc, ytop, *r.pin(1))
         d = part(ctx, "Device:LED", "D%d" % (301 + i), "white", "LED0603", xc, ytop + 15.24, rot=90,
-                 ref_at=(xc + 2.0, ytop + 13.9), val_at=(xc + 2.0, ytop + 16.9), lcsc="C2290", fsize=1.0)
+                 ref_at=(xc + 2.6, ytop + 13.9), val_at=(xc + 2.6, ytop + 19.3), lcsc="C2290", fsize=1.0)      # (value under the light arrows, 2.54 right of the body: the anchors snap to 1.27, and at +1.27 the value touched an arrowhead)
         ka, an = d.pin(1), d.pin(2)
         s.wire(*r.pin(2), *an); gnd(ctx, *ka, stub=2.54)
     s.text(cols["LED0"] - 1.0, ytop + 30.0, "user LEDs 0-7, white, active high, ~1 mA", size=0.85)
@@ -289,9 +288,9 @@ def draw(sch, ids, fpga):
         xc = cols["BTN%d" % i]; yn = ytop + 7.62
         s.wire(xc, ytop, xc, yn); s.junction(xc, yn)
         s.wire(xc, yn, xc + 5.08, yn)
-        r = R(ctx, 2450, "10k", xc + 5.08, yn - 5.08)
+        r = R(ctx, 2450, "10k", xc + 5.08, yn - 5.08, fsize=1.0)
         s.wire(xc + 5.08, yn, *r.pin(2)); rail(ctx, *r.pin(1), "+3V3", stub=2.54)
-        sw = part(ctx, "Switch:SW_Push", "SW%d" % (301 + i), "SW_Push", "SW_1088", xc, yn + 7.62, rot=90, ref_at=(xc + 2.5, yn + 5.5), val_at=(xc + 2.5, yn + 8.5))
+        sw = part(ctx, "Switch:SW_Push", "SW%d" % (301 + i), "SW_Push", "SW_1088", xc, yn + 7.62, rot=90, ref_at=(xc + 2.5, yn + 5.5), val_at=(xc + 2.5, yn + 8.5), hide_value=True, fsize=1.0)      # ("SW_Push" x2 ran together; 1.0: "SW301" reached SW302)
         pa_, pb_ = sw.pin(1), sw.pin(2)
         t_, b_ = (pa_, pb_) if pa_[1] < pb_[1] else (pb_, pa_)
         s.wire(xc, yn, *t_); gnd(ctx, *b_, stub=2.54)
@@ -373,10 +372,13 @@ def draw(sch, ids, fpga):
     ys = [sd.pin(num_of[pn])[1] for sn, pn in sd_names.items() if not (sn.startswith("SDRAM_DQ") and "DQM" not in sn)]
     s.bus((sd_left_x, min(ys) - 2.54), (sd_left_x, max(ys)))
     s.bus((xbus_a, top_a), (sd_left_x, top_a), (sd_left_x, min(ys) - 2.54))
-    # the group label reads leftwards from the bus corner (right-justified), clear of both columns of pin labels
-    group = "{SDRAM_A[12..0] SDRAM_BA[1..0] SDRAM_CLK SDRAM_CKE SDRAM_CS_N SDRAM_RAS_N SDRAM_CAS_N SDRAM_WE_N SDRAM_DQML SDRAM_DQMH%s}" % (
-        " SDRAM_DQ[15..0]" if any(nm.startswith("SDRAM_DQ") and "DQM" not in nm for (_, _, nm) in members_x) else "")
-    s.label(xbus_a + 1.0, top_a - 0.5, group, size=0.7, justify="right bottom")
+    # the group bus is named by a bus alias: "{SDRAM_CTRL}" on the bus carries every member (the member list
+    # itself is 90 mm of text, which read leftwards across the bank-1 unit in builds to 27)
+    members_ctrl = ["SDRAM_A[12..0]", "SDRAM_BA[1..0]", "SDRAM_CLK", "SDRAM_CKE", "SDRAM_CS_N", "SDRAM_RAS_N", "SDRAM_CAS_N", "SDRAM_WE_N", "SDRAM_DQML", "SDRAM_DQMH"]
+    if any(nm.startswith("SDRAM_DQ") and "DQM" not in nm for (_, _, nm) in members_x):
+        members_ctrl.append("SDRAM_DQ[15..0]")
+    s.bus_alias("SDRAM_CTRL", members_ctrl)
+    s.label(xbus_a + 1.5, top_a - 0.5, "{SDRAM_CTRL}", size=1.0)
     # data bus: left column, up and over the top (y 60) to the SDRAM's right-hand bus
     sd_right_x = sd.pin(num_of["DQ0"])[0] + 8.89
     yd = [sd.pin(num_of["DQ%d" % i])[1] for i in range(16)]
@@ -435,7 +437,7 @@ def draw(sch, ids, fpga):
         s.label(xb, ypm - 30.48, "PMOD%s_[7..0]" % "AB"[pm], rot=90, size=1.0)
         for (mx, my, nm) in members:
             s.wire(mx, my, xb - 2.54, my); s.bus_entry(xb - 2.54, my, 2.54, -2.54); s.label(mx + 0.5, my - 0.2, nm, size=1.0)
-        jp = part(ctx, "Connector_Generic:Conn_02x06_Odd_Even", jref, "PMOD %s" % "AB"[pm], "PMOD", xpm, ypm, ref_at=(xpm - 6.0, ypm - 10.0), val_at=(xpm - 6.0, ypm + 9.5))
+        jp = part(ctx, "Connector_Generic:Conn_02x06_Odd_Even", jref, "PMOD %s" % "AB"[pm], "PMOD", xpm, ypm, ref_at=(xpm - 6.0, ypm - 10.0), val_at=(xpm - 6.0, ypm - 9.7))      # (name under the designator: the +3V3 is below the socket)
         # the socket's pads are numbered the KiCad way (odd/even: column k of the 2 x 6 holds pads 2k-1 and
         # 2k), the Pmod standard numbers its pins 1-6 along one row and 7-12 along the other, so Pmod pin k
         # is pad 2k-1 and Pmod pin k+6 is pad 2k.  IO1-4 (Pmod 1-4) = pads 1, 3, 5, 7; IO5-8 (Pmod 7-10) =
@@ -443,47 +445,56 @@ def draw(sch, ids, fpga):
         # draft had GND on pads 5/11 and VCC on 6/12: a module's pin 6 would have met GND and its pin 12
         # 3.3 V, a dead short through the module.)
         pinmap = {"1": sig[0], "3": sig[1], "5": sig[2], "7": sig[3], "2": sig[4], "4": sig[5], "6": sig[6], "8": sig[7]}
-        xbl, xbr = xpm - 26.0, xpm + 26.0
+        xbl, xbr = xpm - 36.0, xpm + 36.0
         s.bus((xb, ypm - 20.32), (xbl, ypm - 20.32), (xbl, ypm + 10.16))
         s.bus((xbl, ypm - 20.32), (xbr, ypm - 20.32), (xbr, ypm + 10.16))
-        for pin_, sname in pinmap.items():
+        for k_, (pin_, sname) in enumerate(pinmap.items()):
             pj = jp.pin(pin_)
-            # fields small and in the half row above each wire (the rows are 2.54 apart)
+            # two columns of resistors (rows 2.54 apart, bodies 2 mm tall: side by side nothing fits), each
+            # designator in the half row above its own body; the values are hidden, the note says 33 Ω
+            stag = 8.89 if k_ % 4 in (0, 2) else 16.51
             if pj[0] < xpm:
-                xr_ = pj[0] - 8.89
-                r = R(ctx, 2600 + 10 * pm, "33R", xr_, pj[1], horiz=True, ref_at=(xr_ - 3.8, pj[1] - 0.55), val_at=(xr_ + 0.9, pj[1] - 1.95), fsize=1.0)
+                xr_ = pj[0] - stag
+                r = R(ctx, 2600 + 10 * pm, "33R", xr_, pj[1], horiz=True, ref_at=(xr_ - 2.4, pj[1] - 1.1), val_at=(xr_ - 2.4, pj[1] + 1.1), fsize=0.9, hide_value=True)
                 s.wire(*r.pin(2), *pj); s.wire(*r.pin(1), xbl + 2.54, pj[1]); s.bus_entry(xbl + 2.54, pj[1], -2.54, -2.54); s.label(r.pin(1)[0] - 0.8, pj[1] - 0.2, sname, size=0.9, justify="right bottom")
             else:
-                xr_ = pj[0] + 8.89
-                r = R(ctx, 2600 + 10 * pm, "33R", xr_, pj[1], horiz=True, ref_at=(xr_ - 3.8, pj[1] - 0.55), val_at=(xr_ + 0.9, pj[1] - 1.95), fsize=1.0)
+                xr_ = pj[0] + stag
+                r = R(ctx, 2600 + 10 * pm, "33R", xr_, pj[1], horiz=True, ref_at=(xr_ - 2.4, pj[1] - 1.1), val_at=(xr_ - 2.4, pj[1] + 1.1), fsize=0.9, hide_value=True)
                 s.wire(*r.pin(1), *pj); s.wire(*r.pin(2), xbr - 2.54, pj[1]); s.bus_entry(xbr - 2.54, pj[1], 2.54, -2.54); s.label(r.pin(2)[0] + 0.8, pj[1] - 0.2, sname, size=0.9)
-        # GND on pads 9 (left) and 10 (right), VCC on 11 (left) and 12 (right): one bar per side joins the
-        # two rows, the flag close to the pins so "+3V3" clears the series resistors' designators
+        # GND on pads 9 (left) and 10 (right): grounds lying on their side at the end of a short wire.  VCC on
+        # pads 11 (left) and 12 (right): both wires drop under the socket to one bar with one +3V3 flag, so no
+        # ground glyph stands across the 3.3 V wire (rev A's first drafts had exactly that)
         for pin_, dx in (("9", -3.81), ("10", 3.81)):
-            pj = jp.pin(pin_); s.wire(*pj, pj[0] + dx, pj[1]); gnd(ctx, pj[0] + dx, pj[1], stub=0)
-        for pin_, dx in (("11", -8.89), ("12", 8.89)):
-            pj = jp.pin(pin_); s.wire(*pj, pj[0] + dx, pj[1]); rail(ctx, pj[0] + dx, pj[1], "+3V3", stub=0)
-    note(ctx, 600.0, 548.0, "Pmod sockets (hand soldered), 0.9 inch apart on the board edge so a double-width module spans both: 33 Ω "
-                            "series, Pmod pins 1-4 = IO0-3, 7-10 = IO4-7, 5/11 ground, 6/12 3.3 V (pads 1,3,5,7 / 2,4,6,8 / 9,10 / 11,12 "
-                            "in KiCad's odd/even numbering). Both buses are drawn; the labels on the socket end are the same bus members.", w=200, size=0.9)
+            pj = jp.pin(pin_); s.wire(*pj, pj[0] + dx, pj[1]); s.power("GND", pj[0] + dx, pj[1], down=True, rot=270 if dx < 0 else 90)
+        p11, p12 = jp.pin("11"), jp.pin("12")
+        yv = p11[1] + 7.62
+        s.wire(*p11, p11[0] - 2.54, p11[1]); s.wire(p11[0] - 2.54, p11[1], p11[0] - 2.54, yv)
+        s.wire(*p12, p12[0] + 2.54, p12[1]); s.wire(p12[0] + 2.54, p12[1], p12[0] + 2.54, yv)
+        s.wire(p11[0] - 2.54, yv, p12[0] + 2.54, yv); s.junction(xpm, yv); rail(ctx, xpm, yv, "+3V3", stub=0)
+    note(ctx, 600.0, 548.0, "Pmod sockets, 0.9 inch apart on the board edge so a double-width module spans both.\n"
+                            "33 Ω series; Pmod pins 1-4 = IO0-3, 7-10 = IO4-7, 5/11 ground, 6/12 3.3 V\n"
+                            "(pads 1,3,5,7 / 2,4,6,8 / 9,10 / 11,12 in KiCad's odd/even numbering).\n"
+                            "Both buses are drawn; the labels on the socket end are the same bus members.", w=200, size=0.9)
     # the RGB LED: three bank-3 balls sink its cathodes through 330 R, the common anode on +3V3 (active low)
     rgb_sigs = ["LED_R", "LED_G", "LED_B"]
     for sn in rgb_sigs:
         p = unit_of(sn, u3).pin(inv[sn]); s.wire(*p, p[0] + 6.35, p[1]); s.label(p[0] + 6.35, p[1], sn, size=1.0)
         hp.append((sn, "output")) if False else None
-    xg, yg_ = 800.0, 500.0
+    xg, yg_ = 760.0, 538.0                              # (40 mm in from the page border since build 28: the LED stood on it)
     led = part(ctx, ids["rgb"], "D309", "XL-1615RGBC-RF", "RGB1615", xg + 25.4, yg_, ref_at=(xg + 20.0, yg_ - 7.5), val_at=(xg + 20.0, yg_ + 7.0))
     for k_, (sn, pin_) in enumerate(zip(rgb_sigs, ("1", "4", "3"))):
         pl_ = led.pin(pin_)
         xr_ = pl_[0] - 7.62 - 10.16 * k_                 # a staircase: the three resistors clear of each other's fields
-        r = R(ctx, 2460, "330R", xr_, pl_[1], horiz=True, ref_at=(xr_ - 2.6, pl_[1] - 1.6), val_at=(xr_ + 2.0, pl_[1] - 1.6))
+        # the top row's fields above its body; the lower rows' below, clear of the row above's net label
+        r = R(ctx, 2460, "330R", xr_, pl_[1], horiz=True, ref_at=(xr_ - 2.6, pl_[1] - 1.6) if k_ == 0 else (xr_ - 2.6, pl_[1] + 3.4),
+              val_at=(xr_ + 4.0, pl_[1] - 3.4) if k_ == 0 else (xr_ + 4.0, pl_[1] + 1.6))
         s.wire(*r.pin(2), *pl_); s.wire(*r.pin(1), r.pin(1)[0] - 3.81, pl_[1]); s.label(r.pin(1)[0] - 3.81, pl_[1], sn, size=1.0, justify="right bottom")
     pa_ = led.pin("2"); s.wire(*pa_, pa_[0] + 2.54, pa_[1]); rail(ctx, pa_[0] + 2.54, pa_[1], "+3V3", stub=2.54)
-    s.text(xg - 10.0, yg_ - 12.0, "RGB LED (common anode): drive a cathode low to light it, ~2 mA", size=0.85)
+    s.text(xg + 5.0, yg_ - 12.0, "RGB LED (common anode): drive a cathode low to light it, ~2 mA", size=0.85)      # (clear of Pmod B's ground)
 
     # ---- bank 8: flash, config, JTAG, slow controls ------------------------------------------------
     s.text(395.0, 258.0, "bank 8: sysCONFIG, flash, JTAG, slow controls", size=1.4, bold=True)
-    fl = part(ctx, ids["flash"], "U306", "W25Q128JVSIQ", "SOIC8W", 330.0, 262.0, ref_at=(312.0, 240.0), val_at=(312.0, 284.0))
+    fl = part(ctx, ids["flash"], "U306", "W25Q128JVSIQ", "SOIC8W", 330.0, 262.0, ref_at=(312.0, 235.0), val_at=(312.0, 284.0))      # (the box grew for its VCC/GND names: the designator above the capacitor's)
     # six wires, top to bottom in the same order on both sides, so the channels never cross
     fmap = {"FLASH_IO2": "3", "FLASH_IO3": "7", "FLASH_CS_N": "1", "FLASH_IO1": "2", "FLASH_IO0": "5", "FLASH_SCK": "6"}
     for k, (sname, fpin) in enumerate(fmap.items()):
@@ -492,21 +503,21 @@ def draw(sch, ids, fpga):
         s.wire(*pq, xk, pq[1]); s.wire(xk, pq[1], xk, pf[1]); s.wire(xk, pf[1], *pf)
     label_node(ctx, 300.0, 232.0, "quad SPI flash on the sysCONFIG pins: boots the FPGA and holds the bitstream", side="right", size=0.85)
     ladder(ctx, 2700, [(fl.pin("3")[0] + 5.08, fl.pin("3")[1]), (fl.pin("7")[0] + 12.7, fl.pin("7")[1]), (fl.pin("1")[0] + 20.32, fl.pin("1")[1])],
-           "10k", "+3V3", side="left", label="WP, HOLD, CS: 10 k up", label_at=(fl.pin("3")[0] + 8.0, fl.pin("3")[1] - 12.4))
+           "10k", "+3V3", side="left", label="WP, HOLD, CS: 10 k up", label_at=(fl.pin("3")[0] + 8.0, fl.pin("3")[1] - 12.4), fsize=1.0)
     rail(ctx, *fl.pin("8"), "+3V3", stub=2.54); gnd(ctx, *fl.pin("4"), stub=2.54)
-    c = C(ctx, 2700, "100nF", fl.pin("8")[0] - 10.16, fl.pin("8")[1] - 2.54 + 3.81, side="left"); s.wire(fl.pin("8")[0], fl.pin("8")[1] - 2.54, fl.pin("8")[0] - 10.16, fl.pin("8")[1] - 2.54); s.wire(fl.pin("8")[0] - 10.16, fl.pin("8")[1] - 2.54, *c.pin(1)); gnd(ctx, *c.pin(2), stub=0)
+    c = C(ctx, 2700, "100nF", fl.pin("8")[0] - 15.24, fl.pin("8")[1] - 2.54 + 3.81, side="left"); s.wire(fl.pin("8")[0], fl.pin("8")[1] - 2.54, fl.pin("8")[0] - 15.24, fl.pin("8")[1] - 2.54); s.wire(fl.pin("8")[0] - 15.24, fl.pin("8")[1] - 2.54, *c.pin(1)); gnd(ctx, *c.pin(2), stub=0)
     # config pins on the right of the unit: PROGRAMN to a button, all three pulled up
     p9, t9, d9 = u8.pin("R9"), u8.pin("T9"), u8.pin("P9")
     s.wire(*p9, p9[0] + 25.4, p9[1])
     s.wire(*t9, t9[0] + 12.7, t9[1]); s.wire(*d9, d9[0] + 20.32, d9[1])
     ladder(ctx, 2710, [(p9[0] + 5.08, p9[1]), (t9[0] + 12.7, t9[1], "end"), (d9[0] + 20.32, d9[1], "end")], "4.7k", "+3V3",
-           label="PROGRAMN, INITN, DONE: 4.7 k to VCCIO8")
+           label="PROGRAMN, INITN, DONE: 4.7 k to VCCIO8", fsize=1.0)
     # 100 nF on PROGRAMN (build 26): with the 4.7 k, configuration cannot start until ~0.5 ms after the 3.3 V rail
     # -- VCCIO8 and the flash's supply -- is up, whatever the 1.1 V buck does (Master SPI's power-up rule; reviews, R8)
     cpg = C(ctx, 2710, "100nF", p9[0] + 22.86, p9[1] + 6.35, side="right")
     s.wire(p9[0] + 22.86, p9[1], *cpg.pin(1)); gnd(ctx, *cpg.pin(2), stub=1.27); s.junction(p9[0] + 22.86, p9[1])
     label_node(ctx, p9[0] + 14.0, p9[1] + 19.5, "100 nF: configuration starts 0.5 ms after VCCIO8", side="right", size=0.8)
-    swp = part(ctx, "Switch:SW_Push", "SW303", "SW_Push", "SW_1088", p9[0] + 30.48, p9[1], rot=0, ref_at=(p9[0] + 26.5, p9[1] - 2.6), val_at=(p9[0] + 26.5, p9[1] + 1.6))
+    swp = part(ctx, "Switch:SW_Push", "SW303", "SW_Push", "SW_1088", p9[0] + 30.48, p9[1], rot=0, ref_at=(p9[0] + 26.5, p9[1] - 2.6), val_at=(p9[0] + 26.5, p9[1] + 1.6), hide_value=True)
     l_, r_ = sorted([swp.pin(1), swp.pin(2)])
     s.wire(*r_, r_[0] + 2.54, r_[1]); gnd(ctx, r_[0] + 2.54, r_[1], stub=2.54)
     label_node(ctx, r_[0] + 7.0, p9[1] + 1.0, "press: reload from the flash", side="right", size=0.85)
@@ -522,21 +533,23 @@ def draw(sch, ids, fpga):
     # The four rows are 5 mm apart, so the resistors hang below the lowest one
     jtag = {"T10": ("JTAG_TCK", "input"), "T11": ("JTAG_TMS", "input"), "R11": ("JTAG_TDI", "input"), "M10": ("JTAG_TDO", "output")}
     jh = part(ctx, "Connector_Generic:Conn_01x06", "J305", "JTAG", "H1x6", 560.0, 335.0, ref_at=(565.0, 326.0), val_at=(565.0, 345.0))
-    x_end = u8.pin("T10")[0] + 36.83
+    x_end = u8.pin("T10")[0] + 33.02
     for k, (ball, (nm, sh)) in enumerate(jtag.items()):
-        p = u8.pin(ball); s.wire(*p, x_end, p[1]); s.hlabel(x_end, p[1], nm, shape=sh)
+        p = u8.pin(ball); s.wire(*p, x_end, p[1]); s.hlabel(x_end, p[1], nm, shape=sh, rot=0)      # (rot 0: the name reads on past the wire's end, not back over it)
         hp.append((nm, sh))
         pj = jh.pin(str(k + 2)); s.wire(*pj, pj[0] - 3.81, pj[1]); s.label(pj[0] - 3.81, pj[1] - 0.2, nm, size=0.9, justify="right bottom")
     xt = u8.pin("T11")[0]; y_bar = u8.pin("M10")[1] + 8.89
     ladder(ctx, 2720, [(xt + 7.62, u8.pin("T11")[1]), (xt + 15.24, u8.pin("R11")[1]), (xt + 22.86, u8.pin("M10")[1])], "4.7k", "+3V3",
-           y_bar=y_bar, down=True)
-    ladder(ctx, 2720, [(x_end - 3.81, u8.pin("T10")[1])], "4.7k", "GND", y_bar=y_bar, down=True)
+           y_bar=y_bar, down=True, fsize=1.0, flag_at="left")
+    ladder(ctx, 2720, [(x_end - 2.54, u8.pin("T10")[1])], "4.7k", "GND", y_bar=y_bar, down=True, fsize=1.0)
     s.text(xt + 1.8, y_bar + 6.0, "4.7 k: TMS, TDI, TDO up; TCK down", size=0.85)
     s.wire(*jh.pin("1"), jh.pin("1")[0] - 3.81, jh.pin("1")[1]); rail(ctx, jh.pin("1")[0] - 3.81, jh.pin("1")[1], "+3V3", stub=2.54)
     s.wire(*jh.pin("6"), jh.pin("6")[0] - 3.81, jh.pin("6")[1]); gnd(ctx, jh.pin("6")[0] - 3.81, jh.pin("6")[1], stub=2.54)
-    note(ctx, 545.0, 348.0, "JTAG header (hand soldered): the same four signals the FT2232H drives through the USB sheet. "
-                            "TCK pulled down, TMS/TDI/TDO pulled up (Lattice checklist). These four local labels and the SDRAM "
-                            "bus members are the only labels on this sheet.", w=120, size=0.9)
+    note(ctx, 540.0, 352.0, "JTAG header: the same four signals the FT2232H drives (USB sheet).\n"
+                            "TCK pulled down, TMS/TDI/TDO pulled up (Lattice checklist).\n"
+                            "To use an external programmer here, fit JP501 FTDI OFF (USB sheet) first:\n"
+                            "it holds the FT2232H in reset, so its TXD / TCK output cannot fight.\n"
+                            "These four local labels and the SDRAM bus members\nare the only labels on this sheet.", w=130, size=0.9)
     for sname, sh in (("ADC_DCS", "output"), ("ADC_DFS", "output"), ("ADC_PDWN_A", "output"), ("ADC_PDWN_B", "output"), ("DAC_MODE", "output"), ("DAC_SLEEP", "output")):
         if bank_of[sname] == "8":
             p = u8.pin(inv[sname]); s.wire(*p, 345.0, p[1]); s.hlabel(345.0, p[1], sname, shape=sh, rot=180)
@@ -546,7 +559,7 @@ def draw(sch, ids, fpga):
     draw_pending()
 
     # ---- power unit, bottom left, with the decoupling rows ------------------------------------------
-    up = part(ctx, ids["fpga"], "U1", "LFE5U-25F-6BG256C", FP_, 110.0, 505.0, unit=ids["fpga_power_unit"], ref_at=(60.0, 497.0), val_at=(60.0, 497.5))
+    up = part(ctx, ids["fpga"], "U1", "LFE5U-25F-6BG256C", FP_, 110.0, 505.0, unit=ids["fpga_power_unit"], ref_at=(56.0, 491.5), val_at=(56.0, 492.0))      # (above the box's corner: the box grew for its pin names)
     _, fpins = kisch.SYMS.get(ids["fpga"])
     pu = ids["fpga_power_unit"]
     vcc = [p for p in fpins if p["unit"] == pu and p["name"] == "VCC"]

@@ -36,6 +36,8 @@ PAPER = {"A4": (297.0, 210.0), "A3": (420.0, 297.0),
          "A2": (594.0, 420.0), "A1": (841.0, 594.0), "A0": (1189.0, 841.0)}
 
 
+_PWR_N = [0]                     # power symbols: #PWR0001.. in the order they are drawn, over all sheets of one run
+
 def uuid_for(*parts):
     h = hashlib.sha1(("|".join(str(p) for p in parts)).encode()).hexdigest()
     return "%s-%s-%s-%s-%s" % (h[0:8], h[8:12], h[12:16], h[16:20], h[20:32])
@@ -55,23 +57,60 @@ def g(v):
 
 
 def wrap(text, width=60):
+    """Wrap a note the way a newspaper column reads: explicit newlines are kept; a long paragraph is filled
+    up to `width` characters a line, breaking by preference where a sentence or clause ends ('. ', '; ', ': ')
+    or before an arrow ('->'), and only inside a clause when the clause alone is longer than a line.  A
+    column of 50-65 characters is the typographic optimum; one 300-character line is not a column.  (Jason,
+    2026-10-07: split logically, not where the column happens to fill.)"""
     out = []
     for para in str(text).split("\n"):
-        out.extend(textwrap.wrap(para, width) if para.strip() else [""])
+        if not para.strip():
+            out.append(""); continue
+        units = [u for u in re.split(r"(?<=[.;:])\s+(?=[A-Z0-9(+\-±√\"'])|\s+(?=->)", para) if u]
+        line = ""
+        for u in units:
+            if len(u) > width:                            # one clause longer than a line: fill it word by word
+                if line:
+                    out.append(line); line = ""
+                parts = textwrap.wrap(u, width)
+                out.extend(parts[:-1]); line = parts[-1]
+            elif not line:
+                line = u
+            elif len(line) + 1 + len(u) <= width:
+                line += " " + u
+            else:
+                out.append(line); line = u
+        if line:
+            out.append(line)
     return "\n".join(out)
 
 
-# KiCad's stroke font advances, measured (IcepiZeroADCDAC/common/kicad_sch.py).
+# KiCad's stroke font advances in units of the text size, measured on 2026-10-07 from a calibration sheet
+# (build/scratch/calib: every character ten times, exported with kicad-cli, the widths read back with
+# pdftotext -bbox from the PDF's invisible text).  The space is 0.762.
 _ADV_GROUPS = (
-    (0.321, "`"), (0.405, ",I"), (0.410, "!'.:;ij"), (0.457, "l"), (0.514, "^ft"),
-    (0.555, "r"), (0.586, "\\"), (0.598, "[]"), (0.600, "()"), (0.602, "{}"),
-    (0.655, "~"), (0.695, '"J'), (0.700, "*vy"), (0.705, "T"), (0.740, "k"),
-    (0.743, "s"), (0.745, "L"), (0.748, "xz"), (0.762, " _"), (0.790, "?Fce"),
-    (0.800, "AVY"), (0.833, "hnu"), (0.836, "Eabdgpq"), (0.838, "o"), (0.857, "|"),
-    (0.886, "$015689S"), (0.888, "234"), (0.890, "7XZ"), (0.931, "BDKPR"),
-    (0.933, "CG"), (0.943, "#"), (0.948, "/"), (0.976, "HNU"), (0.981, "OQ"),
-    (0.986, "w"), (1.071, "M"), (1.076, "%"), (1.081, "W"), (1.167, "+-<=>"),
-    (1.169, "&"), (1.219, "@"), (1.262, "m"))
+    (0.381, "`"),
+    (0.476, "!',.:;Iij"),
+    (0.524, "l"),
+    (0.571, "^ft–"),
+    (0.619, "r"),
+    (0.667, "()[\\]{}"),
+    (0.714, "~"),
+    (0.762, " \"*JT_vy°"),
+    (0.810, "Lksxz"),
+    (0.857, "?AFVYceΔ"),
+    (0.905, "Eabdghnopqu"),
+    (0.952, "$0123456789SXZ|"),
+    (1.000, "#BCDGKPR"),
+    (1.048, "/HNOQUwµ"),
+    (1.095, "π"),
+    (1.143, "%MWΩ—"),
+    (1.190, "√"),
+    (1.238, "&+-<=>±×→≈≤≥"),
+    (1.286, "@"),
+    (1.333, "m"),
+    (1.429, "…"),
+)
 ADV = {c: a for a, chars in _ADV_GROUPS for c in chars}
 
 
@@ -290,24 +329,45 @@ def make_box(lib_id, units, ref="U", value=None, keywords=""):
         w = max(w, (cols + 1) * 2.54 + 2.54)
         w = math.ceil(w / 2.54) * 2.54
         hw = w / 2.0
-        trap = u.get("shape") == "trap"
+        shape = u.get("shape")
+        trap = shape in ("trap", "trap_r")
         if trap:
-            # A converter: a trapezoid narrowing left to right, the way a
-            # converter (or an amplifier) says which way the signal goes.
-            # Each side's pins are centred on that side independently, so a
-            # short side sits in the middle of a tall one.  The taper is a
-            # full 5 mm; a 1 mm taper reads as a drawing error.
-            hh = max(len(L), len(R) + 4, 2) * 2.54 / 2.0
+            # A converter drawn like a multiplexer: the tall side is the digital bus, the short side the
+            # analog signal ("trap": tall left, a DAC; "trap_r": tall right, an ADC).  Each side's pins are
+            # centred on that side independently, so a short side sits in the middle of a tall one.  The
+            # taper is a full 5 mm; a 1 mm taper reads as a drawing error.  Clocks and strobes enter the
+            # sloped bottom edge from below, the way a flip-flop's clock does (Jason, 2026-10-07).
+            tall, short = (L, R) if shape == "trap" else (R, L)
+            hh = max(len(tall), len(short) + 4, 2) * 2.54 / 2.0
             hh2 = hh - 5.08
         maxtop = max(maxtop, hh + (2.54 if T else 0))
         body.append('(symbol "%s_%d_1"' % (name, ui))
         if trap:
-            body.append(_poly([(-hw, hh), (hw, hh2), (hw, -hh2), (-hw, -hh), (-hw, hh)], fill="background"))
+            if shape == "trap":
+                body.append(_poly([(-hw, hh), (hw, hh2), (hw, -hh2), (-hw, -hh), (-hw, hh)], fill="background"))
+                yl, yr = -hh, -hh2
+            else:
+                body.append(_poly([(-hw, hh2), (hw, hh), (hw, -hh), (-hw, -hh2), (-hw, hh2)], fill="background"))
+                yl, yr = -hh2, -hh
             topL = (len(L) - 1) * 2.54 / 2.0
             topR = (len(R) - 1) * 2.54 / 2.0
+            y_bottom = lambda x: yl + (x + hw) / (2.0 * hw) * (yr - yl)        # the sloped bottom edge
         else:
+            # tall enough for the names standing on the top and bottom pins (they must not meet in the middle, and
+            # a side pin's name that reaches their columns needs the rows to sit between them): builds to 27 drew
+            # VCC into VSS on the EEPROM and REG_OUT into DVDD10 on the PHY's power unit
+            lt = max((text_w(r[1]) for r in T if r and r[1]), default=0.0)
+            lb = max((text_w(r[1]) for r in B if r and r[1]), default=0.0)
+            ls = max((text_w(r[1]) for r in L + R if r and r[1]), default=0.0)
+            if T or B:
+                need = lt + lb + 2.0
+                tb_half = (max(len(T), len(B)) - 1) * 2.54 / 2.0 + 1.0
+                if ls + 2.5 > hw - tb_half:
+                    need += rows * 2.54
+                hh = max(hh, math.ceil(need / 2.0 / 1.27) * 1.27)
             body.append(_rect(-hw, hh, hw, -hh))
-            topL = topR = hh - 1.27
+            topL = topR = rows * 1.27 - 1.27            # the rows centred, whatever the box's height
+            y_bottom = lambda x: -hh
         for i, row in enumerate(L):
             if row and row[1]:
                 body.append(_pin(row[0], row[1], -hw - 3.81, topL - i * 2.54, 0,
@@ -324,7 +384,8 @@ def make_box(lib_id, units, ref="U", value=None, keywords=""):
         for i, row in enumerate(B):
             x = -(len(B) - 1) * 2.54 / 2.0 + i * 2.54
             if row and row[1]:
-                body.append(_pin(row[0], row[1], x, -hh - 3.81, 90,
+                yb = round(y_bottom(x) / 1.27) * 1.27 if trap else -hh      # on the 1.27 grid, just under the slope
+                body.append(_pin(row[0], row[1], x, yb - 3.81, 90,
                                  kind=row[2] if len(row) > 2 else "power_in"))
         body.append(')')
     out = _hdr(name, ref, value or name, maxtop, keywords=keywords) + body + ['(embedded_fonts no)', ')']
@@ -362,10 +423,12 @@ def make_fda(lib_id, pins, value=None, keywords=""):
     out.append('(circle (center 0.508 3.81) (radius 0.508) (stroke (width 0.254) (type default)) (fill (type none)))')
     out.append(_pin(pins["in_p"], "+", -10.16, 3.81, 0, 2.54, "input", 1.27))
     out.append(_pin(pins["in_n"], "-", -10.16, -3.81, 0, 2.54, "input", 1.27))
-    out.append(_pin(pins["vocm"], "VOCM", -2.54, -10.16, 90, 5.08, "input"))
-    out.append(_pin(pins["pd"], "~{PD}", 0.0, -10.16, 90, 6.35, "input"))
+    # the three bottom pins 1.27 further right than the 2.54 grid would put them (on KiCad's 1.27 connection grid):
+    # at x -5.08 the VS- name's top sat beside the inverting input's "-" marker and read as a second minus (build 28)
+    out.append(_pin(pins["vocm"], "VOCM", -1.27, -10.16, 90, 5.715, "input"))
+    out.append(_pin(pins["pd"], "~{PD}", 1.27, -10.16, 90, 6.985, "input"))
     out.append(_pin(pins["vs_p"], "VS+", -2.54, 10.16, 270, 5.08, "power_in"))
-    out.append(_pin(pins["vs_n"], "VS-", -5.08, -10.16, 90, 3.81, "power_in"))
+    out.append(_pin(pins["vs_n"], "VS-", -3.81, -10.16, 90, 4.445, "power_in"))
     out.append(_pin(pins["out_n"], "", 10.16, 3.81, 180, 9.144, "output"))
     out.append(_pin(pins["out_p"], "", 10.16, -3.81, 180, 10.16, "output"))
     out.append(')')
@@ -426,7 +489,8 @@ class Sch:
         self.root = root or self.uuid
         self.inst_path = ("/" + self.root + ("/" + sheet_box_uuid if sheet_box_uuid else ""))
         self.body, self._segs, self._bsegs = [], [], []
-        self.pre = []            # items KiCad keeps before lib_symbols (bus aliases)
+        self.pre = []            # items KiCad keeps before lib_symbols (bus aliases, as KiCad 9 stored them)
+        self.aliases = {}        # bus aliases by name: KiCad 10 keeps them in the project file (gen.write_project)
         self._manual_j = set()
         self.libs = set()
         self._n = 0
@@ -436,7 +500,16 @@ class Sch:
         self.lcsc = {}            # ref -> LCSC code, for the BOM           # (x, y, ref, pin, is_power) every placed pin, for the touch check
         self.labelpts = []         # (x, y, name, kind) every label anchor, for the net check
         self.items = []            # (x0, y0, x1, y1, what) symbols bodies
+        self.bodies = []           # (what, [shapes]) the bodies' graphics on the sheet, pins left out: for the text-on-symbol check
         self.refs = {}             # ref -> (x, y)
+
+    def bus_alias(self, name, members):
+        """A bus alias: a label "{name}" on a bus then carries `members` (KiCad resolves the alias; one short
+        label instead of a 90 mm list).  Written into the sheet (KiCad 9's place) and collected for the
+        project file, where KiCad 10 keeps them: `kicad-cli sch upgrade` drops the sheet's copy (build 28)."""
+        self.pre.append('\t(bus_alias %s (members %s))' % (q(name), " ".join(q(m) for m in members)))
+        self.aliases[name] = list(members)
+        return self
 
     def _u(self, *k):
         self._n += 1
@@ -502,7 +575,7 @@ class Sch:
         self.body.append('\t(hierarchical_label %s (shape %s) (at %s %s %d) %s (uuid %s))'
                          % (q(name), shape, g(x), g(y), rot, _eff(size, justify=justify),
                             q(self._u("hl", name, x, y))))
-        self._note_text(x + (1.5 if rot == 0 else -1.5), y, name, rot, justify, size)
+        self._note_text(x + (1.5 if rot == 0 else -1.5), y, name, rot, justify + " middle", size)      # (the flag's text is centred on its wire)
         return self
 
     def _note_text(self, x, y, s, rot, justify, size):
@@ -526,7 +599,9 @@ class Sch:
         """A filled comment box, wrapped to a readable column, placed by its
         top-left corner.  Returns its (w, h)."""
         s = wrap(s, cols)
-        ww = w or (text_w(s, size) * 1.15 + 2.5)
+        ww = text_w(s, size) * 1.12 + 2.5                 # the box is as wide as its longest line: KiCad never re-wraps it
+        if w:
+            ww = min(ww, max(w, ww))                       # (w is the column the wrap aimed at; a longer formula keeps its line)
         h = text_h(s, size) * 1.05 + 2.4
         ww, h = math.ceil(ww / GRID) * GRID, math.ceil(h / GRID) * GRID
         self.body.append(
@@ -571,6 +646,10 @@ class Sch:
         xs = [x + c[0] for c in corners]; ys = [y + c[1] for c in corners]
         bx0, by0, bx1, by1 = min(xs), min(ys), max(xs), max(ys)
         self.items.append((bx0, by0, bx1, by1, ref or lib_id))
+        shapes = []
+        for pts in _body_shapes(node, unit):
+            shapes.append([(x + c[0], y + c[1]) for c in (_xform(px, py, rot, mirror) for px, py in pts)])
+        self.bodies.append((ref or lib_id, shapes))
         # KiCad draws a field with (symbol rotation + field angle) == 180 mirrored,
         # which swaps left and right justification; pre-swap so that "left" is left
         flip = ((rot % 360) + fang) % 360 == 180
@@ -603,16 +682,20 @@ class Sch:
             self.lcsc[ref or lib_id] = lcsc
         for k, v in (fields or {}).items():
             prop(k, v, (x, y), "left", hide=True)
-        # bounding boxes as RENDERED (the reference sits above its anchor, the
-        # value below, both justified as asked), for the overlap check
+        # bounding boxes as RENDERED, for the overlap check: the anchors are snapped to the grid like everything
+        # else, and KiCad draws a reference's glyphs from 0.76 x size above its anchor to 0.23 below, a value's
+        # from 0.38 below to 1.37 below, whichever way the symbol is turned (measured on 2026-10-07 from the
+        # exported PDF with pdftotext -bbox: gen/check_sch_text.py does the same check on the real output)
         if not hide_ref and ref:
             w = text_w(ref, fsize)
-            rx = ref_at[0] if justify == "left" else ref_at[0] - w
-            self.texts.append((rx, ref_at[1] - fsize * 1.4, rx + w, ref_at[1], ref))
+            rx = snap(ref_at[0]) if justify == "left" else snap(ref_at[0]) - w
+            ry = snap(ref_at[1])
+            self.texts.append((rx, ry - 0.76 * fsize, rx + w, ry + 0.23 * fsize, ref))
         if not hide_value and value:
             w = text_w(value, fsize)
-            vx = val_at[0] if justify == "left" else val_at[0] - w
-            self.texts.append((vx, val_at[1], vx + w, val_at[1] + fsize * 1.4, value))
+            vx = snap(val_at[0]) if justify == "left" else snap(val_at[0]) - w
+            vy = snap(val_at[1])
+            self.texts.append((vx, vy + 0.38 * fsize, vx + w, vy + 1.37 * fsize, value))
         pintxt = "".join('\t\t(pin %s (uuid %s))\n' % (q(p["num"]), q(self._u("pin", ref, p["num"], p["unit"])))
                          for p in pins)
         mir = " (mirror %s)" % mirror if mirror else ""
@@ -646,6 +729,8 @@ class Sch:
         x, y = snap(x), snap(y)
         self.libs.add(lib_id)
         u = self._u("pw", net, x, y)
+        _PWR_N[0] += 1
+        ref = "#PWR%04d" % _PWR_N[0]                                  # numbered across the run's sheets: 70 symbols all called "#PWR" were an annotation error to KiCad (build 28)
         vy = y + 4.2 if down else y - 3.9
         vx = x
         if rot == 180:
@@ -657,16 +742,16 @@ class Sch:
         self.body.append(
             '\t(symbol (lib_id %s) (at %s %s %d) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)\n'
             '\t\t(uuid %s)\n'
-            '\t\t(property "Reference" "#PWR" (at %s %s 0) %s)\n'
+            '\t\t(property "Reference" %s (at %s %s 0) %s)\n'
             '\t\t(property "Value" %s (at %s %s 0) %s)\n'
             '\t\t(property "Footprint" "" (at %s %s 0) %s)\n'
             '\t\t(property "Datasheet" "" (at %s %s 0) %s)\n'
             '\t\t(property "Description" "" (at %s %s 0) %s)\n'
             '\t\t(pin "1" (uuid %s))\n'
-            '\t\t(instances (project %s (path %s (reference "#PWR") (unit 1)))))'
-            % (q(lib_id), g(x), g(y), rot, q(u), g(x), g(y), _eff(hide=True), q(net), g(vx), g(vy),
+            '\t\t(instances (project %s (path %s (reference %s) (unit 1)))))'
+            % (q(lib_id), g(x), g(y), rot, q(u), q(ref), g(x), g(y), _eff(hide=True), q(net), g(vx), g(vy),
                _eff(1.27), g(x), g(y), _eff(hide=True), g(x), g(y), _eff(hide=True),
-               g(x), g(y), _eff(hide=True), q(self._u("pwp", net, x, y)), q(self.project), q(self.inst_path)))
+               g(x), g(y), _eff(hide=True), q(self._u("pwp", net, x, y)), q(self.project), q(self.inst_path), q(ref)))
         w = text_w(net)
         self.texts.append((vx - w / 2, vy - 0.9, vx + w / 2, vy + 0.9, net))
         self.pinpts.append((x, y, "#PWR:" + net, "1", True))
@@ -917,7 +1002,9 @@ class Sch:
         msgs = []
         W, H = self.W, self.H
         for (x0, y0, x1, y1, s) in self.texts + self.items:
-            if x0 < 8 or y0 < 8 or x1 > W - 8 or y1 > H - 25:
+            # the title block takes the bottom right corner (about 110 x 30 mm); elsewhere the border is 10 mm in
+            bottom = H - 32 if x1 > W - 125 else H - 12
+            if x0 < 11 or y0 < 11 or x1 > W - 11 or y1 > bottom:
                 msgs.append("off page: %r at (%.0f,%.0f)-(%.0f,%.0f)" % (s[:24], x0, y0, x1, y1))
         T = self.texts
         for i in range(len(T)):
@@ -926,11 +1013,21 @@ class Sch:
                 b = T[j]
                 if a[0] < b[2] - 0.2 and b[0] < a[2] - 0.2 and a[1] < b[3] - 0.2 and b[1] < a[3] - 0.2:
                     msgs.append("text overlap: %r / %r at (%.0f,%.0f)" % (a[4][:20], b[4][:20], a[0], a[1]))
-            for b in self.items:
-                if b[4].startswith("sheet:"):
-                    continue
-                if a[0] < b[2] - 0.3 and b[0] < a[2] - 0.3 and a[1] < b[3] - 0.3 and b[1] < a[3] - 0.3:
-                    msgs.append("text on symbol: %r on %s at (%.0f,%.0f)" % (a[4][:20], b[4], a[0], a[1]))
+            # text on a symbol's drawn body (its rectangle, triangle or trapezoid; pins and fields are not a body)
+            r = (a[0] + 0.3, a[1] + 0.3, a[2] - 0.3, a[3] - 0.3)
+            if r[0] < r[2] and r[1] < r[3]:
+                for what, shapes in self.bodies:
+                    if what.startswith("sheet:") or what.startswith("#"):
+                        continue
+                    if any(_rect_hits_poly(r, pts) for pts in shapes):
+                        msgs.append("text on symbol: %r on %s at (%.0f,%.0f)" % (a[4][:20], what, a[0], a[1]))
+                        break
+                # a wire or bus running through the text (a label's own wire runs along its bottom edge: the 0.3
+                # mm shrink keeps that out)
+                for (x0, y0, x1, y1) in self._segs + self._bsegs:
+                    if _seg_hits_rect((x0, y0), (x1, y1), r):
+                        msgs.append("wire through text: %r at (%.0f,%.0f), wire (%.0f,%.0f)-(%.0f,%.0f)" % (a[4][:20], a[0], a[1], x0, y0, x1, y1))
+                        break
         return msgs
 
 
@@ -941,6 +1038,85 @@ def _xform(px, py, rot, mirror):
         py = -py
     a = math.radians(-rot)
     return (px * math.cos(a) + py * math.sin(a), px * math.sin(a) - py * math.cos(a))
+
+
+def _body_shapes(node, unit):
+    """The closed outlines a symbol unit draws (library coordinates, y up): rectangles and polylines as point
+    lists, circles as octagons.  Pins, arcs and open two-point lines are left out: a body is what reads as a
+    body on the page."""
+    out = []
+    for sub in kids(node, "symbol"):
+        m = re.match(r".*_(\d+)_\d+$", val(sub))
+        u = int(m.group(1)) if m else 0
+        if u not in (0, unit):
+            continue
+        for c in sub:
+            if not isinstance(c, list):
+                continue
+            h = head(c)
+            if h == "rectangle":
+                s, e = kid(c, "start"), kid(c, "end")
+                x0, y0, x1, y1 = num(s, 1), num(s, 2), num(e, 1), num(e, 2)
+                out.append([(x0, y0), (x1, y0), (x1, y1), (x0, y1)])
+            elif h == "polyline":
+                pts = [(num(p, 1), num(p, 2)) for p in kids(kid(c, "pts"), "xy")]
+                if len(pts) >= 4 or (len(pts) == 3 and pts[0] == pts[-1]):      # a closed outline; an arrowhead is not a body
+                    out.append(pts)
+            elif h == "circle":
+                ce, r = kid(c, "center"), num(kid(c, "radius"), 1)
+                if r >= 1.0:
+                    out.append([(num(ce, 1) + r * math.cos(k * math.pi / 4), num(ce, 2) + r * math.sin(k * math.pi / 4)) for k in range(8)])
+    return out
+
+
+def _seg_hits_rect(p, q, r):
+    """Does the segment p-q pass through the rectangle r = (x0, y0, x1, y1)?"""
+    x0, y0, x1, y1 = r
+    (px, py), (qx, qy) = p, q
+    if max(px, qx) < x0 or min(px, qx) > x1 or max(py, qy) < y0 or min(py, qy) > y1:
+        return False
+    if x0 <= px <= x1 and y0 <= py <= y1:
+        return True
+    if x0 <= qx <= x1 and y0 <= qy <= y1:
+        return True
+    # Liang-Barsky clip of the segment against the rectangle
+    dx, dy = qx - px, qy - py
+    t0, t1 = 0.0, 1.0
+    for pk, qk in ((-dx, px - x0), (dx, x1 - px), (-dy, py - y0), (dy, y1 - py)):
+        if pk == 0:
+            if qk < 0:
+                return False
+            continue
+        t = qk / pk
+        if pk < 0:
+            if t > t1:
+                return False
+            t0 = max(t0, t)
+        else:
+            if t < t0:
+                return False
+            t1 = min(t1, t)
+    return t0 <= t1
+
+
+def _rect_hits_poly(r, pts):
+    """Does the rectangle r = (x0, y0, x1, y1) overlap the closed polygon pts (a corner of either inside the
+    other, or an edge crossing)?"""
+    x0, y0, x1, y1 = r
+    for (px, py) in pts:
+        if x0 < px < x1 and y0 < py < y1:
+            return True
+    def inside(x, y):
+        n, c = len(pts), False
+        for i in range(n):
+            ax, ay = pts[i]; bx, by = pts[(i + 1) % n]
+            if (ay > y) != (by > y) and x < ax + (bx - ax) * (y - ay) / (by - ay):
+                c = not c
+        return c
+    if any(inside(cx, cy) for cx, cy in ((x0, y0), (x1, y0), (x1, y1), (x0, y1), ((x0 + x1) / 2, (y0 + y1) / 2))):
+        return True
+    n = len(pts)
+    return any(_seg_hits_rect(pts[i], pts[(i + 1) % n], r) for i in range(n))
 
 
 def _body_bbox(node, unit):

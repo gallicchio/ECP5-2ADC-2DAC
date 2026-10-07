@@ -1,4 +1,4 @@
-ECP5-2ADC-2DAC rev A -- FABRICATION NOTES (written 2026-10-06)
+ECP5-2ADC-2DAC rev A -- FABRICATION NOTES (written 2026-10-07)
 
 Board: 158 x 119 mm, 6 layers, 1.6 mm, JLCPCB stackup JLC06161H-7628 (1 oz outer, 0.5 oz inner, 7628 prepreg).
 Surface finish: ENIG (there is a 0.8 mm pitch BGA).  Solder mask green, silkscreen white.
@@ -9,20 +9,22 @@ Photodiode D103 uses ours:VBPW34S_K1_A2 (LCSC's footprint with pads renumbered s
 The mini-HDMI jack is wired with type C pin numbering (shield first in each pair, DDC ground 13, CEC 14); its four shell tabs (pads 20-23) are grounded.
 Minimum track/space on the board: 0.100 mm (inside the BGA fan-out; 0.127 mm elsewhere).  Via sizes: 0.3/0.15, 0.45/0.25.  Smallest drill 0.15 mm.
 Impedance: ask for controlled impedance with the JLC06161H-7628 calculator: 50 ohm single-ended (SMA runs, 0.3 mm drawn) and 100 ohm differential (Ethernet MDI, 0.2 mm / 0.2 mm drawn), referenced to In1.
-The shipped board file holds 312 filled zone polygons; DRC 0 errors / 0 unconnected (build/drc.json).
+The shipped board file holds 305 filled zone polygons; DRC 0 errors / 0 unconnected (build/drc.json).
 
-Assembly (JLCPCB Standard, SMT both sides + through-hole on top): 438 SMT placements and 27 through-hole parts on 91 BOM lines, 46 of them Extended parts (each carries a one-off loading fee).
-Through-hole, fitted by JLCPCB (Jason, 2026-10-06): the six SMA jacks, the RJ45, the DIP switch, the 2.54 mm headers (ordered as 1x40 / 2x40 strips the assembler snaps to length, as on the GPSDO board) and the two Pmod sockets.  144 through-hole joints incl. the USB-C shells.
+Assembly (JLCPCB Standard, SMT both sides + through-hole on top): 438 SMT placements and 28 through-hole parts on 91 BOM lines, 46 of them Extended parts (each carries a one-off loading fee).
+Through-hole, fitted by JLCPCB (Jason, 2026-10-06): the six SMA jacks, the RJ45, the DIP switch, the 2.54 mm headers (ordered as 1x40 / 2x40 strips the assembler snaps to length, as on the GPSDO board) and the two Pmod sockets.  146 through-hole joints incl. the USB-C shells.
 Upload: ECP5-2ADC-2DAC_bom.csv and ECP5-2ADC-2DAC_cpl.csv (JLCPCB's conventions: the bottom-side mirror, rotations read in previews or predicted from their drawings, the USB-C moved to their origin); ECP5-2ADC-2DAC_cpl_native.csv is KiCad's own numbers for reference.
 THEN READ THE PLACEMENT PREVIEW against PLACEMENT_CHECKS.txt: 62 placements of 30 part numbers have a predicted or unverified rotation; the bottom side's 7 polarized parts hardest of all (this board stores its back-side pads mirrored left-right, checked on C_0402_1005Metric).
+Hand solder (hand_solder_bom.csv): nothing -- every part is assembled by JLCPCB; the file is its header alone.
+Coordinates: the board's corner is at (25, 25) mm on KiCad's page (pcb/place.py OX, OY); the gerbers, the drill file and the CPL all use that frame, so they agree.
 End plates: end_panel_left/right.svg and .dxf (1:1, viewed from outside) with every connector's cutout; end_panels.txt lists them.  MEASURE which slot the board rides in and set PCB_TOP_ABOVE_FLOOR in mfg/end_panels.py before milling.
 
-COST ESTIMATE for 5 boards (JLCPCB list prices, parts from their live API on 2026-10-06):
+COST ESTIMATE for 5 boards (JLCPCB list prices, parts from their live API on 2026-10-07):
   PCBs (6-layer, ENIG, via-in-pad)            ~$130
   assembly setup + Extended-part loading fees  ~$146
   SMT assembly per board x 5                  ~$19
-  through-hole: $3.58 per order + 144 joints x $0.020 x 5 boards  ~$18  (per-joint rate assumed: calibrate against the cart)
-  parts for 5 boards                           $798.50
-  TOTAL                                        ~$1111  (~$222 per board)
+  through-hole: $3.58 per order + 146 joints x $0.020 x 5 boards  ~$18  (per-joint rate assumed: calibrate against the cart)
+  parts for 5 boards                           $799.14
+  TOTAL                                        ~$1112  (~$222 per board)
 
 THIN STOCK (fewer than 10x what 5 boards need): C514277 AD9238BSTZ-65 stock 21 need 5

@@ -121,9 +121,9 @@ buck, a 5 V corridor from the USB jacks down the right edge and along the bottom
 signal via has a ground via within 1.5 mm.  The analog strips (one per SMA, 17 mm pitch) run straight from
 the SMAs to the converters down the left side; digital nets may not cross them.
 
-State at the time of writing (build 27, 2026-10-04): ERC 0, DRC 0 errors and 0 unconnected at all severities
+State at the time of writing (build 28, 2026-10-07): ERC 0, DRC 0 errors and 0 unconnected at all severities
 with the project's own rules (JLCPCB's capabilities or stricter, all silkscreen and courtyard checks as errors),
-three warnings (two ground return vias north-west of the FPGA that touch only the In1 plane, one 0.2 mm -4V2
+three warnings (two ground return vias north-west of the FPGA that touch only the In1 plane, one 0.2 mm +5VA
 stub); every net routed by the build's own router or by hand (412 of 412); 3D renders in `docs/images/`.
 
 ## 5. How the project is built -- this deserves its own scrutiny
@@ -263,6 +263,21 @@ the DAC difference amplifier's AC balance and honest ±0.9 / ±1.8 V labels; a T
 RAILS header; four U.FL monitor taps; the SMA feeds at their 50 Ω width.  Each of those is a new place to look.
 Build 27 (same day) changed no circuit: the TAP B jack moved to its strip's bottom-left corner so its silkscreen
 name fits beside it, and a dozen schematic labels that sat on symbols or wires were moved.
+Build 28 (2026-10-07, Jason's own read of build 27's sheets and silkscreen as a student would see them, Prompt 26 in
+`CLAUDE_CODE_CHAT.md`): one electrical change, the DAC difference amplifiers' gain resistors 2.2 kΩ instead of 2 kΩ, so
+the outputs are the round ±1 V into 50 Ω / ±2 V open the labels say; the ferrite beads simulated and kept
+(`sim/pdn_bead.cir`: a 0.7 Ω peak near 50 kHz, nothing behind a bead that could oscillate); and a routing bug fixed
+that no review had seen: the router narrowed every rail that touched one fine LQFP or QFN pin to that pad's width
+over its whole length, so +3V3_ADC, +5V and +3V3 ran 150-200 mm at 0.23-0.28 mm in every build to 27 -- the
+router still lays them that way, and `pcb/fatten.py` then widens each track toward its class width wherever the
+copper round it leaves room at KiCad's clearance, without moving a route; `build/route_report.json` lists every
+rail's width by net before and after.  The rest
+is readability: the converters drawn as MUX-style trapezoids, dual op amps in dashed boxes, the sheet essays
+broken into columns beside the blocks they describe, the board centred on its page, DAC 1 above DAC 2, section
+names inside their boxes, every jumper's meaning beside it, the taps' names beside their jacks, "USB USER", a
+legend that had never printed, and three new checks (the generator's measured-extent overlap model, the exported
+PDF read back with `pdftotext -bbox`, and labels/parts kept to their section boxes).  Each of those is a place
+where a label could now say the wrong thing; the circuit is build 26's with the one resistor change.
 
 ## 9. How to look at it
 

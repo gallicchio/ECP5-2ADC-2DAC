@@ -9,7 +9,7 @@ from draw import *
 def buck(ctx, base, x, y, uref, vout, r1, r2, note_text):
     """TLV62569 buck at (x, y): VIN on the left, VOUT bar to the right."""
     s = ctx.s
-    u = part(ctx, "Regulator_Switching:TLV62569DBV", uref, "TLV62569DBVR", "SOT23-5", x, y, ref_at=(x - 7.0, y - 7.5), val_at=(x - 7.0, y + 8.0))
+    u = part(ctx, "Regulator_Switching:TLV62569DBV", uref, "TLV62569DBVR", "SOT23-5", x, y, ref_at=(x - 7.0, y - 7.5), val_at=(x - 7.0, y + 16.5))      # (value under the ground's name, not across its stem)
     en, g, sw, vin, fb = u.pin("1"), u.pin("2"), u.pin("3"), u.pin("4"), u.pin("5")
     s.wire(*vin, vin[0] - 7.62, vin[1]); s.wire(*en, vin[0] - 5.08, en[1]); s.wire(vin[0] - 5.08, en[1], vin[0] - 5.08, vin[1])
     rail(ctx, vin[0] - 7.62, vin[1], "+5V", stub=5.08)
@@ -28,14 +28,14 @@ def buck(ctx, base, x, y, uref, vout, r1, r2, note_text):
     co1 = C(ctx, base, "22uF", xo + 12.7, lr[1] + 5.08, fp="C0805", side="right"); s.wire(xo + 12.7, lr[1], *co1.pin(1)); gnd(ctx, *co1.pin(2), stub=1.27)
     co2 = C(ctx, base, "22uF", xo + 22.86, lr[1] + 5.08, fp="C0805", side="right"); s.wire(xo + 22.86, lr[1], *co2.pin(1)); gnd(ctx, *co2.pin(2), stub=1.27)
     rail(ctx, xo + 25.4, lr[1], vout, stub=5.08); pwr_flag(ctx, xo + 17.78, lr[1])
-    label_node(ctx, x - 20.0, y + 24.0, note_text, side="right", size=0.85)
+    label_node(ctx, x - 20.0, y + 28.5, note_text, side="right", size=0.85)      # (under the divider's ground)
     return (xo + 25.4, lr[1])
 
 
 def ldo(ctx, base, x, y, uref, value, lcsc, vin, vout, note_text, cin="1uF", cout="1uF"):
     s = ctx.s
     u = part(ctx, "Regulator_Linear:TPS7A20xxxDBV" if "TPS" in value else "Regulator_Linear:LP5907MFX-2.5", uref, value, "SOT23-5", x, y,
-             ref_at=(x - 7.0, y - 7.5), val_at=(x - 7.0, y + 8.0), lcsc=lcsc)
+             ref_at=(x - 7.0, y - 7.5), val_at=(x - 7.0, y + 16.5), lcsc=lcsc)
     i, g, en, o = u.pin("1"), u.pin("2"), u.pin("3"), u.pin("5")
     s.wire(*i, i[0] - 7.62, i[1]); s.wire(*en, i[0] - 5.08, en[1]); s.wire(i[0] - 5.08, en[1], i[0] - 5.08, i[1])
     rail(ctx, i[0] - 7.62, i[1], vin, stub=5.08)
@@ -52,23 +52,24 @@ def ferrite_feed(ctx, base, x, y, src, dst, note_text):
     s = ctx.s
     fb = FB(ctx, base, x, y, horiz=True)
     s.wire(*fb.pin(1), x - 10.16, y); rail(ctx, x - 10.16, y, src, stub=5.08)
-    s.wire(*fb.pin(2), x + 15.24, y); rail(ctx, x + 15.24, y, dst, stub=5.08); pwr_flag(ctx, x + 5.08, y)
-    c = C(ctx, base, "10uF", x + 10.16, y + 5.08, fp="C0603", side="right"); s.wire(x + 10.16, y, *c.pin(1)); gnd(ctx, *c.pin(2), stub=1.27)
-    label_node(ctx, x - 12.0, y + 14.0, note_text, side="right", size=0.85)
+    s.wire(*fb.pin(2), x + 20.32, y); rail(ctx, x + 20.32, y, dst, stub=5.08); pwr_flag(ctx, x + 10.16, y)
+    c = C(ctx, base, "10uF", x + 15.24, y + 5.08, fp="C0603", side="right"); s.wire(x + 15.24, y, *c.pin(1)); gnd(ctx, *c.pin(2), stub=1.27)      # (5 mm further out since build 28: the bead's value reached its plates)
+    label_node(ctx, x - 12.0, y + 17.5, note_text, side="right", size=0.85)
 
 
 def draw(sch, ids, fpga):
     ctx = Ctx(sch, "PWR")
     s = sch
     s.text(20, 22, "Power: one 5 V USB-C in; 3.3 V and 1.1 V bucks; LDOs for the quiet rails; ±4.5 V analog", size=3.0, bold=True)
-    note(ctx, 20, 26, "Everything runs from the 5 V of the FTDI USB-C (or a bench 5 V on J16, diode-OR'd). The two switching "
-                      "regulators make the digital 3.3 V (FPGA I/O, SDRAM, flash, PHY, FTDI) and the 1.1 V core; they are "
-                      "placed in the far corner from the converters. Every analog rail is a separate LDO off the 5 V: "
-                      "+3V3_ADC (AD9238 and its drivers), +3V3_DAC (AD9767); the op amps get +5VA through a ferrite and "
-                      "-4.2 V from an LM27761 charge pump (then a ferrite bead). The converters' digital supplies and the PHY are fed from +3V3 "
-                      "through ferrite beads so their switching noise does not ride the common rail. Budget: FPGA ~0.6 W, "
-                      "ADC 0.6 W, DAC 0.4 W, PHY 0.4 W, FTDI 0.3 W, amplifiers 0.4 W, SDRAM 0.2 W: about 3 W, 0.6 A at 5 V.",
-         w=340, size=1.1)
+    note(ctx, 20, 26, "Everything runs from the 5 V of USB PROG (or a bench 5 V on J601, diode-OR'd).\n"
+                      "Two switching regulators make the digital 3.3 V (FPGA I/O, SDRAM, flash, PHY, FTDI) and the 1.1 V core,\n"
+                      "in the far corner from the converters. Every analog rail is its own LDO off the 5 V: +3V3_ADC, +3V3_DAC;\n"
+                      "the op amps get +5VA through a ferrite bead and -4.2 V from an LM27761 charge pump (then a bead).\n"
+                      "The converters' digital supplies and the PHY take +3V3 through beads, so their noise stays off the common rail.\n"
+                      "Ferrite beads, simulated (sim/pdn_bead.cir): each bead's ~1 µH resonates with its 10 µF at ~50 kHz, a 0.7 Ω\n"
+                      "peak seen by the load -- far below the 1.5 and 2 MHz switchers (5 mΩ there), and no regulator loop sits behind a bead.\n"
+                      "Budget: FPGA ~0.6 W, ADC 0.6 W, DAC 0.4 W, PHY 0.4 W, FTDI 0.3 W, amplifiers 0.4 W, SDRAM 0.2 W: about 3 W, 0.6 A at 5 V.",
+         w=250, size=1.1)
     hp = [("VBUS", "input")]
     # --- input ----------------------------------------------------------------------
     y0 = 90.0
@@ -174,7 +175,7 @@ def draw(sch, ids, fpga):
         pg_led(1650 + 10 * i, xp0 + 17.78 * i, yp0, nm, rv, dref)
     # the 1.1 V rail cannot light a diode itself: it turns on an NPN whose collector takes a LED from 3.3 V
     xq = xp0 + 17.78 * 7 + 12.7
-    q = part(ctx, "Transistor_BJT:SS8050", "Q601", "SS8050", "SOT23", xq, yp0 + 20.32, rot=0, ref_at=(xq + 3.5, yp0 + 18.5), val_at=(xq + 3.5, yp0 + 21.0))
+    q = part(ctx, "Transistor_BJT:SS8050", "Q601", "SS8050", "SOT23", xq, yp0 + 20.32, rot=0, ref_at=(xq + 4.5, yp0 + 18.5), val_at=(xq + 4.5, yp0 + 21.0))
     bq, eq, cq = q.pin(1), q.pin(2), q.pin(3)
     rb = R(ctx, 1720, "4.7k", bq[0] - 7.62, bq[1], horiz=True, ref_at=(bq[0] - 10.2, bq[1] - 1.6), val_at=(bq[0] - 10.2, bq[1] + 1.3))
     s.wire(*rb.pin(2), *bq); s.wire(*rb.pin(1), rb.pin(1)[0] - 2.54, bq[1]); rail(ctx, rb.pin(1)[0] - 2.54, bq[1], "+1V1", stub=2.54)
@@ -189,15 +190,16 @@ def draw(sch, ids, fpga):
     # --- mounting holes: M3 in the four corners, pads tied to ground --------------------------
     xh = 60.0
     for i in range(4):
-        h = part(ctx, ids["hole"], "H%d" % (i + 1), "M3", "HOLE", xh + i * 12.7, 395.0, ref_at=(xh + i * 12.7 - 2.0, 390.3), val_at=(xh + i * 12.7 - 2.0, 390.8), lcsc=None)
+        h = part(ctx, ids["hole"], "H%d" % (i + 1), "M3", "HOLE", xh + i * 12.7, 385.0, ref_at=(xh + i * 12.7 + 3.2, 383.5), val_at=(xh + i * 12.7 + 3.2, 385.5), lcsc=None)      # (fields right of the ring)
         gnd(ctx, *h.pin(1), stub=1.27)
-    s.text(xh - 3.0, 388.0, "M3 mounting holes, four corners, grounded", size=1.2, bold=True)
+    s.text(xh - 3.0, 376.0, "M3 mounting holes, four corners, grounded", size=1.2, bold=True)      # (10 mm up since build 28: the grounds' names sat 4 mm from the border)
     # power flags for ERC: the rails are driven here
     for i, nm in enumerate(("+5V", "+3V3", "+1V1", "+2V5", "+3V3_ADC", "+3V3_DAC", "+3V3_DRV", "+3V3_DAC_D", "+3V3_ETH", "+5VA", "-4V2", "+1V0_PHY", "+1V8_FTDI", "GND")):
         pass
-    note(ctx, 20.0, 318.0, "Sequencing (FPGA-DS-02012 §3.5, Master SPI): VCCIO8 must be above the flash's VIH before the FIRST of VCC "
-                           "and VCCAUX reaches its POR threshold, or PROGRAMN/INITN must be held low until it is. Here VCCAUX is an LDO "
-                           "off +3V3 (= VCCIO8), so it cannot lead it; VCC is the other buck, enabled by the same 5 V with the same "
-                           "soft-start, and the 100 nF on PROGRAMN (FPGA sheet) holds configuration off for ~0.5 ms after +3V3 is up "
-                           "in any case. Scope +3V3 against +1V1 on the first board. The PHY, converters and amplifiers tolerate any order.", w=180, size=0.95)
+    note(ctx, 20.0, 318.0, "Sequencing (FPGA-DS-02012 §3.5, Master SPI): VCCIO8 must be above the flash's VIH before the FIRST of VCC\n"
+                           "and VCCAUX reaches its POR threshold, or PROGRAMN/INITN must be held low until it is.\n"
+                           "Here VCCAUX is an LDO off +3V3 (= VCCIO8), so it cannot lead it; VCC is the other buck, enabled by the same\n"
+                           "5 V with the same soft-start; and the 100 nF on PROGRAMN (FPGA sheet) holds configuration off for ~0.5 ms\n"
+                           "after +3V3 is up in any case. Scope +3V3 against +1V1 on the first board.\n"
+                           "The PHY, converters and amplifiers tolerate any order.", w=190, size=0.95)
     return hp

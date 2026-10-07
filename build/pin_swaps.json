@@ -260,8 +260,8 @@
   "pools": {
    "north": {
     "balls": 25,
-    "length_after_mm": 1108.8,
-    "length_before_mm": 1108.8,
+    "length_after_mm": 1106.4,
+    "length_before_mm": 1106.4,
     "moved": 0,
     "signals": 24
    },

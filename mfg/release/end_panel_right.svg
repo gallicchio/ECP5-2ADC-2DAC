@@ -10,7 +10,7 @@
 <rect x="-31.10" y="-17.19" width="12.20" height="6.50" rx="0.8" />
 <g transform="translate(-25.00,-5.69) scale(1,-1)"><text x="0" y="0" font-size="2" text-anchor="middle" fill="black" stroke="none">USB PROG (USB-C)</text></g>
 <rect x="-17.60" y="-17.19" width="12.20" height="6.50" rx="0.8" />
-<g transform="translate(-11.50,-8.69) scale(1,-1)"><text x="0" y="0" font-size="2" text-anchor="middle" fill="black" stroke="none">USB FPGA (USB-C)</text></g>
+<g transform="translate(-11.50,-8.69) scale(1,-1)"><text x="0" y="0" font-size="2" text-anchor="middle" fill="black" stroke="none">USB USER (USB-C)</text></g>
 <rect x="-4.00" y="-17.57" width="13.00" height="7.50" rx="0.8" />
 <g transform="translate(2.50,-5.07) scale(1,-1)"><text x="0" y="0" font-size="2" text-anchor="middle" fill="black" stroke="none">HDMI (mini)</text></g>
 <rect x="10.52" y="-14.97" width="17.50" height="8.00" rx="0.8" />

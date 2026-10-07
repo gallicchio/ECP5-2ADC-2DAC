@@ -74,7 +74,10 @@ class Occ:
     def spot(self, w, h, prefer, maxd=12.0, step=0.5, rot_ok=False, region=None, rot=None):
         """Top-left (x, y, rot) of a free w x h box with its centre nearest
         `prefer`, or None.  rot_ok also tries the box standing up (rot 90);
-        rot=90 tries only that, rot=0 only flat."""
+        rot=90 tries only that, rot=0 only flat.  `region` (x0, y0, x1, y1)
+        holds the whole box, flat or standing (builds to 27 tested the centre
+        against a region shrunk for the flat box, so a standing label could
+        never sit near a box's side)."""
         if rot == 90:
             rot_ok = True
         px, py = prefer
@@ -86,14 +89,15 @@ class Occ:
                 if d <= maxd:
                     cands.append((d, px + di * step, py + dj * step))
         cands.sort()
+        def inside(x0, y0, x1, y1):
+            return not region or (region[0] <= x0 and x1 <= region[2] and region[1] <= y0 and y1 <= region[3])
         for d, cx, cy in cands:
-            if region and not (region[0] <= cx <= region[2] and region[1] <= cy <= region[3]):
-                continue
             x0, y0 = cx - w / 2.0, cy - h / 2.0
-            if rot != 90 and self.free(x0, y0, x0 + w, y0 + h):
+            if rot != 90 and inside(x0, y0, x0 + w, y0 + h) and self.free(x0, y0, x0 + w, y0 + h):
                 return (x0, y0, 0)
-            if rot_ok and self.free(cx - h / 2.0, cy - w / 2.0, cx + h / 2.0, cy + w / 2.0):
-                return (cx - h / 2.0, cy - w / 2.0, 90)
+            x0, y0 = cx - h / 2.0, cy - w / 2.0                      # standing: the box turned, tested in the region on its own
+            if rot_ok and inside(x0, y0, x0 + h, y0 + w) and self.free(x0, y0, x0 + h, y0 + w):
+                return (x0, y0, 90)
         return None
 
     def largest(self):

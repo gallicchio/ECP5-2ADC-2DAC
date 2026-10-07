@@ -1,4 +1,4 @@
-DAC output stage: IOUTA/IOUTB 0..19.2 mA into 24.9 R -> OPA2810 difference amp gain 4 -> 49.9 R -> 50 R load
+DAC output stage: IOUTA/IOUTB 0..19.2 mA into 24.9 R -> OPA2810 difference amp gain 4.4 (2.2 k, 2026-10-07: a round +-2 V / +-1 V) -> 49.9 R -> 50 R load
 .include opamps.lib
 * complementary current sources: Ia = code/16383 * 19.2 mA, Ib = 19.2 mA - Ia; code swept by the control block
 .param ia=9.6m
@@ -8,11 +8,11 @@ Ra va 0 24.9
 Rb vb 0 24.9
 Rgp va ip 499
 Rgn vb im 499
-Rtp ip 0 2k
+Rtp ip 0 2.2k
 Ctp ip 0 2.2p
 * (build 26: 2.2 pF across the 2 k to ground balances the 2 k || 2.2 pF feedback at HF)
 X1 ip im vp5 vm5 out OPA2810
-Rf out im 2k
+Rf out im 2.2k
 Cf out im 2.2p
 Vp5 vp5 0 5
 Vm5 vm5 0 -4.15

@@ -3,8 +3,8 @@ FOOTPRINT vs ORDERED PART -- does the part fit the copper?
 
 board  ../ECP5-2ADC-2DAC.kicad_pcb
 BOM    release/ECP5-2ADC-2DAC_bom.csv
-run    2026-10-06T22:46:54-07:00
-469 footprint(s) placed, 1288 drill(s) on the board
+run    2026-10-07T09:34:56-07:00
+470 footprint(s) placed, 1271 drill(s) on the board
 
   ok C1525       C_0402_1005Metric                            C0402              32 placement(s)
   ok C1525       C_0402_1005Metric                            C0402              33 placement(s) bottom
@@ -16,7 +16,7 @@ run    2026-10-06T22:46:54-07:00
   ok C23162      R_0603_1608Metric                            R0603              1 placement(s) bottom
   ok C25804      R_0603_1608Metric                            R0603              17 placement(s)
   ok C25804      R_0603_1608Metric                            R0603              2 placement(s) bottom
-  !! C2337       PinHeader_1x02_P2.54mm_Vertical              HDR-TH_40P-P2.54-V 11 placement(s)
+  !! C2337       PinHeader_1x02_P2.54mm_Vertical              HDR-TH_40P-P2.54-V 12 placement(s)
        PADS  part has 40 pad position(s), footprint has 2
        datum their origin sits at (+0.000, +49.530) mm in our footprint; the JLCPCB CPL is moved there
   !! C2337       PinHeader_1x03_P2.54mm_Vertical              HDR-TH_40P-P2.54-V 4 placement(s)
@@ -38,11 +38,10 @@ run    2026-10-06T22:46:54-07:00
   ok C45783      C_0805_2012Metric                            C0805              1 placement(s) bottom
   ok C85833      L_0603_1608Metric                            L0603              3 placement(s)
   ok C85833      L_0603_1608Metric                            L0603              4 placement(s) bottom
+  ok C4190       R_0603_1608Metric                            R0603              7 placement(s)
   ok C23138      R_0603_1608Metric                            R0603              7 placement(s)
   !! C496551     SMA_BAT_Wireless_BWSMA-KWE-Z001              SMA-TH_BWSMA-KWE-Z 6 placement(s)
        names the land pattern fits to 0.000 mm but the two libraries number the pins differently -- by name the worst miss is 1.80 mm at pad 1.  Placement is fine; the NET on each pin is the thing to look at
-  ok C22975      R_0603_1608Metric                            R0603              4 placement(s)
-  ok C22975      R_0603_1608Metric                            R0603              2 placement(s) bottom
   ok C52923      C_0402_1005Metric                            C0402              2 placement(s)
   ok C52923      C_0402_1005Metric                            C0402              3 placement(s) bottom
   ok C1559       C_0402_1005Metric                            C0402              5 placement(s)
@@ -60,7 +59,6 @@ run    2026-10-06T22:46:54-07:00
   ok C12624      LED_0603_1608Metric                          LED0603-RD         3 placement(s)
   ok C279948     IND-SMD_L4.0-W4.0                            IND-SMD_L4.0-W4.0  2 placement(s)
   ok C279948     IND-SMD_L4.0-W4.0                            IND-SMD_L4.0-W4.0  1 placement(s) bottom
-  ok C4190       R_0603_1608Metric                            R0603              3 placement(s)
   ok C22809      R_0603_1608Metric                            R0603              1 placement(s)
   ok C22809      R_0603_1608Metric                            R0603              2 placement(s) bottom
   ok C22978      R_0603_1608Metric                            R0603              3 placement(s)
@@ -78,6 +76,7 @@ run    2026-10-06T22:46:54-07:00
   ok C2150       SOT-23                                       SOT-23-3_L2.9-W1.3 2 placement(s)
   ok C17901      R_1206_3216Metric                            R1206              2 placement(s)
   ok C22775      R_0603_1608Metric                            R0603              2 placement(s)
+  ok C22975      R_0603_1608Metric                            R0603              2 placement(s) bottom
   ok C22790      R_0603_1608Metric                            R0603              2 placement(s)
   ok C25190      R_0603_1608Metric                            R0603              2 placement(s)
   !! C94590      SOIC-8_3.9x4.9mm_P1.27mm                     SOIC-8_L5.0-W4.0-P 2 placement(s)

@@ -250,9 +250,10 @@ def make_antiparallel(lib_id, value="BAV99"):
     out.append(kisch._poly([(-1.27, 0.6), (-1.27, 2.54), (1.27, 2.54), (1.27, 1.0)]))
     out.append(kisch._poly([(1.27, -0.6), (1.27, -2.54)]))
     out.append(kisch._poly([(0.0, 2.54), (0.0, 2.54)]))
-    out.append(kisch._pin("3", "K1A2", 0.0, 3.81, 270, 1.27, "passive"))
-    out.append(kisch._pin("1", "A1", -1.27, -3.81, 90, 1.27, "passive"))
-    out.append(kisch._pin("2", "K2", 1.27, -3.81, 90, 1.27, "passive"))
+    # pin names "~" print nothing: "K1A2" in the middle of the symbol read as a part name (Jason, 2026-10-07)
+    out.append(kisch._pin("3", "~", 0.0, 3.81, 270, 1.27, "passive"))
+    out.append(kisch._pin("1", "~", -1.27, -3.81, 90, 1.27, "passive"))
+    out.append(kisch._pin("2", "~", 1.27, -3.81, 90, 1.27, "passive"))
     out.append(')')
     out += ['(embedded_fonts no)', ')']
     return SYMS.define(lib_id, "\n".join(out))
@@ -352,11 +353,11 @@ def define_symbols(fpga_json):
     # the sheet draws a dashed box around the three to say so. ------------
     def adc_channel(ch, vp, vn, clk, data, otr, pdwn, oeb):
         gap = ("", "")
-        left = [(vn, "VIN-_%s" % ch, "input"), gap, gap, (vp, "VIN+_%s" % ch, "input"),
-                gap, gap, gap, gap, (clk, "CLK_%s" % ch, "input")]
+        left = [(vn, "VIN-_%s" % ch, "input"), gap, gap, (vp, "VIN+_%s" % ch, "input")]
         right = [(str(data[i]), "D%d_%s" % (11 - i, ch), "output") for i in range(12)]
         right += [(otr, "OTR_%s" % ch, "output"), gap, (pdwn, "PDWN_%s" % ch, "input"), gap, (oeb, "OEB_%s" % ch, "input")]
-        return dict(left=left, right=right, w=33.02, shape="trap")
+        # the sample clock enters the sloped bottom edge from below, like a flip-flop's clock (2026-10-07)
+        return dict(left=left, right=right, bottom=[(clk, "CLK_%s" % ch, "input")], w=33.02, shape="trap_r")
     ca = adc_channel("A", "2", "3", "63", [57, 56, 55, 54, 51, 50, 49, 48, 47, 46, 45, 44], "58", "60", "59")
     cb = adc_channel("B", "15", "14", "18", [38, 37, 36, 35, 34, 33, 32, 31, 30, 27, 26, 25], "39", "21", "22")
     gap = ("", "")
@@ -377,9 +378,10 @@ def define_symbols(fpga_json):
     # on the short right side) and one common box. --------------------------
     def dac_port(n, base, wrt, clk, iouta, ioutb):
         left = [(str(base + i), "DB%dP%d" % (13 - i, n), "input") for i in range(14)]      # MSB first on both ports (pin 1 / pin 23)
-        left += [gap, (wrt, "WRT%d/IQ%s" % (n, "WRT" if n == 1 else "SEL"), "input"), (clk, "CLK%d/IQ%s" % (n, "CLK" if n == 1 else "RESET"), "input")]
+        # WRT and CLK enter the sloped bottom edge from below, like a flip-flop's clock (2026-10-07)
+        bottom = [(wrt, "WRT%d/IQ%s" % (n, "WRT" if n == 1 else "SEL"), "input"), (clk, "CLK%d/IQ%s" % (n, "CLK" if n == 1 else "RESET"), "input")]
         right = [(iouta, "IOUTA%d" % n, "output"), gap, gap, (ioutb, "IOUTB%d" % n, "output")]
-        return dict(left=left, right=right, w=30.48, shape="trap")
+        return dict(left=left, right=right, bottom=bottom, w=30.48, shape="trap")
     p1 = dac_port(1, 1, "17", "18", "46", "45")
     p2 = dac_port(2, 23, "20", "19", "39", "40")
     cm = dict(left=[("48", "MODE", "input"), gap, ("37", "SLEEP", "input"), gap, ("42", "GAINCTRL", "input")],

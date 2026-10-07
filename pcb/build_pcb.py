@@ -899,7 +899,7 @@ class Build:
                 out.append((L, k, key))
         return out
 
-    def route_all(self, budget_s=1500):
+    def route_all(self, budget_s=1800):
         G = self.G
         nets = [n for n in self.numof if n and n != "GND" and not n.startswith("unconnected-")]
         # order: the FPGA's buses first (they are the hard ones), then the rest shortest first, then the rails
@@ -999,6 +999,40 @@ class Build:
         self.vias[:] = keep
         self.comps[net] = [set(c) for c in self.comps_fixed.get(net, [])]
 
+    NECK = 1.5                  # mm: a track wider than the pad it ends on narrows to the pad's width this far from it
+    FINE_ZONE = 4.0             # mm: a connection joining a group this close to one of the net's fine pads is laid at that pad's width
+
+    def _neck(self, laid, fine):
+        """Tracks [(L, x0, y0, x1, y1, w)] that end on a pad narrower than they are (a 0.4 mm rail reaching an
+        LQFP's 0.25 mm pin): the last NECK mm narrows to the pad's width less 0.02, the rest keeps its width.
+        The router's own clearance model has already kept the wide part away from the neighbouring pins."""
+        if not fine:
+            return laid
+        out = []
+        for (L, x0, y0, x1, y1, w) in laid:
+            for p in fine:
+                wp = max(0.127, min(p["w"], p["h"]) - 0.02)
+                if w <= wp + 1e-6 or p["th"] or p["layer"] != LNAME[L]:
+                    continue
+                def on_pad(x, y):
+                    dx, dy = fplib._rot(x - p["x"], y - p["y"], -p["rot"])
+                    return abs(dx) <= p["w"] / 2.0 + 0.1 and abs(dy) <= p["h"] / 2.0 + 0.1
+                at0, at1 = on_pad(x0, y0), on_pad(x1, y1)
+                if not (at0 or at1):
+                    continue
+                if at1 and not at0:
+                    x0, y0, x1, y1 = x1, y1, x0, y0                # the pad's end first
+                length = math.hypot(x1 - x0, y1 - y0)
+                if length <= self.NECK or (at0 and at1):
+                    out.append((L, x0, y0, x1, y1, wp))
+                else:
+                    mx = round(x0 + (x1 - x0) / length * self.NECK, 4); my = round(y0 + (y1 - y0) / length * self.NECK, 4)
+                    out.append((L, x0, y0, mx, my, wp)); out.append((L, mx, my, x1, y1, w))
+                break
+            else:
+                out.append((L, x0, y0, x1, y1, w))
+        return out
+
     def route_net(self, net, terms, width):
         foreign = self.foreign(net)
         if foreign:
@@ -1044,6 +1078,8 @@ class Build:
                 narrow[key] = min(q["w"], q["h"])
         glist = list(groups.values())
         gnarrow = {id(g): narrow.get(key) for key, g in groups.items()}
+        fine = [self.pads[key] for key, nd in narrow.items() if nd is not None and nd < width - 1e-6]   # this net's pads narrower than its class
+        FINE_ZONE = self.FINE_ZONE
         comps = sorted((set(c) for c in self.comps.get(net, [])), key=len, reverse=True)
         owned = set(comps[0]) if comps else set()
         glist = [sorted(c) for c in comps[1:]] + glist       # the other components are joined like terminals
@@ -1075,10 +1111,17 @@ class Build:
             j0 = max(0, min(p[1] for p in pts) - 40); j1 = min(G.ny - 1, max(p[1] for p in pts) + 40)
             path = None
             # a track wider than the pad it enters sticks out past it (its round end) and into the
-            # neighbouring pad's clearance on a 0.4/0.5 mm pitch: this connection is laid no wider than the pad
+            # neighbouring pad's clearance on a 0.4/0.5 mm pitch: the connection INTO a fine pad is laid no
+            # wider than the pad.  Builds 1-27 took the narrowest pad of the whole net, so one LQFP or QFN pin
+            # laid all of +5V, +3V3 and +3V3_ADC (150-200 mm each) at 0.23-0.28 mm (build 28 measured it).
+            # Now only the pad being joined narrows its own connection; a path that ENDS on a fine pad of the
+            # net's existing copper is necked over its last NECK mm instead (_neck, below).
             w_here = width
-            # a path may also END on a fine-pitch pad of the net's existing copper, so the narrowest pad
-            # of the whole net sets the width once the net has one narrower than its class
+            # ... and a path may END on a fine-pitch pad of the net's existing copper, so the narrowest pad of the
+            # whole net sets the width once the net has one narrower than its class, exactly as builds 1-27 routed
+            # (412 of 412).  Build 28 tried routing the rest of such a net wide and narrowing only the connections
+            # near the fine pads: the wide tracks took the room the converters' own signals needed, and three
+            # runs lost two to five nets.  The rails grow afterwards instead, where there is room (pcb/fatten.py).
             nd = min([v for v in narrow.values() if v is not None] or [width])
             if nd < width:
                 w_here = max(0.127, nd - 0.02)
@@ -1103,9 +1146,9 @@ class Build:
                 self.report.setdefault("failed_connections", []).append("%s: %s" % (net, str(gr[0])))
                 continue
             segs, vias = R.simplify(path, G.pitch)
-            for (L, x0, y0, x1, y1) in segs:
-                self.tracks.append((LNAME[L], x0, y0, x1, y1, net, used_w))
-                new_obst.append(G.obstacle_cells("seg", [L], (x0, y0, x1, y1, used_w / 2.0)))
+            for (L, x0, y0, x1, y1, w_seg) in self._neck([(L, x0, y0, x1, y1, used_w) for (L, x0, y0, x1, y1) in segs], fine):
+                self.tracks.append((LNAME[L], x0, y0, x1, y1, net, w_seg))
+                new_obst.append(G.obstacle_cells("seg", [L], (x0, y0, x1, y1, w_seg / 2.0)))
             for (vx, vy) in vias:
                 self.vias.append((vx, vy, net, via[0], via[1]))
                 new_obst.append(G.obstacle_cells("disc", [0, 1, 2, 3], (vx, vy, via[0] / 2.0)))
@@ -1215,6 +1258,24 @@ class Build:
                 self.tracks.append((LNAME[L], ex, ey, gx, gy, net, escape.W))
 
     # ---------------------------------------------------------------- silkscreen
+    def _poly_of(self, ref):
+        sec = getattr(self.pl, "section", {}).get(ref)
+        return getattr(self, "section_polys", {}).get(sec) if sec else None
+
+    @staticmethod
+    def _in_poly(poly, x0, y0, x1, y1):
+        """All four corners of the box inside the polygon (or no polygon)."""
+        if not poly:
+            return True
+        def inside(x, y):
+            n = len(poly); c = False
+            for i in range(n):
+                (xa, ya), (xb, yb) = poly[i], poly[(i + 1) % n]
+                if (ya > y) != (yb > y) and x < xa + (y - ya) * (xb - xa) / (yb - ya):
+                    c = not c
+            return c
+        return all(inside(px, py) for px, py in ((x0, y0), (x1, y0), (x1, y1), (x0, y1)))
+
     def _region_of(self, ref):
         """The bounding box of the section box the part belongs to (its labels stay inside it), or None."""
         sec = getattr(self.pl, "section", {}).get(ref)
@@ -1235,10 +1296,8 @@ class Build:
         h = sum(SK.text_h(sz) for t, sz, b in lines) + 0.3 * (len(lines) - 1)
         if region is None and ref is not None and layer == "F.Cu":
             region = self._region_of(ref)
-        if region is not None:
-            region = (region[0] + w / 2.0, region[1] + h / 2.0, region[2] - w / 2.0, region[3] - h / 2.0)   # spot() tests the centre
-            if region[0] > region[2] or region[1] > region[3]:
-                region = None
+        if region is not None and (region[2] - region[0] < min(w, h) or region[3] - region[1] < min(w, h)):
+            region = None                                              # (spot() keeps the whole box, flat or standing, inside the region)
         sp = occ.spot(w, h, prefer, maxd=maxd, rot_ok=rot_ok, rot=rot, region=region)
         if sp is None:
             sp = occ.spot(w, h, prefer, maxd=maxd * 2.5, rot_ok=rot_ok, rot=rot, region=region)
@@ -1289,22 +1348,23 @@ class Build:
             return (x + dx, y + dy)
         # ---- the section boxes first: everything else keeps off their lines
         self._section_boxes()
-        # ---- the title block, front and back, where there is room
+        # ---- the title block, front and back, where there is room; dated the day it was built
+        today = time.strftime("%Y-%m-%d")
         self._title("F.Cu", [
-            [("ECP5+ADC+DAC", 2.0, True), ("by Jason Gallicchio and Claude", 1.0, False), ("github.com/gallicchio", 1.0, False), ("2026-10-04   rev A", 1.0, False)],
-            [("ECP5+ADC+DAC", 1.5, True), ("by Jason Gallicchio and Claude", 0.8, False), ("github.com/gallicchio  2026-10-04  rev A", 0.8, False)],
-            [("ECP5+ADC+DAC  rev A  2026-10-04", 1.0, True), ("Jason Gallicchio and Claude", 0.8, False)]])
+            [("ECP5+ADC+DAC", 2.0, True), ("by Jason Gallicchio and Claude", 1.0, False), ("github.com/gallicchio", 1.0, False), (today + "   rev A", 1.0, False)],
+            [("ECP5+ADC+DAC", 1.5, True), ("by Jason Gallicchio and Claude", 0.8, False), ("github.com/gallicchio  " + today + "  rev A", 0.8, False)],
+            [("ECP5+ADC+DAC  rev A  " + today, 1.0, True), ("Jason Gallicchio and Claude", 0.8, False)]])
         self._title("B.Cu", [
-            [("ECP5+ADC+DAC   rev A   2026-10-04", 3.0, True), ("by Jason Gallicchio and Claude", 2.0, False), ("https://github.com/gallicchio", 2.0, False)],
-            [("ECP5+ADC+DAC   rev A   2026-10-04", 2.0, True), ("by Jason Gallicchio and Claude", 1.2, False), ("https://github.com/gallicchio", 1.2, False)],
-            [("ECP5+ADC+DAC  rev A  2026-10-04  Jason Gallicchio and Claude  github.com/gallicchio", 1.0, True)]])
+            [("ECP5+ADC+DAC   rev A   " + today, 3.0, True), ("by Jason Gallicchio and Claude", 2.0, False), ("https://github.com/gallicchio", 2.0, False)],
+            [("ECP5+ADC+DAC   rev A   " + today, 2.0, True), ("by Jason Gallicchio and Claude", 1.2, False), ("https://github.com/gallicchio", 1.2, False)],
+            [("ECP5+ADC+DAC  rev A  " + today + "  Jason Gallicchio and Claude  github.com/gallicchio", 1.0, True)]])
         # ---- the SMAs: name and limit, large, in the strip under each body (kept free of parts); the detail beside
-        smas = [("J301", ("CLK", "IN"), "3.3V MAX", "10 MHz ref. or any clock -> FPGA PLL; 50 Ω: JP3001"),
+        smas = [("J301", ("CLK", "IN"), "3.3V MAX", "10 MHz ref. or any clock -> FPGA PLL"),
                 ("J302", ("CLK", "OUT"), "3V3 CMOS", "any FPGA clock out, 50 Ω series"),
-                ("J101", ("ADC A", "IN"), "±1V MAX", "50 Ω or hi-Z (JP101), DC; gain x1/x10: JP103, JP104"),
-                ("J102", ("ADC B", "IN"), "±1V MAX", "50 Ω or hi-Z (JP201), DC; gain x1/x10: JP203, JP204"),
-                ("J205", ("DAC 2", "OUT"), "±0.9V MAX", ""),                                        # (its strip's bottom row holds the LED jumper's choices)
-                ("J204", ("DAC 1", "OUT"), "±0.9V MAX", "into 50 Ω, DC coupled")]
+                ("J101", ("ADC A", "IN"), "±1V MAX", ""),                                           # (what the jumpers do stands beside each jumper since build 28)
+                ("J102", ("ADC B", "IN"), "±1V MAX", ""),
+                ("J204", ("DAC 1", "OUT"), "±1V MAX", ""),                                           # (the upper strip since build 28; its bottom row holds the LED jumper's choices)
+                ("J205", ("DAC 2", "OUT"), "±1V MAX", "±1 V into 50 Ω, ±2 V open; DC coupled")]
         for ref, nm, warn, detail in smas:
             x, y = at(ref)
             lines = [(nm[0], 1.2, True), (nm[1], 1.2, True), (warn, 0.75, True)]      # 7 mm wide at most: the strip ends at the section box
@@ -1318,10 +1378,11 @@ class Build:
             self._put("F.Cu", [(detail, 0.7, False)], (19.0 + SK.text_w(detail, 0.7) / 2.0, y + 7.3), maxd=3.0, must=False, tag=ref + " limit", ref=ref)
         # ---- the right-edge connectors: a big name beside each body.  The two USB-Cs get two lines each, between
         # the jacks and under the second one: which is the programmer and which is the FPGA's own port
-        for ref, lines, xy, rot, layer in (("J401", [("ETHERNET", 2.0, True)], (132.0 + E, 5.8), 0, "F.Cu"),
+        for ref, lines, xy, rot, layer in (("J401", [("ETHERNET", 1.5, True)], (128.0 + E, 22.0), 0, "F.Cu"),      # inside the box beside the jack (build 28: the box's own name is this one)
                                            ("J501", [("USB", 0.9, True), ("PROG", 0.9, True)], (138.4 + E, 34.5), 90, "F.Cu"),
-                                           ("J502", [("USB", 0.9, True), ("FPGA", 0.9, True)], (138.4 + E, 48.0), 90, "F.Cu"),
-                                           ("J504", [("microSD", 1.5, True)], at("J504") if "J504" in placed else (0, 0), None, "B.Cu"),
+                                           ("J502", [("USB", 0.9, True), ("USER", 0.9, True)], (138.4 + E, 48.0), 90, "F.Cu"),      # (USER, not FPGA, since build 28: students plug the one cable into PROG)
+                                           ("J503", [("HDMI", 1.5, True)], (139.8 + E, 62.0), 90, "F.Cu"),      # standing between the coupling capacitors and the jack: the box's own name found no room (build 28 printed it on C6402)
+                                           ("J504", [("microSD", 1.5, True), ("contacts toward the board", 0.7, False)], at("J504", 0.0, -11.0) if "J504" in placed else (0, 0), None, "B.Cu"),
                                            ("J304", [("PMOD B", 1.5, True)], (126.0 + E, 80.0), 90, "F.Cu"),
                                            ("J303", [("PMOD A", 1.5, True)], (126.0 + E, 103.0), 90, "F.Cu")):
             if ref in placed:
@@ -1332,31 +1393,33 @@ class Build:
         # the monitor taps (build 26): a short name beside each U.FL
         # (TAP B stands over its jack, in the strip's empty bottom-left corner; TAP -4V2 in the 1.5 mm between
         # its jack and the 49.9 Ω -- the only spots the occupancy grid has for them)
-        for ref, name, dx, dy in (("J107", "TAP A", 0.0, 3.2), ("J108", "TAP B", 0.0, -3.3), ("J109", "TAP TIA", 0.0, 3.2), ("J603", "TAP -4V2", 0.0, 2.3)):
+        for ref, name, dx, dy in (("J107", "TAP A", -3.7, 0.0), ("J108", "TAP B", -3.7, 0.0), ("J109", "TAP TIA", 6.3, 0.0), ("J603", "TAP -4V2", 0.0, -3.3)):
             if ref in placed:
                 x, y = at(ref)
-                self._put("F.Cu", [(name, 0.8, True)], (x + dx, y + dy), maxd=4.0, rot_ok=True, tag=ref + " name", ref=ref)
-        for ref, lines, dx, dy in (("J601", [("5 V IN", 1.0, True), ("bench supply", 0.7, False)], 1.0, -5.0),
-                                   ("J305", [("JTAG (FTDI A)", 0.8, True)], 0.0, -4.0),
-                                   ("J105", [("NOISE R", 0.8, True)], 4.5, 0.0),
-                                   ("J106", [("PD EXT", 0.8, True)], 0.0, -4.5),
+                self._put("F.Cu", [(name, 0.8, True)], (x + dx, y + dy), maxd=2.5, rot_ok=True, tag=ref + " name", ref=ref)
+        for ref, lines, dx, dy in (("J601", [("5 V IN", 0.9, True)], 4.9, -7.6),                      # east of the Schottky (the legend says: bench supply)
+                                   ("J305", [("JTAG", 0.8, True)], -5.5, 0.0),         # (what it is for is in the legend: FTDI channel A, or an external programmer with FTDI OFF fitted)
+                                   ("J105", [("EXT R", 0.8, True)], 4.5, 0.0),                     # your own noise resistor, NOISE to GND (its pins are named)
+                                   ("J106", [("PD EXT", 0.8, True)], 0.8, 5.1),                   # under the header (the photodiode is east of it; the legend says the anode is at -4.2 V)
                                    ("D201", [("LED", 1.0, True)], 0.0, -4.0),
                                    ("J210", [("LED EXT", 0.8, True)], 0.0, -4.5),
                                    ("SW301", [("RESET", 0.8, True)], 0.0, -3.2),
                                    ("SW302", [("USER", 0.8, True)], 0.0, -3.2),
-                                   ("SW303", [("PROG", 0.8, True)], 0.0, -3.0)):
+                                   ("SW303", [("PROG", 0.8, True)], 5.7, 0.0)):                   # east of the button (its north is the PROGRAMN pull-ups)
             if ref in placed:
                 self._put("F.Cu", lines, at(ref, dx, dy), maxd=8.0, rot_ok=True, tag=ref, ref=ref)
         # the noise source's four resistors: their values over them (the DIP switch below puts each one in)
         for ref in ("R1401", "R1402", "R1403", "R1404"):
             if ref in placed:
-                self._put("F.Cu", [(self.vals.get(ref, ""), 0.7, False)], at(ref, 0.0, -1.5), maxd=2.0, tag=ref + " value", ref=ref)
+                v = self.vals.get(ref, "")
+                v = v[:-1] if v.endswith("R") else v                                  # "0", "100", "1k", "10k": ohms, 2.54 mm apart
+                self._put("F.Cu", [(v, 0.7, False)], at(ref, 0.0, -2.4), maxd=1.5, tag=ref + " value", ref=ref)
         # ---- the chips worth knowing by name, next to them
         for ref, lines, dx, dy in (("U103", [("DUAL ADC", 1.1, True), ("AD9238", 1.0, True), ("12 bit, 65 MS/s", 0.7, False)], 0.0, -13.0),
                                    ("U201", [("DUAL DAC", 1.1, True), ("AD9767", 1.0, True), ("14 bit, 125 MS/s", 0.7, False)], 7.5, 2.5),
                                    ("U1", [("ECP5", 1.1, True), ("LFE5U-25F", 1.0, True)], -13.0, 0.0),
-                                   ("U502", [("FT2232H", 1.0, True), ("JTAG + UART", 0.8, False)], 0.0, 11.5),
-                                   ("U401", [("RTL8211F PHY", 0.9, True)], -11.0, 0.0),
+                                   ("U502", [("FT2232H", 1.0, True), ("JTAG + UART", 0.8, False)], -2.0, 12.6),      # (under the EEPROM's row, over the box's bottom edge)
+                                   ("U401", [("RTL8211F", 0.9, True), ("PHY", 0.9, True)], 12.5, 0.0),      # (two lines, east of the chip beyond the MDI fan, since build 28)
                                    ("U301", [("Si5351A", 0.9, True)], 0.0, -4.5)):
             if ref in placed:
                 self._put("F.Cu", lines, at(ref, dx, dy), maxd=9.0, rot_ok=(ref not in ("U103", "U201")), tag=ref + " name", ref=ref)
@@ -1371,13 +1434,14 @@ class Build:
                 self._put("F.Cu", lines, at(ref, dx, dy), maxd=6.0, rot_ok=True, tag=ref + " clock", ref=ref)
         # ---- pin names beside the hand-use headers, checked against the netlist (tools/trace_paths.py once found three reversed)
         for ref, names in (("J305", ["3V3", "TCK", "TMS", "TDI", "TDO", "GND"]), ("J601", ["GND", "+5V"]),
-                           ("J105", ["GND", "R"]), ("J106", ["A -4.2V", "K"]), ("J210", ["A +5V", "K"])):
+                           ("J105", ["GND", "NOISE"]), ("J106", ["A", "K"]), ("J210", ["A +5V", "K"])):
             allp = [p for k, p in self.pads.items() if k[0] == ref]
             vertical = len({round(p["x"], 1) for p in allp}) == 1
             for i, nm in enumerate(names):
                 pads = [p for k, p in self.pads.items() if k[0] == ref and k[1] == str(i + 1)]
                 if pads:
-                    prefer = (pads[0]["x"] + 2.2 + SK.text_w(nm, 0.7) / 2.0, pads[0]["y"]) if vertical else (pads[0]["x"], pads[0]["y"] - 2.6)   # past the header's courtyard
+                    side = -1.0 if ref == "J601" else 1.0                  # J601's names on its west: the -4V2 tap's 5.6 mm courtyard fills its east (build 28)
+                    prefer = (pads[0]["x"] + side * (2.2 + SK.text_w(nm, 0.7) / 2.0), pads[0]["y"]) if vertical else (pads[0]["x"], pads[0]["y"] - 2.6)   # past the header's courtyard
                     self._put("F.Cu", [(nm, 0.7, False)], prefer, maxd=4.0, rot_ok=not vertical, tag="%s.%d" % (ref, i + 1), ref=ref)
         # the rails header: the rail's name standing over each pin of the bottom row (short forms: 3V3A/3V3D are the
         # ADC's and DAC's 3.3 V), the title under the header says the whole top row is ground
@@ -1402,7 +1466,7 @@ class Build:
         for i in range(8):
             ref = "D30%d" % (i + 1)
             if ref in placed:
-                self._put("F.Cu", [("LED%d" % i, 0.7, False)], at(ref, 0.0, -2.7), maxd=1.5, rot=0, tag=ref + " name", ref=ref)
+                self._put("F.Cu", [("LED%d" % i, 0.7, False)], at(ref, 0.0, 2.5), maxd=1.5, rot=0, tag=ref + " name", ref=ref)      # between the LED and its resistor
         # ---- a printed mark on every part whose footprint prints none and could go in backwards
         self._pin1_marks()
         # ---- the jumpers: what a shunt does (2 pins); the two choices either side of a line through the centre pin (3 pins)
@@ -1477,24 +1541,45 @@ class Build:
         print("  pin-1 / cathode marks printed for %d parts whose footprints print none" % n)
 
     def _legend(self):
-        front = [("JUMPERS   TERM: shunt = 50 Ω input      GAIN: shunt = x1, open = x10      SRC: SMA | NOISE      ALT: PD | NOISE      LED: LED | EXT", 0.75, False),
-                 ("HEADERS   RAILS: top row = GND, 3V3A/3V3D = the ADC's/DAC's 3.3 V, 1V0 = the Ethernet PHY's 1.0 V core      NOISE R: DIP switch ON puts the resistor in      PD EXT: anode at -4.2 V      LED EXT: anode at +5 V, cathode sinks", 0.75, False),
-                 ("TAPS: U.FL monitor points through 49.9 Ω -- a U.FL-SMA pigtail into a 50 Ω scope input sees half the signal, a 1 MΩ input all of it.   TAP A / TAP B: ADC preamp out,   TAP TIA: photodiode receiver,   TAP -4V2: the op-amp rail", 0.75, False),
-                 ("USB PROG: power (0.7 A: a USB-C or USB 3 port, or 5 V IN), programming and the UART (FT2232H).   USB FPGA: wired straight to the FPGA -- it does nothing until the gateware implements USB.", 0.75, False)]
-        occ = self.occ["F.Cu"]
-        for lines in (front, front[:2], [front[0]], [front[1]], [front[2]]):
-            w = max(SK.text_w(t, sz, b) for t, sz, b in lines)
-            h = sum(SK.text_h(sz) for t, sz, b in lines) + 0.3 * (len(lines) - 1)
-            r = occ.largest()
-            if r and r[2] - r[0] >= w + 1.0 and r[3] - r[1] >= h + 1.0:
-                self._put("F.Cu", lines, ((r[0] + r[2]) / 2.0, (r[1] + r[3]) / 2.0), maxd=4.0, tag="legend")
-                if len(lines) == 3:
-                    return
-        back = [("ECP5 LFE5U-25F FPGA, 32 MB SDRAM, 16 MB flash, microSD.  AD9238 dual 12-bit ADC to 65 MS/s (±1 V, 50 Ω or hi-Z, gain x1/x10/x100).", 0.9, False),
-                ("AD9767 dual 14-bit DAC to 125 MS/s (±0.9 V into 50 Ω); channel 2 also drives an LED.  Noise source, photodiode receiver, 25 MHz TCXO,", 0.9, False),
-                ("Si5351 clock generator, CLK IN (10 MHz reference or external clock into the FPGA PLL), CLK OUT.  Gigabit Ethernet, two USB-C", 0.9, False),
-                ("(PROG: power, programming, UART; FPGA: the FPGA's own USB), mini HDMI, two Pmods.  Power 5 V in by USB PROG or the 5 V IN header.", 0.9, False)]
-        self._put("B.Cu", back, (P.BW / 2.0, P.BH / 2.0), maxd=60.0, must=False, tag="legend back")
+        """What the headers and taps mean, as paragraphs wrapped to columns that fit the largest empty area
+        of the front (each paragraph in the largest area left when its turn comes), and what the board is
+        on the back.  Builds to 27 asked for 150 mm-wide lines, found no such area, and printed no legend
+        at all, silently (build 28 noticed); now a paragraph that fits nowhere is reported."""
+        import textwrap
+        front = ["HEADERS   RAILS: top row = GND; 3V3A / 3V3D = the ADC's / DAC's 3.3 V; 1V0 = the PHY's core.  "
+                 "EXT R: your own noise resistor, NOISE to GND (the DIP switch adds the board's four).  "
+                 "PD EXT: anode at -4.2 V.  LED EXT: anode at +5 V, cathode sinks.",
+                 "TAPS   U.FL monitor points through 49.9 Ω: a pigtail into a 50 Ω scope input sees half the signal, "
+                 "a 1 MΩ input all of it.  TAP A / TAP B: ADC preamp out.  TAP TIA: photodiode receiver.  TAP -4V2: the op-amp rail.",
+                 "USB PROG: power (0.7 A), programming and the UART (FT2232H).  "
+                 "USB USER: the FPGA's own USB: a device once the gateware has a core, nothing until then.",
+                 "JUMPERS   TERM: shunt IN = 50 Ω input, OUT = high-Z.  GAIN: IN = x1, OUT = x10.  SRC: SMA | NOISE "
+                 "(B: ALT = PD | NOISE).  LED: LED | EXT.  FTDI OFF: IN holds the FT2232H in reset, J305 takes an external JTAG programmer."]
+        back = ["ECP5 LFE5U-25F FPGA, 32 MB SDRAM, 16 MB flash, microSD.  AD9238 dual 12-bit ADC to 65 MS/s (±1 V, 50 Ω or hi-Z, "
+                "gain x1 / x10 / x100).  AD9767 dual 14-bit DAC to 125 MS/s (±1 V into 50 Ω, ±2 V open); channel 1 also drives an LED.  "
+                "Noise source, photodiode receiver, 25 MHz TCXO, Si5351 clock generator, CLK IN (10 MHz reference or external clock "
+                "into the FPGA PLL), CLK OUT.  Gigabit Ethernet, two USB-C (PROG: power, programming, UART; USER: the FPGA's own USB), "
+                "mini HDMI, two Pmods.  Power 5 V in by USB PROG or the 5 V IN header."]
+        for layer, paras, size in (("F.Cu", front, 0.8), ("B.Cu", back, 1.0)):
+            occ = self.occ[layer]
+            for para in paras:
+                placed = False
+                r = occ.largest()
+                if r:
+                    chars = int((r[2] - r[0] - 1.0 - 0.3) / size)             # SK.text_w: len * size + 0.3
+                    for c in sorted({min(chars, 90), min(chars, 70), min(chars, 55), chars}, reverse=True):
+                        if c < 24:
+                            break
+                        lines = [(t, size, False) for t in textwrap.wrap(para, c)]
+                        w = max(SK.text_w(t, size) for t, _s, _b in lines)
+                        h = sum(SK.text_h(size) for _ in lines) + 0.3 * (len(lines) - 1)
+                        if r[2] - r[0] >= w + 1.0 and r[3] - r[1] >= h + 1.0:
+                            self._put(layer, lines, ((r[0] + r[2]) / 2.0, (r[1] + r[3]) / 2.0), maxd=4.0, tag="legend")
+                            self.report.setdefault("silk_legend", []).append("%s: %s (%d lines of %d chars at %.0f, %.0f)" % (layer, para[:12], len(lines), c, (r[0] + r[2]) / 2.0, (r[1] + r[3]) / 2.0))
+                            placed = True
+                            break
+                if not placed:
+                    self.report.setdefault("silk_unplaced", []).append("legend: " + para[:24])
 
     def _section_boxes(self):
         """A 0.15 mm outline on F.SilkS round every section of the floorplan (floorplan.SECTION): the
@@ -1532,6 +1617,8 @@ class Build:
                 if (ya > y) != (yb > y) and x < xa + (y - ya) * (xb - xa) / (yb - ya):
                     c = not c
             return c
+        NO_NAME = {"ETHERNET", "HDMI"}                           # the jack's big name, inside the box, is the name
+        NAME_AT_BOTTOM = {"FLASH + JTAG"}                        # the top row is the JTAG header's
         polys = {}
         for name in sorted(set(groups) | set(FPL.SECTION_BOX)):
             refs = groups.get(name, [])
@@ -1547,7 +1634,9 @@ class Build:
                 x0, y0, x1, y1 = max(bb[0] - m, 1.0), max(bb[1] - m, 1.0), min(bb[2] + m, P.BW - 1.0), min(bb[3] + m, P.BH - 1.0)
                 polys[name] = [(x0, y0), (x1, y0), (x1, y1), (x0, y1)]
         self.section_polys = polys
-        # ---- pass 1: a spot for every name (the lines are not in the way yet: they are cut round the names after)
+        # ---- pass 1: a spot for every name, INSIDE its box just under the top edge (the lines are drawn whole after).
+        # Builds to 27 stood the name IN the top edge and cut the lines round it -- the neighbour's bottom edge too,
+        # so "ADC B IN" sat halfway between two strips and named neither (Jason, 2026-10-07)
         names = {}                      # name -> (x0, y0, x1, y1, text node)
         for name, poly in polys.items():
             edges = [(poly[i], poly[(i + 1) % len(poly)]) for i in range(len(poly))]
@@ -1559,27 +1648,52 @@ class Build:
                              if lay == "F.Cu" and sec.get(r) != name and not r.startswith("H") and inside(poly, x, y))
             if foreign:
                 notes.append("%s: contains %s" % (name, ", ".join(foreign[:8])))
+            if name in NO_NAME:
+                continue
             w, h = SK.text_w(name, 0.9, True), SK.text_h(0.9)
             ytop = min(y for x, y in poly)
             # the top edge's pieces only (a horizontal edge with the box's inside below it: a notched box has
             # several), west to east -- never the bottom edge, which is the next box's top edge
             horiz = [(a, b) for (a, b) in edges if abs(a[1] - b[1]) < 1e-6
                      and inside(poly, (a[0] + b[0]) / 2.0, a[1] + 0.3) and not inside(poly, (a[0] + b[0]) / 2.0, a[1] - 0.3)]
-            horiz.sort(key=lambda e: min(e[0][0], e[1][0]))
+            horiz.sort(key=lambda e: -max(e[0][0], e[1][0]))
+            bottoms = [(a, b) for (a, b) in edges if abs(a[1] - b[1]) < 1e-6
+                       and inside(poly, (a[0] + b[0]) / 2.0, a[1] - 0.3) and not inside(poly, (a[0] + b[0]) / 2.0, a[1] + 0.3)]
+            bottoms.sort(key=lambda e: -max(e[0][0], e[1][0]))
             spot = None
-            for (a, b) in horiz:
+            if name in NAME_AT_BOTTOM:
+                for (a, b) in bottoms:
+                    ex0, ex1, ey = min(a[0], b[0]), max(a[0], b[0]), a[1]
+                    y0 = ey - 0.4 - h
+                    for lx in np.arange(ex0 + 0.6, ex1 - w - 0.6 + 1e-6, 0.25)[::-1]:        # east end first, the west end included
+                        if occ.free(lx, y0, lx + w, y0 + h):
+                            spot = (lx, y0, lx + w, y0 + h, B.text(lx, y0 + h / 2.0, name, "F.SilkS", 0.9, bold=True)); break
+                    if spot:
+                        break
+            for (a, b) in (horiz if not spot else []):
                 ex0, ex1, ey = min(a[0], b[0]), max(a[0], b[0]), a[1]
-                for lx in np.arange(ex0 + 0.8, ex1 - w - 0.8 + 1e-6, 0.25):
-                    if occ.free(lx, ey - h / 2.0, lx + w, ey + h / 2.0):
-                        spot = (lx, ey - h / 2.0, lx + w, ey + h / 2.0, B.text(lx, ey, name, "F.SilkS", 0.9, bold=True)); break
+                y0 = ey + 0.4
+                for lx in np.arange(ex0 + 0.6, ex1 - w - 0.6 + 1e-6, 0.25)[::-1]:        # east end first, the west end included          # from the east end: the strips' west ends hold the jumpers and their labels
+                    if occ.free(lx, y0, lx + w, y0 + h):
+                        spot = (lx, y0, lx + w, y0 + h, B.text(lx, y0 + h / 2.0, name, "F.SilkS", 0.9, bold=True)); break
                 if spot:
                     break
             if not spot:
-                for (a, b) in [(a, b) for (a, b) in edges if abs(a[0] - b[0]) < 1e-6]:          # standing in a vertical edge, reading up
+                for (a, b) in bottoms:                                                          # over the bottom edge, inside
+                    ex0, ex1, ey = min(a[0], b[0]), max(a[0], b[0]), a[1]
+                    y0 = ey - 0.4 - h
+                    for lx in np.arange(ex0 + 0.6, ex1 - w - 0.6 + 1e-6, 0.25)[::-1]:
+                        if occ.free(lx, y0, lx + w, y0 + h):
+                            spot = (lx, y0, lx + w, y0 + h, B.text(lx, y0 + h / 2.0, name, "F.SilkS", 0.9, bold=True)); break
+                    if spot:
+                        break
+            if not spot:
+                for (a, b) in [(a, b) for (a, b) in edges if abs(a[0] - b[0]) < 1e-6]:          # standing just inside a vertical edge, reading up
                     ey0, ey1, ex = min(a[1], b[1]), max(a[1], b[1]), a[0]
-                    for ly in np.arange(ey1 - 0.8, ey0 + w + 0.8, -0.25):
-                        if occ.free(ex - h / 2.0, ly - w, ex + h / 2.0, ly):
-                            spot = (ex - h / 2.0, ly - w, ex + h / 2.0, ly, B.text(ex, ly, name, "F.SilkS", 0.9, bold=True, angle=90)); break
+                    x0 = ex + 0.4 if inside(poly, ex + 0.5, (ey0 + ey1) / 2.0) else ex - 0.4 - h
+                    for ly in np.arange(ey1 - 0.6, ey0 + w + 0.6, -0.25):
+                        if occ.free(x0, ly - w, x0 + h, ly):
+                            spot = (x0, ly - w, x0 + h, ly, B.text(x0 + h / 2.0, ly, name, "F.SilkS", 0.9, bold=True, angle=90)); break
                     if spot:
                         break
             if not spot:                                                                       # inside the top-left corner
@@ -1593,8 +1707,8 @@ class Build:
             occ.claim(spot[0], spot[1], spot[2], spot[3])
             self.texts.append(spot[4])
             names[name] = spot[:4]
-        # ---- pass 2: the lines, every edge cut where any name sits on it
-        cuts = [(x0 - 0.5, y0 - 0.2, x1 + 0.5, y1 + 0.2) for (x0, y0, x1, y1) in names.values()]
+        # ---- pass 2: the lines, whole (the names are inside the boxes)
+        cuts = []
         def clip(a, b):
             segs = [(0.0, 1.0)]
             for (cx0, cy0, cx1, cy1) in cuts:
@@ -1634,8 +1748,12 @@ class Build:
     def _jumper_labels(self):
         """2-pin jumpers: what the shunt does, beside the pins.  3-pin jumpers: the two choices beside the
         two outer pins, on the free side of the row, with a line through the centre pin between them."""
-        two = {"JP101": "50 Ω", "JP201": "50 Ω", "JP3001": "50 Ω", "JP103": "x1", "JP104": "x1", "JP203": "x1", "JP204": "x1"}   # shunt in = this
+        term = [["50Ω IN", "hiZ OUT"], ["50Ω IN"], ["50Ω"]]                    # the label, in the fullest form that fits beside the header
+        gain = [["x1 IN", "x10 OUT"], ["x1 IN"], ["x1"]]
+        two = {"JP101": term, "JP201": term, "JP3001": term, "JP103": gain, "JP104": gain, "JP203": gain, "JP204": gain,
+               "JP501": [["FTDI OFF", "(shunt IN)"], ["FTDI OFF"]]}
         three = {"JP102": ("NOISE", "SMA"), "JP202": ("ALT", "SMA"), "JP1203": ("PD", "NOISE"), "JP2009": ("LED", "EXT")}       # pin 1 side, pin 3 side
+        ends_first = {"JP1203"}                                        # its choices off the row's ends, in line with the pins (stacked under the SRC jumper, choices beside it named neither)
         occ = self.occ["F.Cu"]
         sz = 0.8                                                       # a size over the board's 0.7 mm minimum (3-pin choices)
         sz2 = 1.0                                                      # the 2-pin labels ("50 Ω", "x1") larger: they are read from across the bench
@@ -1643,39 +1761,53 @@ class Build:
         def line_clear(x0, y0, x1, y1, region=None):
             if region and not (region[0] <= min(x0, x1) and max(x0, x1) <= region[2] and region[1] <= min(y0, y1) and max(y0, y1) <= region[3]):
                 return False
-            if not occ.free(min(x0, x1) - 0.2, min(y0, y1) - 0.2, max(x0, x1) + 0.2, max(y0, y1) + 0.2):
-                return False                                           # a text already there (the neighbour's choices)
+            bx0, by0, bx1, by1 = min(x0, x1) - 0.15, min(y0, y1) - 0.15, max(x0, x1) + 0.15, max(y0, y1) + 0.15
+            if any(tx0 < bx1 and bx0 < tx1 and ty0 < by1 and by0 < ty1 for (tx0, ty0, tx1, ty1) in occ.boxes):
+                return False                                           # a text already there: the exact boxes, not the grid, whose 0.25 mm cells
+                                                                       # round a choice's claim onto the line's own cell (build 28 drew no tick at all)
             return not any(_pt_seg(p["x"], p["y"], x0, y0, x1, y1) < max(p["w"], p["h"]) / 2.0 + 0.35 for p in pads_all)
         for ref in sorted(set(two) | set(three)):
             if ref not in self.pl.placed:
                 continue
             pads = {k[1]: p for k, p in self.pads.items() if k[0] == ref}
             if ref in two:
-                p1, p2 = pads["1"], pads["2"]
-                txt = two[ref]
-                w, h = SK.text_w(txt, sz2, True), SK.text_h(sz2)
-                ux, uy = p2["x"] - p1["x"], p2["y"] - p1["y"]
-                L = math.hypot(ux, uy); ux, uy = ux / L, uy / L
-                mx, my = (p1["x"] + p2["x"]) / 2.0, (p1["y"] + p2["y"]) / 2.0
-                cands = []
-                for d in (2.6, 3.3):
-                    for s in (1.0, -1.0):
-                        cands.append((mx - s * uy * d, my + s * ux * d, 0 if abs(ux) > abs(uy) else 90))     # beside the row
-                for s in (1.0, -1.0):
-                    along = (w if abs(ux) > abs(uy) else h) / 2.0
-                    cands.append((mx + s * ux * (L / 2.0 + 1.9 + along), my + s * uy * (L / 2.0 + 1.9 + along), 0 if abs(ux) > abs(uy) else 90))   # off an end
-                done = False
+                # the label block (two lines, else the first line alone) 0.3 mm off the header's courtyard: above, below,
+                # left, right (flat, then standing); the first free spot inside the section wins
+                x, y, rot_, lay = self.pl.placed[ref]
+                bx0, by0, bx1, by1 = fplib.box_at(self.pl.fp[ref], x, y, rot_, grow=0.0)
+                mx, my = (bx0 + bx1) / 2.0, (by0 + by1) / 2.0
                 region = self._region_of(ref)
-                for (cx, cy, ang) in cands:
-                    bw, bh = (w, h) if ang == 0 else (h, w)
-                    if region and not (region[0] <= cx - bw / 2.0 and cx + bw / 2.0 <= region[2] and region[1] <= cy - bh / 2.0 and cy + bh / 2.0 <= region[3]):
-                        continue
-                    if occ.free(cx - bw / 2.0, cy - bh / 2.0, cx + bw / 2.0, cy + bh / 2.0):
-                        occ.claim(cx - bw / 2.0, cy - bh / 2.0, cx + bw / 2.0, cy + bh / 2.0)
-                        self.texts.append(B.text(cx, cy, txt, "F.SilkS", sz2, bold=True, just="center", angle=ang))
-                        done = True; break
+                done = False
+                for lines in two[ref]:
+                    sz_ = 0.7 if len(lines) > 1 else sz
+                    w = max(SK.text_w(t, sz_, True) for t in lines)
+                    h = sum(SK.text_h(sz_) for t in lines)
+                    cands = [(mx, by0 - 0.3 - h / 2.0, 0), (mx, by1 + 0.3 + h / 2.0, 0), (bx0 - 0.3 - w / 2.0, my, 0), (bx1 + 0.3 + w / 2.0, my, 0),
+                             (bx0 - 0.3 - h / 2.0, my, 90), (bx1 + 0.3 + h / 2.0, my, 90)]
+                    for (cx, cy, ang) in cands:
+                        bw, bh = (w, h) if ang == 0 else (h, w)
+                        if region and not (region[0] <= cx - bw / 2.0 and cx + bw / 2.0 <= region[2] and region[1] <= cy - bh / 2.0 and cy + bh / 2.0 <= region[3]):
+                            continue
+                        if occ.free(cx - bw / 2.0, cy - bh / 2.0, cx + bw / 2.0, cy + bh / 2.0):
+                            occ.claim(cx - bw / 2.0, cy - bh / 2.0, cx + bw / 2.0, cy + bh / 2.0)
+                            if ang == 0:
+                                yy = cy - h / 2.0
+                                for t in lines:
+                                    th = SK.text_h(sz_)
+                                    self.texts.append(B.text(cx, yy + th / 2.0, t, "F.SilkS", sz_, bold=True, just="center"))
+                                    yy += th
+                            else:
+                                xx = cx - h / 2.0
+                                for t in lines:
+                                    th = SK.text_h(sz_)
+                                    self.texts.append(B.text(xx + th / 2.0, cy, t, "F.SilkS", sz_, bold=True, just="center", angle=90))
+                                    xx += th
+                            done = True; break
+                    if done:
+                        break
                 if not done:
-                    self._put("F.Cu", [(txt, sz2, True)], (mx, my - 3.0), maxd=5.0, rot_ok=True, tag=ref, ref=ref)
+                    self.report.setdefault("silk_jumper_far", []).append(ref)
+                    self._put("F.Cu", [(two[ref][-1][0], sz, True)], (mx, my - 3.0), maxd=3.0, rot_ok=True, tag=ref, ref=ref)      # the shortest form, near
                 continue
             p1, p2, p3 = pads["1"], pads["2"], pads["3"]
             ta, tb = three[ref]
@@ -1698,7 +1830,7 @@ class Build:
                     ea, eb = 1.9 + (wa if ang == 0 else SK.text_h(size)) / 2.0, 1.9 + (wb if ang == 0 else SK.text_h(size)) / 2.0
                     ends.append(("ends", -uy, ux, 0.0, [(p1["x"] - ux * ea - uy * off, p1["y"] - uy * ea + ux * off, ta),
                                                         (p3["x"] + ux * eb - uy * off, p3["y"] + uy * eb + ux * off, tb)]))
-                cands = ends + cands if ref in ("JP1203",) else cands + ends
+                cands = ends + cands if ref in ends_first else cands + ends
                 for kind, nx, ny, d, items in cands:
                     boxes = []
                     for (cx, cy, txt) in items:
@@ -1711,7 +1843,8 @@ class Build:
                             occ.claim(cx - bw / 2.0, cy - bh / 2.0, cx + bw / 2.0, cy + bh / 2.0)
                             self.texts.append(B.text(cx, cy, txt, "F.SilkS", size, bold=True, just="center", angle=ang))
                         if kind == "beside":
-                            seg = (p2["x"] + nx * 1.9, p2["y"] + ny * 1.9, p2["x"] + nx * (d + 0.5), p2["y"] + ny * (d + 0.5))   # from just past the header's outline
+                            far = d + SK.text_h(size) / 2.0                                                     # to the words' far edge
+                            seg = (p2["x"] + nx * 1.9, p2["y"] + ny * 1.9, p2["x"] + nx * far, p2["y"] + ny * far)   # from just past the header's outline
                             if line_clear(*seg, region=region):
                                 self.lines.append(B.line(*seg, "F.SilkS", 0.15))
                         else:
@@ -1739,6 +1872,11 @@ class Build:
             for ref, (x, y, rot, layer) in order:
                 if ref.startswith("H"):
                     continue
+                if which == "ref" and ref in ("J107", "J108", "J109", "J603", "J101", "J102", "J204", "J205", "J301", "J302"):   # the taps and the SMAs: their names stand beside them; "J107" read as a jumper (Jason)
+                    x0, y0, x1, y1 = fplib.box_at(self.pl.fp[ref], x, y, rot, back=(layer == "B.Cu"), grow=0.0)
+                    lx, ly = fplib._rot(0.0, y0 - 0.6 - y, -rot)
+                    refs[ref] = (lx, ly, 0, False)
+                    continue
                 if which == "val" and (not big(ref) or not self.vals.get(ref) or ref[0] == "J" or ref.startswith("SW")):
                     continue
                 text = ref if which == "ref" else self.vals[ref]
@@ -1752,20 +1890,25 @@ class Build:
                          (x0 - 0.45 - w / 2, y0 + h / 2), (x1 + 0.45 + w / 2, y0 + h / 2), (x0 - 0.45 - w / 2, y1 - h / 2), (x1 + 0.45 + w / 2, y1 - h / 2)]
                 # a part of a section keeps its designator inside the section's box (the user reads a box as a unit)
                 region = self._region_of(ref) if layer == "F.Cu" else None
+                poly = self._poly_of(ref) if region else None
                 cands_all = cands
                 if region:
-                    cands = [(bx, by) for (bx, by) in cands if region[0] <= bx - w / 2 and bx + w / 2 <= region[2] and region[1] <= by - h / 2 and by + h / 2 <= region[3]]
+                    cands = [(bx, by) for (bx, by) in cands if self._in_poly(poly, bx - w / 2, by - h / 2, bx + w / 2, by + h / 2)]
                 hit = None
                 for (bx, by) in cands:
                     if occ.free(bx - w / 2, by - h / 2, bx + w / 2, by + h / 2):
                         hit = (bx, by, 0); break
                 if hit is None and region:
-                    sp = occ.spot(w, h, (cx, cy), maxd=6.0 if big(ref) else 4.0, rot_ok=True, region=(region[0] + w / 2, region[1] + h / 2, region[2] - w / 2, region[3] - h / 2))
+                    sp = occ.spot(w, h, (cx, cy), maxd=6.0 if big(ref) else 4.0, rot_ok=True, region=region)
+                    if sp is not None:
+                        bw_, bh_ = (w, h) if sp[2] == 0 else (h, w)
+                        if not self._in_poly(poly, sp[0], sp[1], sp[0] + bw_, sp[1] + bh_):         # in the bounding box but in a notch: the neighbour's
+                            sp = None
                     if sp is not None:
                         hit = (sp[0] + w / 2, sp[1] + h / 2, 0) if sp[2] == 0 else (sp[0] + h / 2, sp[1] + w / 2, 90)
                     else:
-                        self.report.setdefault("silk_outside_box", []).append(text)
-                if hit is None:
+                        self.report.setdefault("silk_outside_box", []).append(text)      # (not printed: a label in a neighbour's box names the wrong thing)
+                if hit is None and not region:
                     sp = occ.spot(w, h, (cx, cy), maxd=6.0 if big(ref) else 4.0, rot_ok=True)
                     if sp is not None:
                         if sp[2] == 0:
@@ -1798,10 +1941,72 @@ class Build:
         return refs, vals
 
     # ---------------------------------------------------------------- write
+    def fatten_rails(self):
+        """Every rail the router laid at a pad's width grows toward its class width where the copper round it
+        allows (pcb/fatten.py); the hand copper and the escape (the tracks before n_fixed_tracks) stay."""
+        import fatten as FAT
+        clr = {c[0]: c[2] for c in rules.CLASSES}
+        def target_of(net):
+            c = net_class(net)
+            if net in THIN_RAILS or c not in ("Power", "Rail") or net in self.rf:
+                return None
+            return RAIL_W if c == "Rail" else CLASS_WIDTH.get(c, RAIL_W)
+        def clear_of(a, b):
+            return max(clr.get(net_class(a), 0.127), clr.get(net_class(b), 0.127))
+        pads = [dict(x=p["x"], y=p["y"], w=p["w"], h=p["h"], rot=p.get("rot", 0.0), layer=p["layer"], th=p["th"], net=p["net"],
+                     drill=p.get("drill") or 0.0, shape=p.get("shape", "rect")) for p in self.pads.values()]
+        before = sum(math.hypot(t[3] - t[1], t[4] - t[2]) for t in self.tracks if target_of(t[5]) and t[6] < (target_of(t[5]) or 0) - 1e-9)
+        self.tracks = FAT.fatten(self.tracks, self.vias, pads, target_of, clear_of, first=getattr(self, "n_fixed_tracks", 0),
+                                 bw=P.BW, bh=P.BH, lan_of=lambda n: net_class(n) == "LAN", report=self.report)
+        after = sum(math.hypot(t[3] - t[1], t[4] - t[2]) for t in self.tracks if target_of(t[5]) and t[6] < (target_of(t[5]) or 0) - 1e-9)
+        print("  rails widened: %.0f mm of rail below its class width before, %.0f mm after" % (before, after))
+
     def write(self):
         B.BOARD = (P.BW, P.BH)
         out = [B.arc_rect(0, 0, P.BW, P.BH, 2.0, "Edge.Cuts", 0.1)]
         refs, vals = self.label_spots()
+        # the silkscreen's own checks (Jason, 2026-10-07): a part of a section sits wholly inside the section's box, and
+        # so does its printed designator -- a label in a neighbour's box names the wrong thing.  Reported in
+        # route_report.json (silk_label_outside_box, silk_part_outside_box) and on the build log
+        sec = getattr(self.pl, "section", {}); polys = getattr(self, "section_polys", {})
+        lab_out, part_out = [], []
+        for ref, (x, y, rot, layer) in self.pl.placed.items():
+            s_ = sec.get(ref)
+            if not s_ or layer != "F.Cu" or s_ not in polys:
+                continue
+            for which, d in (("ref", refs), ("val", vals)):
+                if ref in d and d[ref][3]:
+                    dx, dy = fplib._rot(d[ref][0], d[ref][1], rot)
+                    if not self._in_poly(polys[s_], x + dx, y + dy, x + dx, y + dy):
+                        lab_out.append("%s.%s" % (ref, which))
+            bx0, by0, bx1, by1 = fplib.box_at(self.pl.fp[ref], x, y, rot, grow=0.0)
+            if not self._in_poly(polys[s_], bx0, by0, bx1, by1) and not (ref[0] == "J" and not ref.startswith("JP")):   # (the edge connectors stand past their boxes by design)
+                part_out.append(ref)
+        self.report["silk_label_outside_box"] = lab_out
+        self.report["silk_part_outside_box"] = part_out
+        if lab_out or part_out:
+            print("  silk: labels outside their section box: %s; parts not wholly inside theirs: %s" % (lab_out, part_out))
+        # every rail's routed width, by net (Jason, 2026-10-07: "is the power distribution sufficient?"): builds 1-27
+        # laid three rails at 0.23-0.28 mm end to end -- one fine pad narrowed the whole net -- and nothing said so.
+        # route_report.json carries the table; a rail with more than a tenth of its length (plus 3 mm of pad necks)
+        # below its rule is named on the log
+        rails = {}
+        for (ln, x0, y0, x1, y1, net, w) in self.tracks:
+            if net.startswith(("+", "-")):
+                rails.setdefault(net, {})
+                rails[net][w] = rails[net].get(w, 0.0) + math.hypot(x1 - x0, y1 - y0)
+        thin = []
+        for net, ws in sorted(rails.items()):
+            c = net_class(net)
+            want = 0.2 if net in THIN_RAILS else (RAIL_W if c == "Rail" else CLASS_WIDTH.get(c, 0.15))
+            total = sum(ws.values()); below = sum(L for w, L in ws.items() if w < want - 1e-6)
+            if total > 20.0 and below > 0.1 * total + 3.0:
+                thin.append("%s: %.0f of %.0f mm below %.2f mm" % (net, below, total, want))
+        self.report["rail_widths"] = {net: {"%.3f" % w: round(L, 1) for w, L in sorted(ws.items())} for net, ws in sorted(rails.items())}
+        self.report["rail_thin"] = thin
+        print("  rails: " + "; ".join("%s %s" % (net, " ".join("%.2f:%.0f" % (w, L) for w, L in sorted(ws.items()))) for net, ws in sorted(rails.items())))
+        if thin:
+            print("  RAILS THINNER THAN THEIR RULE: " + "; ".join(thin))
         for ref, (x, y, rot, layer) in self.pl.placed.items():
             fp = self.pl.fp[ref]
             x0, y0, x1, y1 = fp["crtyd"]
@@ -1839,6 +2044,7 @@ class Build:
         out += self.texts
         out += getattr(self, "lines", [])
         txt = B.document("\n".join(out), self.numof)
+        txt = B.shifted(txt, P.OX, P.OY)                 # the board at (OX, OY) on its page; the design frame stays the board's own
         open(PCB, "w", encoding="utf-8").write(txt)
         # (a pad entry the router narrows to fit between fine pads is a few tenths of a millimetre long: allowed)
         rf_bad = sorted({(t[5], t[6]) for t in self.tracks if t[5] in self.rf and abs(t[6] - RF_W) > 1e-6
@@ -1864,6 +2070,7 @@ def main():
         b.route_all(budget_s=float(os.environ.get("ROUTE_BUDGET", "1500")))
         b.return_vias()
         b.pad_stubs()
+        b.fatten_rails()
         b.prune()
     b.silk()
     b.write()

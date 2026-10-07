@@ -52,7 +52,7 @@ def draw(root, pins_by_sheet, SHEETS):
         last = None
         for n, fn in lst:
             if last is not None and fn != last:
-                off += 12.7
+                off += 17.78                 # (a box's "File:" line and the next box's name both live in this gap)
             pins.append((n, fshape[n], side, off)); ypos[n] = yf + off
             off += 2.54
             last = fn

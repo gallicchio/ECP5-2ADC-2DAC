@@ -46,7 +46,7 @@ CUTOUTS = {
     "J204": ("DAC 1 OUT (SMA)", 6.5, 6.5, 3.0, "circle"),
     "J401": ("ETHERNET (RJ45)", 16.6, 14.4, 7.0, "rect"),               # jack body 16.1 x 13.6 on the board, whole front through the plate
     "J501": ("USB PROG (USB-C)", 12.2, 6.5, 1.63, "rect"),              # receptacle opening 8.94 x 3.26 centred 1.63 above the board; the cutout takes a plug's overmould nose (the USB-C spec's maximum is 12.35 x 6.5) so the plug seats however the board sits between the plates; the webs between neighbouring cutouts are 1.1-1.4 mm
-    "J502": ("USB FPGA (USB-C)", 12.2, 6.5, 1.63, "rect"),
+    "J502": ("USB USER (USB-C)", 12.2, 6.5, 1.63, "rect"),
     "J503": ("HDMI (mini)", 13.0, 7.5, 1.75, "rect"),                   # mini-HDMI opening 10.4 x 2.4; the cutout takes the plug's overmould (the jack stands only 0.75 mm past the edge)
     "J304": ("PMOD B (2x6 socket)", 17.5, 8.0, 4.6, "rect"),            # right-angle 2x6 socket, 15.2 x 8.5 body on the board
     "J303": ("PMOD A (2x6 socket)", 17.5, 8.0, 4.6, "rect"),

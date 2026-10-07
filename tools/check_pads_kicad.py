@@ -20,6 +20,7 @@ if os.environ.get("_INSIDE_KICAD_PY") != "1":
 import pcbnew
 sys.path.insert(0, os.path.join(ROOT, "pcb"))
 import fplib, netmap
+import place as P
 
 board = pcbnew.LoadBoard(os.path.join(ROOT, "ECP5-2ADC-2DAC.kicad_pcb"))
 fps, vals, nets, numof = netmap.load(os.path.join(ROOT, "build", "netlist.net"))
@@ -33,6 +34,7 @@ for fp in board.GetFootprints():
     if ref not in placement or ref not in fps:
         continue
     x, y, rot, layer = placement[ref]
+    x, y = x + P.OX, y + P.OY                      # placement.json is in the board frame; the written board sits at (OX, OY) on its page
     ours = {}
     for i, p in enumerate(fplib.pads_at(fplib.load(fps[ref]), x, y, rot, back=(layer == "B.Cu"))):
         ours.setdefault(p["num"], []).append((p["x"], p["y"]))

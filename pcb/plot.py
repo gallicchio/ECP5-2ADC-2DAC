@@ -25,10 +25,12 @@ def rot(x, y, a):
 
 
 def render(path, png, x0=0, y0=0, x1=None, y1=None, back=False, refs=True, dpi=100):
-    from place import BW, BH
+    from place import BW, BH, OX, OY
     x1 = BW if x1 is None else x1
     y1 = BH if y1 is None else y1
     doc = parse(open(path, encoding="utf-8").read())[0]
+    # the file holds page coordinates (the board at OX, OY); the window and the picture are in the board's own frame
+    x0, y0, x1, y1 = x0 + OX, y0 + OY, x1 + OX, y1 + OY
     scale = min(2400.0 / (x1 - x0), 2400.0 / (y1 - y0))
     fig = plt.figure(figsize=((x1 - x0) * scale / dpi, (y1 - y0) * scale / dpi), dpi=dpi)
     ax = fig.add_axes([0, 0, 1, 1]); ax.set_facecolor("#101418")
@@ -108,6 +110,7 @@ def render(path, png, x0=0, y0=0, x1=None, y1=None, back=False, refs=True, dpi=1
                 rx, ry = rot(refat[0], refat[1], fa) if refat else (0, 0)
                 ax.text(fx + rx, fy + ry, ref, color="#ffffff" if refsilk else "#5a5a5a", fontsize=max(3, 0.9 * scale / dpi * 72 * 0.8 / 2.2), ha="center", va="center", zorder=7)
     ax.set_xlim(x0, x1); ax.set_ylim(y1, y0); ax.set_aspect("equal"); ax.axis("off")
+    ax.set_xticks([]); ax.set_yticks([])
     fig.savefig(png, dpi=dpi, facecolor="#101418")
     plt.close(fig)
 

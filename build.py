@@ -78,6 +78,11 @@ def render_docs():
     made = []
     subprocess.run(cli() + ["sch", "export", "pdf", "-o", os.path.join(out, NAME + "_schematic.pdf"), NAME + ".kicad_sch"], capture_output=True, cwd=ROOT)
     made.append("schematic.pdf")
+    # what KiCad actually drew: every word's box from the PDF, overlapping pairs and words off the page
+    # (gen/check_sch_text.py; the generator's own check works from its estimate of the text sizes)
+    r = subprocess.run([sys.executable, "gen/check_sch_text.py", os.path.join(out, NAME + "_schematic.pdf"),
+                        os.path.join(ROOT, "build", "sch_text_overlaps.txt")], capture_output=True, text=True, cwd=ROOT)
+    print("    " + (r.stdout.strip().splitlines() or ["(text check: no output)"])[-1])
     if shutil.which("inkscape"):
         for sheet in ("ECP5-2ADC-2DAC", "fpga", "adc", "dac", "ethernet", "usb", "power"):
             d = os.path.join(ROOT, "build", "svg_" + sheet)

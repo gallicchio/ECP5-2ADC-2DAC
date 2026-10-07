@@ -204,3 +204,46 @@ Builds: 26 is all of the above.  The log of the work follows.
   nets; 438 SMT placements on 85 BOM lines; every ordered part on a land pattern that fits it; the Ethernet moat
   2.30 mm at C4951's hot pad; the end plates unchanged; the release at ~$209 per board for five.  The crops and the
   3D render show every tap name beside its jack.  Build 27 is the repository.
+
+### Build 28 log (2026-10-07, 01:00 - 09:45)
+
+* Jason read build 27's sheets and silkscreen the way a student will (Prompt 26 in `CLAUDE_CODE_CHAT.md`,
+  Response 26 has every answer).  Two of his questions turned up faults that no review and no check had seen:
+  * **"Is the power distribution sufficient?"** -- measured by net from the shipped file, +3V3_ADC ran 205 mm at
+    0.23 mm, +5V 146 mm at 0.23 mm and +3V3 at 0.28 / 0.30 mm, against a 0.4 / 0.5 mm rule that every build log
+    had claimed.  The router's "a track must not be wider than the pad it enters" rule took the narrowest pad
+    of the whole net, so one 0.25 mm LQFP or QFN pin (the AD9238's, the TLV62569's, the RTL8211F's) set the
+    width of every connection on the net.  Two rules that routed the rails wide and narrowed only near the
+    fine pads were tried and dropped: the wide tracks took the room the converters' own signals needed, and
+    three runs lost two to five nets each.  So the router lays the rails as it always did, and a pass after
+    routing (`pcb/fatten.py`) widens every rail track toward its class width wherever the copper round it
+    leaves room at KiCad's clearance -- the other nets' tracks, vias and pads on the layer, the holes, the
+    board edge, the Ethernet island's 1.5 mm; a track that ends in a pad stays no wider than the pad.  No
+    route moves, so what routed still routes, and DRC on the widened copy of a finished board showed the same
+    findings as on the original.  `build/route_report.json` lists every rail's length at each width before
+    (`rail_widths`) and the growth (`fattened`).  A pin-plan lesson on the way: the AD9238's DCS and
+    PDWN_A lines have bank 8 balls on the FPGA's south face, 60 mm detours round the DAC that the fine grid
+    found in build 27 and never again; they are hand-laid on build 27's routes now.  Moving them to bank 7's
+    two spare balls was tried and reverted (the swap that follows moved a dozen other balls and lost other
+    nets at the margin) and is in the rev B list.  Build 28: +3V3_ADC 208 of 219 mm at 0.38-0.40 (was 205 at 0.23), +5V 114 of 150 mm at 0.44-0.50
+    (was 146 at 0.23), +3V3 60 mm at 0.45-0.50 with 52 mm at 0.28-0.30 under the FPGA's 0.32 mm balls, the other
+    rails at their 0.4 mm except the few millimetres at the fine-pitch pins; 659 mm of track grew.
+  * **"Which jumper do PD and NOISE belong to?"** -- the 3-pin jumpers' centre-pin tick had never printed in
+    any build: the silkscreen occupancy grid's 0.25 mm cells rounded the choices' claims onto the tick's own
+    cell, and the matplotlib preview drew text at a third of its size, so nothing looked wrong.  KiCad's own
+    rendering (`kicad-cli pcb export svg`) is the judge now, and the tick is tested against the words' exact
+    boxes.  The same look found the front legend had never printed either (its lines were 150 mm wide, no
+    empty area is, and the code gave up silently); it is wrapped into columns now and reported when a paragraph
+    finds no room.
+* The one electrical change: R2405/R2406/R2505/R2506 2.2 kΩ (gain 4.4) so the DAC outputs are the round ±1 V into
+  50 Ω / ±2 V open that the labels say.  The beads were simulated before being kept (`sim/pdn_bead.cir`).
+* Three things found on the way and fixed: 70 power symbols all referenced "#PWR" (KiCad warned "annotation
+  errors" on every netlist export; numbered now); the SDRAM group bus's alias, which KiCad 10 keeps in the
+  project file and `kicad-cli sch upgrade` drops from a sheet (the first build-28 run failed ERC with 26
+  "not a member" warnings after the manual ERC had passed -- the alias is written into `.kicad_pro` now); and the
+  silkscreen date, typed in since build 25, now the build's.
+* Numbers: ERC 0; DRC 0 errors, 0 unconnected, three warnings (build 27's two ground return vias north-west of
+  the FPGA and a 0.2 mm +5VA stub); every net routed, two of them by hand; 470 footprints and 1764 pads where
+  KiCad puts them (0.0000 mm); the exported sheets read back with 0 overlapping words after the fix below; the
+  release's hand-solder BOM empty; 5 boards about $1112 (~$222 each).  Ten runs between 04:47 and 09:35, in
+  the order the log above tells; none changed the circuit beyond the one resistor.

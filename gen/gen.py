@@ -79,7 +79,7 @@ def main():
     for s in sheets:
         s.save(ROOT, is_root=False)
     root.save(ROOT, is_root=True)
-    write_project(j)
+    write_project(j, sheets)
     write_libs()
     msgs = []
     for s in [root] + sheets:
@@ -97,10 +97,13 @@ def main():
     return 0
 
 
-def write_project(j):
+def write_project(j, sheets=()):
     pro = os.path.join(ROOT, NAME + ".kicad_pro")
     import rules
-    rules.write_project(pro, NAME)
+    aliases = {}
+    for s in sheets:                      # bus aliases go in the project file: KiCad 10 reads them only there
+        aliases.update(s.aliases)
+    rules.write_project(pro, NAME, aliases)
 
 
 KFP = os.path.expanduser("~/.local/kicad10/AppDir/usr/share/kicad/footprints")

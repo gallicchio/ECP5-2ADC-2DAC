@@ -882,7 +882,21 @@
       "sort_asc": true,
       "sort_field": "Reference"
     },
-    "bus_aliases": {},
+    "bus_aliases": {
+      "SDRAM_CTRL": [
+        "SDRAM_A[12..0]",
+        "SDRAM_BA[1..0]",
+        "SDRAM_CLK",
+        "SDRAM_CKE",
+        "SDRAM_CS_N",
+        "SDRAM_RAS_N",
+        "SDRAM_CAS_N",
+        "SDRAM_WE_N",
+        "SDRAM_DQML",
+        "SDRAM_DQMH",
+        "SDRAM_DQ[15..0]"
+      ]
+    },
     "connection_grid_size": 50.0,
     "drawing": {
       "dashed_lines_dash_length_ratio": 12.0,
