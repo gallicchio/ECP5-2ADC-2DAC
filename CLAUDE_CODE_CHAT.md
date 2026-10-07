@@ -1958,3 +1958,60 @@ the angle and I put it in the table.  AD9238 stock is 21; order before it moves.
 headers and Pmod sockets), `ECP5-2ADC-2DAC_assembly_top.pdf` / `_bottom.pdf` for your own eye,
 `end_panel_left/right.svg|.dxf` and `end_panels.txt` for the enclosure, not JLCPCB, after the slot measurement.
 Also fixed: §4 of the response named build 25's eight rails; it lists the nine now.
+
+## Prompt 25
+
+Take a pass through OpticsPCBs/CLAUDE_PCB.md , especially for lessons learned recently when building GPiBridge. I think, for example, that agent figured out a more reliable way to get JCLPCB's orientation correct and also to correct the positioning of this particular USB-C connector, which always needs manual correction because it shows up too far off of the board. Make any changes here that are relevant to do while I look at the KiCAD by eye.
+
+*(while that ran:)* Even if it costs extra, let's have JLCPCB solder Six SMAs C496551, the RJ45 C386757, the DIP switch C99418, plain 2.54 mm headers and the Pmod sockets. The USB-C already triggers the through-hole fee. Make sure that this fact is in CLAUDE_PCB.md for future cost estimates.
+
+## Response 25 2026-10-06 21:05 - 22:48 Claude Fable 5.1 Max
+
+Done, without touching the board or the sheets (you had them open): the release was regenerated from the
+build-27 files by `mfg/make_fab.py` alone, and the generator changes that need a build are marked below.
+
+**Through-hole parts are assembled.**  The release has 27 through-hole parts on 91 BOM lines and nothing left
+to hand-solder: the six SMAs (C496551), the RJ45 (C386757), the DIP switch (C99418), the 2.54 mm headers as the
+1x40 and 2x40 strips the assembler snaps to length (C2337, C29952, as JLCPCB built the GPSDO board), and a
+stocked 2x6 right-angle female header for the Pmods (C22373932, HC-PM254-8.5H-2x6PW, 8910 in stock).  Their
+land patterns were laid on the board like every other code: the SMA and the Pmod socket fit to 0.000 mm (their
+libraries number the pins differently, so the orientation is a preview item), the RJ45 and DIP switch are the
+same drawings as ours.  The codes live in `gen/parts.py` (`LCSC_BY_FP`, by footprint, since a header's value is
+the jumper's name); the release reads them from there until the next build carries them in the sheets.  The
+estimate is about $222 a board for five: six more Extended codes and the through-hole labour ($3.58 per order
+plus an assumed $0.02 a joint for 144 joints, the USB-C shells included -- calibrate against the cart).
+
+**The CPL, GPiBridge's way.**  `mfg/footprint_check.py` already fitted JLCPCB's drawing of every code onto our
+footprint; the release now reads two things off that fit.  (1) The quarter turn that lays their drawing on ours
+by pin number predicts the rotation correction for every part nobody has read in a preview; a cross-check
+prints the prediction beside each correction somebody has read, and all seven agree (SOT-23-5, TSOP-II-54,
+SOIC-8 5.3 mm, VSSOP-8).  The two-pad parts are read by the polarity mark instead (JLCPCB numbers the cathode
+2): the EasyEDA record carries a PNG of each drawing, and all five of this board's KiCad-library LEDs and
+SOD-123s draw the cathode on the left at 0, as KiCad's pad 1 is -- correction 0.  (2) Where their drawing's
+origin is not KiCad's, the uploaded CPL is moved to their origin, since that is what JLCPCB places: the two
+USB-Cs by 1.303 mm toward their pad row (the "too far off the board" of every preview so far), the Pmod sockets
+by (1.27, 6.35) mm.  `ECP5-2ADC-2DAC_cpl.csv` is the one to upload, `_cpl_native.csv` KiCad's numbers,
+`PLACEMENT_CHECKS.txt` the list for the preview (62 placements of 30 part numbers predicted or unverified),
+`FOOTPRINT_CHECK.txt` the fits.
+
+**The bottom side was 180 out, in every CPL so far.**  JLCPCB's bottom-side rule (`rot -> 180 - rot`) was read
+off a board KiCad itself had flipped, and KiCad stores a flipped footprint's pads mirrored top-to-bottom.
+`pcb/board.py` stores them mirrored left-to-right (U604's pad 1 at +1.1375 where U601's is at -1.1375), which
+is the same placement with a stored angle 180 away, so the rule now turns this board's angle by 180 first
+(`jlc_rotation.BOTTOM_STORED_X_MIRRORED`, and `verify_bottom_convention` reads the file every release so the
+flag cannot go stale).  Two checks agree: the BAV99, placed on both sides, predicts the same correction from
+its bottom-side fit as from its top-side fit, and the EasyEDA-sourced footprints on the bottom (the magnetics,
+the microSD) predict 0, as they must.  No preview has confirmed it yet: the seven polarised bottom parts (the
+three SOT-23-5 regulators, the two BAV99, the magnetics, the microSD) are the first thing to look at, and the
+notes say so.
+
+**Also from CLAUDE_PCB.md:** `build/netlist.net` names the schematic relative to the project (it carried this
+machine's absolute path); the KiCad AppImage and its share directory come from `KICAD_APPIMAGE`, `KICAD_SHARE`
+and `KICAD_CLI` with the old defaults; the release refuses to build without filled zones or with a DRC error;
+and `pcb/board.py` widens every silkscreen line under 0.15 mm (the KiCad library's 0.12, EasyEDA's 0.05) to
+JLCPCB's minimum -- at the NEXT build, so build 27's shipped gerbers still have them thin.  Build 28, when you
+are out of KiCad, is 18 minutes and changes nothing else but the headers' codes in the sheets.
+
+**CLAUDE_PCB.md** (the other session's file, untracked; edited, not committed): the through-hole fact under
+§8 with the strip and header-value lessons, and under CPL rotations the bottom-convention lesson, the
+in-build prediction with its cross-check, and the polarity-by-PNG trick.

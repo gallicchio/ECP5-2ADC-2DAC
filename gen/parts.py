@@ -110,7 +110,7 @@ LCSC = {
     ("TS-1088-AR02016", "SW_1088"): ("C720477", "Basic tactile switch, the one that fits (jlcbuild README)"),
     ("USB4105-GF-A-120", "USBC"): ("C5184243", "USB-C 16P receptacle, the Icepi Zero's part, 3949 in stock"),
     ("BWSMA-KWE-Z001", "SMA"): ("C496551", "edge SMA, 158k in stock, $0.53 (hand soldered)"),
-    ("R-RJ45R08P-C000", "RJ45"): ("C386757", "plain shielded RJ45, 53k in stock, $0.45 (hand soldered)"),
+    ("R-RJ45R08P-C000", "RJ45"): ("C386757", "plain shielded RJ45, 53k in stock, $0.45 (through-hole; JLCPCB fits it)"),
     ("G2406S", "MAG24"): ("C507595", "1000BASE-T magnetics with 4 separate chip-side centre taps, 30k in stock, $0.47"),
     ("A71-05H4-111N1", "HDMI_C"): ("C2682170", "mini-HDMI, the Icepi Zero's part, 1576 in stock"),
     ("TF-01A", "USD"): ("C91145", "microSD push-push, 201k in stock, $0.19"),
@@ -122,7 +122,7 @@ LCSC = {
     ("GZ2012D601TF", "L0805"): ("C1017", "Basic 600R@100MHz ferrite, 500 mA"),
     ("BLM18KG601SN1D", "L0603"): ("C85833", "600R@100MHz 1.3 A ferrite (rails that carry current), 941k in stock"),
     ("2.2uH", "L4030"): ("C279948", "the bucks' power inductor, also the PHY's switcher (C1043, the 0805 chip inductor builds 1-23 had there, is rated 50 mA)"),
-    ("Y", "H1x2"): ("C2337", "2.54 mm 1x40 breakable strip, snap to length (hand soldered)"),
+    ("Y", "H1x2"): ("C2337", "2.54 mm 1x40 breakable strip, snap to length (through-hole; JLCPCB fits it)"),
     ("1N4148W", "SOD123"): ("C81598", "Basic fast diode"),
     ("MF-MSMF050-2", "F1812"): ("C17313", "500 mA resettable fuse for the HDMI 5 V"),
     ("white", "LED0603"): ("C2290", "Basic 0603 white LED, KT-0603W (the Icepi Zero's): the user LEDs"),
@@ -173,6 +173,16 @@ ALIASES = {"AD9238": "AD9238BSTZ-65", "AD9767": "AD9767ASTZRL", "OPA2810": "OPA2
            "RJ45": "R-RJ45R08P-C000", "USBC": "USB4105-GF-A-120", "U.FL": "U.FL-R-SMT-1(80)"}
 
 
+# Through-hole parts JLCPCB fits since 2026-10-06 (Jason: "even if it costs extra"; the USB-C's shell
+# legs already pay the per-order through-hole fee).  By footprint: a header is the same part whatever
+# the jumper is called.  The 2.54 mm headers come as strips the assembler snaps to length, as on the
+# GPSDO board JLCPCB built; the Pmod sockets are a stocked 2x6 right-angle female header (8910 in
+# stock, 2026-10-06), checked against the footprint by mfg/footprint_check.py.
+LCSC_BY_FP = {"H1x2": "C2337", "H1x3": "C2337", "H1x4": "C2337", "H1x6": "C2337",    # 2.54 mm 1x40 male strip
+              "H2x3": "C29952", "H2x8": "C29952", "H2x9": "C29952",                   # 2.54 mm 2x40 male strip
+              "PMOD": "C22373932"}                                                     # HC-PM254-8.5H-2x6PW, 2x6 right-angle female
+
+
 def lcsc_for(value, fp_key, ref=""):
     """The LCSC code for a (value, footprint) pair, or None."""
     value = ALIASES.get(value, value)
@@ -182,6 +192,8 @@ def lcsc_for(value, fp_key, ref=""):
         return RES[value]
     if (value, fp_key) in CAP:
         return CAP[(value, fp_key)]
+    if fp_key in LCSC_BY_FP:
+        return LCSC_BY_FP[fp_key]
     return None
 
 

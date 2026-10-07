@@ -9,11 +9,11 @@
 Everything in the repository that is not under gen/, pcb/, mfg/, tools/,
 datasheets/ or gateware/test/ is a product of this script.
 """
-import argparse, os, subprocess, sys, time, json, glob
+import argparse, os, re, subprocess, sys, time, json, glob
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 NAME = "ECP5-2ADC-2DAC"
-KICAD = os.path.expanduser("~/.local/bin/kicad-10.0.6-x86_64.AppImage")
+KICAD = os.environ.get("KICAD_APPIMAGE", os.path.expanduser("~/.local/bin/kicad-10.0.6-x86_64.AppImage"))   # or kicad-cli on PATH
 
 
 def cli():
@@ -56,6 +56,16 @@ def clean():
         shutil.rmtree(p); n += 1
     print("removed %d generated files/directories" % n)
     return 0
+
+
+def relative_netlist_source(path):
+    """kicad-cli writes the schematic's absolute path into the netlist's (source ...); the netlist is
+    committed, so it names the file relative to the project instead (nothing in git may name a place on
+    one machine: CLAUDE_PCB.md)."""
+    s = open(path, encoding="utf-8").read()
+    s2 = re.sub(r'\(source "[^"]*?([^"/]+\.kicad_sch)"\)', r'(source "\1")', s, count=1)
+    if s2 != s:
+        open(path, "w", encoding="utf-8").write(s2)
 
 
 def render_docs():
@@ -128,6 +138,7 @@ def main():
         run(cli() + ["sch", "erc", "--severity-all", "--format", "json", "-o", "build/erc.json", NAME + ".kicad_sch"])
         n = sum(len(sh["violations"]) for sh in json.load(open(os.path.join(ROOT, "build", "erc.json")))["sheets"])
         run(cli() + ["sch", "export", "netlist", "-o", "build/netlist.net", NAME + ".kicad_sch"])
+        relative_netlist_source(os.path.join(ROOT, "build", "netlist.net"))
         s.done("ERC: %d violations; netlist written" % n)
         if n:
             raise SystemExit("FAILED: ERC is not clean")

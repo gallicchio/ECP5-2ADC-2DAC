@@ -27,7 +27,7 @@ import hashlib, math, os, re, sys, textwrap
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from sexp import parse, head, kids, kid, val, num
 
-KICAD = os.path.expanduser("~/.local/kicad10/AppDir/share/kicad")
+KICAD = os.environ.get("KICAD_SHARE", os.path.expanduser("~/.local/kicad10/AppDir/share/kicad"))   # the AppImage's share/kicad, extracted
 SYMDIR = os.path.join(KICAD, "symbols")
 SCH_VERSION = "20250114"
 GRID = 1.27

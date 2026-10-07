@@ -43,6 +43,7 @@ except Exception:
     OUR_MODELS = set()
 
 BOARD = None          # (width, height) in mm, set by the builder so off-board silk can be dropped
+SILK_MIN_W = 0.15     # the thinnest silkscreen line JLCPCB prints; thinner library outlines are widened to it
 
 
 def uid(*p):
@@ -212,6 +213,12 @@ def footprint(fp, ref, value, x, y, rot, layer, padnets, numof, ref_at=None, val
                         pts = [(_f(q[1]), _f(q[2])) for q in kids(pq, "xy")] if pq else []
                     if any(_outside(px, py) for px, py in pts):
                         continue
+                    # JLCPCB prints silkscreen lines of 0.15 mm and up; KiCad's library draws 0.12 and
+                    # EasyEDA's 0.05, and DRC checks text height but never line width (CLAUDE_PCB.md)
+                    st = kid(c, "stroke")
+                    wd = kid(st, "width") if st else kid(c, "width")
+                    if wd and len(wd) > 1 and _f(wd[1]) < SILK_MIN_W:
+                        wd[1] = ("atom", "%g" % SILK_MIN_W)
             keep.append(c)
         node[:] = keep
     if back:

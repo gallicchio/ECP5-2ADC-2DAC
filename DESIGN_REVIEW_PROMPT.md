@@ -114,7 +114,8 @@ measured on the extrusion.
 
 158 x 119 mm, 6 layers (F.Cu signals / In1 GND / In2 signals / In3 signals / In4 power planes / B.Cu),
 JLCPCB stackup JLC06161H-7628, ENIG, 0.8 mm BGA with filled-and-capped via-in-pad.  About 450 parts, 438
-SMT placements on 85 BOM lines; the SMAs, headers, Pmod sockets, DIP switch and RJ45 are hand soldered.
+SMT placements and 27 through-hole parts (the SMAs, headers, Pmod sockets, DIP switch and RJ45, fitted by JLCPCB
+too since 2026-10-06) on 91 BOM lines.
 The In4 planes: 3.3 V under almost everything, a 1.1 V patch under the core's balls with a corridor to its
 buck, a 5 V corridor from the USB jacks down the right edge and along the bottom to the analog side.  Every
 signal via has a ground via within 1.5 mm.  The analog strips (one per SMA, 17 mm pitch) run straight from
@@ -201,7 +202,8 @@ Ordered by how much it would cost to be wrong.  These are the author's own least
    feedback capacitors -- eight codes typed wrong in `gen/parts.py`, every other check green).
    `mfg/footprint_check.py` compares EasyEDA's land pattern for every ordered code with the footprint on the
    board.  **What else of that kind is there?**  The codes of the ICs were read back the same way (the
-   description carries the part number); the ones that were not are the hand-soldered parts.
+   description carries the part number); since 2026-10-06 the through-hole parts' codes are read back too, for
+   their pitch.
 9. **The mechanics.**  Board length and width from Hammond's drawing, connector protrusions from the
    footprints' courtyards; the Pmod sockets' and RJ45's heights above the board are from their drawings,
    not measured.  The end plates have not been milled or test-fitted.

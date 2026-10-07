@@ -12,7 +12,7 @@ sys.path.insert(0, HERE)
 import kisch, parts, fpga
 
 NAME = "ECP5-2ADC-2DAC"
-KICAD = os.path.expanduser("~/.local/bin/kicad-10.0.6-x86_64.AppImage")
+KICAD = os.environ.get("KICAD_APPIMAGE", os.path.expanduser("~/.local/bin/kicad-10.0.6-x86_64.AppImage"))
 TITLE_COMPANY = "Jason Gallicchio and Claude -- https://github.com/gallicchio"
 REV = "A"
 DATE = "2026-10-02"

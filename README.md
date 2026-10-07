@@ -69,7 +69,24 @@ notes) into `mfg/release/`.  `python3 build.py --clean` removes everything it ma
   review found builds 1-25 had routed them at 0.15 mm because the first routing pass never consulted the RF set.
 * `python3 mfg/footprint_check.py` fetches EasyEDA's land pattern for every ordered code and lays it over the
   footprint on the board: a hole the board does not drill, a pad the board has no copper for, or a pad centre
-  off its copper is reported with the number.  It is what found the 1206 resistor on the 0402 pads.
+  off its copper is reported with the number.  It is what found the 1206 resistor on the 0402 pads.  The
+  release runs it (`mfg/release/FOOTPRINT_CHECK.txt`) and reads two more things off the same fit, the way the
+  GPiBridge board did (`CLAUDE_PCB.md` §8): the quarter turn that laid JLCPCB's drawing on our footprint by
+  pin number predicts the CPL rotation correction for every part nobody has yet read in a placement preview
+  (7 of 7 corrections somebody has read agree with it), and where their drawing's origin is not KiCad's (the
+  USB-Cs, 1.3 mm; the Pmod sockets) the uploaded CPL is moved to their origin, since JLCPCB places that.
+  `ECP5-2ADC-2DAC_cpl.csv` is the one to upload, `_cpl_native.csv` KiCad's own numbers, and
+  `PLACEMENT_CHECKS.txt` lists every predicted or moved part for the preview.  Two-pad polarised parts are
+  read by the polarity mark in JLCPCB's drawing, not by pad number (they number the cathode 2).
+* The CPL's bottom side: KiCad's own flip stores a footprint's pads mirrored top-to-bottom, and the mirror
+  rule JLCPCB's previews taught (`jlc_rotation.BOTTOM_FLIP`) was read against such a file; `pcb/board.py`
+  stores them mirrored left-to-right, which is the same placement with a stored angle 180 away, so the
+  rule now turns this board's angle by 180 first (`BOTTOM_STORED_X_MIRRORED`, checked against the file every
+  release).  Every bottom-side rotation in the CPLs of builds 1-27 was 180 out; the seven polarised bottom
+  parts (three SOT-23-5 regulators, two BAV99, the magnetics, the microSD) are the first thing to check in
+  the preview.
+* The release refuses to build without filled zones in the board file or with a DRC error or unconnected
+  item in `build/drc.json`.
 * `build_pcb._pin1_marks` prints a dot beside pin 1 of every LCSC-pattern part whose pads are symmetric under
   a half turn and whose footprint prints no mark of its own (the RGB LED), and a cathode bar on polarised
   two-pad parts that print none; KiCad's own footprints carry their conventions.
@@ -109,6 +126,12 @@ labels that sat on symbols or wires were moved (the CLK IN note, the comparator'
 designator, the Bob Smith and PROGRAMN notes, the DAC's output and Vout notes, the DAC and TIA feedback
 capacitors' values, the ADC gain, tap and "to JP203" notes).  `pcb/plot.py` now draws the designators that go to the fab layer (not printed) dim, so the board pictures
 below show the silkscreen as it prints.
+
+The release of 2026-10-06 (no board change) has JLCPCB fit the through-hole parts as well: the six SMA jacks,
+the RJ45, the DIP switch, the 2.54 mm headers (ordered as 1x40 and 2x40 strips the assembler snaps to
+length, as on the GPSDO board) and two stocked 2x6 right-angle sockets for the Pmods; nothing is left to
+hand-solder.  The next build widens every silkscreen line to 0.15 mm, the thinnest JLCPCB prints (the library
+outlines are 0.05 and 0.12 mm in build 27's gerbers), and carries the headers' codes in the sheets.
 
 ## Design reviews
 

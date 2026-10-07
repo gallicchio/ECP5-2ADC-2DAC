@@ -1,4 +1,4 @@
-ECP5-2ADC-2DAC rev A -- FABRICATION NOTES (written 2026-10-04)
+ECP5-2ADC-2DAC rev A -- FABRICATION NOTES (written 2026-10-06)
 
 Board: 158 x 119 mm, 6 layers, 1.6 mm, JLCPCB stackup JLC06161H-7628 (1 oz outer, 0.5 oz inner, 7628 prepreg).
 Surface finish: ENIG (there is a 0.8 mm pitch BGA).  Solder mask green, silkscreen white.
@@ -9,18 +9,20 @@ Photodiode D103 uses ours:VBPW34S_K1_A2 (LCSC's footprint with pads renumbered s
 The mini-HDMI jack is wired with type C pin numbering (shield first in each pair, DDC ground 13, CEC 14); its four shell tabs (pads 20-23) are grounded.
 Minimum track/space on the board: 0.100 mm (inside the BGA fan-out; 0.127 mm elsewhere).  Via sizes: 0.3/0.15, 0.45/0.25.  Smallest drill 0.15 mm.
 Impedance: ask for controlled impedance with the JLC06161H-7628 calculator: 50 ohm single-ended (SMA runs, 0.3 mm drawn) and 100 ohm differential (Ethernet MDI, 0.2 mm / 0.2 mm drawn), referenced to In1.
+The shipped board file holds 312 filled zone polygons; DRC 0 errors / 0 unconnected (build/drc.json).
 
-Assembly (JLCPCB SMT, both sides): 438 placements on 85 BOM lines, 40 of them Extended parts (each carries a one-off loading fee).
-Upload: ECP5-2ADC-2DAC_bom.csv and ECP5-2ADC-2DAC_cpl.csv.  The CPL rotations are KiCad native with the corrections in mfg/jlc_rotation.py applied;
-CHECK THESE PACKAGES IN THE PLACEMENT PREVIEW (no verified correction yet): BGA-256_14.0x14.0mm_Layout16x16_P0.8mm_Ball0.45mm_Pad0.32mm_NSMD x1, C_1812_4532Metric x1, DFN-8-1EP_2x2mm_P0.5mm_EP0.9x1.6mm x1, D_SOD-123 x2, HDMI-SMD_A71-05H4-111N1 x1, LED-ARRAY-SMD_4P-L1.6-W1.5-BR_XL-1615RGBC-RF x1, LED-SMD_L3.5-W2.8-RD x1, LED_0603_1608Metric x19, LQFP-48_7x7mm_P0.5mm x1, LQFP-64_10x10mm_P0.5mm x1, LQFP-64_7x7mm_P0.4mm x1, MSOP-10_3x3mm_P0.5mm x1, MSOP-8_3x3mm_P0.65mm x2, Oscillator_SMD_Fox_FT5H_5.0x3.2mm x1, QFN-40-1EP_5x5mm_P0.4mm_EP3.6x3.6mm x1, R_1206_3216Metric x2, SMD-24_L15.1-W7.1-P1.00-LS10.0-BL x1, SOIC-8_3.9x4.9mm_P1.27mm x5, SOT-23 x6, SOT-23-6 x4, TF-SMD_TF-01A x1, UFL_Hirose_U.FL-R-SMT-1 x4, USB_C_Receptacle_GCT_USB4105-xx-A_16P_TopMnt_Horizontal x2, VBPW34S_K1_A2 x1
-Hand solder (hand_solder_bom.csv): the right-angle SMA jacks, the headers, the Pmod sockets, the DIP switch, the RJ45 jack.
-End plates: end_panel_left/right.svg and .dxf (1:1, viewed from outside) with every connector's cutout; end_panels.txt lists them.  MEASURE which slot the board rides in and set PCB_TOP_ABOVE_FLOOR in mfg/end_panels.py before milling (all cutouts move together).
+Assembly (JLCPCB Standard, SMT both sides + through-hole on top): 438 SMT placements and 27 through-hole parts on 91 BOM lines, 46 of them Extended parts (each carries a one-off loading fee).
+Through-hole, fitted by JLCPCB (Jason, 2026-10-06): the six SMA jacks, the RJ45, the DIP switch, the 2.54 mm headers (ordered as 1x40 / 2x40 strips the assembler snaps to length, as on the GPSDO board) and the two Pmod sockets.  144 through-hole joints incl. the USB-C shells.
+Upload: ECP5-2ADC-2DAC_bom.csv and ECP5-2ADC-2DAC_cpl.csv (JLCPCB's conventions: the bottom-side mirror, rotations read in previews or predicted from their drawings, the USB-C moved to their origin); ECP5-2ADC-2DAC_cpl_native.csv is KiCad's own numbers for reference.
+THEN READ THE PLACEMENT PREVIEW against PLACEMENT_CHECKS.txt: 62 placements of 30 part numbers have a predicted or unverified rotation; the bottom side's 7 polarized parts hardest of all (this board stores its back-side pads mirrored left-right, checked on C_0402_1005Metric).
+End plates: end_panel_left/right.svg and .dxf (1:1, viewed from outside) with every connector's cutout; end_panels.txt lists them.  MEASURE which slot the board rides in and set PCB_TOP_ABOVE_FLOOR in mfg/end_panels.py before milling.
 
-COST ESTIMATE for 5 boards (JLCPCB list prices, parts from their live API on 2026-10-04):
+COST ESTIMATE for 5 boards (JLCPCB list prices, parts from their live API on 2026-10-06):
   PCBs (6-layer, ENIG, via-in-pad)            ~$130
-  assembly setup + Extended-part loading fees  ~$128
-  assembly per board x 5                      ~$19
-  parts for 5 boards                           $768.88
-  TOTAL                                        ~$1046  (~$209 per board)
+  assembly setup + Extended-part loading fees  ~$146
+  SMT assembly per board x 5                  ~$19
+  through-hole: $3.58 per order + 144 joints x $0.020 x 5 boards  ~$18  (per-joint rate assumed: calibrate against the cart)
+  parts for 5 boards                           $798.50
+  TOTAL                                        ~$1111  (~$222 per board)
 
 THIN STOCK (fewer than 10x what 5 boards need): C514277 AD9238BSTZ-65 stock 21 need 5

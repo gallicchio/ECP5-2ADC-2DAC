@@ -75,6 +75,17 @@ import urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PCB = os.path.join(os.path.dirname(HERE), "ECP5-2ADC-2DAC.kicad_pcb")      # this board (the file came from the Icepi Zero build)
+
+# The quarter turn that laid each part's land pattern on our footprint, by
+# (LCSC code, bottom side): check() fills it and make_fab.py reads a rotation
+# prediction and the datum shift off it (the method GPiBridge confirmed on
+# every part in its preview, 2026-10-06).
+FITS = {}
+
+# Parts ordered as a strip and snapped to length by the assembler (GPSDO was
+# built that way): their drawing has more holes than the board, by design, so
+# the HOLE check compares only the pads that match by number.
+STRIPS = {"C2337": "2.54 mm 1x40 male strip, snapped", "C29952": "2.54 mm 2x40 male strip, snapped"}
 CACHE = os.path.join(HERE, "jlc_footprint_cache.json")
 URL = "https://easyeda.com/api/products/%s/svgs"
 MAX_AGE_H = 24 * 30           # land patterns do not move the way stock does
@@ -434,6 +445,7 @@ def check(code, insts, board_drills, refresh=False, verbose=False):
     if fit is None:
         fit = dict(deg=0, worst=0.0, at="", n=0, dx=0.0, dy=0.0, how="")
     deg, dx, dy = fit["deg"], fit["dx"], fit["dy"]
+    FITS[(code, mirror)] = dict(fit)
 
     # ---- HOLE: the part wants a hole and the board has no drill -----------
     wants = ([dict(h, what="%.2f mm hole" % h["d"]) for h in lp["holes"]]
@@ -441,6 +453,9 @@ def check(code, insts, board_drills, refresh=False, verbose=False):
                      what="%.2f mm through-hole pad %s" % (p["drill"],
                                                            p["number"]))
                 for p in lp["pads"] if p["drill"] > 0])
+    if code in STRIPS:                                    # a snapped strip: only the pads the board has
+        have = {p["number"] for p in kpads}
+        wants = [w for w in wants if w.get("number") in have]
     for h in wants:
         hx, hy = placed([(h["x"], h["y"])], deg, mirror)[0]
         hx, hy = hx + dx, hy + dy
@@ -487,9 +502,9 @@ def check(code, insts, board_drills, refresh=False, verbose=False):
                              % (fit["worst"], renamed["worst"], renamed["at"])))
     # ---- datum: the two libraries measure from different zeroes ----------
     if math.hypot(dx, dy) > DATUM_OK:
-        out.append(("datum", "their origin is (%+.3f, %+.3f) mm from ours; "
-                             "the CPL says where OUR origin goes"
-                             % (-dx, -dy)))
+        out.append(("datum", "their origin sits at (%+.3f, %+.3f) mm in our "
+                             "footprint; the JLCPCB CPL is moved there"
+                             % (dx, dy)))
     if verbose:
         print("    %-34s origin (%g, %g), fetched %s"
               % (lp["package"], lp["origin"][0], lp["origin"][1], ts))
@@ -568,9 +583,9 @@ def report(bom, refresh=False, verbose=False):
         L.append("worth a look: " + ", ".join("%s x%d" % kv
                                               for kv in sorted(soft.items())))
         L.append("  land  a pad centre out by less than half a millimetre")
-        L.append("  datum the two libraries measure from different zeroes; "
-                 "their")
-        L.append("        drawing sits somewhere else, the part still fits")
+        L.append("  datum the two libraries measure from different zeroes, and")
+        L.append("        JLCPCB places THEIR zero where the CPL says: the JLCPCB")
+        L.append("        CPL is moved by it (make_fab.py), the native one not")
         L.append("  names the pads line up but the pin NUMBERS disagree")
     if not hard:
         L.append("")

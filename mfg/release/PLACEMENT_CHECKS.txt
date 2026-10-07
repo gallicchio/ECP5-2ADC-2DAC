@@ -1,0 +1,97 @@
+ECP5-2ADC-2DAC rev A: PLACEMENT CHECKS for JLCPCB's preview
+
+MOVED in ECP5-2ADC-2DAC_cpl.csv to where JLCPCB's library puts the part's origin (their drawing's zero is not
+KiCad's; FOOTPRINT_CHECK.txt's 'datum').  In the preview each should sit squarely on its pads.  If one
+sits off them by about the same distance the other way, their library has changed: say so.
+
+  J303   C22373932  PinSocket_2x06_P2.54mm_Horizontal            moved (+1.270, +6.350) mm (x right, y up)
+  J304   C22373932  PinSocket_2x06_P2.54mm_Horizontal            moved (+1.270, +6.350) mm (x right, y up)
+  J501   C5184243   USB_C_Receptacle_GCT_USB4105-xx-A_16P_TopMnt moved (-1.303, -0.000) mm (x right, y up)
+  J502   C5184243   USB_C_Receptacle_GCT_USB4105-xx-A_16P_TopMnt moved (-1.303, -0.000) mm (x right, y up)
+
+The CPL's rotations are this board's stored angles plus mfg/jlc_rotation.py: the bottom-side mirror (this
+board stores its back-side pads mirrored left-right, 180 from KiCad's own convention, and the rule allows
+for it), then the per-part correction -- read in a preview where somebody has, else PREDICTED from JLCPCB's
+own drawing of the part turned until its pads lie on ours by pin number.  Every predicted or unpredicted
+part is listed below: in the preview check its pin 1 or polarity mark (JLCPCB's dot) against the board,
+write down any that is wrong and by how much, and it goes into jlc_rotation.py.
+
+LOOK HARDEST at the bottom side, where the mirror rule meets this board's convention for the first time:
+  D111 D112 J504 T401 U603 U604 U605
+
+Not yet seen right in a preview:
+  D101, D102, D111, D112       C2500        SOT-23
+      value BAV99; predicted correction 180, from the top-side fit at 180 deg (3 pads by number, worst 0.40 mm); the bottom-side fit at 0 deg says the same
+  D301, D302, D303, D304, D305 C2290        LED_0603_1608Metric
+      value white; correction 0 (predicted)
+  D309                         C965840      LED-ARRAY-SMD_4P-L1.6-W1.5-BR_XL-1615RGBC-RF
+      value XL-1615RGBC-RF; predicted correction 0, from the top-side fit at 0 deg, 4 pads by number, worst 0.01 mm
+  D401, D402, D403             C12624       LED_0603_1608Metric
+      value green; correction 0 (predicted)
+  D501                         C81598       D_SOD-123
+      value 1N4148W; correction 0 (predicted)
+  D601                         C8598        D_SOD-123
+      value B5819W; correction 0 (predicted)
+  D602, D603, D604, D605, D606 C2286        LED_0603_1608Metric
+      value red; correction 0 (predicted)
+  J101, J102, J204, J205, J301 C496551      SMA_BAT_Wireless_BWSMA-KWE-Z001
+      value SMA; no prediction: no fit by pin number
+  J303, J304                   C22373932    PinSocket_2x06_P2.54mm_Horizontal
+      value PMOD A/PMOD B; no prediction: no fit by pin number
+  J401                         C386757      RJ45-TH_R-RJ45R08P-C000
+      value RJ45; predicted correction 0, from the top-side fit at 0 deg, 14 pads by number, worst 0.01 mm
+  J501, J502                   C5184243     USB_C_Receptacle_GCT_USB4105-xx-A_16P_TopMnt_Horizontal
+      value USB4105-GF-A-120; predicted correction 0, from the top-side fit at 0 deg, 8 pads by number, worst 0.00 mm
+  J503                         C2682170     HDMI-SMD_A71-05H4-111N1
+      value mini HDMI; predicted correction 0, from the top-side fit at 0 deg, 23 pads by number, worst 0.01 mm
+  J504                         C91145       TF-SMD_TF-01A
+      value microSD; predicted correction 0, from the bottom-side fit at 180 deg, 13 pads by number, worst 0.01 mm (the bottom rule is untested)
+  Q201, Q601                   C2150        SOT-23
+      value SS8050; predicted correction 180, from the top-side fit at 180 deg, 3 pads by number, worst 0.08 mm
+  SW101                        C99418       SW-TH_DSWB04LHGET
+      value DSWB04LHGET; predicted correction 0, from the top-side fit at 0 deg, 8 pads by number, worst 0.00 mm
+  T401                         C507595      SMD-24_L15.1-W7.1-P1.00-LS10.0-BL
+      value G2406S; predicted correction 0, from the bottom-side fit at 180 deg, 24 pads by number, worst 0.00 mm (the bottom rule is untested)
+  U1                           C1521614     BGA-256_14.0x14.0mm_Layout16x16_P0.8mm_Ball0.45mm_Pad0.32mm_NSMD
+      value LFE5U-25F-6BG256C; predicted correction 0, from the top-side fit at 0 deg, 256 pads by number, worst 0.00 mm
+  U101, U102                   C94590       SOIC-8_3.9x4.9mm_P1.27mm
+      value OPA1612; predicted correction 270, from the top-side fit at 90 deg, 8 pads by number, worst 0.23 mm
+  U103                         C514277      LQFP-64_7x7mm_P0.4mm
+      value AD9238; predicted correction 270, from the top-side fit at 90 deg, 64 pads by number, worst 0.16 mm
+  U105, U202, U203             C1849413     SOIC-8_3.9x4.9mm_P1.27mm
+      value OPA2810; predicted correction 270, from the top-side fit at 90 deg, 8 pads by number, worst 0.13 mm
+  U111, U112                   C170157      MSOP-8_3x3mm_P0.65mm
+      value THS4521; predicted correction 270, from the top-side fit at 90 deg, 8 pads by number, worst 0.02 mm
+  U201                         C653820      LQFP-48_7x7mm_P0.5mm
+      value AD9767; predicted correction 270, from the top-side fit at 90 deg, 48 pads by number, worst 0.09 mm
+  U301                         C504891      MSOP-10_3x3mm_P0.5mm
+      value Si5351A-B-GTR; predicted correction 270, from the top-side fit at 90 deg, 10 pads by number, worst 0.01 mm
+  U302                         C193413      SOT-23-6
+      value TLV3501AIDBVR; predicted correction 180, from the top-side fit at 180 deg, 6 pads by number, worst 0.21 mm
+  U401                         C187932      QFN-40-1EP_5x5mm_P0.4mm_EP3.6x3.6mm
+      value RTL8211F-CG; predicted correction 270, from the top-side fit at 90 deg, 41 pads by number, worst 0.06 mm
+  U501, U504                   C2827654     SOT-23-6
+      value USBLC6-2SC6; predicted correction 270, from the top-side fit at 90 deg, 6 pads by number, worst 0.01 mm
+  U502                         C27882       LQFP-64_10x10mm_P0.5mm
+      value FT2232HL; predicted correction 0, from the top-side fit at 0 deg, 64 pads by number, worst 0.13 mm
+  U503                         C190271      SOT-23-6
+      value 93LC56BT-I/OT; predicted correction 180, from the top-side fit at 180 deg, 6 pads by number, worst 0.21 mm
+  U606                         C129351      DFN-8-1EP_2x2mm_P0.5mm_EP0.9x1.6mm
+      value LM27761DSGR; predicted correction 270, from the top-side fit at 90 deg, 9 pads by number, worst 0.09 mm
+  X301                         C5742665     Oscillator_SMD_Fox_FT5H_5.0x3.2mm
+      value FT5HNBPK25.0-T1; predicted correction 270, from the top-side fit at 90 deg, 4 pads by number, worst 0.05 mm
+
+Read right in a preview already (the Icepi and GPSDO boards): D103 D201 J107 J108 J109 J603 U304 U305 U306 U505 U601 U602 U603 U604 U605
+The method against those readings (its prediction must equal the correction somebody saw):
+  C7836      SOT-23-5                             read 180, predicted 180: AGREES
+  C62246     TSOP-II-54_22.2x10.16mm_P0.8mm       read 270, predicted 270: AGREES
+  C97521     SOIC-8_5.3x5.3mm_P1.27mm             read 270, predicted 270: AGREES
+  C5119911   VSSOP-8_2.3x2mm_P0.5mm               read 180, predicted 180: AGREES
+  C141836    SOT-23-5                             read 180, predicted 180: AGREES
+  C165132    SOT-23-5                             read 180, predicted 180: AGREES
+  C2862740   SOT-23-5                             read 180, predicted 180: AGREES
+No orientation to get wrong (two pads, or symmetric): C_0402_1005Metric, C_0402_1005Metric_BGA, C_0603_1608Metric, C_0805_2012Metric, C_1812_4532Metric, Crystal_SMD_3225-4Pin_3.2x2.5mm, Fuse_1812_4532Metric, IND-SMD_L4.0-W4.0, L_0603_1608Metric, PinHeader_1x02_P2.54mm_Vertical, PinHeader_1x03_P2.54mm_Vertical, PinHeader_1x06_P2.54mm_Vertical, PinHeader_2x09_P2.54mm_Vertical, R_0603_1608Metric, R_1206_3216Metric, SW-SMD_L3.9-W3.0-P4.45
+
+Through-hole parts JLCPCB fits: the SMA jacks' barrels must point off the LEFT edge, the Pmod sockets' openings
+off the RIGHT edge, the RJ45's opening off the right edge, the DIP switch's ON side at the silkscreen's ON.
+

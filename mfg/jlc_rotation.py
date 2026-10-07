@@ -93,6 +93,46 @@ JLC_ROTATION = {
             "should still be rotated 90 CW more than it is in the corrected "
             "CPL\".  First reading was 90 CCW; the two cancel"),
 }
+# Per PART, read in a preview or predicted from JLCPCB's own drawing (see
+# correction()).  JLCPCB draws the SN75160B lying down and the SN75161B upright
+# on the same SOIC-20W (GPiBridge, 2026-10-06), so a part can need what its
+# footprint does not.  Absent here and above means nobody has looked; a
+# "predicted" entry is make_fab.py's own reading of the EasyEDA drawing, by pin
+# number, and PLACEMENT_CHECKS.txt lists every one of them for the preview.
+#   LCSC code: (correction, confidence, why)
+JLC_ROTATION_BY_PART = {
+    # "derived": our footprint IS JLCPCB's drawing (EasyEDA's, converted), so their zero is ours by construction
+    "C88374": (0, "derived", "U.FL: our footprint is JLCPCB's own drawing with its pad 3 renamed 2 (both grounds are 2)"),
+    "C145262": (0, "derived", "photodiode VBPW34S: our footprint is JLCPCB's drawing with the pads renumbered (ours: 1 = cathode); "
+                              "the part sits as their library draws it, their pad 1 (anode) on the -4.2 V side"),
+    "C2843878": (0, "derived", "2835 LED: our footprint is JLCPCB's drawing"),
+    # "predicted" by the POLARITY MARK in JLCPCB's drawing (the EasyEDA record's png, read 2026-10-06): the
+    # cathode ("-", the bar or chamfer) on the LEFT at 0, where KiCad's pad 1 (the cathode) is.  A fit by pad
+    # number would say 180 on these, since JLCPCB numbers the cathode 2 (GPiBridge's KT-0805 lesson).
+    "C2290": (0, "predicted", "KT-0603W white LED, by the mark: cathode left in both drawings"),
+    "C2286": (0, "predicted", "0603 red LED, by the mark: cathode left in both drawings"),
+    "C12624": (0, "predicted", "0603 green LED, by the mark: cathode left in both drawings"),
+    "C81598": (0, "predicted", "1N4148W SOD-123, by the mark: cathode bar left in both drawings"),
+    "C8598": (0, "predicted", "B5819W SOD-123, by the mark: cathode bar left in both drawings"),
+}
+
+# HOW THIS BOARD STORES ITS BOTTOM-SIDE FOOTPRINTS, and why it matters here.
+#
+# BOTTOM_FLIP below was read off a board KiCad itself had flipped: KiCad
+# mirrors a flipped footprint's pads TOP-TO-BOTTOM (y negated) and that is
+# what the Icepi file holds.  pcb/board.py writes this board's back-side
+# footprints mirrored LEFT-TO-RIGHT instead (x negated; U604's pad 1 is at
+# +1.1375 where U601's is at -1.1375), which is equally valid to KiCad -- the
+# file holds the pads where they are -- but the SAME physical placement then
+# carries a stored angle 180 degrees from KiCad's own, because a left-right
+# mirror is a top-bottom mirror turned half way round.  So the angle this
+# board stores must be turned by 180 to be the "native" angle BOTTOM_FLIP
+# expects; make_fab.py checks the file's convention (verify_bottom_convention)
+# before trusting this flag.  For the stored angle s that makes the CPL
+# rotation 180 - (s + 180) = -s.  Untested in a preview on this board: every
+# polarized bottom part is listed in PLACEMENT_CHECKS.txt to look at hardest.
+BOTTOM_STORED_X_MIRRORED = True
+
 # BOTTOM-SIDE PLACEMENTS ARE MIRRORED: rot -> 180 - rot, and it is CONFIRMED.
 #
 # KiCad reports a bottom footprint's angle in the board's top-view frame.
@@ -131,25 +171,78 @@ ROTATION_NA = ("R_0402_1005Metric", "R_0201_0603Metric", "C_0402_1005Metric",
                # are the crystal and 2/4 the case either way round; the 4030 inductor and the 1812 fuse have two)
                "R_0603_1608Metric", "C_0402_1005Metric_BGA", "C_0805_2012Metric", "C_1206_3216Metric",
                "L_0603_1608Metric", "Fuse_1812_4532Metric", "IND-SMD_L4.0-W4.0", "Crystal_SMD_3225-4Pin_3.2x2.5mm",
-               "SW-SMD_L3.9-W3.0-P4.45")
+               "SW-SMD_L3.9-W3.0-P4.45",
+               # the 2.54 mm pin headers JLCPCB fits since 2026-10-06: a straight header is the same either way round
+               "PinHeader_1x02_P2.54mm_Vertical", "PinHeader_1x03_P2.54mm_Vertical", "PinHeader_1x06_P2.54mm_Vertical",
+               "PinHeader_2x09_P2.54mm_Vertical",
+               # two-terminal and unpolarised, build 26's parts
+               "C_1812_4532Metric", "R_1206_3216Metric")
 
-def cpl_rotation(native_deg, side, footprint):
+def correction(footprint, code=None):
+    """(degrees, confidence, why) for one part: per part first, then per footprint, else (0, "none", "")."""
+    if code in JLC_ROTATION_BY_PART:
+        return JLC_ROTATION_BY_PART[code]
+    return JLC_ROTATION.get(footprint, (0, "none", ""))
+
+
+def cpl_rotation(native_deg, side, footprint, code=None, predicted=None, stored_x_mirrored=None):
     """The number that goes in JLCPCB's CPL for one placement.
 
-    `native_deg` is KiCad's own footprint orientation, `side` is "top" or
-    "bottom", `footprint` is the footprint's short name.
+    `native_deg` is the footprint orientation this board's file stores, `side`
+    is "top" or "bottom", `footprint` the footprint's short name, `code` its
+    LCSC code.  `predicted` is a correction read off JLCPCB's drawing by
+    make_fab.py; it is used only where nobody has read the part in a preview.
     """
     rot = float(native_deg) % 360.0
-    if BOTTOM_FLIP and side == "bottom":
-        rot = (180.0 - rot) % 360.0
-    if footprint in JLC_ROTATION:
-        rot = (rot + JLC_ROTATION[footprint][0]) % 360.0
-    return round(rot, 4)
+    if stored_x_mirrored is None:
+        stored_x_mirrored = BOTTOM_STORED_X_MIRRORED
+    if side == "bottom":
+        if stored_x_mirrored:
+            rot = (rot + 180.0) % 360.0          # to KiCad's own (top-bottom mirrored) convention first
+        if BOTTOM_FLIP:
+            rot = (180.0 - rot) % 360.0
+    corr, conf, why = correction(footprint, code)
+    if conf == "none" and predicted is not None:
+        corr = predicted
+    return round((rot + corr) % 360.0, 4)
 
 
-def checked(footprint):
-    """Has anybody looked at this footprint in a placement preview?"""
+def checked(footprint, code=None):
+    """Has anybody looked at this part in a placement preview?"""
+    if code in JLC_ROTATION_BY_PART:
+        return JLC_ROTATION_BY_PART[code][1] not in ("predicted", "none")
     return footprint in JLC_ROTATION or footprint in ROTATION_NA
+
+
+def verify_bottom_convention(pcb_path):
+    """Read the board file: do its back-side footprints hold their pads
+    mirrored left-right (x negated, this board's writer) or top-bottom (y
+    negated, KiCad's own flip)?  Compared on a footprint that appears on both
+    sides.  Raises if the file disagrees with BOTTOM_STORED_X_MIRRORED, since
+    every bottom-side CPL rotation would then be 180 degrees out."""
+    import re as _re
+    s = open(pcb_path, encoding="utf-8").read()
+    inst = {}
+    for blk in s.split("(footprint ")[1:]:
+        name = _re.match(r'"([^"]+)"', blk)
+        lay = _re.search(r'\(layer "([^"]+)"\)', blk)
+        pad = _re.search(r'\(pad "1"[^\n]*\n\s*\(at ([-\d.]+) ([-\d.]+)', blk)
+        if name and lay and pad:
+            inst.setdefault(name.group(1), {}).setdefault(lay.group(1), (float(pad.group(1)), float(pad.group(2))))
+    for name, sides in inst.items():
+        if "F.Cu" in sides and "B.Cu" in sides:
+            (tx, ty), (bx, by) = sides["F.Cu"], sides["B.Cu"]
+            if abs(tx) < 0.05 and abs(ty) < 0.05:
+                continue                                     # pad 1 on the origin says nothing
+            x_mirrored = abs(bx + tx) < 0.01 and abs(by - ty) < 0.01
+            y_mirrored = abs(bx - tx) < 0.01 and abs(by + ty) < 0.01
+            if x_mirrored or y_mirrored:
+                if x_mirrored != BOTTOM_STORED_X_MIRRORED:
+                    raise SystemExit("FAILED: the board stores back-side footprints mirrored %s (%s), but "
+                                     "jlc_rotation.BOTTOM_STORED_X_MIRRORED is %s: every bottom CPL rotation would be 180 out"
+                                     % ("left-right" if x_mirrored else "top-bottom", name, BOTTOM_STORED_X_MIRRORED))
+                return "left-right" if x_mirrored else "top-bottom", name
+    return None, None
 
 
 # The ten bottom-side readings BOTTOM_FLIP was derived from, kept so the rule
@@ -173,7 +266,7 @@ def self_test():
     for ref, native, side, must_move in EVIDENCE:
         fp = EVIDENCE_FP[ref]
         before = (float(native) + (JLC_ROTATION.get(fp, (0,))[0])) % 360.0
-        after = cpl_rotation(native, side, fp)
+        after = cpl_rotation(native, side, fp, stored_x_mirrored=False)      # the Icepi file: KiCad's own convention
         moved = round((after - before) % 360.0) == 180
         if moved != must_move:
             print("  %-5s expected %s, got %s" %
