@@ -171,9 +171,11 @@ beside itself ("50Ω IN / hiZ OUT", "x1 IN / x10 OUT", the 3-pin choices beside 
 through the centre pin) and the build fails on one more than a few millimetres away; the taps' names stand
 beside their jacks and their designators are not printed ("J107" read as a jumper); "USB FPGA" is "USB
 USER"; the microSD says "contacts toward the board" and "card slides in here"; the noise resistor header is
-"EXT R" with its pins named NOISE and GND; the legend is wrapped into columns that fit the free areas
-(builds to 27 asked for 150 mm lines, found no room, and printed no legend at all); the title carries the
-build date.  Rails: the router had narrowed every rail that touches one fine pin (+3V3_ADC, +5V, +3V3) to
+"EXT R" with its pins named NOISE and GND; the legend is wrapped into columns, each paragraph beside what it explains where it can be
+(HEADERS above the POWER box the headers live in, USB under the FT2232H's box; builds to 27 asked for 150 mm
+lines, found no room, and printed no legend at all); the title carries the build date.  `tools/power_path.py`
+measures the DC resistance from every rail's source to every supply pin along the copper the board has
+(Prompt 28: the worst is the ADC's AVDD at 43 mΩ, 9 mV at its 200 mA; the FPGA's planes are 2.5-4.5 mΩ).  Rails: the router had narrowed every rail that touches one fine pin (+3V3_ADC, +5V, +3V3) to
 that pad's width over its whole length, 0.23-0.28 mm for 150-200 mm.  It still routes them that way (every
 other rule tried moved the problem into the router: three runs lost two to five nets to the room the wide
 tracks took), and afterwards `pcb/fatten.py` widens every rail track toward its class width as far as the
@@ -186,6 +188,10 @@ on the board (60 mm detours round the DAC on the back) and the router's fine-gri
 build 27, and never again; they are laid by hand now on build 27's own routes (`floorplan.adc_control_lines`).
 Moving them to bank 7's two spare balls was tried and reverted: the swap that follows reshuffled a dozen other
 balls and cost other nets at the margin -- a rev B item.
+
+Build 29 (the same day) moved two silkscreen paragraphs to their homes and changed nothing else; its routing
+came out identical.  Responses 27 and 28 in `CLAUDE_CODE_CHAT.md` answer the FT601 question (layout, cost,
+the pin budget, what it buys against the ADALM2000 and the Red Pitaya) and the power-delivery one.
 
 Answers in Response 26 of `CLAUDE_CODE_CHAT.md`: the LED is red (615-630 nm) and the VBPW34S sees it at
 about 60 % of its peak sensitivity; the "0 to +0.48 V" applies to each of IOUTA and IOUTB; J305 is the

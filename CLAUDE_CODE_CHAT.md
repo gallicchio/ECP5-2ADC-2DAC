@@ -2324,3 +2324,81 @@ and Chapter 3 gets a driver worth writing (3.02): a USB 3 instrument the kernel 
 takes away is the Pmods or the HDMI, and the "write your own USB device" exercise on the USER port.
 
 Logged here; the README's SDRAM figure corrected (two places) and committed with this entry.
+
+## Prompt 28
+
+I'd be willing to give up the HDMI, but the PMODs and RGB LED would be missed. How would adding this make this board compare against the ADALM2000 and Red Pitya for streaming (speed, number of channels, bit depth, etc.)? Could the ECP5 handle 2DAC and 2ADC at full rate, or would the data somehow bypass the FPGA in streaming mode?
+
+The silkscreen text box that starts with "TAPS" can use 50 ohms instead of 49.9 ohms. The one that starts with "HEADERS" should be above the POWER box (in which the headers live). The one that starts with "USB PROG" should be under the FT2232H. You may need to re-wrap the text.
+
+## Response 28 2026-10-07 09:52 - 13:20 Claude Fable 5.1 Max
+
+### With the HDMI given up, which chip fits?
+
+The east banks have eight spare balls and the HDMI uses twelve: twenty.  The FT601's 32-bit bus wants about 44
+(32 data, 4 byte enables, clock, seven controls); the FT600's 16-bit bus wants 26, or 24 with RESET and SIWU tied
+off.  So the HDMI alone buys the FT600, and only with four more pins freed: the FT2232H's RTS and DTR, and the
+PHY's RST_N and INT_N (both can be pulled).  The FT600 is 200 MB/s, 1.6 Gb/s: both ADCs at 65 MS/s packed to
+12 bits (1.56 Gb/s) in one direction, or one DAC at about 110 MS/s, not both at once.  The FT601 (400 MB/s)
+needs the Pmods as well.  A bigger ECP5 in this package has the same 197 I/O; the next package is a new board.
+
+### Against the ADALM2000 and the Red Pitaya
+
+| | ADALM2000 | Red Pitaya STEMlab 125-14 | this board, as built | this board with an FT601 / FT600 |
+|---|---|---|---|---|
+| inputs | 2 x 12 bit, 100 MS/s, 25 MHz, ±25 V | 2 x 14 bit, 125 MS/s | 2 x 12 bit, 65 MS/s, ±1 V (x1 / x10 / x100) | same |
+| outputs | 2 x 12 bit, 150 MS/s, ±5 V | 2 x 14 bit, 125 MS/s | 2 x 14 bit, 125 MS/s, ±1 V into 50 Ω | same |
+| link | USB 2.0 (480 Mb/s) | 1 GbE, Linux on the Zynq | 1 GbE (LiteEth, ~940 Mb/s), USB 2 serial, 12 Mb/s soft USB | USB 3: 3.2 Gb/s (FT601) / 1.6 (FT600), one bus for both directions |
+| continuous stream | tens of MS/s at best, full rate only into its own RAM | the streaming app: ~62 MB/s, 31 MS/s one channel, 15.6 both | one ADC channel at 65 MS/s, or both at 32; DAC from the SDRAM | both ADCs at 65 MS/s and one DAC at 125 (FT601); both ADCs or one DAC at ~110 (FT600) |
+| buffer | 512 MB DDR | 512 MB DDR | 32 MB SDRAM: 16.8 M samples | same |
+| price | about $260 | $490 (starter kit) | about $222 at 5 | plus $25-30 |
+
+So: more bits out than the ADALM2000, fewer in than the Red Pitaya, a narrower input range than either (±1 V
+with gain, against ±25 V and ±1 / ±20 V), and with an FT601 a stream about six times the Red Pitaya's and
+fifty times the ADALM2000's.  As built, the Ethernet already outstreams both.
+
+### Does the data go through the FPGA?
+
+Yes, all of it, and it must: the converters' parallel buses connect only to the FPGA, the FT601's FIFO bus
+connects only to the FPGA, and nothing else on the board can move data (an FT601 is a FIFO, not a bus master,
+and the AD9238 speaks nothing but its own parallel port).  The fabric is not the limit.  Both ADCs are 24 lines at
+65 MHz, 1.56 Gb/s; both DACs 28 lines at 125 MHz, 3.5 Gb/s; the FT601's bus 32 lines at 100 MHz; the ECP5's I/O
+and a 32-bit datapath at 100-125 MHz are ordinary (the SDRAM bus already runs at 100).  A streamer is a few
+thousand LUTs of the 24 k: packers, FIFOs, the FT601 protocol.  The limits are the link (3.2 Gb/s shared
+between directions, so 2 ADCs + 1 DAC at full rate, or 2 + 2 at about 60 MS/s out) and buffering: USB 3 bulk
+transfers come in bursts with gaps of a millisecond or so, and at 1.56 Gb/s a millisecond is 195 kB; the FT601
+holds 16 kB and the ECP5's block RAM 128 kB, so full rate in needs the SDRAM as the elastic buffer (16-bit
+at 100 MHz, 1.6 Gb/s: enough for one direction at full rate, not both).  Capture-then-send into the SDRAM is
+what the board does today over Ethernet; streaming adds the elastic FIFO and the flow control.
+
+### Thick-trace power to the FPGA, the DAC and the ADC
+
+Measured, not asserted: `tools/power_path.py` builds each rail's copper into a resistance network
+(1 oz outer, 0.5 oz inner, 1 mΩ per via, the In4 planes as a node) and runs Dijkstra from the rail's source
+(the buck's inductor, the LDO's or bead's output pad, or the plane) to every supply pin.  The worst pin per
+chip, with the datasheet current through it:
+
+| rail | to | worst pin | current | drop |
+|---|---|---|---|---|
+| +1V1 (plane) | FPGA core, 6 balls | 2.5 mΩ | 77 mA static, say 300 mA busy | 0.8 mV |
+| +3V3 (plane) | FPGA VCCIO, 14 balls | 4.5 mΩ | 0.5 mA/bank static, ~100 mA switching the SDRAM | 0.5 mV |
+| +3V3 (plane) | SDRAM, FT2232H | 4.7 mΩ | tens of mA | 0.2 mV |
+| +2V5_AUX | FPGA VCCAUX, 2 balls | 102 mΩ (the 0.127 mm feed through the via field) | 16 mA static, 40 with PLLs | 4 mV, of a 125 mV tolerance |
+| +3V3_ADC | AD9238 AVDD, 6 pins | 43 mΩ | 200 mA (IAVDD at 65 MSPS) | 9 mV, if one pin took it all |
+| +3V3_DRV | AD9238 DRVDD, 3 pins | ≤ 170 mΩ (the whole net in series, a bound: the script lost a link) | 14 mA | ≤ 2.5 mV |
+| +3V3_DAC | AD9767 AVDD | 39 mΩ | 71 mA | 2.8 mV |
+| +3V3_DAC_D | AD9767 DVDD, 2 pins | 50 mΩ | 15 mA | 0.7 mV |
+| +5VA, -4V2 | the op amps | 9-200 mΩ | 5-20 mA each | ≤ 4 mV |
+| +1V0_PHY, +3V3_ETH, +1V8_FTDI | the PHY and the FT2232H | 49-62 mΩ | ≤ 100 mA | ≤ 6 mV |
+
+The thinnest copper anywhere on a rail is a 0.15 mm pad entry a millimetre or two long: 3.3 Ω/m, 0.6 A for a
+10 °C rise by IPC-2221, at 14-70 mA.  The planes feed the FPGA; the ADC's and DAC's rails come off their LDOs
+and beads a few centimetres away at 0.4 mm.  Nothing on the board drops more than 10 mV at its datasheet
+current, and the converters' references are internal.  Yes, I am sure.
+
+### The silkscreen
+
+TAPS says 50 Ω.  HEADERS sits above the POWER box (its east end is the microSD socket's pegs, so it wraps to
+55 characters in five lines west of them); USB sits under the FT2232H's box, between it and the Pmods' (four
+lines).  The TAPS paragraph took the free area east of the BGA and the JUMPERS paragraph, which had found no
+room before, the area under the LEDs.  Build 29 (12:57-13:20): the same board with the paragraphs moved -- the routing is deterministic and came out identical, DRC 0 errors and 0 unconnected, every net routed, the sheets' text check 0, the hand-solder BOM empty, the power paths above re-measured on it.  Committed; nothing pushed.

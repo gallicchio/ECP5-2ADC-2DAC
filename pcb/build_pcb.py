@@ -1541,43 +1541,67 @@ class Build:
         print("  pin-1 / cathode marks printed for %d parts whose footprints print none" % n)
 
     def _legend(self):
-        """What the headers and taps mean, as paragraphs wrapped to columns that fit the largest empty area
-        of the front (each paragraph in the largest area left when its turn comes), and what the board is
-        on the back.  Builds to 27 asked for 150 mm-wide lines, found no such area, and printed no legend
-        at all, silently (build 28 noticed); now a paragraph that fits nowhere is reported."""
+        """What the headers and taps mean, as paragraphs wrapped to columns.  A paragraph with a home goes there
+        (Jason, 2026-10-07: HEADERS above the POWER box the headers live in, USB under the FT2232H), wrapped to
+        the room; the others take the largest empty area left when their turn comes (builds to 27 asked for
+        150 mm-wide lines, found no such area, and printed no legend at all, silently).  A paragraph that fits
+        nowhere is reported.  The whole-board paragraph goes on the back."""
         import textwrap
-        front = ["HEADERS   RAILS: top row = GND; 3V3A / 3V3D = the ADC's / DAC's 3.3 V; 1V0 = the PHY's core.  "
-                 "EXT R: your own noise resistor, NOISE to GND (the DIP switch adds the board's four).  "
-                 "PD EXT: anode at -4.2 V.  LED EXT: anode at +5 V, cathode sinks.",
-                 "TAPS   U.FL monitor points through 49.9 Ω: a pigtail into a 50 Ω scope input sees half the signal, "
-                 "a 1 MΩ input all of it.  TAP A / TAP B: ADC preamp out.  TAP TIA: photodiode receiver.  TAP -4V2: the op-amp rail.",
-                 "USB PROG: power (0.7 A), programming and the UART (FT2232H).  "
-                 "USB USER: the FPGA's own USB: a device once the gateware has a core, nothing until then.",
-                 "JUMPERS   TERM: shunt IN = 50 Ω input, OUT = high-Z.  GAIN: IN = x1, OUT = x10.  SRC: SMA | NOISE "
-                 "(B: ALT = PD | NOISE).  LED: LED | EXT.  FTDI OFF: IN holds the FT2232H in reset, J305 takes an external JTAG programmer."]
-        back = ["ECP5 LFE5U-25F FPGA, 32 MB SDRAM, 16 MB flash, microSD.  AD9238 dual 12-bit ADC to 65 MS/s (±1 V, 50 Ω or hi-Z, "
-                "gain x1 / x10 / x100).  AD9767 dual 14-bit DAC to 125 MS/s (±1 V into 50 Ω, ±2 V open); channel 1 also drives an LED.  "
-                "Noise source, photodiode receiver, 25 MHz TCXO, Si5351 clock generator, CLK IN (10 MHz reference or external clock "
-                "into the FPGA PLL), CLK OUT.  Gigabit Ethernet, two USB-C (PROG: power, programming, UART; USER: the FPGA's own USB), "
-                "mini HDMI, two Pmods.  Power 5 V in by USB PROG or the 5 V IN header."]
-        for layer, paras, size in (("F.Cu", front, 0.8), ("B.Cu", back, 1.0)):
+        import floorplan as FPL
+        E = FPL.E
+        front = [("HEADERS   RAILS: top row = GND; 3V3A / 3V3D = the ADC's / DAC's 3.3 V; 1V0 = the PHY's core.  "
+                  "EXT R: your own noise resistor, NOISE to GND (the DIP switch adds the board's four).  "
+                  "PD EXT: anode at -4.2 V.  LED EXT: anode at +5 V, cathode sinks.",
+                  (60.0, 83.8, 121.6, 93.7), (90.8, 88.7)),                       # above the POWER box
+                 ("USB PROG: power (0.7 A), JTAG and the UART (FT2232H).  "
+                  "USB USER: the FPGA's own USB: a device once the gateware has a core.",
+                  (103.9 + E, 61.2, 130.3 + E, 70.3), (117.1 + E, 65.7)),         # under the FT2232H, between its box and the Pmods'
+                 ("TAPS   U.FL monitor points through 50 Ω: a pigtail into a 50 Ω scope input sees half the signal, "
+                  "a 1 MΩ input all of it.  TAP A / TAP B: ADC preamp out.  TAP TIA: photodiode receiver.  TAP -4V2: the op-amp rail.",
+                  None, None),
+                 ("JUMPERS   TERM: shunt IN = 50 Ω input, OUT = high-Z.  GAIN: IN = x1, OUT = x10.  SRC: SMA | NOISE "
+                  "(B: ALT = PD | NOISE).  LED: LED | EXT.  FTDI OFF: IN holds the FT2232H in reset, J305 takes an external JTAG programmer.",
+                  None, None)]
+        back = [("ECP5 LFE5U-25F FPGA, 32 MB SDRAM, 16 MB flash, microSD.  AD9238 dual 12-bit ADC to 65 MS/s (±1 V, 50 Ω or hi-Z, "
+                 "gain x1 / x10 / x100).  AD9767 dual 14-bit DAC to 125 MS/s (±1 V into 50 Ω, ±2 V open); channel 1 also drives an LED.  "
+                 "Noise source, photodiode receiver, 25 MHz TCXO, Si5351 clock generator, CLK IN (10 MHz reference or external clock "
+                 "into the FPGA PLL), CLK OUT.  Gigabit Ethernet, two USB-C (PROG: power, programming, UART; USER: the FPGA's own USB), "
+                 "mini HDMI, two Pmods.  Power 5 V in by USB PROG or the 5 V IN header.", None, None)]
+        for layer, paras, size0 in (("F.Cu", front, 0.8), ("B.Cu", back, 1.0)):
             occ = self.occ[layer]
-            for para in paras:
+            for para, region, prefer in paras:
                 placed = False
-                r = occ.largest()
-                if r:
-                    chars = int((r[2] - r[0] - 1.0 - 0.3) / size)             # SK.text_w: len * size + 0.3
-                    for c in sorted({min(chars, 90), min(chars, 70), min(chars, 55), chars}, reverse=True):
-                        if c < 24:
+                if region:
+                    # wrapped to the room: the widest column that fits the region, then narrower ones (the microSD
+                    # socket's pegs take the east end of the band above the POWER box), at 0.8 then 0.7 mm
+                    for size in (size0, 0.7):
+                        for frac in (1.0, 0.8, 0.65, 0.5):
+                            chars = int(((region[2] - region[0]) * frac - 0.6 - 0.3) / size)
+                            if chars < 20:
+                                continue
+                            lines = [(t, size, False) for t in textwrap.wrap(para, chars)]
+                            h = sum(SK.text_h(size) for _ in lines) + 0.3 * (len(lines) - 1)
+                            if h <= region[3] - region[1] - 0.6 and self._put(layer, lines, prefer, maxd=16.0, must=False, region=region, tag="legend"):
+                                self.report.setdefault("silk_legend", []).append("%s: %s (%d lines of %d chars at %.0f, %.0f, its home)" % (layer, para[:12], len(lines), chars, prefer[0], prefer[1]))
+                                placed = True
+                                break
+                        if placed:
                             break
-                        lines = [(t, size, False) for t in textwrap.wrap(para, c)]
-                        w = max(SK.text_w(t, size) for t, _s, _b in lines)
-                        h = sum(SK.text_h(size) for _ in lines) + 0.3 * (len(lines) - 1)
-                        if r[2] - r[0] >= w + 1.0 and r[3] - r[1] >= h + 1.0:
-                            self._put(layer, lines, ((r[0] + r[2]) / 2.0, (r[1] + r[3]) / 2.0), maxd=4.0, tag="legend")
-                            self.report.setdefault("silk_legend", []).append("%s: %s (%d lines of %d chars at %.0f, %.0f)" % (layer, para[:12], len(lines), c, (r[0] + r[2]) / 2.0, (r[1] + r[3]) / 2.0))
-                            placed = True
-                            break
+                if not placed:
+                    r = occ.largest()
+                    if r:
+                        chars = int((r[2] - r[0] - 1.0 - 0.3) / size0)             # SK.text_w: len * size + 0.3
+                        for c in sorted({min(chars, 90), min(chars, 70), min(chars, 55), chars}, reverse=True):
+                            if c < 24:
+                                break
+                            lines = [(t, size0, False) for t in textwrap.wrap(para, c)]
+                            w = max(SK.text_w(t, size0) for t, _s, _b in lines)
+                            h = sum(SK.text_h(size0) for _ in lines) + 0.3 * (len(lines) - 1)
+                            if r[2] - r[0] >= w + 1.0 and r[3] - r[1] >= h + 1.0:
+                                self._put(layer, lines, ((r[0] + r[2]) / 2.0, (r[1] + r[3]) / 2.0), maxd=4.0, tag="legend")
+                                self.report.setdefault("silk_legend", []).append("%s: %s (%d lines of %d chars at %.0f, %.0f)" % (layer, para[:12], len(lines), c, (r[0] + r[2]) / 2.0, (r[1] + r[3]) / 2.0))
+                                placed = True
+                                break
                 if not placed:
                     self.report.setdefault("silk_unplaced", []).append("legend: " + para[:24])
 

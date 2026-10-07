@@ -1194,6 +1194,11 @@
  ],
  "silk_outside_box": [
   "X301 clock",
+  "legend",
+  "legend",
+  "legend",
+  "legend",
+  "legend",
   "SW101",
   "J503",
   "J501",
@@ -1347,13 +1352,13 @@
   "D309 pin-1 dot (136.4, 113.1) F.SilkS"
  ],
  "silk_legend": [
-  "F.Cu: HEADERS   RA (8 lines of 33 chars at 98, 50)",
-  "F.Cu: TAPS   U.FL  (8 lines of 30 chars at 46, 27)",
-  "F.Cu: USB PROG: po (6 lines of 32 chars at 58, 75)",
+  "F.Cu: HEADERS   RA (5 lines of 55 chars at 91, 89, its home)",
+  "F.Cu: USB PROG: po (4 lines of 36 chars at 125, 66, its home)",
+  "F.Cu: TAPS   U.FL  (7 lines of 33 chars at 98, 50)",
+  "F.Cu: JUMPERS   TE (8 lines of 30 chars at 46, 27)",
   "B.Cu: ECP5 LFE5U-2 (7 lines of 78 chars at 56, 19)"
  ],
  "silk_unplaced": [
-  "legend: JUMPERS   TERM: shunt IN",
   "SW101",
   "J503",
   "J501",

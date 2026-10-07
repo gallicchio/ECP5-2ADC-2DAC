@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "ECP5-2ADC-2DAC.kicad_sch")
-		(date "2026-10-07T09:42:53")
+		(date "2026-10-07T12:57:45")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")

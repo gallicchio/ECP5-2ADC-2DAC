@@ -121,7 +121,7 @@ buck, a 5 V corridor from the USB jacks down the right edge and along the bottom
 signal via has a ground via within 1.5 mm.  The analog strips (one per SMA, 17 mm pitch) run straight from
 the SMAs to the converters down the left side; digital nets may not cross them.
 
-State at the time of writing (build 28, 2026-10-07): ERC 0, DRC 0 errors and 0 unconnected at all severities
+State at the time of writing (build 29, 2026-10-07): ERC 0, DRC 0 errors and 0 unconnected at all severities
 with the project's own rules (JLCPCB's capabilities or stricter, all silkscreen and courtyard checks as errors),
 three warnings (two ground return vias north-west of the FPGA that touch only the In1 plane, one 0.2 mm +5VA
 stub); every net routed by the build's own router or by hand (412 of 412); 3D renders in `docs/images/`.
@@ -277,7 +277,9 @@ broken into columns beside the blocks they describe, the board centred on its pa
 names inside their boxes, every jumper's meaning beside it, the taps' names beside their jacks, "USB USER", a
 legend that had never printed, and three new checks (the generator's measured-extent overlap model, the exported
 PDF read back with `pdftotext -bbox`, and labels/parts kept to their section boxes).  Each of those is a place
-where a label could now say the wrong thing; the circuit is build 26's with the one resistor change.
+where a label could now say the wrong thing; the circuit is build 26's with the one resistor change.  Build 29
+(same day) moved the HEADERS and USB silkscreen paragraphs to their homes; `tools/power_path.py` measures the DC
+drop from every rail's source to every supply pin (the worst is 9 mV, the ADC's AVDD at its 200 mA).
 
 ## 9. How to look at it
 
