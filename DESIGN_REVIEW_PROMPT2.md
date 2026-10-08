@@ -1,5 +1,11 @@
 # Design review, round 2: ECP5-2ADC-2DAC rev A at build 31 -- the last look before it is ordered
 
+**Nothing you say in the chat will be read or kept: your review exists only as a file.  Before anything else, create
+`ECP5-2ADC-2DAC/design_review_<YourName>2/` and write `DESIGN_REVIEW_<YourName>2.md` inside it (§0.1), with your verdict
+and findings table first; then fill it in as you go.  Creating that directory and writing into it is required, and it
+is not a change to the project; everything else in the tree is read-only (§0).**  (Added 2026-10-07 after round 2: one
+reviewer answered only in its chat window, and the review was lost when the window closed.)
+
 **The author intends to upload this board to JLCPCB.  Your job is to find what would make the first board dead,
 wrong, or embarrassing, before the money is spent.**  The first round (build 25, 2026-10-04, `DESIGN_REVIEW_PROMPT.md`)
 found real faults -- eleven parts with no LCSC code, eight codes naming the wrong part, a 5 V signal into a 3.3 V pin,
@@ -449,7 +455,7 @@ compute].  17. The upload-readiness pass [§2 is the author's; redo it].**
 * **Impedance from the fab:** 50 Ω single-ended (the SMA runs, 0.35 mm on F.Cu over In1) and 100 Ω differential
   (the MDI pairs); the HDMI and USB pairs are routed as pairs without an impedance claim.
 * **Return current under the trace:** no fast line across a split (§3.2 is the list); a ground via within about 1 mm of
-  every layer change (the build's `return_vias`: a ground via within 1.5 mm of every signal via); a stitching capacitor
+  every layer change (the build's `return_vias`: a ground via within 1.5 mm of a signal via where there is room -- 373 of 500 in build 31, 127 without); a stitching capacitor
   where the reference changes from ground to power.
 * **Differential pairs** matched within 0.1-0.15 mm (HDMI, USB, MDI: round 1's CopilotSDK measured the HDMI pairs; redo
   for build 31, the jacks moved in build 26).

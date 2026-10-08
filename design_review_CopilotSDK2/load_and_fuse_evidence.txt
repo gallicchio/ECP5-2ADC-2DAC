@@ -1,0 +1,53 @@
+-- AD9238 --
+167:AVDD = 3 V, DRVDD = 2.5 V, maximum sample rate, CLK_A = CLK_B; AIN = −0.5 dBFS differential input, 1.0 V internal reference,
+201:  Supply Current
+202:    IAVDD2                                      Full       V                   60                            110                           200                   mA
+227:AVDD = 3 V, DRVDD = 2.5 V, maximum sample rate, CLK_A = CLK_B; AIN = −0.5 dBFS differential input, 1.0 V internal reference,
+281:AVDD = 3 V, DRVDD = 2.5 V, maximum sample rate, CLK_A = CLK_B; AIN = −0.5 dBFS differential input, 1.0 V internal reference,
+302:AVDD = 3 V, DRVDD = 2.5 V, maximum sample rate, CLK_A = CLK_B; AIN = −0.5 dBFS differential input, 1.0 V internal reference,
+1385:AVDD/2, and the driver can be configured in a Sallen-Key filter                              high performance, maintaining a 50% duty cycle clock is
+-- THS4521 --
+174:                             BW                   IQ          THD (dBc)            VN                               DUAL PART
+501:Quiescent operating current, per channel
+508:Power-down quiescent current                                                                         C                         10              μA
+643:Quiescent operating current, per channel
+650:Power-down quiescent current                                                                       C                           20            μA
+2272:The THS4521, THS4522, and THS4524 family provide excellent audio performance with very low quiescent
+2423:the PD pin technique.
+2472:the quiescent current and stops correct amplifier operation. The signal path is still present for the source signal
+-- TLV3501 --
+21:•   Low Supply Current: 3.2 mA                                                                        The dual (TLV3502) comes in the 8-pin SOT-23 and
+298:IQSD            Quiescent current in shutdown                                                                        2                      µA
+304:IQ              Quiescent current                          VS = 5 V, VO = High                                     3.2               5     mA
+542:                                                                                                                   Quiescent Current (mA)
+543:      Quiescent Current (mA)
+561:                                              Figure 11. Quiescent Current vs Supply Voltage                                                          Figure 12. Quiescent Current vs Temperature
+583:                                                                                                             Quiescent Current (mA)
+584:      Quiescent Current (mA)
+607:                                 Figure 13. Quiescent Current vs Shutdown Voltage                                                              Figure 14. Quiescent Current vs Frequency
+-- PTC --
+71:                                                                                                                                                                           Tripped
+73:                                                                              Ihold          Itrip           Resistance                                                     Power
+74:                                                                                                                                             To Trip
+79:                                                                              Hold       Trip             RMin.    R1Max.                                                    Typ.
+98:MF-MSMF200                                    8.0               40            2.00       4.00              0.020        0.080            8.0              2.0                 0.8
+117:Resistance............................................................. In still air @ 23 °C.................................................. Rmin ≤ R ≤ R1max
+118:Time to Trip............................................................ At specified current, Vmax, 23 °C.......................... T ≤ max. time to trip (seconds)
+119:Hold Current.......................................................... 30 min. at Ihold...................................................... No trip
+120:Trip Cycle Life........................................................ Vmax, Imax, 100 cycles......................................... No arcing or burning
+121:Trip Endurance...................................................... Vmax, 48 hours...................................................... No arcing or burning
+204:MF-MSMF200                                                                                                                                                                1
+229:     Top and Bottom View                                          Side View            Recommended Pad Layout                                                             Terminal material:
+233:                                                                                                                                                                          Termination pad solderability:
+263:  Typical Time to Trip at 23 °C
+266:                                                                                                          MF-MSMF110/24X                                                  The Time to Trip curves represent typical
+268:                                                                                                                MF-MSMF200                                                application environment. Actual performance
+276:          Time to Trip (Seconds)
+311:     Thermal Derating Chart - Ihold (Amps)
+327: MF-MSMF110/24X                    2.00                 1.70             1.40            1.10       0.95        0.88                             0.80               0.73              0.61
+333: MF-MSMF200                        3.08                 2.71             2.35            2.00       1.80        1.60                             1.50               1.40              1.25
+377:                                                                                                                                                               MF-MSMF200 = 20
+394:                                                                                                            Inspect   solder  joint  to determine
+400:Hold Current,      Ihold
+414:                                          solder paste                                        MF-MSMF200 = 20
+420:                                    single sided epoxy glass                                                         component and solder to PCB termination)

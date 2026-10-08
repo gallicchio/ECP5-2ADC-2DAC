@@ -211,7 +211,11 @@ def draw(sch, ids, fpga):
     cmp_ = part(ctx, ids["cmp"], "U302", "TLV3501AIDBVR", "SOT23-6", xe + 60.96, ye, unit=1, ref_at=(xe + 52.5, ye - 12.0), val_at=(xe + 52.5, ye + 10.5))
     cp, cn, co = cmp_.pin("3"), cmp_.pin("1"), cmp_.pin("5")
     xs = cp[0] - 2.54                                                   # the signal node: 10 nF in, +IN up, the 10 k bias down
-    s.wire(*ce.pin(2), xs, ye); s.wire(xs, ye, xs, cp[1]); s.wire(xs, cp[1], *cp); s.junction(xs, ye)
+    # build 32 (both round-2 reviews): 1 k in series.  The TLV3501's inputs are diode-clamped to its rails and must be held
+    # to 10 mA; through the 10 nF alone a 10 V, 50 ohm generator drove about 130 mA into them.  1 k holds a 10 V step to
+    # 7.7 mA, and with the input's 2-3 pF it is a 50-80 MHz pole, well above a 10 MHz reference.
+    rser = R(ctx, 2420, "1k", xe + 31.75, ye, horiz=True, ref="R5427", ref_at=(xe + 29.0, ye + 2.4), val_at=(xe + 29.0, ye + 3.6))      # (fields under the line: above it stands the +3V3_ADC rail's name)
+    s.wire(*ce.pin(2), *rser.pin(1)); s.wire(*rser.pin(2), xs, ye); s.wire(xs, ye, xs, cp[1]); s.wire(xs, cp[1], *cp); s.junction(xs, ye)
     yb = ye + 15.24                                                     # the mid-rail node's row
     rb3 = R(ctx, 2420, "10k", xs, ye + 7.62, side="right", ref="R5426"); s.wire(xs, ye, *rb3.pin(1)); s.wire(*rb3.pin(2), xs, yb)
     s.wire(xs - 15.24, yb, xs, yb)
@@ -230,8 +234,9 @@ def draw(sch, ids, fpga):
     re_ = R(ctx, 2420, "33R", co[0] + 8.89, ye, horiz=True, ref="R5423")      # (designator above, value below)
     s.wire(*co, *re_.pin(1)); to_bank("CLK_EXT", *re_.pin(2))
     note(ctx, xe - 15.0, ye + 38.0, "10 MHz sine from a GPSDO (0.3 V peak or more), or any 0.5 to 3.3 V square wave to 80 MHz. 50 Ω if the shunt is in. "
-                                   "AC coupled into a TLV3501 comparator on the ADC's low-noise 3.3 V: +IN biased to mid-rail through 10 kΩ, -IN at "
-                                   "mid-rail, 6 mV of hysteresis inside, 4.5 ns. The FPGA's PLL locks to it (8 MHz minimum).", w=175, size=0.9)
+                                   "AC coupled into a TLV3501 comparator on the ADC's low-noise 3.3 V through 1 kΩ, which holds its input clamps under 10 mA "
+                                   "for a ±10 V generator: +IN biased to mid-rail through 10 kΩ, -IN at mid-rail, 6 mV of hysteresis inside, 4.5 ns. "
+                                   "The FPGA's PLL locks to it: 10 MHz or more for its jitter specification.", w=175, size=0.9)
     # clock out
     yo = 230.0
     s.text(xe - 15.0, yo - 22.0, "CLK OUT: sync a second board", size=1.2, bold=True)      # (under the CLK IN note)

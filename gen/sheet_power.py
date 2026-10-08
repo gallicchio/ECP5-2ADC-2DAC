@@ -1,5 +1,5 @@
 """Power: 5 V from the FTDI USB-C (or a bench supply), two bucks (3.3 V, 1.1 V),
-LDOs for the quiet rails, the ±4.5 V analog rails, and the ferrite-isolated
+LDOs for the quiet rails, the +5 V / -4.2 V analog rails, and the ferrite-isolated
 feeds.  Power flows top to bottom and left to right."""
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -32,13 +32,22 @@ def buck(ctx, base, x, y, uref, vout, r1, r2, note_text):
     return (xo + 25.4, lr[1])
 
 
-def ldo(ctx, base, x, y, uref, value, lcsc, vin, vout, note_text, cin="1uF", cout="1uF"):
+def ldo(ctx, base, x, y, uref, value, lcsc, vin, vout, note_text, cin="1uF", cout="1uF", rin=None):
     s = ctx.s
     u = part(ctx, "Regulator_Linear:TPS7A20xxxDBV" if "TPS" in value else "Regulator_Linear:LP5907MFX-2.5", uref, value, "SOT23-5", x, y,
              ref_at=(x - 7.0, y - 7.5), val_at=(x - 7.0, y + 16.5), lcsc=lcsc)
     i, g, en, o = u.pin("1"), u.pin("2"), u.pin("3"), u.pin("5")
     s.wire(*i, i[0] - 7.62, i[1]); s.wire(*en, i[0] - 5.08, en[1]); s.wire(i[0] - 5.08, en[1], i[0] - 5.08, i[1])
-    rail(ctx, i[0] - 7.62, i[1], vin, stub=5.08)
+    if rin:
+        # build 32 (both round-2 reviews): a resistor ahead of the LDO takes part of its drop -- the AD9238 draws 200 mA at
+        # 65 MS/s, (5.0 - 3.3) V x 0.21 A = 0.36 W in a SOT-23-5 at 187 C/W was +67 C; 2.2 R moves 0.1 W into a 1206 and,
+        # with the 10 uF after it, filters the 5 V at 7 kHz.  The input capacitor is on the LDO's side of it.
+        rr = R(ctx, base, rin, i[0] - 22.86, i[1], horiz=True, fp="R1206", ref_at=(i[0] - 25.5, i[1] - 1.9), val_at=(i[0] - 25.5, i[1] + 2.4))
+        s.wire(i[0] - 12.7, i[1], *rr.pin(2)); s.junction(i[0] - 12.7, i[1])      # (the input capacitor's wire runs from the pin to x - 12.7)
+        pwr_flag(ctx, i[0] - 10.16, i[1])                                   # (fed through the resistor: ERC wants the flag)
+        rail(ctx, rr.pin(1)[0] - 2.54, rr.pin(1)[1], vin, stub=5.08); s.wire(rr.pin(1)[0] - 2.54, rr.pin(1)[1], *rr.pin(1))
+    else:
+        rail(ctx, i[0] - 7.62, i[1], vin, stub=5.08)
     ci = C(ctx, base, cin, i[0] - 12.7, i[1] + 5.08, fp="C0603" if cin != "1uF" else "C0402", side="left"); s.wire(i[0] - 7.62, i[1], i[0] - 12.7, i[1]); s.wire(i[0] - 12.7, i[1], *ci.pin(1)); gnd(ctx, *ci.pin(2), stub=1.27)
     gnd(ctx, *g, stub=2.54)
     s.nc(*u.pin("4"))
@@ -60,8 +69,8 @@ def ferrite_feed(ctx, base, x, y, src, dst, note_text):
 def draw(sch, ids, fpga):
     ctx = Ctx(sch, "PWR")
     s = sch
-    s.text(20, 22, "Power: one 5 V USB-C in; 3.3 V and 1.1 V bucks; LDOs for the quiet rails; ±4.5 V analog", size=3.0, bold=True)
-    note(ctx, 20, 26, "Everything runs from the 5 V of USB PROG (or a bench 5 V on J601, diode-OR'd).\n"
+    s.text(20, 22, "Power: one 5 V USB-C in; 3.3 V and 1.1 V bucks; LDOs for the quiet rails; +5 V / -4.2 V analog", size=3.0, bold=True)
+    note(ctx, 20, 26, "Everything runs from the 5 V of USB PROG (or a bench 5 V on J601, which turns USB PROG's P-FET off).\n"
                       "Two switching regulators make the digital 3.3 V (FPGA I/O, SDRAM, flash, PHY, FTDI) and the 1.1 V core,\n"
                       "in the far corner from the converters. Every analog rail is its own LDO off the 5 V: +3V3_ADC, +3V3_DAC;\n"
                       "the op amps get +5VA through a ferrite bead and -4.2 V from an LM27761 charge pump (then a bead).\n"
@@ -72,27 +81,47 @@ def draw(sch, ids, fpga):
          w=250, size=1.1)
     hp = [("VBUS", "input")]
     # --- input ----------------------------------------------------------------------
+    # build 32 (the round-2 CopilotSDK review): the Schottky kept USB off the bench header, but nothing kept the bench supply
+    # off USB -- with both plugged in, +5V fed the laptop's VBUS back through F601.  Q602, a P-FET with its body diode
+    # pointing VBUS -> +5V, now joins USB PROG to +5V: its gate is pulled to ground (on, 0.06 ohm) until a bench supply
+    # appears on J601, which lifts the gate above the source (+5V is the bench minus a Schottky) and turns it off; the body
+    # diode then blocks +5V -> VBUS.  The Raspberry Pi Pico's and Arduino's arrangement, with no drop on the USB path, so
+    # the LM27761 keeps its headroom at USB's 4.75 V minimum.
     y0 = 90.0
     s.hlabel(25.0, y0, "VBUS", shape="input", rot=180)
     s.wire(25.0, y0, 35.56, y0)
-    f = part(ctx, "Device:Polyfuse", "F601", "MF-MSMF200-2", "F1812", 40.64, y0, rot=90, ref_at=(37.0, y0 - 3.5), val_at=(37.0, y0 + 2.0), lcsc="C210837")
+    f = part(ctx, "Device:Polyfuse", "F601", "MF-MSMF200-2", "F1812", 40.64, y0, rot=90, ref_at=(37.0, y0 - 3.5), val_at=(32.0, y0 + 2.0), lcsc="C210837")
     fa, fb_ = f.pin(1), f.pin(2)
     fl, fr = (fa, fb_) if fa[0] < fb_[0] else (fb_, fa)
-    s.wire(35.56, y0, *fl); s.wire(*fr, 76.2, y0)
-    label_node(ctx, 30.0, y0 + 8.0, "from the FTDI USB-C; 2 A resettable fuse", side="right", size=0.85)
+    q = part(ctx, "Transistor_FET:AO3401A", "Q602", "AO3401A", "SOT23", 53.34, y0 + 2.54, rot=90, ref_at=(50.0, y0 - 6.5), val_at=(50.0, y0 - 4.5))
+    qd, qs, qg = q.pin("3"), q.pin("2"), q.pin("1")             # rot 90: drain west, source east (both on the y0 row), gate south
+    s.wire(35.56, y0, *fl); s.wire(*fr, *qd); s.wire(*qs, 76.2, y0)
+    label_node(ctx, 23.0, y0 + 8.0, "from USB PROG: a 2 A resettable\nfuse, then Q602, on until a bench\nsupply appears on J601", side="right", size=0.85)
+    yj = qg[1] + 2.54                                                    # the gate node's row, under the gate
+    s.wire(*qg, qg[0], yj); s.junction(qg[0], yj)
+    rpd = R(ctx, 1600, "100k", qg[0] + 6.35, yj, horiz=True, ref="R7602")          # gate to ground: on with USB alone
+    s.wire(qg[0], yj, *rpd.pin(1)); gnd(ctx, *rpd.pin(2), stub=2.54)
     # header pins point right (rot 180), the Schottky's anode faces the header (rot 180)
     jb = part(ctx, "Connector_Generic:Conn_01x02", "J601", "5V IN", "H1x2", 25.4, y0 + 25.4, rot=180, ref_at=(20.0, y0 + 19.5), val_at=(20.0, y0 + 29.0))
     b1, b2 = jb.pin(1), jb.pin(2)
     bh, bl = (b1, b2) if b1[1] < b2[1] else (b2, b1)
     gnd(ctx, *bl, stub=2.54)
-    d = part(ctx, "Device:D_Schottky", "D601", "B5819W", "SOD123", bh[0] + 10.16, bh[1], rot=180, ref_at=(bh[0] + 6.5, bh[1] - 2.5), val_at=(bh[0] + 6.5, bh[1] + 1.5))
+    d = part(ctx, "Device:D_Schottky", "D601", "SS34", "SMA_D", bh[0] + 10.16, bh[1], rot=180, ref_at=(bh[0] + 6.5, bh[1] - 2.5), val_at=(bh[0] + 6.5, bh[1] + 1.5))
     # build 31 (2026-10-07, CLAUDE_PCB.md section 4): a fuse on every input that can deliver more current than the copper and the
-    # connector survive -- a bench supply can, and the Schottky alone (1 A) was the weak link.  The same part as F601.
+    # connector survive -- a bench supply can.  The same part as F601.  Build 32 (both round-2 reviews): the diode before it is
+    # a 3 A SS34 (SMA, 70 C/W), not the 1 A / 0.5 W B5819W, which a 1-2 A fault would have cooked without tripping the 2 A fuse.
     f2 = part(ctx, "Device:Polyfuse", "F602", "MF-MSMF200-2", "F1812", 50.8, bh[1], rot=90, ref_at=(47.2, bh[1] - 3.5), val_at=(47.2, bh[1] + 2.0), lcsc="C210837")
     f2a, f2b = f2.pin(1), f2.pin(2)
     f2l, f2r = (f2a, f2b) if f2a[0] < f2b[0] else (f2b, f2a)
-    s.wire(*bh, *d.pin(2)); s.wire(*d.pin(1), *f2l); s.wire(*f2r, 60.96, bh[1]); s.wire(60.96, bh[1], 60.96, y0)
-    label_node(ctx, 28.0, y0 + 36.0, "bench 5 V (5.0 to 5.5 V): a Schottky keeps it off the USB port, a 2 A resettable fuse off the copper", side="right", size=0.85)
+    s.wire(*bh, *d.pin(2)); s.wire(*d.pin(1), *f2l); s.wire(*f2r, 71.12, bh[1]); s.wire(71.12, bh[1], 71.12, y0); s.junction(71.12, y0)
+    # the bench input's presence turns Q602 off: 10 k from the header's + pin (between it and the Schottky) up to the gate
+    xt = bh[0] + 2.54
+    yr = yj + 5.08                                                       # the 10 k's row, between the gate node and the bench row
+    s.junction(xt, bh[1]); s.wire(xt, bh[1], xt, yr)
+    rsr = R(ctx, 1600, "10k", qg[0] - 6.35, yr, horiz=True, ref="R7601")
+    s.wire(xt, yr, *rsr.pin(1)); s.wire(*rsr.pin(2), qg[0], yr); s.wire(qg[0], yr, qg[0], yj)
+    label_node(ctx, 28.0, y0 + 36.0, "bench 5 V (4.75 to 5.25 V): a 3 A Schottky (reverse polarity), a 2 A resettable fuse;\n"
+                                     "while it is present Q602 is off, so neither supply can feed the other", side="right", size=0.85)
     rail(ctx, 76.2, y0, "+5V", stub=5.08); pwr_flag(ctx, 68.58, y0)
     gp = (76.2, y0 + 45.0); s.wire(*gp, gp[0], gp[1] + 2.54); gnd(ctx, gp[0], gp[1] + 2.54, stub=0); pwr_flag(ctx, *gp)
     s.text(gp[0] + 2.0, gp[1] + 0.5, "ground reference", size=0.85)
@@ -103,7 +132,7 @@ def draw(sch, ids, fpga):
     buck(ctx, 1800, 60.0, 250.0, "U602", "+1V1", "10k", "12k", "+1V1 = 0.6 V x (1 + 10k/12k) = 1.10 V; FPGA core, up to 1 A.")
     # --- LDOs -----------------------------------------------------------------------------
     ldo(ctx, 1900, 230.0, 180.0, "U603", "LP5907MFX-2.5", "C165132", "+3V3", "+2V5", "VCCAUX 2.5 V for the FPGA's PLLs and I/O pre-drivers, 250 mA LDO")
-    ldo(ctx, 2000, 230.0, 250.0, "U604", "TPS7A2033PDBVR", "C2862740", "+5V", "+3V3_ADC", "ADC analog supply and its drivers: 10 µVrms, 65 dB PSRR at 100 kHz", cin="10uF", cout="10uF")
+    ldo(ctx, 2000, 230.0, 250.0, "U604", "TPS7A2033PDBVR", "C2862740", "+5V", "+3V3_ADC", "ADC analog supply and its drivers: 10 µVrms, 65 dB PSRR at 100 kHz; 2.2 Ω ahead takes 0.1 W of its 0.36 W at 65 MS/s", cin="10uF", cout="10uF", rin="2.2R")
     ldo(ctx, 2100, 230.0, 320.0, "U605", "TPS7A2033PDBVR", "C2862740", "+5V", "+3V3_DAC", "DAC analog supply", cin="10uF", cout="10uF")
     # --- ferrite-isolated digital feeds -------------------------------------------------------
     ferrite_feed(ctx, 2200, 400.0, 180.0, "+3V3", "+3V3_DRV", "ADC output drivers (DRVDD)")

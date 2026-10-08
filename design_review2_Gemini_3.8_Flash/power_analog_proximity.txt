@@ -1,0 +1,6 @@
+Found 10 sensitive nets: ['Net-(R1401-Pad2)', 'Net-(R1402-Pad2)', 'Net-(R1403-Pad2)', 'Net-(R1404-Pad2)', 'Net-(U103A-VIN+_A)', 'Net-(U103A-VIN-_A)', 'Net-(U103B-VIN+_B)', 'Net-(U103B-VIN-_B)', 'Net-(U201A-IOUTB1)', 'Net-(U201B-IOUTB2)']
+Found 16 power nets: ['+1V0_PHY', '+1V1', '+1V8_FTDI', '+2V5', '+2V5_AUX', '+3V3', '+3V3_ADC', '+3V3_DAC', '+3V3_DAC_D', '+3V3_DRV', '+3V3_ETH', '+5V', '+5VA', '-4V2', '/Power/VBUS', 'Net-(U504-VBUS)']
+
+Closest power-to-analog segment pairs (on same layer):
+  Clearance: 0.186 mm on F.Cu    between +3V3_ADC     and Net-(U103A-VIN-_A)             at (68.8, 77.5)
+  Clearance: 0.310 mm on F.Cu    between +3V3_DAC_D   and Net-(U201B-IOUTB2)             at (69.6, 118.6)

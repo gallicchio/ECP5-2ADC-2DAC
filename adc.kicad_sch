@@ -4883,7 +4883,7 @@
 		)
 		(uuid "08843742-e52f-ce18-747f-648bb891e949")
 	)
-	(text "±1 V full scale at x1\n(±0.1 V at x10)\n50 Ω or high-Z: JP101\nDC coupled; clamps at\nthe rails (+5, -4.2 V)\n±10 V max (100 Ω 1206)"
+	(text "±1 V full scale at x1\n(±0.1 V at x10)\n50 Ω or high-Z: JP101\nDC coupled; clamps at\nthe rails (+5, -4.2 V)\n±8 V continuous, ±10 V brief\n(100 Ω 1206: 0.26 W at -10 V)"
 		(exclude_from_sim no)
 		(at 21.59 93.98 0)
 		(effects
@@ -4961,7 +4961,7 @@
 		)
 		(uuid "1e456bd8-a041-534a-654b-5fa8dc43a3ad")
 	)
-	(text "±1 V full scale at x1\n(±0.1 V at x10)\n50 Ω or high-Z: JP201\nDC coupled; clamps at\nthe rails (+5, -4.2 V)\n±10 V max (100 Ω 1206)"
+	(text "±1 V full scale at x1\n(±0.1 V at x10)\n50 Ω or high-Z: JP201\nDC coupled; clamps at\nthe rails (+5, -4.2 V)\n±8 V continuous, ±10 V brief\n(100 Ω 1206: 0.26 W at -10 V)"
 		(exclude_from_sim no)
 		(at 21.59 231.14 0)
 		(effects
@@ -5607,10 +5607,10 @@
 		)
 		(uuid "da59453e-3adc-2ab6-0961-7624c68ec1ce")
 	)
-	(text_box "VBPW34S PIN photodiode: 430-1100 nm, 60 % of its peak at\nthe red LED's 625 nm. Reverse biased 4.2 V into a\ntransimpedance amplifier, 10 kΩ: 10 mV per µA.\n2.2 pF across it: 6.8 MHz, 3.5 dB of peaking at 4 MHz\n(sim/tia.cir; 3.3 pF flattens it).\nAn external photodiode plugs into J106 (cathode to the\ntop pin). Light makes the output go positive.\nAim it at the LED on another board's DAC 1 for the\nlock-in-across-the-room experiment."
+	(text_box "VBPW34S PIN photodiode: 430-1100 nm, 60 % of its peak at\nthe red LED's 625 nm. Reverse biased 4.2 V into a\ntransimpedance amplifier, 10 kΩ: 10 mV per µA.\n2.2 pF across it: 9 MHz with the diode at 25 pF (4.2 V),\n0.5 dB of peaking (sim/tia.cir). An external diode or a\ncable adds capacitance and peaking: 3.3 pF flattens it.\nAn external photodiode plugs into J106 (cathode to the\ntop pin). Light makes the output go positive.\nAim it at the LED on another board's DAC 1 for the\nlock-in-across-the-room experiment."
 		(exclude_from_sim no)
 		(at 149.86 306.07 0)
-		(size 53.34 17.78)
+		(size 53.34 19.05)
 		(margins 0.9525 0.9525 0.9525 0.9525)
 		(stroke
 			(width 0)

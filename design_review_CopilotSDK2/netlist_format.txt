@@ -1,0 +1,122 @@
+36023:		(net
+36024-			(code "1")
+36025-			(name "+1V0_PHY")
+36026-			(class "Default")
+36027-			(node
+36028-				(ref "C4991")
+36029-				(pin "1")
+36030-				(pintype "passive")
+36031-			)
+36032-			(node
+36033-				(ref "C4992")
+36034-				(pin "1")
+36035-				(pintype "passive")
+36036-			)
+36037-			(node
+36038-				(ref "C4993")
+36039-				(pin "1")
+36040-				(pintype "passive")
+36041-			)
+36042-			(node
+36043-				(ref "C4994")
+-- +5V form --
+33405-				(pin
+33406-					(num "18")
+33407:					(name "+5V")
+33408-					(type "passive")
+33409-				)
+33410-				(pin
+33411-					(num "19")
+33412-					(name "HPD")
+33413-					(type "passive")
+33414-				)
+33415-				(pin
+33416-					(num "20")
+33417-					(name "SHELL")
+33418-					(type "passive")
+33419-				)
+33420-				(pin
+33421-					(num "21")
+33422-					(name "SHELL")
+33423-					(type "passive")
+33424-				)
+33425-				(pin
+33426-					(num "22")
+33427-					(name "SHELL")
+33428-					(type "passive")
+33429-				)
+33430-				(pin
+33431-					(num "23")
+33432-					(name "SHELL")
+33433-					(type "passive")
+33434-				)
+33435-			)
+33436-		)
+33437-		(libpart
+33438-			(lib "ours")
+33439-			(part "LED_RGB_CA")
+33440-			(description "RGB LED common anode 1615")
+33441-			(fields
+33442-				(field
+33443-					(name "Reference") "D")
+33444-				(field
+33445-					(name "Value") "XL-1615RGBC-RF")
+33446-				(field
+33447-					(name "Footprint")
+33448-				)
+33449-				(field
+33450-					(name "Datasheet")
+33451-				)
+33452-				(field
+33453-					(name "Description") "RGB LED common anode 1615")
+33454-			)
+33455-			(pins
+33456-				(pin
+33457-					(num "1")
+33458-					(name "R")
+33459-					(type "passive")
+33460-				)
+33461-				(pin
+33462-					(num "2")
+33463-					(name "A")
+33464-					(type "passive")
+33465-				)
+33466-				(pin
+33467-					(num "3")
+33468-					(name "B")
+33469-					(type "passive")
+33470-				)
+33471-				(pin
+33472-					(num "4")
+33473-					(name "G")
+33474-					(type "passive")
+33475-				)
+33476-			)
+33477-		)
+33478-		(libpart
+33479-			(lib "ours")
+33480-			(part "LFE5U-25F-6BG256C")
+33481-			(description "Lattice ECP5 FPGA, 24k LUTs, caBGA256")
+33482-			(fields
+33483-				(field
+33484-					(name "Reference") "U")
+33485-				(field
+33486-					(name "Value") "LFE5U-25F-6BG256C")
+33487-				(field
+--
+37354-		(net
+37355-			(code "12")
+37356:			(name "+5V")
+37357-			(class "Power")
+37358-			(node
+37359-				(ref "C7601")
+37360-				(pin "1")
+37361-				(pintype "passive")
+37362-			)
+37363-			(node
+37364-				(ref "C7602")
+37365-				(pin "1")
+37366-				(pintype "passive")
+37367-			)
+37368-			(node
+37369-				(ref "C7603")

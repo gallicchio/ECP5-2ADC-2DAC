@@ -2638,3 +2638,77 @@ marker.  §10: gate 17, the upload-readiness pass, item by item.  §11: how to f
 Committed (the project's files and the root `CLAUDE.md`; `CLAUDE_PCB.md` is yours to commit), not pushed.  Build 31 is the board
 the round reviews; when the reports are in, the reconciliation goes into `DESIGN_REVIEW_RESPONSE.md` as before and the fixes into
 build 32.
+
+## Prompt 32
+
+Everyone is done with their design reviews. If any of their changes are ones that should be made, make them. Then let me know if we're ready to upload to JLCPCB.
+
+## Response 32 2026-10-07 19:29 - 20:22 Claude Opus 5.5 Max
+
+**Yes: build 33 is ready to upload**, after the five circuit changes the reviews earned (below).  ERC 0; DRC 0 errors and 0 unconnected, with the same four harmless warnings as builds 30-31; every net routed; the
+release in one frame (the BGA's 256 paste openings centre exactly where the CPL puts U1); 93 BOM lines, 474 placements,
+nothing to hand-solder; about $1116 for five ($223 each).  Nothing found blocks the order.
+
+### The reviews
+
+Two second-round reports arrived: `design_review_CopilotSDK2/` ("order the five for bring-up; not for the lab as the
+sheets describe it") and `design_review2_Gemini_3.8_Flash/` ("do not order build 31 unchanged").  Grok wrote nothing to
+disk: no folder anywhere in the repository, the home directory or `/tmp`; its answer was in its chat window, which was
+closed.  The two that arrived agree on every finding that mattered, and each was checked against the datasheet text
+before anything changed.  The full table is `DESIGN_REVIEW_RESPONSE.md` §6.
+
+| finding | who | checked | change |
+|---|---|---|---|
+| CLK IN: the TLV3501's inputs must be held to 10 mA; a 10 V generator through the 10 nF drove about 130 mA | both | TLV3501 §6.1 note 2 | **R5427, 1 kΩ** in series (7.7 mA at a 10 V step; a 50-80 MHz pole) |
+| With USB and a bench supply both plugged in, the bench supply back-fed the laptop's VBUS through F601; the sheet said the Schottky prevented it | CopilotSDK | the netlist | **Q602, an AO3401A P-FET** on the USB path: on through 100 k to ground with USB alone, turned off through 10 k by a bench supply on J601; its body diode then blocks +5V -> VBUS.  No drop on the USB path |
+| D601 (1 A, 0.5 W) behind a 2 A-hold fuse: a 1-2 A fault cooks it without tripping the fuse | both | B5819W, MF-MSMF200 | **D601 an SS34** (3 A, SMA).  Gemini's other option, a 1.1 A fuse, named the wrong code (C17313 is F501's 0.5 A part) and would nuisance-trip |
+| The ADC's LDO at 0.36-0.45 W in a SOT-23-5: 110-129 °C in a 45 °C box at 65 MS/s | both | TPS7A20, AD9238 | **R8001, 2.2 Ω 1206** ahead of it: 0.1 W moves into the resistor, the LDO drops to about 0.26 W, still 0.9 V of headroom at 4.75 V |
+| RXDLY and PHYAD0 relied on internal pull-ups, which lose to the ECP5's configuration pull-downs at the moment the PHY samples its straps | CopilotSDK (Gemini assumed the opposite) | ECP5 pin table; Realtek §7.8 "an external ... resistor is required" | **R4942, R4943, 4.7 k** pull-ups, like RXD1's |
+
+Text and gateware fixes from the same reports: the bench input is specified 4.75-5.25 V (the LM27761's absolute maximum is
+5.8 V), on the sheet and in the back legend; the fabrication notes ask for 50 Ω at 0.35 mm, the width drawn (they said
+0.3); the power sheet's "±4.5 V" title; the ADC input's "±10 V max" is now "±8 V continuous, ±10 V brief"; the README's
+pre-build-28 DAC numbers and its claim that every signal via has a ground return via (about three quarters do); the
+photodiode note (its 3.5 dB of peaking came from the zero-bias 70 pF; biased, the diode is 25 pF: 9.2 MHz, 0.5 dB); the
+generated LiteX platform drives the SDRAM and the DAC data with slow edges.  Left for bring-up or rev B, as both reviewers
+judged: the DAC clocks' 49 mm run over the +1V1 corridor (scope it), the DAC clock resistors at the source end, the HDMI
+pair skew (1-2 mm, fine at 720p), the PHY's REG_OUT layout and the 3.3 V soft start (scope them), and the PLL jitter that
+limits the ADC's SNR at high input frequencies (a README note: clock the ADC from a clean source for full SNR).
+
+### Builds 32 and 33
+
+| | build 31 | build 33 |
+|---|---|---|
+| DRC errors / unconnected / warnings | 0 / 0 / 4 | 0 / 0 / 4 (the same four) |
+| SMT + through-hole placements | 439 + 28 | 446 + 28 |
+| BOM lines (Extended) | 91 (46) | 93 (47) |
+| signal vias with a ground via within 1.5 mm | 373 of 500 | 382 of 515 |
+| cost for 5 | ~$1112 | ~$1116 |
+
+Build 32 (19:53-20:10) had one new warning, a 0.2 mm router stub on the new LDO input; build 33 lays those 3 mm by hand and
+puts the bench range in the back legend.  The placement probe (40 s) checked every new part's courtyard and section box
+before each 20-minute build; one probe moved R8001 off the GAIN jumper's holes and C7603 off Q602.  KiCad's pad positions
+agree to 0.0000 mm on all 478 footprints; the sheets' PDF has 0 overlapping words.  Your KiCad still has the project open:
+reopen it to see build 33.
+
+### What you do on ordering day
+
+1. Upload `mfg/release/ECP5-2ADC-2DAC_gerbers.zip`, then `ECP5-2ADC-2DAC_bom.csv` and `ECP5-2ADC-2DAC_cpl.csv`.
+2. Options, all in `FABRICATION_NOTES.txt`: 6 layers, JLC06161H-7628 with impedance control, ENIG, epoxy-filled and capped
+   vias, "Remove order number: specify a location", PCBA Standard on both sides plus through-hole.
+3. Read the placement preview against `PLACEMENT_CHECKS.txt`: the bottom side's seven polarized parts first, then the new
+   Q602 (predicted 180, like the board's other SOT-23s) and D601 (cathode band on the left in JLCPCB's drawing, as on
+   ours: 0).
+4. The AD9238 is the thin part: 21 in stock for the 5 needed.
+
+### Lessons
+
+CLAUDE_PCB.md (uncommitted, yours): §1, a review exists only as a file, and the brief must say so in bold at the top
+along with "writing your own folder is required"; §4, rate everything in series with a fuse for its hold current, block
+both supplies' paths, external straps against an FPGA that is still configuring, a series resistor on every comparator
+input that meets a connector; §12, a linear regulator's heat at the worst input.  The same rule is in memory, at the top
+of `DESIGN_REVIEW_PROMPT2.md` for a rerun, and in the root `CLAUDE.md`.
+
+Committed with the two review reports and their measurements; not committed: Copilot's `kicad_copy/` (a copy of build
+31's project, in git already as `11e2f61`), its 14 MB of copper renders, and two of its log files that name `/home` paths.
+A stale git lock from 18:50 (no git process running; probably a reviewer's interrupted command) was removed first.  Not pushed.

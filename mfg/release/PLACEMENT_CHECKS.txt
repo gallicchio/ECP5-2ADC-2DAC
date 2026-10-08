@@ -30,8 +30,8 @@ Not yet seen right in a preview:
       value green; correction 0 (predicted)
   D501                         C81598       D_SOD-123
       value 1N4148W; correction 0 (predicted)
-  D601                         C8598        D_SOD-123
-      value B5819W; correction 0 (predicted)
+  D601                         C8678        D_SMA
+      value SS34; correction 0 (predicted)
   D602, D603, D604, D605, D606 C2286        LED_0603_1608Metric
       value red; correction 0 (predicted)
   J101, J102, J204, J205, J301 C496551      SMA_BAT_Wireless_BWSMA-KWE-Z001
@@ -48,6 +48,8 @@ Not yet seen right in a preview:
       value microSD; predicted correction 0, from the bottom-side fit at 180 deg, 13 pads by number, worst 0.01 mm (the bottom rule is untested)
   Q201, Q601                   C2150        SOT-23
       value SS8050; predicted correction 180, from the top-side fit at 180 deg, 3 pads by number, worst 0.08 mm
+  Q602                         C15127       SOT-23
+      value AO3401A; predicted correction 180, from the top-side fit at 180 deg, 3 pads by number, worst 0.28 mm
   SW101                        C99418       SW-TH_DSWB04LHGET
       value DSWB04LHGET; predicted correction 0, from the top-side fit at 0 deg, 8 pads by number, worst 0.00 mm
   T401                         C507595      SMD-24_L15.1-W7.1-P1.00-LS10.0-BL

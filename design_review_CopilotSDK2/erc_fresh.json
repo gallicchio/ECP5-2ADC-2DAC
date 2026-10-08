@@ -1,0 +1,67 @@
+{
+    "$schema": "https://schemas.kicad.org/erc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-10-07T18:59:51",
+    "ignored_checks": [
+        {
+            "description": "Global label only appears once in the schematic",
+            "key": "single_global_label"
+        },
+        {
+            "description": "Four connection points are joined together",
+            "key": "four_way_junction"
+        },
+        {
+            "description": "SPICE model issue",
+            "key": "simulation_model_issue"
+        },
+        {
+            "description": "Assigned footprint doesn't match footprint filters",
+            "key": "footprint_filter"
+        }
+    ],
+    "included_severities": [
+        "error",
+        "warning",
+        "exclusion"
+    ],
+    "kicad_version": "10.0.6",
+    "sheets": [
+        {
+            "path": "/",
+            "uuid_path": "/6687aba7-ac84-d2f3-e96a-32831960efe7",
+            "violations": []
+        },
+        {
+            "path": "/FPGA, memory, clocks, configuration/",
+            "uuid_path": "/6687aba7-ac84-d2f3-e96a-32831960efe7/d6015b03-393a-002a-1e4b-a7b0e700df03",
+            "violations": []
+        },
+        {
+            "path": "/ADC/",
+            "uuid_path": "/6687aba7-ac84-d2f3-e96a-32831960efe7/bb1310ca-094a-6be8-b2c4-0f0b481605f0",
+            "violations": []
+        },
+        {
+            "path": "/DAC/",
+            "uuid_path": "/6687aba7-ac84-d2f3-e96a-32831960efe7/ad20f7ba-2fba-b631-7b68-ae7a89750442",
+            "violations": []
+        },
+        {
+            "path": "/Gigabit Ethernet/",
+            "uuid_path": "/6687aba7-ac84-d2f3-e96a-32831960efe7/f5b22cbc-3992-b4d6-658d-0d5b03fc11be",
+            "violations": []
+        },
+        {
+            "path": "/USB/",
+            "uuid_path": "/6687aba7-ac84-d2f3-e96a-32831960efe7/8422c28f-2b1d-4bb7-9105-1beab9984bcf",
+            "violations": []
+        },
+        {
+            "path": "/Power/",
+            "uuid_path": "/6687aba7-ac84-d2f3-e96a-32831960efe7/ad9afe6b-d7ed-ff77-9f27-01af9b8a7a59",
+            "violations": []
+        }
+    ],
+    "source": "ECP5-2ADC-2DAC.kicad_sch"
+}

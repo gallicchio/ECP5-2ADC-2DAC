@@ -1587,7 +1587,7 @@ class Build:
                  "gain x1 / x10 / x100).  AD9767 dual 14-bit DAC to 125 MS/s (±1 V into 50 Ω, ±2 V open); channel 1 also drives an LED.  "
                  "Noise source, photodiode receiver, 25 MHz TCXO, Si5351 clock generator, CLK IN (10 MHz reference or external clock "
                  "into the FPGA PLL), CLK OUT.  Gigabit Ethernet, two USB-C (PROG: power, programming, UART; USER: the FPGA's own USB), "
-                 "mini HDMI, two Pmods.  Power 5 V in by USB PROG or the 5 V IN header.", None, None)]
+                 "mini HDMI, two Pmods.  Power 5 V in by USB PROG or the 5 V IN header (4.75-5.25 V, which turns USB PROG's power off).", None, None)]
         for layer, paras, size0 in (("F.Cu", front, 0.8), ("B.Cu", back, 1.0)):
             occ = self.occ[layer]
             for para, region, prefer in paras:

@@ -1,0 +1,7 @@
+Total filled_polygon blocks found: 357
+Layer In4.Cu: 346 valid polygons
+  Coverage by quadrant:
+    NW (Top-Left)   :   0.3%
+    NE (Top-Right)  :   0.3%
+    SW (Bot-Left)   :   0.3%
+    SE (Bot-Right)  :   0.3%

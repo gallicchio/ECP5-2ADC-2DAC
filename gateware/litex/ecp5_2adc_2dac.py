@@ -40,7 +40,7 @@ _io = [
         Subsignal("cke",   Pins("C12")),
         Subsignal("ba",    Pins("B7 A6")),
         Subsignal("dm",    Pins("A9 C10")),
-        IOStandard("LVCMOS33"), Misc("SLEWRATE=FAST"),
+        IOStandard("LVCMOS33"), Misc("SLEWRATE=SLOW"),      # unterminated 8-31 mm lines at 100 MHz: slow edges are the termination
     ),
     # SPI flash: W25Q128JVS on the sysCONFIG pins (CLK = CCLK, driven through USRMCLK)
     ("spiflash", 0,
@@ -129,13 +129,13 @@ _io = [
     ("dac", 0,
         Subsignal("d1",    Pins("L5 K5 N4 M4 L4 K4 P7 P6 P5 P4 P3 N3 M3 L3")),
         Subsignal("d2",    Pins("L1 L2 M1 M2 N1 P1 P2 R1 T2 R3 T3 R4 M6 M5")),
-        Subsignal("clk1",  Pins("N6")),
-        Subsignal("clk2",  Pins("M9")),
-        Subsignal("wrt1",  Pins("N5")),
-        Subsignal("wrt2",  Pins("P8")),
+        Subsignal("clk1",  Pins("N6"), Misc("SLEWRATE=FAST")),
+        Subsignal("clk2",  Pins("M9"), Misc("SLEWRATE=FAST")),
+        Subsignal("wrt1",  Pins("N5"), Misc("SLEWRATE=FAST")),
+        Subsignal("wrt2",  Pins("P8"), Misc("SLEWRATE=FAST")),
         Subsignal("mode",  Pins("R8")),
         Subsignal("sleep", Pins("R5")),
-        IOStandard("LVCMOS33"), Misc("SLEWRATE=FAST"),
+        IOStandard("LVCMOS33"), Misc("SLEWRATE=SLOW"),      # the 37-58 mm data lines: slow; the clocks and WRTs (33 R at the DAC) fast
     ),
     # FT2232H channel B modem lines, usable as a reset/boot select from the PC
     ("ftdi_rts", 0, Pins("G16"), IOStandard("LVCMOS33")),

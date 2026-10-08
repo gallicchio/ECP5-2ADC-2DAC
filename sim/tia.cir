@@ -1,7 +1,7 @@
-Photodiode transimpedance amplifier: 10 k || 2.2 pF, OPA2810, diode capacitance 70 pF reverse biased
+Photodiode transimpedance amplifier: 10 k || 2.2 pF, OPA2810; VBPW34S 25 pF typ (40 max) at VR = 3 V (70 pF at 0 V): the rail biases it at 4.2 V
 .include opamps.lib
 Ipd 0 inn DC 0 AC 1u
-Cpd inn 0 70p
+Cpd inn 0 25p
 X1 0 inn vp5 vm5 out OPA2810
 Rf out inn 10k
 Cf out inn 2.2p

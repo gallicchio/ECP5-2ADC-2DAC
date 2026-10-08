@@ -211,11 +211,21 @@ def draw(sch, ids, fpga):
     s.wire(330.0, 300.0, 340.36, 300.0)
     pullup(ctx, 940, 340.36, 300.0, "4.7k", "+3V3_ETH")
     label_node(ctx, 330.0, 304.0, "RXD1 strap: TXDLY = 1 (4.7 k to DVDD_RG)", side="right", size=0.85)
+    # build 32 (the round-2 CopilotSDK review): RXD0 (RXDLY) and RXD3 (PHYAD0) had only the PHY's internal pull-ups, and the
+    # ECP5 pulls every unconfigured pin down (up to 150 uA) during configuration -- which is when the PHY leaves reset and
+    # samples its straps.  Realtek section 7.8: "an external pull-high or pull-low via resistor is required".  4.7 k each
+    # holds 2.6 V against the FPGA's pull-down, as RXD1's does.
+    for k, (nm, txt) in enumerate((("ETH_RXD0", "RXD0 strap: RXDLY = 1 (4.7 k to DVDD_RG)"), ("ETH_RXD3", "RXD3 strap: PHYAD0 = 1, PHY address 1"))):
+        xk = 381.0 + 50.8 * k
+        s.label(xk - 10.36, 300.0, nm, size=0.8)
+        s.wire(xk - 10.36, 300.0, xk, 300.0)
+        pullup(ctx, 940, xk, 300.0, "4.7k", "+3V3_ETH")
+        label_node(ctx, xk - 10.36, 304.0, txt, side="right", size=0.85)
     decouple(ctx, 985, 230.0, 335.0, "+3V3_ETH", ["10uF", "100nF", "100nF", "100nF", "100nF"], label="AVDD33 x2, DVDD33, DVDD_RG: 100 nF each at the pin")
     decouple(ctx, 990, 230.0, 362.0, "+1V0_PHY", ["10uF", "100nF", "100nF", "100nF", "100nF"], label="switcher output 10 µF X5R, 100 nF per 1.0 V pin")
     note(ctx, 330.0, 335.0, "+3V3_ETH is +3V3 through a ferrite bead (power sheet).\n"
-                            "PHY address strap at its default (RXD3 pulled up internally): PHYAD = 1.\n"
-                            "RXD1 pulled up (4.7 k): TXDLY = 1; RXD0 at its internal pull-up: RXDLY = 1:\n"
+                            "Straps pulled up through 4.7 k: RXD3 (PHYAD = 1), RXD1 (TXDLY = 1), RXD0 (RXDLY = 1). The PHY's internal\n"
+                            "pull-ups would lose to the ECP5's pull-downs during configuration, when the straps are sampled:\n"
                             "both 2 ns RGMII delays inside the PHY, so the gateware adds none (LiteEth tx_delay = rx_delay = 0).",
          w=130, size=0.95)
     return hp

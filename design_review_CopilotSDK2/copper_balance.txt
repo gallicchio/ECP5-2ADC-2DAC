@@ -1,0 +1,6 @@
+F.Cu   total= 31.1%  TL= 29.3% TR= 31.7% BL= 33.0% BR= 30.5%
+In1.Cu total= 96.2%  TL= 98.4% TR= 89.1% BL= 98.3% BR= 99.1%
+In2.Cu total= 13.7%  TL= 12.3% TR= 11.8% BL= 15.9% BR= 14.8%
+In3.Cu total= 11.1%  TL= 10.8% TR= 10.1% BL= 13.0% BR= 10.7%
+In4.Cu total= 96.3%  TL= 98.4% TR= 89.2% BL= 98.3% BR= 99.3%
+B.Cu   total= 17.5%  TL= 13.7% TR= 17.3% BL= 21.9% BR= 17.0%

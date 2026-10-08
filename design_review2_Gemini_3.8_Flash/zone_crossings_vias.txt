@@ -1,0 +1,30 @@
+Total vias: 1135 GND vias: 531
+Analyzing crossings...
+
+=== Zone +3V3_DAC ===
+  /ADC/ADC_DCS                     | B.Cu     | cross: 2 | min GND via: 1.63 mm
+  /ADC/ADC_DFS                     | B.Cu     | cross: 1 | min GND via: 1.28 mm
+  /ADC/ADC_PDWN_A                  | B.Cu     | cross: 2 | min GND via: 1.80 mm
+  /ADC/ADC_PDWN_B                  | B.Cu     | cross: 1 | min GND via: 2.97 mm
+  /DAC/DAC_MODE                    | In3.Cu   | cross: 4 | min GND via: 0.99 mm
+  /DAC/DAC_P1_D1                   | B.Cu     | cross: 2 | min GND via: 2.59 mm
+  /DAC/DAC_P1_D2                   | In3.Cu   | cross: 2 | min GND via: 0.70 mm
+  /DAC/DAC_P1_D3                   | In3.Cu   | cross: 2 | min GND via: 1.74 mm
+  /DAC/DAC_P1_D4                   | In3.Cu   | cross: 2 | min GND via: 1.78 mm
+  /DAC/DAC_P1_D5                   | In3.Cu   | cross: 2 | min GND via: 2.22 mm
+  Net-(U201C-FSADJ1)               | B.Cu     | cross: 1 | min GND via: 1.77 mm
+  Net-(U201C-REFIO)                | B.Cu     | cross: 1 | min GND via: 1.60 mm
+
+=== Zone +1V1 ===
+  /DAC/DAC_CLK1                    | In3.Cu   | cross: 1 | min GND via: 1.88 mm
+  /DAC/DAC_MODE                    | B.Cu     | cross: 1 | min GND via: 4.87 mm
+  /DAC/DAC_P1_D0                   | B.Cu     | cross: 1 | min GND via: 1.90 mm
+  /DAC/DAC_P1_D1                   | B.Cu     | cross: 1 | min GND via: 1.26 mm
+  /DAC/DAC_P2_D12                  | B.Cu     | cross: 1 | min GND via: 2.72 mm
+  /DAC/DAC_P2_D13                  | B.Cu     | cross: 1 | min GND via: 1.52 mm
+  /DAC/DAC_WRT1                    | In3.Cu   | cross: 1 | min GND via: 1.57 mm
+  Net-(U1G-N9_CCLK{slash}MCLK)     | In3.Cu   | cross: 1 | min GND via: 4.47 mm
+  Net-(U1G-R9_PROGRAMN)            | B.Cu     | cross: 1 | min GND via: 6.20 mm
+  Net-(U306-~{CS})                 | In3.Cu   | cross: 1 | min GND via: 4.40 mm
+  Net-(U306-~{HOLD}{slash}IO3)     | In3.Cu   | cross: 1 | min GND via: 2.20 mm
+  Net-(U306-~{WP}{slash}IO2)       | B.Cu     | cross: 1 | min GND via: 1.80 mm

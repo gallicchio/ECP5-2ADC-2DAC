@@ -226,11 +226,46 @@ no symbol, no BOM row and raise no parity warning; the placer's keep list, the r
 silkscreen's occupancy map all know them.  Two things the pass found are left for the reviewers to weigh
 (`DESIGN_REVIEW_PROMPT2.md` §3): the ADC's analog LDO dissipates 0.34 W in a SOT-23-5 at 65 MS/s (+64 °C at 187 °C/W),
 and about 94 µF of ceramic on +5V behind a 0.05 Ω fuse rings on a hot plug toward the LM27761's 5.8 V absolute maximum
-if the bench supply is set at the top of its stated 5.0-5.5 V range.  Build 30's DRC had four warnings, not the three
+if the bench supply is set at the top of its stated 5.0-5.5 V range (build 32 states 4.75-5.25 V instead).  Build 30's DRC had four warnings, not the three
 the first prompt's state line said: the two dangling ground vias and two `connection_width` necks (0.03 and 0.06 mm) in
 one 0.7 x 0.9 mm crumb of the In4 ground fill at (150.8-151.5, 44.1-45.0), two ground vias 0.7 mm apart between the +5V
 corridor and the +3V3 plane; harmless, and KiCad reports a zone's neck at the zone's anchor, so it took a shrink test
 (shapely) to find.
+
+## What builds 32-33 changed (Prompt 32: the second round of reviews)
+
+CopilotSDK and Gemini 3.8 Flash reviewed build 31 (`design_review_CopilotSDK2/`, `design_review2_Gemini_3.8_Flash/`;
+Grok's review was given only in its chat window and was lost).  `DESIGN_REVIEW_RESPONSE.md` §6 is the reconciliation.
+Five circuit changes, each confirmed against the datasheet before it was made:
+
+* **CLK IN: R5427, 1 kΩ** between the 10 nF and the TLV3501's +IN.  Its inputs are clamped to its rails and must be held
+  to 10 mA; a 10 V generator through the capacitor alone drove about 130 mA.
+* **USB PROG through Q602, a P-FET** (AO3401A) that a bench supply on J601 turns off, so the bench supply can no longer
+  back-feed the laptop's VBUS through F601 (it could in every build to 31).  With USB alone the gate sits at ground
+  through 100 k and the FET is 0.06 Ω; the bench input lifts the gate through 10 k above +5V, and the body diode blocks
+  +5V -> VBUS.  No drop on the USB path.
+* **D601 an SS34** (3 A, SMA) instead of the B5819W (1 A, 0.5 W), which a 1-2 A fault would have cooked behind the
+  2 A-hold fuse without tripping it.
+* **R8001, 2.2 Ω 1206 ahead of the ADC's LDO**: at 65 MS/s the AD9238's 200 mA put 0.36 W into U604's SOT-23-5
+  (110 °C in a 45 °C box); 0.1 W of it is in the resistor now.
+* **R4942, R4943: 4.7 k pull-ups on the PHY's RXDLY and PHYAD0 straps.**  The ECP5 pulls every unconfigured pin down
+  during configuration, which is when the PHY samples them; the internal pull-ups would have lost.
+
+And: the bench input is specified 4.75-5.25 V (the LM27761's absolute maximum is 5.8 V); the fabrication notes ask for
+50 Ω at 0.35 mm, the width drawn; the generated LiteX platform drives the SDRAM and the DAC data with slow edges (the
+clocks fast); the power sheet's title, the ADC input's ±10 V claim (±8 V continuous, ±10 V briefly), the DAC stage's
+numbers, the return-via claim and the photodiode amplifier's note now say what the board does.
+
+Build 32 (20:00) had one new DRC warning, a 0.2 mm router stub on the new LDO input; build 33 lays that 3 mm by hand
+(`floorplan.analog_power`) and prints the bench range in the back legend.  Build 33: ERC 0; DRC 0 errors, 0 unconnected,
+the same four warnings as builds 30-31; 446 SMT and 28 through-hole parts on 93 BOM lines (47 Extended: the 2.2 Ω is the one
+new fee; the SS34, the AO3401A, the 1 k and the 4.7 k pull-ups are Basic); 478 footprints and 1781 pads where KiCad puts
+them; the sheets' PDF read back with 0 overlapping words; nothing to hand-solder; about $1116 for five boards ($223 each).
+
+**Sampling clock and SNR** (both reviews): an ECP5 PLL's output jitter, 20-30 ps rms, caps the AD9238's SNR near
+55-59 dB for a 10 MHz input, against the converter's 70 dB (it matters less as the input frequency falls: 1 MHz loses
+nothing).  For full dynamic range at high input frequencies, pass a clean clock to the ADC without the PLL: the 25 MHz
+TCXO itself (25 MS/s), a Si5351 output, or a low-jitter source on CLK IN.
 
 ## Rev B candidates
 
@@ -248,6 +283,11 @@ corridor and the +3V3 plane; harmless, and KiCad reports a zone's neck at the zo
 * The 45F/85F FPGA (a BOM change), DDR3 (a second BGA), the TX series resistors at the FPGA end of the
   RGMII lines, a damping leg on the converter clock lines: the items in Decisions and in the review
   responses.
+* From the round-2 reviews (build 31): the DAC_CLK/DAC_WRT 33 Ω at the FPGA end, as source terminations
+  (Gemini; rev A has them at the DAC); a stitching capacitor where DAC_CLK1/DAC_WRT1 leave the +1V1 corridor on
+  In4 if the first board's scope shows ringing there (CopilotSDK: the nearest ground via is 5-6 mm away); the HDMI
+  pairs matched to 0.15 mm (1-2.2 mm apart now, about 15 ps: fine at 720p); the PHY's REG_OUT inductor on the
+  PHY's own layer, as Realtek asks.
 
 ## Design reviews
 
@@ -322,9 +362,9 @@ one clock tree.  The AD9238 is that part, and cheaper than two AD9226.  Its stoc
 | 2 x DAC904E | 14 / 165 | 261 | $12 | cheapest; two packages, 5 V-capable |
 
 Both DAC outputs are complementary current outputs into 24.9 ohm, taken differentially by an OPA2810 at
-gain 4 (2 kΩ || 2.2 pF on both inputs): ±1.8 V unloaded, ±0.9 V into 50 ohm, DC coupled -- the 499 Ω inputs
-load the 24.9 Ω, which is why it is not ±2 / ±1 V -- flat to 13.5 MHz, a full-scale sine clean to 10 MHz
-(the OPA2810's 180 V/µs).
+gain 4.4 (2.2 kΩ || 2.2 pF over 499 Ω on both inputs, since build 28): ±2.0 V unloaded, ±1.0 V into 50 ohm,
+DC coupled -- the extra 10 % over gain 4 makes up for the 499 Ω inputs loading the 24.9 Ω -- flat to 12.3 MHz
+(`sim/dac_stage.cir`), a full-scale sine clean to 10 MHz (the OPA2810's 192 V/µs needs 126 V/µs there).
 
 ### Ethernet, USB, clocks, power
 
@@ -378,7 +418,7 @@ microSD) is drawn 8 mm east of its 150 mm coordinates (`floorplan.E`):
 
 * **left end**, 17 mm apart down the edge: CLK IN, CLK OUT, ADC A IN, ADC B IN, DAC 1 OUT, DAC 2 OUT, each
   name and its limit printed under its SMA, and each one's circuit in its own silkscreen box beside it (the
-  termination jumper, series resistor (a 1206: 0.25 W, so a ±10 V source into the clamp does not open it) and
+  termination jumper, series resistor (a 1206: ±8 V continuous, ±10 V briefly -- a stiff -10 V puts 0.26 W in it) and
   clamp first, then the op amps with their passives in a straight run to the converter, a U.FL monitor tap on
   the second preamp's output, and a BAV99 on the back under the THS4521's input pins, anti-parallel across
   them, so that a saturated preamp cannot put more than a diode drop between them (the reviews disagreed on
@@ -433,8 +473,9 @@ below the package, with the bulk capacitors.  The big buses are rivers (`pcb/riv
 lanes laid by construction from the chip to the FPGA, which decide the balls), the converters' inputs and
 outputs and the whole Ethernet line side are laid by hand (`floorplan.HAND`), and everything else is
 routed by `pcb/router.py`, a 0.2 mm-grid A* over the four signal layers; the SMA feeds are 0.35 mm wide (50 ohm over the In1 plane); digital nets
-may not cross the analog strip down the left; and every signal via gets a ground via within 1.5 mm for the
-return current (`return_vias` in `pcb/build_pcb.py`).
+may not cross the analog strip down the left; and a signal via gets a ground via within 1.5 mm for the return
+current wherever there is room (`return_vias` in `pcb/build_pcb.py`; build 33: 382 of 515 signal vias, 226 of them
+added for it, 133 with no room -- `build/route_report.json`, "return_vias").
 
 Open `kicad-gui.sh` (not `kicad`) to look at the files: KiCad's OpenGL canvas under native Wayland
 does not repaint after zoom and scroll; the script runs it through XWayland.

@@ -1,0 +1,62 @@
+4906 segments, 1135 vias, 1687 pads, 11 zones ([('+1V1', 'In2.Cu'), ('+1V1', 'In4.Cu'), ('+3V3', 'In3.Cu'), ('+3V3', 'In4.Cu'), ('+3V3_ADC', 'In4.Cu'), ('+3V3_DAC', 'In4.Cu'), ('+5V', 'In4.Cu'), ('+5VA', 'In4.Cu'), ('-4V2', 'In4.Cu'), ('GND', 'In1.Cu'), ('GND', 'In4.Cu')])
++1V1        parts: L618 U1; sources: L618
++1V1        -> FPGA      6 pins: worst    2.5 mOhm (pin L9), best   2.5, median   2.5
++3V3        parts: D309 D603 FB8201 FB8211 FB8221 J303 J304 J305 J504 L617 U1 U301 U304 U305 U306 U502 U503 U505 U603 X301; sources: FB8201 FB8211 FB8221 L617 U603
++3V3        -> FPGA     14 pins: worst    4.5 mOhm (pin P10), best   3.5, median   3.5
++3V3        -> SDRAM     7 pins: worst    6.0 mOhm (pin 9), best   6.0, median   6.0
++3V3        -> FT2232H   5 pins: worst    6.8 mOhm (pin 42), best   6.6, median   6.6
++2V5_AUX    parts: FB5811 U1; sources: FB5811
++2V5_AUX    -> FPGA      2 pins: worst  105.5 mOhm (pin G11), best  83.8, median 105.5
++3V3_ADC    parts: D605 U103 U111 U112 U302 U604; sources: U604
+   path to U103.5 (22.7 mOhm):
+      plane   (0.0,0.0)->(40.8,55.9)  0.0 mm    0.5 mOhm
+      In4.Cu  (40.8,55.9)->(40.8,55.9)  0.0 mm    1.0 mOhm
+      In3.Cu  (40.8,55.9)->(40.8,55.9)  0.0 mm    1.0 mOhm
+      In2.Cu  (40.8,55.9)->(40.8,55.9)  0.0 mm    1.0 mOhm
+      In1.Cu  (40.8,55.9)->(40.8,55.9)  0.0 mm    1.0 mOhm
+      F.Cu    (40.8,55.9)->(41.7,55.9)  0.9 mm    1.9 mOhm
+      F.Cu    (41.7,55.8)->(40.5,54.6)  1.7 mm    2.2 mOhm
+      F.Cu    (40.5,54.6)->(40.5,54.0)  0.6 mm    1.5 mOhm
+      F.Cu    (40.5,54.0)->(41.3,53.2)  1.1 mm    1.5 mOhm
+      F.Cu    (41.3,53.2)->(42.1,53.2)  0.8 mm    2.0 mOhm
+      F.Cu    (42.1,53.2)->(42.8,52.5)  1.0 mm    1.3 mOhm
+      F.Cu    (42.8,52.5)->(43.8,52.5)  1.0 mm    2.5 mOhm
+      F.Cu    (43.8,52.5)->(43.8,53.1)  0.6 mm    1.5 mOhm
+      F.Cu    (43.8,53.1)->(45.8,53.1)  2.0 mm    3.9 mOhm
+   path to U111.7 (12.2 mOhm):
+      plane   (0.0,0.0)->(40.4,49.8)  0.0 mm    0.5 mOhm
+      In4.Cu  (40.4,49.8)->(40.4,49.8)  0.0 mm    1.0 mOhm
+      In3.Cu  (40.4,49.8)->(40.4,49.8)  0.0 mm    1.0 mOhm
+      In2.Cu  (40.4,49.8)->(40.4,49.8)  0.0 mm    1.0 mOhm
+      In1.Cu  (40.4,49.8)->(40.4,49.8)  0.0 mm    1.0 mOhm
+      F.Cu    (40.4,49.6)->(40.8,49.2)  0.6 mm    0.7 mOhm
+      F.Cu    (40.8,49.2)->(40.8,48.2)  1.0 mm    1.2 mOhm
+      F.Cu    (40.8,48.2)->(40.8,47.0)  1.2 mm    1.5 mOhm
+      F.Cu    (40.8,47.0)->(40.2,46.4)  0.8 mm    1.0 mOhm
+      F.Cu    (40.2,46.4)->(40.2,43.9)  2.5 mm    3.1 mOhm
++3V3_ADC    -> AD9238    6 pins: worst   22.7 mOhm (pin 5), best   4.7, median   5.1
++3V3_ADC    -> THS4521 A  2 pins: worst   12.2 mOhm (pin 7), best   6.7, median  12.2
++3V3_DRV    parts: FB8201 U103; sources: FB8201
++3V3_DRV    -> AD9238    3 pins: worst   32.8 mOhm (pin 52), best  28.8, median  31.1
++3V3_DAC    parts: D606 U201 U605; sources: U605
++3V3_DAC    -> AD9767    1 pins: worst    7.8 mOhm (pin 47), best   7.8, median   7.8
++3V3_DAC_D  parts: FB8211 U201; sources: FB8211
++3V3_DAC_D  -> AD9767    2 pins: worst   51.6 mOhm (pin 22), best  44.4, median  51.6
++5V         parts: D201 D602 F501 F601 F602 FB8231 J210 U601 U602 U604 U605 U606; sources: F501 FB8231 U601 U602 U604 U605 U606
++5VA        parts: D101 D102 D607 FB8231 U101 U102 U105 U202 U203; sources: FB8231
++5VA        -> OPA1612 A  1 pins: worst    4.7 mOhm (pin 8), best   4.7, median   4.7
++5VA        -> OPA1612 B  1 pins: worst    4.7 mOhm (pin 8), best   4.7, median   4.7
++5VA        -> TIA       1 pins: worst    4.7 mOhm (pin 8), best   4.7, median   4.7
++5VA        -> OPA2810 1  1 pins: worst    7.4 mOhm (pin 8), best   7.4, median   7.4
+-4V2        parts: D101 D102 D103 FB8301 J106 U101 U102 U105 U202 U203; sources: FB8301
+-4V2        -> OPA1612 A  1 pins: worst    4.7 mOhm (pin 4), best   4.7, median   4.7
+-4V2        -> OPA1612 B  1 pins: worst    4.7 mOhm (pin 4), best   4.7, median   4.7
+-4V2        -> TIA       1 pins: worst   26.0 mOhm (pin 4), best  26.0, median  26.0
+-4V2        -> OPA2810 1  1 pins: worst   14.4 mOhm (pin 4), best  14.4, median  14.4
++3V3_ETH    parts: D401 FB8221 U401; sources: FB8221
++3V3_ETH    -> RTL8211F  4 pins: worst   69.1 mOhm (pin 29), best  23.9, median  69.1
++1V0_PHY    parts: L401 U401; sources: L401
++1V0_PHY    -> RTL8211F  4 pins: worst   65.6 mOhm (pin 8), best  38.3, median  54.4
++1V8_FTDI   parts: FB6241 U502; sources: FB6241
++1V8_FTDI   -> FT2232H   4 pins: worst   51.2 mOhm (pin 37), best  20.7, median  34.9
++2V5        parts: D604 FB5811 U603; sources: FB5811 U603

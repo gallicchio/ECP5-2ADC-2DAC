@@ -1,0 +1,7 @@
+trace_paths=0
+power_path=0
+simulations=0
+jlc_rotation=0
+kicad_drc=0
+kicad_erc=0
+check_pads=0

@@ -1,0 +1,305 @@
+# Netlist gates
+components 471 nets 494
+one-pin nets (excluding unconnected): 0
+
+## power nets
+  GND: 353 pins, 260 parts
+  +3V3: 118 pins, 91 parts
+  +5V: 29 pins, 24 parts
+  +3V3_ADC: 24 pins, 17 parts
+  +1V1: 22 pins, 17 parts
+  -4V2: 19 pins, 19 parts
+  +3V3_ETH: 17 pins, 14 parts
+  +5VA: 16 pins, 16 parts
+  +1V0_PHY: 11 pins, 8 parts
+  +1V8_FTDI: 9 pins, 6 parts
+  +3V3_DRV: 9 pins, 7 parts
+  +3V3_DAC_D: 8 pins, 7 parts
+  +3V3_DAC: 7 pins, 7 parts
+  +2V5_AUX: 6 pins, 5 parts
+  +2V5: 5 pins, 5 parts
+
+## critical pin maps
+  U302 TLV3501AIDBVR Package_TO_SOT_SMD:SOT-23-6
+    pin 1: ['Net-(U302A--)']
+    pin 2: ['GND']
+    pin 3: ['Net-(U302A-+)']
+    pin 4: ['+3V3_ADC']
+    pin 5: ['Net-(R5423-Pad1)']
+    pin 6: ['GND']
+  U604 TPS7A2033PDBVR Package_TO_SOT_SMD:SOT-23-5
+    pin 1: ['+5V']
+    pin 2: ['GND']
+    pin 3: ['+5V']
+    pin 4: ['unconnected-(U604-NC-Pad4)']
+    pin 5: ['+3V3_ADC']
+  U605 TPS7A2033PDBVR Package_TO_SOT_SMD:SOT-23-5
+    pin 1: ['+5V']
+    pin 2: ['GND']
+    pin 3: ['+5V']
+    pin 4: ['unconnected-(U605-NC-Pad4)']
+    pin 5: ['+3V3_DAC']
+  U606 LM27761DSGR Package_DFN_QFN:DFN-8-1EP_2x2mm_P0.5mm_EP0.9x1.6mm
+    pin 1: ['+5V']
+    pin 2: ['GND']
+    pin 3: ['Net-(U606-CPOUT)']
+    pin 4: ['Net-(U606-VOUT)']
+    pin 5: ['Net-(U606-VFB)']
+    pin 6: ['+5V']
+    pin 7: ['Net-(U606-C-)']
+    pin 8: ['Net-(U606-C+)']
+    pin 9: ['GND']
+  D601 B5819W Diode_SMD:D_SOD-123
+    pin 1: ['Net-(D601-K)']
+    pin 2: ['Net-(D601-A)']
+  F601 MF-MSMF200-2 Fuse:Fuse_1812_4532Metric
+    pin 1: ['/Power/VBUS']
+    pin 2: ['+5V']
+  F602 MF-MSMF200-2 Fuse:Fuse_1812_4532Metric
+    pin 1: ['Net-(D601-K)']
+    pin 2: ['+5V']
+  J601 5V IN Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical
+    pin 1: ['GND']
+    pin 2: ['Net-(D601-A)']
+  J305 JTAG Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical
+    pin 1: ['+3V3']
+    pin 2: ['/FPGA, memory, clocks, configuration/JTAG_TCK']
+    pin 3: ['/FPGA, memory, clocks, configuration/JTAG_TMS']
+    pin 4: ['/FPGA, memory, clocks, configuration/JTAG_TDI']
+    pin 5: ['/FPGA, memory, clocks, configuration/JTAG_TDO']
+    pin 6: ['GND']
+  U401 RTL8211F-CG Package_DFN_QFN:QFN-40-1EP_5x5mm_P0.4mm_EP3.6x3.6mm
+    pin 1: ['/Gigabit Ethernet/ETH_MDI0_P']
+    pin 2: ['/Gigabit Ethernet/ETH_MDI0_N']
+    pin 3: ['+1V0_PHY']
+    pin 4: ['/Gigabit Ethernet/ETH_MDI1_P']
+    pin 5: ['/Gigabit Ethernet/ETH_MDI1_N']
+    pin 6: ['/Gigabit Ethernet/ETH_MDI2_P']
+    pin 7: ['/Gigabit Ethernet/ETH_MDI2_N']
+    pin 8: ['+1V0_PHY']
+    pin 9: ['/Gigabit Ethernet/ETH_MDI3_P']
+    pin 10: ['/Gigabit Ethernet/ETH_MDI3_N']
+    pin 11: ['+3V3_ETH']
+    pin 12: ['Net-(U401A-PHYRSTB)']
+    pin 13: ['/FPGA, memory, clocks, configuration/ETH_MDC']
+    pin 14: ['/FPGA, memory, clocks, configuration/ETH_MDIO']
+    pin 15: ['Net-(U401A-TXD3)']
+    pin 16: ['Net-(U401A-TXD2)']
+    pin 17: ['Net-(U401A-TXD1)']
+    pin 18: ['Net-(U401A-TXD0)']
+    pin 19: ['Net-(U401A-TXCTL)']
+    pin 20: ['Net-(U401A-TXC)']
+    pin 21: ['+1V0_PHY']
+    pin 22: ['Net-(U401A-RXD3{slash}PHYAD0)']
+    pin 23: ['Net-(U401A-RXD2{slash}PLLOFF)']
+    pin 24: ['Net-(U401A-RXD1{slash}TXDLY)']
+    pin 25: ['Net-(U401A-RXD0{slash}RXDLY)']
+    pin 26: ['Net-(U401A-RXCTL{slash}PHYAD2)']
+    pin 27: ['Net-(U401A-RXC{slash}PHYAD1)']
+    pin 28: ['+3V3_ETH']
+    pin 29: ['+3V3_ETH']
+    pin 30: ['Net-(U401C-REG_OUT)']
+    pin 31: ['/FPGA, memory, clocks, configuration/ETH_INT_N']
+    pin 32: ['Net-(U401B-LED0{slash}CFG_EXT)']
+    pin 33: ['Net-(U401B-LED1{slash}CFG_LDO0)']
+    pin 34: ['Net-(U401B-LED2{slash}CFG_LDO1)']
+    pin 35: ['unconnected-(U401B-CLKOUT-Pad35)']
+    pin 36: ['Net-(U401B-XTAL_IN)']
+    pin 37: ['Net-(U401B-XTAL_OUT)']
+    pin 38: ['+1V0_PHY']
+    pin 39: ['Net-(U401C-RSET)']
+    pin 40: ['+3V3_ETH']
+    pin 41: ['GND']
+  D110 MISSING
+  D111 BAV99 Package_TO_SOT_SMD:SOT-23
+    pin 1: ['Net-(U111--)']
+    pin 2: ['Net-(U111--)']
+    pin 3: ['Net-(U111-+)']
+  D101 BAV99 Package_TO_SOT_SMD:SOT-23
+    pin 1: ['-4V2']
+    pin 2: ['+5VA']
+    pin 3: ['Net-(JP102-B)']
+  D102 BAV99 Package_TO_SOT_SMD:SOT-23
+    pin 1: ['-4V2']
+    pin 2: ['+5VA']
+    pin 3: ['Net-(JP202-B)']
+  U111 THS4521 Package_SO:MSOP-8_3x3mm_P0.65mm
+    pin 1: ['Net-(U111--)']
+    pin 2: ['Net-(U111-VOCM)']
+    pin 3: ['+3V3_ADC']
+    pin 4: ['Net-(R1110-Pad2)']
+    pin 5: ['Net-(R1109-Pad2)']
+    pin 6: ['GND']
+    pin 7: ['+3V3_ADC']
+    pin 8: ['Net-(U111-+)']
+  U112 THS4521 Package_SO:MSOP-8_3x3mm_P0.65mm
+    pin 1: ['Net-(U112--)']
+    pin 2: ['Net-(U112-VOCM)']
+    pin 3: ['+3V3_ADC']
+    pin 4: ['Net-(R1210-Pad2)']
+    pin 5: ['Net-(R1209-Pad2)']
+    pin 6: ['GND']
+    pin 7: ['+3V3_ADC']
+    pin 8: ['Net-(U112-+)']
+  Y501 12MHz Crystal:Crystal_SMD_3225-4Pin_3.2x2.5mm
+    pin 1: ['Net-(U502-OSCI)']
+    pin 2: ['GND']
+    pin 3: ['Net-(U502-OSCO)']
+    pin 4: ['GND']
+  U502 FT2232HL Package_QFP:LQFP-64_10x10mm_P0.5mm
+    pin 1: ['GND']
+    pin 2: ['Net-(U502-OSCI)']
+    pin 3: ['Net-(U502-OSCO)']
+    pin 4: ['Net-(U502-VPHY)']
+    pin 5: ['GND']
+    pin 6: ['Net-(U502-REF)']
+    pin 7: ['Net-(U502-DM)']
+    pin 8: ['Net-(U502-DP)']
+    pin 9: ['Net-(U502-VPHY)']
+    pin 10: ['GND']
+    pin 11: ['GND']
+    pin 12: ['+1V8_FTDI']
+    pin 13: ['GND']
+    pin 14: ['Net-(JP501-B)']
+    pin 15: ['GND']
+    pin 16: ['Net-(U502-ADBUS0)']
+    pin 17: ['Net-(U502-ADBUS1)']
+    pin 18: ['Net-(U502-ADBUS2)']
+    pin 19: ['Net-(U502-ADBUS3)']
+    pin 20: ['+3V3']
+    pin 21: ['unconnected-(U502-ADBUS4-Pad21)']
+    pin 22: ['unconnected-(U502-ADBUS5-Pad22)']
+    pin 23: ['unconnected-(U502-ADBUS6-Pad23)']
+    pin 24: ['unconnected-(U502-ADBUS7-Pad24)']
+    pin 25: ['GND']
+    pin 26: ['unconnected-(U502-ACBUS0-Pad26)']
+    pin 27: ['unconnected-(U502-ACBUS1-Pad27)']
+    pin 28: ['unconnected-(U502-ACBUS2-Pad28)']
+    pin 29: ['unconnected-(U502-ACBUS3-Pad29)']
+    pin 30: ['unconnected-(U502-ACBUS4-Pad30)']
+    pin 31: ['+3V3']
+    pin 32: ['unconnected-(U502-ACBUS5-Pad32)']
+    pin 33: ['unconnected-(U502-ACBUS6-Pad33)']
+    pin 34: ['unconnected-(U502-ACBUS7-Pad34)']
+    pin 35: ['GND']
+    pin 36: ['unconnected-(U502-~{SUSPEND}-Pad36)']
+    pin 37: ['+1V8_FTDI']
+    pin 38: ['Net-(U502-BDBUS0)']
+    pin 39: ['Net-(U502-BDBUS1)']
+    pin 40: ['Net-(U502-BDBUS2)']
+    pin 41: ['unconnected-(U502-BDBUS3-Pad41)']
+    pin 42: ['+3V3']
+    pin 43: ['Net-(U502-BDBUS4)']
+    pin 44: ['unconnected-(U502-BDBUS5-Pad44)']
+    pin 45: ['unconnected-(U502-BDBUS6-Pad45)']
+    pin 46: ['unconnected-(U502-BDBUS7-Pad46)']
+    pin 47: ['GND']
+    pin 48: ['unconnected-(U502-BCBUS0-Pad48)']
+    pin 49: ['+1V8_FTDI']
+    pin 50: ['+3V3']
+    pin 51: ['GND']
+    pin 52: ['unconnected-(U502-BCBUS1-Pad52)']
+    pin 53: ['unconnected-(U502-BCBUS2-Pad53)']
+    pin 54: ['unconnected-(U502-BCBUS3-Pad54)']
+    pin 55: ['unconnected-(U502-BCBUS4-Pad55)']
+    pin 56: ['+3V3']
+    pin 57: ['unconnected-(U502-BCBUS5-Pad57)']
+    pin 58: ['unconnected-(U502-BCBUS6-Pad58)']
+    pin 59: ['unconnected-(U502-BCBUS7-Pad59)']
+    pin 60: ['unconnected-(U502-~{PWREN}-Pad60)']
+    pin 61: ['Net-(U502-EEDATA)']
+    pin 62: ['Net-(U502-EECLK)']
+    pin 63: ['Net-(U502-EECS)']
+    pin 64: ['+1V8_FTDI']
+
+## values of interest
+  1.2M: 1  R8301
+  100R: 4  R1102,R1202,R1402,R2508
+  100nF: 86  C1101,C1102,C1103,C1104,C1201,C1202,C1203,C1204,C1312,C1313,C1314,C1322,C1323,C1324,C1332,C1342,C1343,C1344,C1345,C1352,C1353,C1354,C1402,C1403,C2331,C2342,C2352,C2353,C2601,C2602,C2701,C2702,C4911,C4921,C4931,C4941,C4987,C4988,C4989,C4990
+  10k: 19  R1404,R1405,R2301,R2302,R5424,R5425,R5426,R5451,R5452,R5701,R5702,R5703,R6222,R6231,R6413,R7651,R7703,R7711,R7801
+  10nF: 1  C5421
+  10uF: 35  C1311,C1321,C1341,C1351,C2341,C2351,C4986,C4991,C5501,C5802,C5803,C5804,C5811,C5821,C5822,C5823,C5824,C5825,C5826,C5827,C6511,C7701,C7801,C8001,C8002,C8101,C8102,C8201,C8211,C8221,C8231,C8301,C8303,C8304,C8305
+  12k: 2  R6221,R7802
+  15k: 3  R6312,R6322,R7701
+  18pF: 2  C4976,C4977
+  1k: 14  R1104,R1106,R1204,R1206,R1403,R5441,R5442,R5443,R5444,R5445,R5446,R5447,R5448,R6313
+  2.2k: 7  R2405,R2406,R2505,R2506,R6232,R7671,R7722
+  2.2pF: 5  C1401,C2401,C2402,C2501,C2502
+  2.49k: 1  R4983
+  22R: 12  R4901,R4902,R4903,R4904,R4905,R4906,R4907,R4908,R4909,R4910,R4911,R4912
+  22pF: 4  C1105,C1106,C1205,C1206
+  22uF: 7  C5801,C7601,C7602,C7702,C7703,C7802,C7803
+  24.9R: 4  R2401,R2402,R2501,R2502
+  27R: 2  R6311,R6321
+  27pF: 2  C6211,C6216
+  2k: 2  R2311,R2321
+  3.3k: 3  R6431,R6432,R7702
+  33R: 39  R1111,R1112,R1211,R1212,R1301,R1302,R2101,R2102,R2201,R2202,R5401,R5411,R5412,R5413,R5423,R5601,R5602,R5603,R5604,R5605,R5606,R5607,R5608,R5611,R5612,R5613,R5614,R5615,R5616,R5617,R5618,R6271,R6272,R6273,R6274,R6281,R6282,R6283,R6284
+  4.7k: 23  R4913,R4914,R4916,R4941,R4962,R4972,R4982,R5416,R5417,R5711,R5712,R5713,R5721,R5722,R5723,R5724,R6412,R6421,R6422,R7661,R7681,R7691,R7721
+  49.9R: 10  R1101,R1113,R1201,R1213,R1406,R2407,R2507,R5421,R5431,R8303
+  499R: 12  R1107,R1108,R1109,R1110,R1207,R1208,R1209,R1210,R2403,R2404,R2503,R2504
+  499k: 1  R8302
+  5.1k: 4  R6201,R6202,R6301,R6302
+  75R: 4  R4951,R4952,R4953,R4954
+  9.1k: 4  R1103,R1105,R1203,R1205
+
+## polarized / diode / electrolytic candidates
+  D101 BAV99 Package_TO_SOT_SMD:SOT-23 [('atom', 'part'), ('str', 'BAV99')]
+  D102 BAV99 Package_TO_SOT_SMD:SOT-23 [('atom', 'part'), ('str', 'BAV99')]
+  D103 VBPW34S ours:VBPW34S_K1_A2 [('atom', 'part'), ('str', 'D_Photo')]
+  D111 BAV99 Package_TO_SOT_SMD:SOT-23 [('atom', 'part'), ('str', 'BAV99_antiparallel')]
+  D112 BAV99 Package_TO_SOT_SMD:SOT-23 [('atom', 'part'), ('str', 'BAV99_antiparallel')]
+  D201 XL-2835SURC-05 easyeda:LED-SMD_L3.5-W2.8-RD [('atom', 'part'), ('str', 'LED')]
+  D301 white LED_SMD:LED_0603_1608Metric [('atom', 'part'), ('str', 'LED')]
+  D302 white LED_SMD:LED_0603_1608Metric [('atom', 'part'), ('str', 'LED')]
+  D303 white LED_SMD:LED_0603_1608Metric [('atom', 'part'), ('str', 'LED')]
+  D304 white LED_SMD:LED_0603_1608Metric [('atom', 'part'), ('str', 'LED')]
+  D305 white LED_SMD:LED_0603_1608Metric [('atom', 'part'), ('str', 'LED')]
+  D306 white LED_SMD:LED_0603_1608Metric [('atom', 'part'), ('str', 'LED')]
+  D307 white LED_SMD:LED_0603_1608Metric [('atom', 'part'), ('str', 'LED')]
+  D308 white LED_SMD:LED_0603_1608Metric [('atom', 'part'), ('str', 'LED')]
+  D309 XL-1615RGBC-RF easyeda:LED-ARRAY-SMD_4P-L1.6-W1.5-BR_XL-1615RGBC-RF [('atom', 'part'), ('str', 'LED_RGB_CA')]
+  D401 green LED_SMD:LED_0603_1608Metric [('atom', 'part'), ('str', 'LED')]
+  D402 green LED_SMD:LED_0603_1608Metric [('atom', 'part'), ('str', 'LED')]
+  D403 green LED_SMD:LED_0603_1608Metric [('atom', 'part'), ('str', 'LED')]
+  D501 1N4148W Diode_SMD:D_SOD-123 [('atom', 'part'), ('str', 'D')]
+  D601 B5819W Diode_SMD:D_SOD-123 [('atom', 'part'), ('str', 'D_Schottky')]
+  D602 red LED_SMD:LED_0603_1608Metric [('atom', 'part'), ('str', 'LED')]
+  D603 red LED_SMD:LED_0603_1608Metric [('atom', 'part'), ('str', 'LED')]
+  D604 red LED_SMD:LED_0603_1608Metric [('atom', 'part'), ('str', 'LED')]
+  D605 red LED_SMD:LED_0603_1608Metric [('atom', 'part'), ('str', 'LED')]
+  D606 red LED_SMD:LED_0603_1608Metric [('atom', 'part'), ('str', 'LED')]
+  D607 red LED_SMD:LED_0603_1608Metric [('atom', 'part'), ('str', 'LED')]
+  D608 red LED_SMD:LED_0603_1608Metric [('atom', 'part'), ('str', 'LED')]
+  D609 red LED_SMD:LED_0603_1608Metric [('atom', 'part'), ('str', 'LED')]
+  Q201 SS8050 Package_TO_SOT_SMD:SOT-23 [('atom', 'part'), ('str', 'SS8050')]
+  Q601 SS8050 Package_TO_SOT_SMD:SOT-23 [('atom', 'part'), ('str', 'SS8050')]
+  U1 LFE5U-25F-6BG256C Package_BGA:BGA-256_14.0x14.0mm_Layout16x16_P0.8mm_Ball0.45mm_Pad0.32mm_NSMD [('atom', 'part'), ('str', 'LFE5U-25F-6BG256C')]
+  U101 OPA1612 Package_SO:SOIC-8_3.9x4.9mm_P1.27mm [('atom', 'part'), ('str', 'OPA1612')]
+  U102 OPA1612 Package_SO:SOIC-8_3.9x4.9mm_P1.27mm [('atom', 'part'), ('str', 'OPA1612')]
+  U103 AD9238 Package_QFP:LQFP-64_7x7mm_P0.4mm [('atom', 'part'), ('str', 'AD9238')]
+  U105 OPA2810 Package_SO:SOIC-8_3.9x4.9mm_P1.27mm [('atom', 'part'), ('str', 'OPA2810')]
+  U111 THS4521 Package_SO:MSOP-8_3x3mm_P0.65mm [('atom', 'part'), ('str', 'THS4521')]
+  U112 THS4521 Package_SO:MSOP-8_3x3mm_P0.65mm [('atom', 'part'), ('str', 'THS4521')]
+  U201 AD9767 Package_QFP:LQFP-48_7x7mm_P0.5mm [('atom', 'part'), ('str', 'AD9767')]
+  U202 OPA2810 Package_SO:SOIC-8_3.9x4.9mm_P1.27mm [('atom', 'part'), ('str', 'OPA2810')]
+  U203 OPA2810 Package_SO:SOIC-8_3.9x4.9mm_P1.27mm [('atom', 'part'), ('str', 'OPA2810')]
+  U301 Si5351A-B-GTR Package_SO:MSOP-10_3x3mm_P0.5mm [('atom', 'part'), ('str', 'Si5351A-B-GT')]
+  U302 TLV3501AIDBVR Package_TO_SOT_SMD:SOT-23-6 [('atom', 'part'), ('str', 'TLV3501')]
+  U304 SN74LVC1G17DBVR Package_TO_SOT_SMD:SOT-23-5 [('atom', 'part'), ('str', '74LVC1G17')]
+  U305 W9825G6KH-6 Package_SO:TSOP-II-54_22.2x10.16mm_P0.8mm [('atom', 'part'), ('str', 'W9825G6KH')]
+  U306 W25Q128JVSIQ Package_SO:SOIC-8_5.3x5.3mm_P1.27mm [('atom', 'part'), ('str', 'W25Q128JVS')]
+  U401 RTL8211F-CG Package_DFN_QFN:QFN-40-1EP_5x5mm_P0.4mm_EP3.6x3.6mm [('atom', 'part'), ('str', 'RTL8211F-CG')]
+  U501 USBLC6-2SC6 Package_TO_SOT_SMD:SOT-23-6 [('atom', 'part'), ('str', 'USBLC6-2SC6')]
+  U502 FT2232HL Package_QFP:LQFP-64_10x10mm_P0.5mm [('atom', 'part'), ('str', 'FT2232HL')]
+  U503 93LC56BT-I/OT Package_TO_SOT_SMD:SOT-23-6 [('atom', 'part'), ('str', '93LC56B')]
+  U504 USBLC6-2SC6 Package_TO_SOT_SMD:SOT-23-6 [('atom', 'part'), ('str', 'USBLC6-2SC6')]
+  U505 PCA9306DC1Z Package_SO:VSSOP-8_2.3x2mm_P0.5mm [('atom', 'part'), ('str', 'PCA9306')]
+  U601 TLV62569DBVR Package_TO_SOT_SMD:SOT-23-5 [('atom', 'part'), ('str', 'TLV62569DBV')]
+  U602 TLV62569DBVR Package_TO_SOT_SMD:SOT-23-5 [('atom', 'part'), ('str', 'TLV62569DBV')]
+  U603 LP5907MFX-2.5 Package_TO_SOT_SMD:SOT-23-5 [('atom', 'part'), ('str', 'LP5907MFX-2.5')]
+  U604 TPS7A2033PDBVR Package_TO_SOT_SMD:SOT-23-5 [('atom', 'part'), ('str', 'TPS7A20xxxDBV')]
+  U605 TPS7A2033PDBVR Package_TO_SOT_SMD:SOT-23-5 [('atom', 'part'), ('str', 'TPS7A20xxxDBV')]
+  U606 LM27761DSGR Package_DFN_QFN:DFN-8-1EP_2x2mm_P0.5mm_EP0.9x1.6mm [('atom', 'part'), ('str', 'LM27761')]
+
+## DNP / do-not-fit fields

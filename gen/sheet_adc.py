@@ -23,7 +23,7 @@ def channel(ctx, tag, cl, base, alt_name, ids):
     gnd(ctx, *j.pin(2), stub=2.54)
     s.text(21.0, cl - 10.0, "ADC %s IN" % tag, size=1.8, bold=True)
     s.text(21.0, cl - 14.5, "±1 V MAX IN", size=2.2, bold=True)
-    s.text(21.0, cl + 15.5, "±1 V full scale at x1\n(±0.1 V at x10)\n50 Ω or high-Z: JP%d\nDC coupled; clamps at\nthe rails (+5, -4.2 V)\n±10 V max (100 Ω 1206)" % (base + 1), size=0.9, justify="left top")      # (six short lines since 2026-10-07: the long ones ran under the TERM jumper)
+    s.text(21.0, cl + 15.5, "±1 V full scale at x1\n(±0.1 V at x10)\n50 Ω or high-Z: JP%d\nDC coupled; clamps at\nthe rails (+5, -4.2 V)\n±8 V continuous, ±10 V brief\n(100 Ω 1206: 0.26 W at -10 V)" % (base + 1), size=0.9, justify="left top")      # (six short lines since 2026-10-07: the long ones ran under the TERM jumper)
     xt = 45.72
     s.wire(n0[0], cl, xt, cl)
     rt = R(ctx, base, "49.9R", xt, cl + 6.35)
@@ -357,8 +357,9 @@ def draw(sch, ids, fpga):
     note(ctx, xp, yp, "VBPW34S PIN photodiode: 430-1100 nm, 60 % of its peak at\n"       # (lines under 57 characters: the run to JP1203 passes at x = 221)
                       "the red LED's 625 nm. Reverse biased 4.2 V into a\n"
                       "transimpedance amplifier, 10 kΩ: 10 mV per µA.\n"
-                      "2.2 pF across it: 6.8 MHz, 3.5 dB of peaking at 4 MHz\n"
-                      "(sim/tia.cir; 3.3 pF flattens it).\n"
+                      "2.2 pF across it: 9 MHz with the diode at 25 pF (4.2 V),\n"
+                      "0.5 dB of peaking (sim/tia.cir). An external diode or a\n"
+                      "cable adds capacitance and peaking: 3.3 pF flattens it.\n"
                       "An external photodiode plugs into J106 (cathode to the\n"
                       "top pin). Light makes the output go positive.\n"
                       "Aim it at the LED on another board's DAC 1 for the\n"

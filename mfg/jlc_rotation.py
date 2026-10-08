@@ -114,6 +114,7 @@ JLC_ROTATION_BY_PART = {
     "C12624": (0, "predicted", "0603 green LED, by the mark: cathode left in both drawings"),
     "C81598": (0, "predicted", "1N4148W SOD-123, by the mark: cathode bar left in both drawings"),
     "C8598": (0, "predicted", "B5819W SOD-123, by the mark: cathode bar left in both drawings"),
+    "C8678": (0, "predicted", "SS34 SMA (build 32), by the mark: the band and the '-' on the left pad at 0 deg in JLCPCB's land drawing, the bar on the left in its symbol; KiCad's D_SMA has pad 1 (cathode) on the left"),
 }
 
 # HOW THIS BOARD STORES ITS BOTTOM-SIDE FOOTPRINTS, and why it matters here.

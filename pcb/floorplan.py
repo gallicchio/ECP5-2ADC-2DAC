@@ -463,13 +463,14 @@ def clocks(pl):
     # the TLV3501 (build 26) at rot 180: +IN (3) north-west on the line's row, -IN (1) north-east, V- (2) north
     # centre; V+ (4) south-west, OUT (5) south centre, SHDN (6) south-east.  Its 10 k to +IN west of it, the
     # mid-rail divider and its 100 nF north-east, the supply 100 nF south-west, the 33 R on the OUT row
-    put(pl, "U302", 17.6, y + 0.5, 180)
+    put(pl, "U302", 19.3, y + 0.5, 180)                                # (1.7 mm east since build 32: room for the 1 k)
+    put_facing(pl, "R5427", 15.6, y, net_of(pl, "C5421", 2), "W")          # build 32: 1 k from the 10 nF to +IN
     put_facing(pl, "R5426", 13.9, y - 1.6, net_of(pl, "U302", 3), "E")      # 10 k lying between the TERM jumper and the 10 nF: +IN pad east toward pin 3
     put_facing(pl, "R5424", 20.6, y - 3.2, "+3V3_ADC", "N")                   # 10 k from +3V3_ADC (pad north) to the mid-rail
     put_facing(pl, "R5425", 22.3, y - 3.2, "GND", "N")                        # 10 k from the mid-rail to ground
     put_facing(pl, "C5424", 24.0, y - 3.2, "GND", "N")                        # the mid-rail's 100 nF
     put_facing(pl, "C5422", 15.4, y + 3.6, "+3V3_ADC", "E")                   # the supply 100 nF at V+ (pin 4, south-west)
-    put_facing(pl, "R5423", 21.6, y + 2.4, net_of(pl, "U302", 5), "W")        # 33 R on the OUT row -> CLK_EXT
+    put_facing(pl, "R5423", 23.3, y + 2.4, net_of(pl, "U302", 5), "W")        # 33 R on the OUT row -> CLK_EXT
     # CLK OUT at y 29: the buffer faces the SMA
     SECTION[0] = "CLK OUT"
     y = SMA_Y["J302"]
@@ -535,7 +536,12 @@ def analog_power(pl):
     and the +5VA ferrite, in the free corner south of the DAC."""
     for u, y, cin, cout in (("U604", 55.5, "C8001", "C8002"), ("U605", 89.5, "C8101", "C8102")):
         put(pl, u, 30.0, y, 0, "B.Cu")                                 # on the back (clear of the strips' headers), mirrored: IN/EN east, OUT west
-        put_facing(pl, cin, 33.6, y - 0.9, "+5V", "W", "B.Cu")
+        put_facing(pl, cin, 33.6, y - 0.9, net_of(pl, u, 1), "W", "B.Cu")
+        if u == "U604":                                                # build 32: 2.2 R 1206 ahead of the ADC's LDO, south-east of it (north-east were the GAIN jumper's holes): LDO-side pad west
+            put_facing(pl, "R8001", 35.4, y + 2.9, "+5V", "E", "B.Cu")
+            # its LDO-side pad (33.94, y + 2.9) to U604's EN pin (31.14, y + 0.95): by hand, a 45-degree run and a short
+            # flat into the pad -- the router's version left a 0.2 mm stub on a track's middle (KiCad "track dangling")
+            HAND.append(("B.Cu", net_of(pl, "U604", 1), [(33.94, y + 2.9), (32.0, y + 0.95), (31.14, y + 0.95)], 0.3))
         put_facing(pl, cout, 26.4, y + 0.9, net_of(pl, u, 5), "E", "B.Cu")
     put(pl, "U603", 86.0, 66.0, 0, "B.Cu")                            # +2V5 LDO on the back, south-east of the FPGA
     put_facing(pl, "C7901", 82.4, 66.0, "+3V3", "W", "B.Cu")
@@ -575,7 +581,9 @@ def phy(pl):
     for ref, x, y in (("R4905", 98.5, 17.0), ("R4906", 98.5, 15.5), ("R4904", 98.5, 14.0), ("R4903", 98.5, 12.5), ("R4902", 98.5, 11.0), ("R4901", 98.5, 9.5),
                       ("R4907", 95.0, 18.0), ("R4908", 95.0, 19.5), ("R4909", 95.0, 21.0), ("R4910", 95.0, 22.5), ("R4912", 95.0, 24.0), ("R4911", 95.0, 25.5)):
         put(pl, ref, x, y, 0)
-    put_facing(pl, "R4941", 97.6, 21.0, "+3V3_ETH", "E", "B.Cu")       # the TXDLY strap's 4.7 k (build 26): on the back just east of RXD1's series resistor, its RXD1 pad west (the river's layer-change via sits west of the column at x 93.6)
+    put_facing(pl, "R4941", 97.6, 21.0, "+3V3_ETH", "E", "B.Cu")
+    put_facing(pl, "R4942", 97.6, 22.5, "+3V3_ETH", "E", "B.Cu")       # build 32: RXD0's RXDLY strap, behind RXD0's series resistor
+    put_facing(pl, "R4943", 97.6, 18.0, "+3V3_ETH", "E", "B.Cu")       # build 32: RXD3's PHYAD0 strap, behind RXD3's       # the TXDLY strap's 4.7 k (build 26): on the back just east of RXD1's series resistor, its RXD1 pad west (the river's layer-change via sits west of the column at x 93.6)
     # crystal and loads.  Pins 36 (XTAL_IN, x 104.2) and 37 (XTAL_OUT, x 104.6) run straight down the gap
     # between the crystal's north-row pads 4 (GND) and 3 (XTAL_OUT): the crystal is centred 0.3 mm east of
     # the PHY so that gap sits under the two pins; XTAL_IN turns west into pad 1 on the south row.  All of
@@ -737,7 +745,13 @@ def ftdi_usb(pl):
     put_facing(pl, "R6201", 131.0 + E, jy + 2.9, net_of(pl, "J501", "A5"), "E")   # CC1 (pad row y+1.25)
     put(pl, "U501", 134.6 + E, jy, 180)                                    # behind the D pads: pins 1-3 (D-, GND, D+) east
     put_facing(pl, "F601", 129.5 + E, jy - 3.9, "/Power/VBUS", "E")        # the 2 A fuse above the CC2 resistor, VBUS pad east
-    put_facing(pl, "C7603", 123.8 + E, jy - 3.5, "+5V", "E")               # 100 nF on the fused 5 V
+    # build 32: Q602, USB PROG's P-FET, west of the fuse -- drain (pin 3) east to the fuse, gate north-west, source (+5V)
+    # south-west; its 100 k gate-to-ground west of the gate, the 10 k from the bench header's + pin under it; the fused
+    # 5 V's 100 nF under the source
+    put_facing(pl, "Q602", 123.3 + E, jy - 3.9, net_of(pl, "Q602", 3), "E")
+    put_facing(pl, "R7602", 119.6 + E, jy - 5.0, net_of(pl, "Q602", 1), "E")      # 100 k: gate pad east, ground west
+    put_facing(pl, "R7601", 120.4 + E, jy - 1.9, net_of(pl, "Q602", 1), "N")      # 10 k: gate pad north, the bench line south
+    put_facing(pl, "C7603", 123.0 + E, jy - 0.5, "+5V", "N")               # 100 nF on +5V at the source
     # USB USER (J502 at y 48): the FPGA's own port
     jx, jy = ANCHORS["J502"][0], ANCHORS["J502"][1]
     usbc_stubs(pl, "J502")
@@ -814,7 +828,7 @@ def power(pl):
         put_facing(pl, rt, x - 1.2, y - 2.6, vout, "W")                      # the divider's top beside the chip: Vout west, FB east
         put_facing(pl, rb, x + 3.0, y - 2.6, "GND", "E")                     # bottom: FB west, ground east
         put_facing(pl, ci, x + 3.7, y + 0.95, "+5V", "W")                    # input 10 u at VIN
-    put_facing(pl, "D601", 111.8, 101.0, net_of(pl, "D601", 2), "S")         # Schottky: anode down to the header
+    put_facing(pl, "D601", 111.8, 101.0, net_of(pl, "D601", 1), "E")         # Schottky (build 32: a 3 A SS34 in SMA, lying): cathode east to F602, anode west and down to the header
     put_facing(pl, "F602", 118.5, 98.4, net_of(pl, "D601", 1), "S")          # (build 31) the bench input's 2 A fuse, standing: Schottky side south, +5V pad north (its own via into the +5V plane), between the bulk capacitors and the box's east edge (the Fuse_1812 courtyard is 8.2 x 3.9 mm: lying, it reached the capacitor and the edge)
     put_facing(pl, "J601", 111.8, 108.0, "GND", "S")                         # 5 V IN: +5V pin up, ground pin down
     put_facing(pl, "C7601", 109.7, 96.5, "+5V", "W"); put_facing(pl, "C7602", 113.7, 96.5, "+5V", "W")   # the bulk 22 u lying along the box's top edge (build 28: east of the Schottky they took "5 V IN"'s room)

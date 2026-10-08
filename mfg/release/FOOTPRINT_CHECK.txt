@@ -3,8 +3,8 @@ FOOTPRINT vs ORDERED PART -- does the part fit the copper?
 
 board  ../ECP5-2ADC-2DAC.kicad_pcb
 BOM    release/ECP5-2ADC-2DAC_bom.csv
-run    2026-10-07T17:19:16-07:00
-471 footprint(s) placed, 1297 drill(s) on the board
+run    2026-10-07T20:20:11-07:00
+478 footprint(s) placed, 1316 drill(s) on the board
 
   ok C1525       C_0402_1005Metric                            C0402              32 placement(s)
   ok C1525       C_0402_1005Metric                            C0402              33 placement(s) bottom
@@ -13,8 +13,8 @@ run    2026-10-07T17:19:16-07:00
   ok C96446      C_0603_1608Metric                            C0603              8 placement(s)
   ok C96446      C_0603_1608Metric                            C0603              27 placement(s) bottom
   ok C23162      R_0603_1608Metric                            R0603              22 placement(s)
-  ok C23162      R_0603_1608Metric                            R0603              1 placement(s) bottom
-  ok C25804      R_0603_1608Metric                            R0603              17 placement(s)
+  ok C23162      R_0603_1608Metric                            R0603              3 placement(s) bottom
+  ok C25804      R_0603_1608Metric                            R0603              18 placement(s)
   ok C25804      R_0603_1608Metric                            R0603              2 placement(s) bottom
   !! C2337       PinHeader_1x02_P2.54mm_Vertical              HDR-TH_40P-P2.54-V 12 placement(s)
        PADS  part has 40 pad position(s), footprint has 2
@@ -27,7 +27,7 @@ run    2026-10-07T17:19:16-07:00
        datum their origin sits at (+0.000, +49.530) mm in our footprint; the JLCPCB CPL is moved there
   ok C1532       C_0402_1005Metric                            C0402              8 placement(s)
   ok C1532       C_0402_1005Metric_BGA                        C0402              7 placement(s) bottom
-  ok C21190      R_0603_1608Metric                            R0603              14 placement(s)
+  ok C21190      R_0603_1608Metric                            R0603              15 placement(s)
   ok C137714     R_0603_1608Metric                            R0603              12 placement(s)
   ok C23345      R_0603_1608Metric                            R0603              12 placement(s)
   ok C23185      R_0603_1608Metric                            R0603              9 placement(s)
@@ -80,6 +80,7 @@ run    2026-10-07T17:19:16-07:00
   ok C22775      R_0603_1608Metric                            R0603              2 placement(s)
   ok C22975      R_0603_1608Metric                            R0603              2 placement(s) bottom
   ok C22790      R_0603_1608Metric                            R0603              2 placement(s)
+  ok C25803      R_0603_1608Metric                            R0603              2 placement(s)
   ok C25190      R_0603_1608Metric                            R0603              2 placement(s)
   !! C94590      SOIC-8_3.9x4.9mm_P1.27mm                     SOIC-8_L5.0-W4.0-P 2 placement(s)
        land  worst pad-centre miss 0.230 mm (pad 1) at 90 deg, 8 pad(s) matched by name
@@ -95,7 +96,8 @@ run    2026-10-07T17:19:16-07:00
   ok C2843878    LED-SMD_L3.5-W2.8-RD                         LED-SMD_L3.5-W2.8- 1 placement(s)
   ok C965840     LED-ARRAY-SMD_4P-L1.6-W1.5-BR_XL-1615RGBC-RF LED-ARRAY-SMD_4P-L 1 placement(s)
   ok C81598      D_SOD-123                                    SOD-123F_L2.7-W1.6 1 placement(s)
-  ok C8598       D_SOD-123                                    SOD-123_L2.7-W1.6- 1 placement(s)
+  !! C8678       D_SMA                                        SMA_L4.3-W2.6-LS5. 1 placement(s)
+       land  worst pad-centre miss 0.200 mm (pad 2) at 0 deg, 2 pad(s) matched by name
   !! C17313      Fuse_1812_4532Metric                         F1812              1 placement(s) bottom
        land  worst pad-centre miss 0.283 mm (pad 2) at 180 deg, 2 pad(s) matched by name
   ok C386757     RJ45-TH_R-RJ45R08P-C000                      RJ45-TH_R-RJ45R08P 1 placement(s)
@@ -104,12 +106,14 @@ run    2026-10-07T17:19:16-07:00
   !! C29952      PinHeader_2x09_P2.54mm_Vertical              HDR-TH_80P-P2.54-V 1 placement(s)
        PADS  part has 80 pad position(s), footprint has 18
        datum their origin sits at (+1.269, +49.530) mm in our footprint; the JLCPCB CPL is moved there
+  !! C15127      SOT-23                                       SOT-23_L2.9-W1.3-P 1 placement(s)
+       land  worst pad-centre miss 0.282 mm (pad 3) at 180 deg, 3 pad(s) matched by name
   ok C21189      R_0603_1608Metric                            R0603              1 placement(s)
   ok C22859      R_0603_1608Metric                            R0603              1 placement(s)
   ok C22908      R_0603_1608Metric                            R0603              1 placement(s)
-  ok C25803      R_0603_1608Metric                            R0603              1 placement(s)
   ok C23179      R_0603_1608Metric                            R0603              1 placement(s)
   ok C25811      R_0603_1608Metric                            R0603              1 placement(s)
+  ok C2907376    R_1206_3216Metric                            R1206              1 placement(s) bottom
   ok C22766      R_0603_1608Metric                            R0603              1 placement(s)
   ok C26751      R_0603_1608Metric                            R0603              1 placement(s)
   ok C99418      SW-TH_DSWB04LHGET                            SW-TH_DSWB04LHGET  1 placement(s)
@@ -138,7 +142,7 @@ run    2026-10-07T17:19:16-07:00
   ok C9006       Crystal_SMD_3225-4Pin_3.2x2.5mm              CRYSTAL-SMD_4P-L3. 1 placement(s)
   ok C9002       Crystal_SMD_3225-4Pin_3.2x2.5mm              CRYSTAL-SMD_4P-L3. 1 placement(s)
 
-worth a look: datum x6, land x12, names x2
+worth a look: datum x6, land x14, names x2
   land  a pad centre out by less than half a millimetre
   datum the two libraries measure from different zeroes, and
         JLCPCB places THEIR zero where the CPL says: the JLCPCB

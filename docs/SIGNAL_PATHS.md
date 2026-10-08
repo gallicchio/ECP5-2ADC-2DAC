@@ -741,9 +741,11 @@ J210(LED EXT).2  [net Net-(J210-Pin_2)]
 ```
 J301(SMA).1  [net Net-(C5421-Pad1)]
   via C5421(10nF) pin 1 -> pin 2
-    C5421(10nF).2  [net Net-(U302A-+)]   -> U302(TLV3501AIDBVR).3
-      via R5426(10k) pin 1 -> pin 2
-        R5426(10k).2  [net Net-(U302A--)]   {R5424 10k to +3V3_ADC; C5424 100nF to GND; R5425 10k to GND}   -> U302(TLV3501AIDBVR).1
+    C5421(10nF).2  [net Net-(C5421-Pad2)]
+      via R5427(1k) pin 1 -> pin 2
+        R5427(1k).2  [net Net-(U302A-+)]   -> U302(TLV3501AIDBVR).3
+          via R5426(10k) pin 1 -> pin 2
+            R5426(10k).2  [net Net-(U302A--)]   {R5424 10k to +3V3_ADC; C5424 100nF to GND; R5425 10k to GND}   -> U302(TLV3501AIDBVR).1
   via R5421(49.9R) pin 1 -> pin 2
     R5421(49.9R).2  [net Net-(JP3001-B)]   {JP3001 TERM to GND}
 ```
