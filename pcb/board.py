@@ -342,6 +342,13 @@ def rect(x0, y0, x1, y1, layer, w=0.15):
                      ((x0, y0, x1, y0), (x1, y0, x1, y1), (x1, y1, x0, y1), (x0, y1, x0, y0)))
 
 
+def circle(x, y, r, layer, fill=True, w=0.0):
+    """A circle of radius r; filled, it is a copper dot (a fiducial) or a mask opening."""
+    return gr("gr_circle", A("center", g(x), g(y)), A("end", g(x + r), g(y)),
+              A("stroke", A("width", w), A("type", "solid")), A("fill", "yes" if fill else "no"), A("layer", S(layer)),
+              A("uuid", S(uid("c", x, y, r, layer))))
+
+
 def arc_rect(x0, y0, x1, y1, r, layer, w=0.1):
     """A rounded rectangle outline (Edge.Cuts)."""
     out = [line(x0 + r, y0, x1 - r, y0, layer, w), line(x1, y0 + r, x1, y1 - r, layer, w),

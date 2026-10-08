@@ -3,8 +3,8 @@ FOOTPRINT vs ORDERED PART -- does the part fit the copper?
 
 board  ../ECP5-2ADC-2DAC.kicad_pcb
 BOM    release/ECP5-2ADC-2DAC_bom.csv
-run    2026-10-07T16:02:50-07:00
-470 footprint(s) placed, 1294 drill(s) on the board
+run    2026-10-07T17:19:16-07:00
+471 footprint(s) placed, 1297 drill(s) on the board
 
   ok C1525       C_0402_1005Metric                            C0402              32 placement(s)
   ok C1525       C_0402_1005Metric                            C0402              33 placement(s) bottom
@@ -68,6 +68,8 @@ run    2026-10-07T16:02:50-07:00
   ok C1557       C_0402_1005Metric                            C0402              2 placement(s)
   ok C19666      C_0603_1608Metric                            C0603              1 placement(s)
   ok C19666      C_0603_1608Metric                            C0603              1 placement(s) bottom
+  !! C210837     Fuse_1812_4532Metric                         F1812              2 placement(s)
+       land  worst pad-centre miss 0.283 mm (pad 2) at 0 deg, 2 pad(s) matched by name
   !! C22373932   PinSocket_2x06_P2.54mm_Horizontal            CONN-TH_HC-PM254-8 2 placement(s)
        names the land pattern fits to 0.000 mm but the two libraries number the pins differently -- by name the worst miss is 2.54 mm at pad 1.  Placement is fine; the NET on each pin is the thing to look at
        datum their origin sits at (-1.270, +6.350) mm in our footprint; the JLCPCB CPL is moved there
@@ -96,8 +98,6 @@ run    2026-10-07T16:02:50-07:00
   ok C8598       D_SOD-123                                    SOD-123_L2.7-W1.6- 1 placement(s)
   !! C17313      Fuse_1812_4532Metric                         F1812              1 placement(s) bottom
        land  worst pad-centre miss 0.283 mm (pad 2) at 180 deg, 2 pad(s) matched by name
-  !! C210837     Fuse_1812_4532Metric                         F1812              1 placement(s)
-       land  worst pad-centre miss 0.283 mm (pad 2) at 0 deg, 2 pad(s) matched by name
   ok C386757     RJ45-TH_R-RJ45R08P-C000                      RJ45-TH_R-RJ45R08P 1 placement(s)
   ok C2682170    HDMI-SMD_A71-05H4-111N1                      HDMI-SMD_A71-05H4- 1 placement(s)
   ok C91145      TF-SMD_TF-01A                                TF-SMD_TF-01A      1 placement(s) bottom

@@ -2497,3 +2497,144 @@ a millivolt) stay on traces.  What the planes change beyond the numbers: the op 
 a plane, not a 0.2 Ω trace, so one channel's output current no longer modulates the other's rail; and the ADC's
 and DAC's AVDD come from their own patches with the LDO's output a via away.  In1 is still the one unbroken
 ground under the strips.  `README.md` and `DESIGN_REVIEW_PROMPT.md` say so; committed, nothing pushed.
+
+## Prompt 31
+
+Let's save for revB the FT601 and the dream of full-rate, full-bit depth, 2TX 2RX, bi-directional streaming. At this point, is there anything that might block a successful run if I uploaded the board now. If no blockers, let's do another round of design reviews, where you write DESIGN_REVIEW_PROMPT2.md and tell everyone to put their answers into a "2" version of their folders. Tell them where to find and run the tools, and tell them not to mess with the project files, but copy them into a temporary place if they need to change anything. Be sure to incorporate all new additions to OpticsPCBs/CLAUDE_PCB.md in your request for review.
+
+## Response 31 2026-10-07 16:28 - 17:21 Claude Fable 5.1 Max
+
+**The FT601 and full-rate, full-depth, 2 TX + 2 RX bidirectional streaming are rev B** (README, "Rev B candidates", first
+bullet; the chat and the memory say so too).
+
+### Would anything block a run if you uploaded build 30 now?  No.
+
+Read from the release, not from memory (the pass is now CLAUDE_PCB.md §10, gate 17):
+
+| what | build 30 |
+|---|---|
+| ERC | 0 |
+| DRC | 0 errors, 0 unconnected, schematic parity 0, **4 warnings** (not the 3 the prompt's state line said): the two dangling ground return vias north-west of the FPGA, and two `connection_width` necks (0.064 and 0.030 mm) in one crumb of the In4 ground fill |
+| the crumb | 0.7 x 0.9 mm at board (150.8-151.5, 44.1-45.0): two ground vias 0.7 mm apart in the gap between the +5V corridor and the +3V3 plane, their annuli joined by webs of fill.  KiCad reports a zone's neck at the zone's anchor (25.5, 25.5), so it took a shrink test (shapely, each filled polygon buffered inward until one splits) to find.  Harmless: each via is grounded through In1 whatever the etch does to a 0.03 mm web; nothing floats |
+| routing | 412 of 412 nets; the route report's "failed" list is the first pass, as always |
+| release | gerbers (6 copper + mask, paste, silk, edge, drill map, job file; 6 layers, 158.1 x 119.1, ENIG in the job), Excellon drill, BOM 91 lines, CPL 466 rows (342 top, 124 bottom), native CPL, assembly PDFs, end plates, notes |
+| BOM vs CPL | every CPL designator in the BOM and back; no duplicate LCSC code (JLCPCB's "multiple lines matched" error); no duplicate designator |
+| hand solder | the header alone |
+| parts | 91 codes, 46 Extended; every description checked against value and package; every land pattern fitted (the four PADS findings are the snapped header strips); stock fetched 16:02 today; thin: AD9238 at 21 for 5 needed |
+| cost | ~$1112 for 5, ~$222 a board |
+| paths | `git grep` for absolute paths in the project: none; the netlist's source is relative |
+| capacitors by part number | every frequency-setting or signal-path capacitor is C0G (0402CG...: the 22 pF at the ADC inputs, the 2.2 pF feedback and TIA, the 18/27 pF crystal loads); the bulk is X5R at 25 V; the 1 nF Bob Smith 3 kV; the 100 nF X7R |
+| exposed pads | the PHY's 3.6 mm pad has nine paste windows |
+| stack-up | the gerber job names the six copper layers in order with FR4 between; the drill file is metric, decimal, KiCad 10.0.6 |
+
+What is left is Jason's on ordering day (the placement preview against PLACEMENT_CHECKS.txt, the bottom side's seven polarized
+parts first; epoxy-filled-and-capped vias; the JLC06161H-7628 impedance option; the slot measurement for the end plates) and
+what any first board risks.
+
+### "If you think those things should be fixed before others do a design review, fix them now" -- build 31
+
+The pass also found four things the lessons file asks for that the board did not have, all added the same hour (the
+Rosenberg rules went into CLAUDE_PCB.md this morning, after build 30):
+
+1. **Fiducials.**  There were none.  Three now, front and back: a 1 mm copper dot in a 2 mm mask opening at (25.5, 12.5),
+   (120, 7.5) and (146.5, 113) from the top-left corner, spots a scan of build 30 found free of copper, silkscreen and
+   courtyards on both sides with 2 mm to spare (the bottom-left corner has none: the DIP switch and the box lines own it).
+   JLCPCB adds its own fiducials on the panel rails, so this was never a blocker; marks on the board are what a camera
+   aligns a 0.4 mm LQFP to.
+2. **Layer markers.**  None.  Now "1" to "6" in copper, each on its own layer, in a row at x 70-83, y 1.9 mm: the top slot
+   band, where no part may go and the extrusion hides them.  The inner layers' digits are islands inside the ground planes.
+3. **JLCPCB's order number.**  No `JLCJLCJLCJLC` on the board, so their number would have gone wherever they liked.  It is on
+   the back silkscreen in the same band now (x 95, y 1.9), and the fabrication notes say to choose "Remove order number:
+   specify a location".
+4. **A fuse on the bench 5 V header.**  USB had F601 (2 A); the header had only the Schottky, whose 1 A is less than a bench
+   supply delivers into a fault.  **F602**, the same MF-MSMF200-2 (C210837, no new BOM line or Extended fee), sits after D601
+   on the sheet and at (118.3, 98.9) on the board, east of the bulk capacitors under the POWER box's top edge, its +5V pad on
+   its own via into the +5V plane.  The sheet's label now reads "a Schottky keeps it off the USB port, a 2 A resettable fuse off
+   the copper".
+
+The marks are netless graphics (`pcb/place.FIDUCIALS`, `LAYER_MARK`, `ORDER_MARK`; `pcb/board.circle`; `pcb/build_pcb.marks`,
+run after the silkscreen and before the write), so they need no symbol, no BOM row and raise no parity warning; the placer's
+keep list, the router's obstacle grid (the fine-grid rebuild included) and the silkscreen's occupancy map all know them, so
+nothing lands on them.  `tools/power_path.py` runs from any directory now (a reviewer's convenience).
+
+Two things the pass found are **not** fixed, because they are judgement calls the reviewers should weigh (they are items 1
+and 4 of the new prompt's attack list):
+
+* **The ADC's analog LDO runs warm at full speed.**  U604 (TPS7A2033, SOT-23-5, 187 °C/W on JEDEC's board) drops 5.0 to 3.3 V
+  for the AD9238's 200 mA at 65 MS/s: 0.34 W, +64 °C, 89 °C junction at 25 °C and about 110 °C in a closed extrusion at 45 °C,
+  against 125 °C.  At the course's usual 10-40 MS/s it is 0.1-0.19 W.  The cheap cure is 3 Ω in series with the LDO's input
+  (0.6 V of the drop moves into a 1206, headroom still 1.1 V); the dear one is a bigger low-noise LDO.  Your call after the
+  reviews.
+* **Hot-plug ringing on +5V.**  About 94 µF of X5R ceramic behind a 0.05 Ω polyfuse: a live 5 V through a 1 m cable rings
+  toward twice the supply unless the series resistance damps it; my estimate is Q about 0.6 (10 % overshoot), and the
+  tightest absolute maximum on the rail is the LM27761's 5.8 V, so a bench supply at the top of the sheet's stated 5.0-5.5 V
+  is where it gets close.  A TVS or a small electrolytic on +5V, or a narrower stated range: the reviewers get the numbers.
+
+### Build 31
+
+ERC 0; DRC 0 errors, 0 unconnected, parity 0, the same four warnings as build 30 (the two dangling
+ground vias, the two necks of the In4 crumb); every net routed (442 nets); 357 filled polygons; 439 SMT placements (F602 is the one more)
+and 28 through-hole on 91 BOM lines, 46 Extended; CPL 467 rows; hand solder empty; ~$222 a board at 5.  The first run of
+build 31 stopped at the release: the Fuse_1812 footprint's courtyard is 8.2 x 3.9 mm (its pads reach well past the 4.5 mm body),
+so lying at (118.3, 98.9) it overlapped C7602's courtyard and crossed the POWER box's east edge, and the order-number text at
+0.15 mm was 0.003 mm under the silk rule's 0.153.  Standing at (118.5, 98.4) with 0.16 mm text the rerun is clean.
+power_path: the worst pins are unchanged (+3V3_ADC 22.7 mΩ; +3V3_DAC 7.8 mΩ; -4V2 26.0 mΩ; +1V1 2.5 mΩ).
+
+Your KiCad has the project open (the lock file is from 16:19; the GUI rewrote the `.kicad_pro` with its default keys at 16:20,
+values unchanged).  The build rewrote the sheets, the board and the project file under it: close and reopen before looking,
+and do not save from the GUI.
+
+### The second review round: `DESIGN_REVIEW_PROMPT2.md`
+
+Written for build 31, 583 lines:
+
+* §0 the ground rules: one directory each, the "2" version of the first-round name (`design_review_CopilotSDK2/`,
+  `design_review_Gemini_3.8_Flash2/`, `design_review_Grok4.7_2/` -- an underscore where the name ends in a digit), the report
+  `DESIGN_REVIEW_<Name>2.md` inside it; nothing else in the tree touched; **anything they want to change is copied first**
+  (the rsync into their directory or a `mktemp -d`, with `build.py --no-pcb` and the full build allowed only there); no git;
+  the list of every script that writes; your KiCad may have the project open; first-round material is history and may be
+  read at once, second-round directories only after their own draft; the cloud-reviewer paragraph (what is committed, that
+  `CLAUDE_PCB.md` may not be, so §4 restates it).
+* §1 what changed since round 1: a table of builds 26-31 with the commit and where to look.
+* §2 the state of build 31 (the table above, refreshed) and **the claim to break: nothing blocks the order**, with the day-of-
+  ordering steps that are yours and the items I decided to live with (the crumb, the dangling vias, the F.Fab designators).
+* §3 what to attack, ten items ordered by cost: the LDO's dissipation, the new In4 planes' seams (my scan of which In3 and
+  B.Cu nets cross which plane edge, including the ADC's own data lines over the +3V3_ADC patch and the flash's SPI over the
+  +1V1 patch), the widened rails, the 5 V input both ways in, then round 1's list as it stands after the fixes (the analog
+  chains with the BAV99s and the -4.2 V rail, the TLV3501 CLK IN that nobody has reviewed, Ethernet, configuration, the
+  sheets and silkscreen as claims, the package and the new marks).
+* **§4 the standard: every rule of CLAUDE_PCB.md that applies to this board, restated as a check with my belief in
+  brackets** -- the schematic checks (one-pin nets, one name per rail, one ground, copied blocks, fuses on every input,
+  polarized parts, coupled windings, floating inputs, the design equations against the netlist's values, ratings, options,
+  the drawing rules, the pin figures), placement and routing (floorplan, orientation, decoupling and one via per ground pad,
+  drops not widths, rail widths, stack-up, layout order, inductors in line, aggressors and victims, floating copper, copper
+  balance, via sizes, assembly room, paste, fiducials, layer markers, 1:1 prints, clean traces, holes, the page frame, late
+  pin assignment, the far-face control lines), silkscreen (identity, connectors, header pins, jumpers, taps, region labels,
+  overlap and sizes, pin-1 marks, prose and legend homes, the card slot, the port names, judging from KiCad's render),
+  mechanical, the manufacturing package (upload files, nothing hand-soldered, DRC, CPL rotations and origins, codes and
+  land patterns and stock, the order number, JLCPCB's options, the cost calibration), bring-up (taps and their loads, DNP,
+  rail LEDs, bring-up order, firmware), the sixteen verification gates with which the build runs and which the reviewer
+  must, and the Rosenberg/fast-digital/RF/power sections applied here (dielectrics by part number, resistor and
+  semiconductor ratings, slew rates, transmission lines and termination on the SDRAM and converter buses, impedance, return
+  paths, pair matching, group matching, crosstalk, PDN, clocks and jitter, EMC, the SMA launches, current widths, hot plug,
+  input protection, converter layouts, surface heat).
+* §5 the tools: every reader with the exact command and where it writes (KiCad's DRC/ERC/render/SVG without `--save-board`,
+  `trace_paths`, `power_path` and `--path`, `check_sch_text`, `sim/run.py`, `footprint_check`, `jlc_rotation`, `jlc_query`,
+  `check_pads_kicad`, `rotscan`, `pdftotext`), the AppImage path and its environment variable, the map of the tree, the
+  committed `build/` results, the scratch boards of earlier builds for diffs, the git commands that show a sheet's change
+  since round 1.
+* §6 known open items (not to be rediscovered), §7 what is most useful back (a one-paragraph verdict first), §8 the round-1
+  reviews in one line each and the round-2 directory names.
+
+The root `CLAUDE.md` now points a reviewer at the round-2 brief and the "2" directories; the first prompt's state line is
+corrected (four warnings) and says it is round 1's; the README has "What build 31 changed" and the round-2 paragraph.
+
+### CLAUDE_PCB.md (edited, not committed)
+
+§1: the second-round protocol, and "fix what the lessons file already asks for before a round" with your sentence.  §5:
+fiducials and layer markers as netless graphics in a generated board, and what has to know about them.  §8: the order-number
+marker.  §10: gate 17, the upload-readiness pass, item by item.  §11: how to find a zone fill's narrow neck.
+
+Committed (the project's files and the root `CLAUDE.md`; `CLAUDE_PCB.md` is yours to commit), not pushed.  Build 31 is the board
+the round reviews; when the reports are in, the reconciliation goes into `DESIGN_REVIEW_RESPONSE.md` as before and the fixes into
+build 32.

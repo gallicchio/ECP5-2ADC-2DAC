@@ -118,7 +118,7 @@ LCSC = {
     ("X322512MSB4SI", "XTAL3225"): ("C9002", "Basic 12 MHz crystal 20 pF (FT2232H)"),
     ("TXM25M0004322DBCDO00T", "XTAL3225"): ("C362338", "25 MHz 10 pF 30R ESR for the Si5351 (GPSDO round 24 survey)"),
     ("SWPA4030S2R2NT", "L4030"): ("C279948", "2.2 uH 2.95 A shielded inductor for the bucks, 13k in stock"),
-    ("MF-MSMF200-2", "F1812"): ("C210837", "2 A resettable fuse on the USB 5 V input"),
+    ("MF-MSMF200-2", "F1812"): ("C210837", "2 A resettable fuse on the USB 5 V input and (F602, build 31) on the bench 5 V header"),
     ("GZ2012D601TF", "L0805"): ("C1017", "Basic 600R@100MHz ferrite, 500 mA"),
     ("BLM18KG601SN1D", "L0603"): ("C85833", "600R@100MHz 1.3 A ferrite (rails that carry current), 941k in stock"),
     ("2.2uH", "L4030"): ("C279948", "the bucks' power inductor, also the PHY's switcher (C1043, the 0805 chip inductor builds 1-23 had there, is rated 50 mA)"),

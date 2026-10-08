@@ -421,6 +421,9 @@ def main(argv):
     notes.append("The mini-HDMI jack is wired with type C pin numbering (shield first in each pair, DDC ground 13, CEC 14); its four shell tabs (pads 20-23) are grounded.")
     notes.append("Minimum track/space on the board: %.3f mm (inside the BGA fan-out; 0.127 mm elsewhere).  Via sizes: %s.  Smallest drill %.2f mm."
                  % (m["min_track"] or 0, ", ".join("%g/%g" % v for v in m["vias"]), m["min_drill"] or 0))
+    notes.append("Fiducials: three 1 mm copper dots in 2 mm mask openings, front and back, at %s mm from the board's top-left corner (x right, y down); JLCPCB adds its own on the panel rails as well." % ", ".join("(%.1f, %.1f)" % f for f in P.FIDUCIALS))
+    notes.append("Layer markers: the copper layer numbers 1-6, each in copper on its own layer, in a row at the top edge (x %.0f-%.0f, y %.1f mm, inside the extrusion's slot band): hold the bare board against the light to check the layer order." % (P.LAYER_MARK[0], P.LAYER_MARK[0] + 5 * P.LAYER_MARK[2], P.LAYER_MARK[1]))
+    notes.append("Order number: the back silkscreen carries JLCJLCJLCJLC at the top edge (x %.0f, y %.1f mm, in the slot band).  On the order form choose 'Remove order number: Specify a location'; JLCPCB prints its number there, hidden by the extrusion." % P.ORDER_MARK)
     notes.append("Impedance: ask for controlled impedance with the JLC06161H-7628 calculator: 50 ohm single-ended (SMA runs, 0.3 mm drawn) and 100 ohm differential (Ethernet MDI, 0.2 mm / 0.2 mm drawn), referenced to In1.")
     notes.append("The shipped board file holds %d filled zone polygons; DRC 0 errors / 0 unconnected (build/drc.json)." % n_fill)
     notes.append("")

@@ -3,8 +3,9 @@
 DC resistance from each rail's source to every power pin of the FPGA, the ADC and the DAC, along the copper the
 board actually has: tracks (1 oz outer, 0.5 oz inner), vias (1 mOhm), and the In4 planes (0 Ohm between the vias
 and pads inside a zone of the net).  Dijkstra on resistance; the result is the worst pin per rail and chip."""
-import sys, re, math, heapq, collections
-sys.path.insert(0, "gen"); sys.path.insert(0, "pcb")
+import sys, os, re, math, heapq, collections
+HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE)      # runs from any directory
+sys.path.insert(0, os.path.join(ROOT, "gen")); sys.path.insert(0, os.path.join(ROOT, "pcb"))
 from sexp import parse, kids, kid, head
 OX = OY = 25.0
 RHO = 1.72e-8                      # ohm m, copper
@@ -18,7 +19,8 @@ def inside(px, py, poly):
         (xa, ya), (xb, yb) = poly[i], poly[(i + 1) % n]
         if (ya > py) != (yb > py) and px < xa + (py - ya) * (xb - xa) / (yb - ya): c = not c
     return c
-doc = parse(open(sys.argv[1] if len(sys.argv) > 1 else "ECP5-2ADC-2DAC.kicad_pcb").read())[0]
+BOARD = next((a for a in sys.argv[1:] if a.endswith(".kicad_pcb")), os.path.join(ROOT, "ECP5-2ADC-2DAC.kicad_pcb"))
+doc = parse(open(BOARD).read())[0]
 segs, vias, pads, zones = [], [], [], []
 NAMES = {}
 for node in doc:

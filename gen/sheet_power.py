@@ -86,8 +86,13 @@ def draw(sch, ids, fpga):
     bh, bl = (b1, b2) if b1[1] < b2[1] else (b2, b1)
     gnd(ctx, *bl, stub=2.54)
     d = part(ctx, "Device:D_Schottky", "D601", "B5819W", "SOD123", bh[0] + 10.16, bh[1], rot=180, ref_at=(bh[0] + 6.5, bh[1] - 2.5), val_at=(bh[0] + 6.5, bh[1] + 1.5))
-    s.wire(*bh, *d.pin(2)); s.wire(*d.pin(1), 60.96, bh[1]); s.wire(60.96, bh[1], 60.96, y0)
-    label_node(ctx, 28.0, y0 + 36.0, "bench 5 V (5.0 to 5.5 V): a Schottky keeps it off the USB port", side="right", size=0.85)
+    # build 31 (2026-10-07, CLAUDE_PCB.md section 4): a fuse on every input that can deliver more current than the copper and the
+    # connector survive -- a bench supply can, and the Schottky alone (1 A) was the weak link.  The same part as F601.
+    f2 = part(ctx, "Device:Polyfuse", "F602", "MF-MSMF200-2", "F1812", 50.8, bh[1], rot=90, ref_at=(47.2, bh[1] - 3.5), val_at=(47.2, bh[1] + 2.0), lcsc="C210837")
+    f2a, f2b = f2.pin(1), f2.pin(2)
+    f2l, f2r = (f2a, f2b) if f2a[0] < f2b[0] else (f2b, f2a)
+    s.wire(*bh, *d.pin(2)); s.wire(*d.pin(1), *f2l); s.wire(*f2r, 60.96, bh[1]); s.wire(60.96, bh[1], 60.96, y0)
+    label_node(ctx, 28.0, y0 + 36.0, "bench 5 V (5.0 to 5.5 V): a Schottky keeps it off the USB port, a 2 A resettable fuse off the copper", side="right", size=0.85)
     rail(ctx, 76.2, y0, "+5V", stub=5.08); pwr_flag(ctx, 68.58, y0)
     gp = (76.2, y0 + 45.0); s.wire(*gp, gp[0], gp[1] + 2.54); gnd(ctx, gp[0], gp[1] + 2.54, stub=0); pwr_flag(ctx, *gp)
     s.text(gp[0] + 2.0, gp[1] + 0.5, "ground reference", size=0.85)

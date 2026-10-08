@@ -815,6 +815,7 @@ def power(pl):
         put_facing(pl, rb, x + 3.0, y - 2.6, "GND", "E")                     # bottom: FB west, ground east
         put_facing(pl, ci, x + 3.7, y + 0.95, "+5V", "W")                    # input 10 u at VIN
     put_facing(pl, "D601", 111.8, 101.0, net_of(pl, "D601", 2), "S")         # Schottky: anode down to the header
+    put_facing(pl, "F602", 118.5, 98.4, net_of(pl, "D601", 1), "S")          # (build 31) the bench input's 2 A fuse, standing: Schottky side south, +5V pad north (its own via into the +5V plane), between the bulk capacitors and the box's east edge (the Fuse_1812 courtyard is 8.2 x 3.9 mm: lying, it reached the capacitor and the edge)
     put_facing(pl, "J601", 111.8, 108.0, "GND", "S")                         # 5 V IN: +5V pin up, ground pin down
     put_facing(pl, "C7601", 109.7, 96.5, "+5V", "W"); put_facing(pl, "C7602", 113.7, 96.5, "+5V", "W")   # the bulk 22 u lying along the box's top edge (build 28: east of the Schottky they took "5 V IN"'s room)
     put(pl, "J602", 61.0, 110.5, 90)                                         # RAILS (2x9 since build 26: +1V0_PHY): odd pins (the rails) in the bottom row, even (ground) in the top; the names stand over it

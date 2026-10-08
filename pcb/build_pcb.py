@@ -360,6 +360,11 @@ class Build:
         half = 7.3
         keep = G.obstacle_cells("rect", [0, 1, 2], (fx, fy, half, half, 0.0), radius_extra=-R.CLEAR)
         G.add(keep)
+        # the fiducials (outer layers) and the layer numbers (every routed layer) are netless copper (build 31): no track through them
+        for (mx, my) in P.FIDUCIALS:
+            G.add(G.obstacle_cells("disc", [0, 3], (mx, my, 1.3)))
+        for i in range(6):
+            G.add(G.obstacle_cells("disc", [0, 1, 2, 3], (P.LAYER_MARK[0] + P.LAYER_MARK[2] * i, P.LAYER_MARK[1], 1.1)))
         # copper a net already has, as CONNECTED COMPONENTS of grid cells: an exit net's escape (its
         # terminal is the exit point), an island-fed rail's feed via, each of VCCAUX's two ball vias on
         # the back, later each rail plane's vias.  The router joins everything else to the largest and
@@ -1352,6 +1357,12 @@ class Build:
     def silk(self):
         self.occ = {"F.Cu": SK.Occ(self.pl, "F.Cu"), "B.Cu": SK.Occ(self.pl, "B.Cu")}
         self.lines = []
+        for (mx, my) in P.FIDUCIALS:                 # (build 31) no silkscreen on the fiducials' mask openings or the markers
+            for layer in ("F.Cu", "B.Cu"):
+                self.occ[layer].mark(mx - 1.6, my - 1.6, mx + 1.6, my + 1.6)
+        for layer in ("F.Cu", "B.Cu"):
+            self.occ[layer].mark(P.LAYER_MARK[0] - 1.5, P.LAYER_MARK[1] - 1.3, P.LAYER_MARK[0] + 5 * P.LAYER_MARK[2] + 1.5, P.LAYER_MARK[1] + 1.3)
+        self.occ["B.Cu"].mark(P.ORDER_MARK[0] - 10.5, P.ORDER_MARK[1] - 1.0, P.ORDER_MARK[0] + 10.5, P.ORDER_MARK[1] + 1.0)
         placed = self.pl.placed
         def at(ref, dx=0.0, dy=0.0):
             x, y, rot, layer = placed[ref]
@@ -1995,6 +2006,20 @@ class Build:
         after = sum(math.hypot(t[3] - t[1], t[4] - t[2]) for t in self.tracks if target_of(t[5]) and t[6] < (target_of(t[5]) or 0) - 1e-9)
         print("  rails widened: %.0f mm of rail below its class width before, %.0f mm after" % (before, after))
 
+    def marks(self):
+        """Build 31 (CLAUDE_PCB.md section 5, Rosenberg): three fiducials -- a 1 mm copper dot in a 2 mm mask opening, front and
+        back, at three corners as far apart as the board allows; the copper layer numbers, each in copper on its own layer,
+        in a row at one spot (hold the bare board against the light: 1 2 3 4 5 6 in order); and JLCPCB's order-number
+        marker on the back silkscreen, so their number lands in the extrusion's slot band and nowhere else."""
+        for (mx, my) in P.FIDUCIALS:
+            for cu, mask in (("F.Cu", "F.Mask"), ("B.Cu", "B.Mask")):
+                self.lines.append(B.circle(mx, my, 0.5, cu))
+                self.lines.append(B.circle(mx, my, 1.0, mask))
+        for i, lname in enumerate(("F.Cu", "In1.Cu", "In2.Cu", "In3.Cu", "In4.Cu", "B.Cu")):
+            self.texts.append(B.text(P.LAYER_MARK[0] + P.LAYER_MARK[2] * i, P.LAYER_MARK[1], str(i + 1), lname, 1.5, thick=0.3, just="center"))
+        self.texts.append(B.text(P.ORDER_MARK[0], P.ORDER_MARK[1], "JLCJLCJLCJLC", "B.SilkS", 1.0, thick=0.16, just="center"))      # (the silk rule wants 0.153 mm or more)
+        self.report["marks"] = {"fiducials": P.FIDUCIALS, "layer_numbers": P.LAYER_MARK, "order_number": P.ORDER_MARK}
+
     def write(self):
         B.BOARD = (P.BW, P.BH)
         out = [B.arc_rect(0, 0, P.BW, P.BH, 2.0, "Edge.Cuts", 0.1)]
@@ -2107,6 +2132,7 @@ def main():
         b.fatten_rails()
         b.prune()
     b.silk()
+    b.marks()
     b.write()
     print("wrote %s in %.0f s" % (PCB, time.time() - t0))
 

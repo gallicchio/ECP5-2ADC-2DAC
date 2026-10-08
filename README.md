@@ -201,13 +201,45 @@ about 60 % of its peak sensitivity; the "0 to +0.48 V" applies to each of IOUTA 
 FT2232H's JTAG brought out, and an external programmer uses it with FTDI OFF fitted; an OPA1612 drives a
 tap's 100 Ω without trouble; the data-rate and USB 3 questions, and the LPF jumpers, are in the rev B list.
 
+## What build 31 changed (Prompt 31: the fixes before the second review round)
+
+Jason, 2026-10-07: "If you think those things should be fixed before others do a design review, fix them now."  The
+upload-readiness pass on build 30 (CLAUDE_PCB.md §10, gate 17) found nothing that would stop a fabrication run, and
+four things the lessons file asks for that the board did not have.  Build 31 adds them and changes nothing else:
+
+* **Three fiducials** (a 1 mm copper dot in a 2 mm mask opening, front and back) at (25.5, 12.5), (120, 7.5) and
+  (146.5, 113) mm from the top-left corner -- spots build 30 had free of copper, silkscreen and courtyards on both sides,
+  as far apart as the board allows (the bottom-left corner is the DIP switch's).  JLCPCB adds its own on the panel
+  rails; marks on the board itself are what align the 0.4 mm LQFP-64, the QFN-40 and the BGA.
+* **The copper layer numbers 1-6**, each in copper on its own layer, in a row at x 70-83, y 1.9 mm: the top slot band,
+  which the extrusion hides and where no part may go.  Hold the bare board against the light to check the layer order;
+  the inner layers' digits are islands inside the ground planes.
+* **`JLCJLCJLCJLC` on the back silkscreen** in the same band (x 95, y 1.9): on the order form choose "Remove order
+  number: specify a location" and JLCPCB's order number lands there, hidden in the extrusion.
+* **F602, a second 2 A resettable fuse (the same MF-MSMF200-2, C210837) on the bench 5 V header**, after the Schottky:
+  the header had none, and a bench supply delivers more than the 1 A B5819W or a 2.54 mm pin survives.  Same BOM line
+  as F601, no new Extended fee.  It sits east of the bulk capacitors under the POWER box's top edge, its +5V pad on
+  its own via into the +5V plane.
+
+The marks are netless graphics (`pcb/place.FIDUCIALS`, `LAYER_MARK`, `ORDER_MARK`; `pcb/build_pcb.marks`), so they need
+no symbol, no BOM row and raise no parity warning; the placer's keep list, the router's obstacle grid and the
+silkscreen's occupancy map all know them.  Two things the pass found are left for the reviewers to weigh
+(`DESIGN_REVIEW_PROMPT2.md` §3): the ADC's analog LDO dissipates 0.34 W in a SOT-23-5 at 65 MS/s (+64 °C at 187 °C/W),
+and about 94 µF of ceramic on +5V behind a 0.05 Ω fuse rings on a hot plug toward the LM27761's 5.8 V absolute maximum
+if the bench supply is set at the top of its stated 5.0-5.5 V range.  Build 30's DRC had four warnings, not the three
+the first prompt's state line said: the two dangling ground vias and two `connection_width` necks (0.03 and 0.06 mm) in
+one 0.7 x 0.9 mm crumb of the In4 ground fill at (150.8-151.5, 44.1-45.0), two ground vias 0.7 mm apart between the +5V
+corridor and the +3V3 plane; harmless, and KiCad reports a zone's neck at the zone's anchor, so it took a shrink test
+(shapely) to find.
+
 ## Rev B candidates
 
 * **Bypass jumpers for the DAC output and ADC input low-pass filters**, to show the DAC's images (zero-order
   hold) on a spectrum analyser and aliasing on the ADC, or to run a higher Nyquist zone on purpose.  Not in
   rev A: each filter sits in a 17 mm strip with no room for a 3-pin jumper and its labels, and a bypass
   across an RC changes the strip's loading.
-* **The converters at full rate.** Both ADCs at 65 MS/s x 12 bits are 1.56 Gb/s and both DAC ports at 125 MS/s
+* **The converters at full rate -- deferred to rev B by Jason on 2026-10-07 (Prompt 31), with the FT601 and the full-rate,
+  full-depth, 2 TX + 2 RX bidirectional streaming it would carry.**  Both ADCs at 65 MS/s x 12 bits are 1.56 Gb/s and both DAC ports at 125 MS/s
   x 14 bits 3.5 Gb/s.  Gigabit Ethernet carries about 940 Mb/s of payload (one ADC channel at full rate, or
   both at 30 MS/s), so streaming at full rate needs USB 3: an FT601 (USB 3.0 FIFO, 32-bit bus to the FPGA,
   up to 5 Gb/s on the wire, 3.2 Gb/s usable) on a USB-C wired for SuperSpeed pairs.  The ECP5-25F moves the
@@ -225,6 +257,13 @@ author's own review of build 25.  The independent reviews of build 25 are `desig
 `design_review_Gemini_3.8_Flash/` and `design_review_Grok4.7/`, each with its `DESIGN_REVIEW_<Name>.md` and the
 files it measured or ran; the prompt's §11 summarises them.  `docs/datasheets/txt/` and `drawings/` are the
 datasheets as text and pictures for a reviewer who has only the git tree (the PDFs are not committed).
+
+**Round 2** (build 31, 2026-10-07): `DESIGN_REVIEW_PROMPT2.md` is the brief for the board as it would be ordered -- what
+changed since round 1, the state of build 31 and the author's claim that nothing blocks the order, what to attack, the
+lessons file `CLAUDE_PCB.md` restated as checks (half of it was written after round 1), every tool with the command that
+runs it.  Reviewers write into the "2" version of their directories (`design_review_CopilotSDK2/`,
+`design_review_Gemini_3.8_Flash2/`, `design_review_Grok4.7_2/`), copy anything they want to change into a temporary
+place, and touch nothing else in the tree.
 
 ## Pictures (regenerated by every build into `docs/images/`)
 

@@ -123,8 +123,10 @@ the SMAs to the converters down the left side; digital nets may not cross them.
 
 State at the time of writing (build 30, 2026-10-07): ERC 0, DRC 0 errors and 0 unconnected at all severities
 with the project's own rules (JLCPCB's capabilities or stricter, all silkscreen and courtyard checks as errors),
-three warnings (two ground return vias north-west of the FPGA that touch only the In1 plane, one 0.2 mm +5VA
-stub); every net routed by the build's own router or by hand (412 of 412); 3D renders in `docs/images/`.
+four warnings (two ground return vias north-west of the FPGA that touch only the In1 plane, and two
+`connection_width` necks in one crumb of the In4 ground fill between two ground vias at the +5V corridor's edge);
+every net routed by the build's own router or by hand (412 of 412); 3D renders in `docs/images/`.  **This is the
+first round's brief (build 25).  The second round, on build 31, is `DESIGN_REVIEW_PROMPT2.md`: read that one first.**
 
 ## 5. How the project is built -- this deserves its own scrutiny
 

@@ -33,6 +33,13 @@ SLOT = 3.5                 # the long edges (top, bottom) slide into an enclosur
 POWER_PREFIX = ("+", "-", "GND")
 SMA_LABEL_W = 17.5                     # the strip under each SMA where its name and limits print
 RIGHT_LABEL_X0, RIGHT_LABEL_X1 = 129.3, 134.8   # the standing-label strip inboard of the right-edge connectors
+# Build 31 (2026-10-07, CLAUDE_PCB.md section 5): three fiducials, as far apart as the board allows, on spots that build 30
+# had free of copper, silkscreen and courtyards on both sides (a 1 mm copper dot in a 2 mm mask opening, front and back);
+# the copper layer numbers 1-6, each in copper on its own layer, in a row in the top slot band, where nothing else may go;
+# and JLCPCB's order-number marker on the back silkscreen in the same band, so their number lands inside the extrusion.
+FIDUCIALS = [(25.5, 12.5), (120.0, 7.5), (146.5, 113.0)]
+LAYER_MARK = (70.0, 1.9, 2.5)         # x of the "1", y, pitch between the digits
+ORDER_MARK = (95.0, 1.9)              # "JLCJLCJLCJLC" on B.SilkS
 
 # The floorplan -- every anchor and every hand-laid cluster -- lives in pcb/floorplan.py; ANCHORS and QUIET
 # are its dicts (build_pcb.bga_caps adds the FPGA's decoupling capacitors to ANCHORS before placement).
@@ -189,6 +196,10 @@ class Placer:
     def run(self, back_refs=()):
         FPL.layout(self)
         self.keep += FPL.keepouts()
+        for (mx, my) in FIDUCIALS:                                   # (build 31) nothing on the fiducials or the layer markers
+            self.keep.append((None, mx - 1.6, my - 1.6, mx + 1.6, my + 1.6))
+        self.keep.append((None, LAYER_MARK[0] - 1.5, LAYER_MARK[1] - 1.3, LAYER_MARK[0] + 5 * LAYER_MARK[2] + 1.5, LAYER_MARK[1] + 1.3))
+        self.keep.append(("B.Cu", ORDER_MARK[0] - 10.5, ORDER_MARK[1] - 1.0, ORDER_MARK[0] + 10.5, ORDER_MARK[1] + 1.0))
         # the hand-laid copper (vias through every layer, tracks on theirs) is placement's business too: build 15
         # put an FPGA capacitor on the DAC's ground via
         for item in FPL.HAND:
