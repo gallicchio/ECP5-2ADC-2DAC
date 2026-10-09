@@ -3058,3 +3058,62 @@ The fields left at their defaults are listed too, unmarked, so the list reads st
 from your screenshots (`mfg/make_fab.JLC_DEFAULTS`), and the build counts the differences: 12 on this board.
 CLAUDE_PCB.md section 8 has the rule: `>>` in plain text, the value to set **bold** in a Markdown table, and the value
 spelled exactly as the form spells it.  Only the notes changed.
+
+## Prompt 41
+
+Here is the layer stackup option page:
+
+(Screenshot of JLCPCB's Layer Stackup dialog: Layers 6, thickness 1.6, outer copper 1, inner 0.5; JLC06161H-7628 selected among No requirement, -3313, -7628D, -1080, -2116A, -1080A, -3313C, -1080B, -3313E, -1080C, -2116B, -2116, -7628B, -3313D, -2116C, -7628A.  Its layers: Top copper 0.035 mm; prepreg 7628x1 0.21040 mm; L2 copper 0.0152; core 0.4 mm (H/HOZ without copper); L3 copper 0.0152; prepreg 7628x1 0.2028 mm; L4 copper 0.0152; core 0.4 mm; L5 copper 0.0152; prepreg 7628x1 0.21040 mm; bottom copper 0.035.  "This is a special stackup, and it doesn't support economic PCB assembly.")
+
+But then I got this error:
+
+(Screenshot of JLCPCB's Reminder dialog: "The actual thickness of this stackup is 1.5544mm (tolerance ±10%), not 1.6mm ... Do you still want to select this stackup?")
+
+I will accept, but you should include a note in the tables and FABRICATION_NOTES.txt about what to do with this dialog.
+
+There is an option for Impedance control that you don't have in your FABRICATION_NOTES.txt, maybe because it wasn't shown for the old settings. I have chosen the settings suggested, but you should confirm this with the screenshot I am giving you now.
+
+(Screenshot of the PCB form's High-spec Options: 1 oz / 0.5 oz, Specify Layer Sequence No, Specify Stackup Yes, JLC06161H-7628, **Impedance Control: No requirement** (the other choice "±10% (±5Ω if value≤50Ω)"), Epoxy Filled & Capped (Tented and Plugged greyed out), Min via 0.15mm/(0.25/0.3mm) with the note "High-precision PCBs with 0.15mm/(0.25/0.3mm) Via are much more difficult to produce. To ensure the board quality, '4-Wire Kelvin Test' and 'FR4 Tg155' options are automatically selected.", Board Outline Tolerance ±0.2mm (Regular), Confirm Production file Yes.)
+
+Similarly for my assembly options. This is what I'm going with unless you object with good reasons.
+
+(Screenshot of the PCBA form: both sides ticked; Standard (Economic greyed out); Both Sides; PCBA Qty 2; Edge Rails/Fiducials "Added by JLCPCB" ("The board size is modified to be 158mm*129mm due to adding two 5mm edge rails"); Confirm Parts Placement Yes; Stencil and Fixture Storage No; By Customer (Self-Service); Advanced: Bake No, Photo Confirmation No, Board Cleaning No, Conformal Coating No, Special stencil No, Packaging Antistatic bubble film, Depanel Yes, Solder Paste High temp., Flying Probe Test No, Nitrogen reflow No, Function test No, Assembly remark No.  Charge details: Engineering $33.00, Via Covering $0, Stackup fee $33.08, Surface Finish $19.00, Material Type $3.81, Board $13.20, Min via hole size/diameter $38.14, 4-Wire Kelvin Test $17.89, Confirm Production file $1.05; $159.17.  DHL Express (DDP) $31.23, 0.47 kg.)
+
+## Response 41 2026-10-09 08:53 - 09:04 Claude Opus 5.5 Max
+
+**Your settings on both pages are right; no objections.**  The notes now have the dialog, the Impedance Control field and the
+Kelvin test, in the form's order, with the value to set and why:
+
+| Section | Field | Set to | Why |
+|---|---|---|---|
+| PCB Specifications | PCB Thickness | **1.6mm** | the stack-up below really builds 1.5544 mm; its reminder asks you to accept that |
+| High-spec Options | Specify Stackup | **Yes: JLC06161H-7628** | the SMA and MDI widths are drawn for its 0.2104 mm of 7628 under each outer layer |
+| | then its Reminder dialog (1.5544 mm, ±10%) | **Yes, then Confirm** | nothing clamps the board's edge, the extrusion's slots take a thinner board, and the impedances depend on the outer prepregs, not the total |
+| | Impedance Control | **No requirement** (the default) | ±10% obliges an impedance table in the zip or the order waits on an engineering question; without it width and spacing are held to ±20% and the dielectric is the stack-up's.  The lines drawn to an impedance are short against their edges (SMA feeds 8 mm, MDI lines about 20 mm); the 70 mm HDMI pairs (0.1-0.127 mm) were not drawn to one, so ±10% would not reach them |
+| | Min via hole size/diameter | **0.15mm/(0.25/0.3mm)** | the 0.3/0.15 mm vias; the form then selects the 4-Wire Kelvin Test and FR4 TG155 itself: leave both |
+| | Electrical Test | **Flying Probe Fully Test** | plus the Kelvin test the vias switched on |
+| PCB Assembly | Edge Rails/Fiducials | **Added by JLCPCB** | (the form's new name for "Tooling holes") two 5 mm rails, 158 x 129 for the line; Depanel takes them off |
+| Advanced Options | Nitrogen reflow soldering | **No** | air reflow with SAC paste on ENIG wets a 0.8 mm BGA |
+
+JLCPCB's own wording settles the impedance choice: with control "our factory will control the impedance within a
+tolerance of ±10%", and you must "provide your impedance requirements in the form of a table or diagram, along with the
+compressed PCB files"; without it "we will ... ensure that the line width and spacing are within a tolerance of +/-20%".
+The assembly page matches every row the notes had; Solder Paste "High temp." is the lead-free SAC paste the BGA's balls want.
+
+**Cost.**  Your PCB page is now in the model line by line (stack-up $33.08, ENIG $19.00, TG155 $3.81, 0.15 mm vias $38.14,
+Kelvin test $17.89); it gives $159.17 for it, exactly, and still $613.84 for the $616.06 cart of 2026-10-08.  The estimate
+for this order is $725.76 before shipping ($31.23, 0.47 kg) and about 35% duty.  The 0.15 mm via is the dearest option, about
+$56 with the Kelvin test it brings.
+
+**Two stale lines fixed** in the notes' prose: the impedance line still said "ask for controlled impedance" (and misstated
+the MDI width as 0.2 mm; the pairs are 0.25 mm, 0.2 mm in the PHY's fan-out), and the order-number line still said "Specify a
+location", which the form row and CLAUDE_PCB.md's May 2026 rule had replaced with "Remove Mark".  The JLCJLCJLCJLC in the
+back's slot band prints as plain text, hidden by the extrusion.
+
+**The stack-up in the board file** now matches JLCPCB's dialog: the middle prepreg 0.2028 mm (was 0.2104), 7628 at εr 4.4,
+1.5544 mm in all (`pcb/board.py`).  Only the description changes; the shipped board file keeps the old numbers until the next
+build, and no copper moves.
+
+CLAUDE_PCB.md (yours, uncommitted), section 8: every dialog the form raises gets its own line; JLC06161H-7628's layers;
+Impedance Control as its own field and when to choose ±10%; what a 0.15 mm via costs; Edge Rails/Fiducials; the old
+"Specify a location" rule marked superseded.

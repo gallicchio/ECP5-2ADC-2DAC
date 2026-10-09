@@ -31,7 +31,11 @@ FEES = {
     "engineering":          (33.00, "order",  "6-layer engineering fee"),
     "board_per_pcb":        (2.64,  "pcb",    "the bare board: $13.20 for 5 of these 158 x 119 mm 6-layer ENIG boards (scaled per PCB beyond 5: an assumption)"),
     "confirm_production":   (1.05,  "order",  "confirm production file"),
-    "enig_per_5":           (18.80, "pcb",    "ENIG surface finish, $18.80 for 5 (cart of 2026-10-09; the itemised cart of 2026-10-08 was OSP, with no such line)"),
+    "enig_per_5":           (19.00, "pcb",    "ENIG surface finish, 1 U\", $19.00 for 5 (the PCB page of 2026-10-09 with every option set; $18.80 before the stack-up was chosen; the cart of 2026-10-08 was OSP)"),
+    "stackup_per_5":        (33.08, "pcb",    "Specify Stackup, JLC06161H-7628: $33.08 for 5 (2026-10-09)"),
+    "tg155_per_5":          (3.81,  "pcb",    "Material Type FR4 TG155: $3.81 for 5 (2026-10-09)"),
+    "min_via_per_5":        (38.14, "pcb",    "Min via hole 0.15mm/(0.25/0.3mm), for the 0.3/0.15 mm vias: $38.14 for 5 (2026-10-09)"),
+    "kelvin_per_5":         (17.89, "pcb",    "4-Wire Kelvin Test, which JLCPCB adds by itself with the 0.15 mm vias: $17.89 for 5 (2026-10-09)"),
     "setup":                (51.50, "order",  "Standard PCBA setup, both sides"),
     "stencil":              (16.54, "order",  "stencils, both sides"),
     "feeder_per_extended":  (2.70,  "extended", "feeder loading: $132.33 for 49 Extended codes ($3 list less a discount, or THT parts cheaper: calibrated, not explained)"),
@@ -46,7 +50,7 @@ FEES = {
     "depanel":              (2.32,  "order",  "depanel boards and edge rail before delivery (advanced option)"),
 }
 DUTY = 0.35              # US DDP duty JLCPCB pre-collects on PCBs and assembly (CLAUDE_PCB.md section 3): not in the cart total
-SHIPPING = (31.23, "DHL Express (DDP), 2-4 business days, 0.45 kg: JLCPCB's estimate, 2026-10-09")
+SHIPPING = (31.23, "DHL Express (DDP), 2-4 business days, 0.47 kg: JLCPCB's estimate, 2026-10-09")
 
 # JLCPCB's order form, field by field IN THE FORM'S OWN ORDER (Jason, 2026-10-09: the notes he uploads from must read down
 # the form, so nothing is missed or mis-set on the many re-uploads).  A value in <angle brackets> is computed in jlc_form().
@@ -59,22 +63,24 @@ JLC_PCB_FORM = [
     ("", "Product Type", "Industrial/Consumer electronics", "the only true one of the three (Aerospace, Medical); duty is 35% whatever is chosen"),
     ("PCB Specifications", "Different Design", "1", ""),
     ("PCB Specifications", "Delivery Format", "Single PCB", "JLCPCB adds and removes the assembly rails (see Depanel below)"),
-    ("PCB Specifications", "PCB Thickness", "<thickness>", "the stack-up's total"),
+    ("PCB Specifications", "PCB Thickness", "<thickness>", "the form's 1.6mm; the stack-up chosen below really builds 1.5544 mm, and its reminder asks you to accept that: Yes"),
     ("PCB Specifications", "PCB Color", "Green", ""),
     ("PCB Specifications", "Silkscreen", "White", ""),
-    ("PCB Specifications", "Material Type", "FR4 TG155", "a 0.8 mm BGA reflowed twice (both sides) plus through-hole: TG155 rather than the TG135 default.  If Specify Stackup sets the material, take what it sets"),
+    ("PCB Specifications", "Material Type", "FR4 TG155", "a 0.8 mm BGA reflowed twice (both sides) plus through-hole.  The 0.15 mm vias below make JLCPCB select it by itself anyway ($3.81)"),
     ("PCB Specifications", "Surface Finish", "ENIG", "not OSP: flat for the 0.8 mm BGA and 0.4 mm QFP/QFN, survives the second side's reflow and the through-hole soldering, keeps for rework and probing"),
     ("PCB Specifications", "Gold Thickness", "1 U\"", "appears under ENIG; 2 U\" is for gold fingers and wearing contacts, and the board has none"),
     ("High-spec Options", "Outer Copper Weight", "1 oz", "the stack-up's"),
     ("High-spec Options", "Inner Copper Weight", "0.5 oz", "the stack-up's"),
     ("High-spec Options", "Specify Layer Sequence", "No", "the Gerber names and the job file give the order"),
-    ("High-spec Options", "Specify Stackup", "Yes: <stackup>", "the 50 ohm SMA feeds (<rfw> mm) and the 100 ohm MDI pairs are drawn for it.  If it is not offered, STOP and ask"),
+    ("High-spec Options", "Specify Stackup", "Yes: <stackup>", "the 50 ohm SMA feeds (<rfw> mm) and the 100 ohm MDI pairs are drawn for its 0.2104 mm of 7628 under each outer layer; if it is not offered, STOP and ask.  It is a 'special stackup': Standard PCBA only, as ordered"),
+    ("High-spec Options", "  then its Reminder dialog", "Yes", "it says 'The actual thickness of this stackup is 1.5544mm (tolerance +-10%), not 1.6mm ... Do you still want to select this stackup?'  YES: nothing clamps the board's edge (every connector is through-hole or top-mount), the extrusion's slots take a thinner board, and the impedances depend on the 0.2104 mm under the outer layers, not on the total.  Then Confirm"),
+    ("High-spec Options", "Impedance Control", "No requirement", "appears once a stack-up is chosen.  +-10% obliges an impedance table in the zip, or the order waits on an engineering question; without it JLCPCB still holds line width and spacing to +-20%, and the dielectric is the stack-up's.  The lines drawn to an impedance are short against their edges (each SMA feed 8 mm, each Ethernet MDI line about 20 mm), and the 70 mm HDMI pairs (0.1-0.127 mm) were not drawn to one"),
     ("High-spec Options", "Via Covering", "Epoxy Filled & Capped", "via-in-pad under the BGA and the back-side decoupling on ball vias"),
-    ("High-spec Options", "Min via hole size/diameter", "<minvia>", "the board's smallest via is <smallvia>"),
+    ("High-spec Options", "Min via hole size/diameter", "<minvia>", "the board's smallest via is <smallvia>.  The form then says it selects '4-Wire Kelvin Test' and 'FR4 Tg155' itself: leave both ($38.14 for the vias, $17.89 for the test)"),
     ("High-spec Options", "Board Outline Tolerance", "+-0.2mm (Regular)", "the extrusion's slots take it"),
     ("High-spec Options", "Confirm Production file", "Yes", "about $1: JLCPCB's production Gerbers come back to check before they make it"),
     ("High-spec Options", "Mark on PCB", "Remove Mark", "no order number printed (the back silk's JLCJLCJLCJLC, in the slot band, then prints as plain text)"),
-    ("High-spec Options", "Electrical Test", "Flying Probe Fully Test", ""),
+    ("High-spec Options", "Electrical Test", "Flying Probe Fully Test", "plus the 4-Wire Kelvin Test the 0.15 mm vias switched on"),
     ("High-spec Options", "Gold Fingers", "No", ""),
     ("High-spec Options", "Castellated Holes", "No", ""),
     ("High-spec Options", "Press-Fit Hole", "No", ""),
@@ -89,7 +95,7 @@ JLC_PCBA_FORM = [
     ("PCB Assembly", "PCBA Type", "Standard", "Economic cannot assemble both sides"),
     ("PCB Assembly", "Assembly Side", "<sides>", "<sides_why>"),
     ("PCB Assembly", "PCBA Qty", "<boards>", ""),
-    ("PCB Assembly", "Tooling holes", "Added by JLCPCB", ""),
+    ("PCB Assembly", "Edge Rails/Fiducials", "Added by JLCPCB", "two 5 mm rails make it 158 x 129 mm for the line; Depanel below takes them off"),
     ("PCB Assembly", "Confirm Parts Placement", "Yes", "free: the placement preview, read against PLACEMENT_CHECKS.txt -- BOTH sides"),
     ("PCB Assembly", "Stencil Storage", "No", ""),
     ("PCB Assembly", "Fixture Storage", "No", ""),
@@ -103,7 +109,7 @@ JLC_PCBA_FORM = [
     ("Advanced Options", "Depanel boards & edge rail before delivery", "Yes", "about $2: the boards come without JLCPCB's rails"),
     ("Advanced Options", "Solder Paste", "High temp.", "the default, lead-free"),
     ("Advanced Options", "Flying Probe Test", "No", "the bare boards are already flying-probe tested"),
-    ("Advanced Options", "Nitrogen reflow soldering", "(leave as offered)", ""),
+    ("Advanced Options", "Nitrogen reflow soldering", "No", "air reflow with SAC paste on ENIG wets a 0.8 mm BGA"),
     ("Advanced Options", "Function test", "No", ""),
     ("Advanced Options", "Assembly remark", "No", ""),
     ("Stencil", "Stencil", "Off", "the assembly makes its own"),
@@ -402,16 +408,16 @@ JLC_DEFAULTS = {
     "Layers": "2", "PCB Qty": "5", "Product Type": "Industrial/Consumer electronics", "Different Design": "1",
     "Delivery Format": "Single PCB", "PCB Thickness": "1.6mm", "PCB Color": "Green", "Silkscreen": "White",
     "Material Type": "FR4 TG135", "Surface Finish": "OSP", "Gold Thickness": "1 U\"", "Outer Copper Weight": "1 oz",
-    "Inner Copper Weight": "0.5 oz", "Specify Layer Sequence": "No", "Specify Stackup": "No",
+    "Inner Copper Weight": "0.5 oz", "Specify Layer Sequence": "No", "Specify Stackup": "No", "Impedance Control": "No requirement",
     "Via Covering": "Epoxy Filled & Capped", "Min via hole size/diameter": "0.3mm/(0.4/0.45mm)",
     "Board Outline Tolerance": "+-0.2mm (Regular)", "Confirm Production file": "No", "Mark on PCB": "Remove Mark",
     "Electrical Test": "Flying Probe Fully Test", "Gold Fingers": "No", "Castellated Holes": "No", "Press-Fit Hole": "No",
     "Edge Plating": "No", "Blind Slots": "No", "UL Marking": "No", "Backdrill": "No", "Humidity Indicator Card": "No",
     "PCB Assembly": "Off", "PCBA Type": "Economic", "Assembly Side": "Top Side", "PCBA Qty": "5",
-    "Tooling holes": "Added by JLCPCB", "Confirm Parts Placement": "No", "Stencil Storage": "No", "Fixture Storage": "No",
+    "Edge Rails/Fiducials": "Added by JLCPCB", "Confirm Parts Placement": "No", "Stencil Storage": "No", "Fixture Storage": "No",
     "Parts Selection": "By Customer (Self-Service)", "Bake Components": "No", "Photo Confirmation": "No",
     "Board Cleaning": "No", "Conformal Coating": "No", "Special stencil": "No", "Packaging": "Antistatic bubble film",
-    "Depanel boards & edge rail before delivery": "No", "Solder Paste": "High temp.", "Flying Probe Test": "No",
+    "Depanel boards & edge rail before delivery": "No", "Solder Paste": "High temp.", "Flying Probe Test": "No", "Nitrogen reflow soldering": "No",
     "Function test": "No", "Assembly remark": "No", "Stencil": "Off",
 }
 
@@ -597,6 +603,10 @@ def main(argv):
             ("PCB", "board (%d PCBs)" % pcbs, f["board_per_pcb"] * pcbs),
             ("PCB", "confirm production file", f["confirm_production"]),
             ("PCB", "surface finish, ENIG (%d PCBs)" % pcbs, f["enig_per_5"] * pcbs / 5.0),
+            ("PCB", "stackup fee, JLC06161H-7628 (%d PCBs)" % pcbs, f["stackup_per_5"] * pcbs / 5.0),
+            ("PCB", "material type, FR4 TG155 (%d PCBs)" % pcbs, f["tg155_per_5"] * pcbs / 5.0),
+            ("PCB", "min via hole 0.15 mm (%d PCBs)" % pcbs, f["min_via_per_5"] * pcbs / 5.0),
+            ("PCB", "4-wire Kelvin test (%d PCBs)" % pcbs, f["kelvin_per_5"] * pcbs / 5.0),
             ("PCBA", "setup fee", f["setup"]),
             ("PCBA", "stencil", f["stencil"]),
             ("PCBA", "components (%d lines, with JLCPCB's attrition)" % len(lines), parts_cost),
@@ -620,7 +630,7 @@ def main(argv):
     rf_w = float(re.search(r"^RF_W = ([\d.]+)", open(os.path.join(ROOT, "pcb", "build_pcb.py")).read(), re.M).group(1))   # the 50 ohm width, from its one source
     notes += jlc_form(m, boards, rows, rf_w)
     notes.append("NOTES")
-    notes.append("Board: %.0f x %.0f mm, 6 layers, 1.6 mm, JLCPCB stackup JLC06161H-7628 (1 oz outer, 0.5 oz inner, 7628 prepreg)." % (P.BW, P.BH))
+    notes.append("Board: %.0f x %.0f mm, 6 layers, 1.6 mm on the form; JLCPCB stackup JLC06161H-7628 (1 oz outer, 0.5 oz inner, 7628 prepreg) builds 1.5544 mm." % (P.BW, P.BH))
     notes.append("Surface finish: ENIG (there is a 0.8 mm pitch BGA).  Solder mask green, silkscreen white.")
     notes.append("Via-in-pad under the BGA: all 0.3 mm / 0.15 mm vias must be epoxy filled and capped (JLCPCB's default for 6+ layers; tick it).")
     notes.append("The FPGA's 100 nF decoupling sits on the BACK directly under the BGA, each 0402 on two adjacent ball vias (0.8 mm pitch): those vias must be capped on the back too (the filled-and-capped option covers both sides).")
@@ -631,8 +641,8 @@ def main(argv):
                  % (m["min_track"] or 0, ", ".join("%g/%g" % v for v in m["vias"]), m["min_drill"] or 0))
     notes.append("Fiducials: three 1 mm copper dots in 2 mm mask openings, front and back, at %s mm from the board's top-left corner (x right, y down); JLCPCB adds its own on the panel rails as well." % ", ".join("(%.1f, %.1f)" % f for f in P.FIDUCIALS))
     notes.append("Layer markers: the copper layer numbers 1-6, each in copper on its own layer, in a row at the top edge (x %.0f-%.0f, y %.1f mm, inside the extrusion's slot band): hold the bare board against the light to check the layer order." % (P.LAYER_MARK[0], P.LAYER_MARK[0] + 5 * P.LAYER_MARK[2], P.LAYER_MARK[1]))
-    notes.append("Order number: the back silkscreen carries JLCJLCJLCJLC at the top edge (x %.0f, y %.1f mm, in the slot band).  On the order form choose 'Remove order number: Specify a location'; JLCPCB prints its number there, hidden by the extrusion." % P.ORDER_MARK)
-    notes.append("Impedance: ask for controlled impedance with the JLC06161H-7628 calculator: 50 ohm single-ended (SMA runs, 0.35 mm drawn) and 100 ohm differential (Ethernet MDI, 0.2 mm / 0.2 mm drawn), referenced to In1.")
+    notes.append("Order number: none.  Mark on PCB is 'Remove Mark' (JLCPCB's default since May 2026).  The back silkscreen's JLCJLCJLCJLC at the top edge (x %.0f, y %.1f mm, in the slot band the extrusion hides) is left from when the form placed the number there; it prints as plain text." % P.ORDER_MARK)
+    notes.append("Impedance: the order specifies the stack-up, not +-10%% impedance control (see the form).  Drawn for JLC06161H-7628: the SMA feeds %.2f mm, 50 ohm over In1, 8 mm each; the Ethernet MDI pairs 0.25 mm (0.2 mm in the PHY's fan-out), about 20 mm each.  The HDMI pairs, 70 mm at 0.1-0.127 mm, are not drawn to an impedance." % rf_w)
     notes.append("The shipped board file holds %d filled zone polygons; DRC 0 errors / 0 unconnected (build/drc.json)." % n_fill)
     notes.append("")
     notes.append("Assembly (JLCPCB Standard, SMT both sides + through-hole on top): %d SMT placements and %d through-hole parts on %d BOM lines, %d of them Extended parts (each carries a one-off loading fee)."
@@ -654,6 +664,8 @@ def main(argv):
     notes.append("  %-6s %-62s $%8.2f  ($%.0f per assembled board)" % ("TOTAL", "before shipping and duty", est_total, est_total / boards))
     notes.append("  US duty, DDP, about %.0f%% of that: ~$%.0f more.  Shipping: $%.2f, %s." % (100 * DUTY, DUTY * est_total, SHIPPING[0], SHIPPING[1]))
     notes.append("  (The order of 2026-10-08, 5 PCBs and 2 assembled with OSP, came to $616.06 in JLCPCB's cart; this model gives $%.2f for it.)" % calibration_total(rows, lines, ext, smt_pads, tht_joints, n_tht))
+    pcb5 = sum(FEES[k][0] for k in ("engineering", "confirm_production", "enig_per_5", "stackup_per_5", "tg155_per_5", "min_via_per_5", "kelvin_per_5")) + FEES["board_per_pcb"][0] * 5
+    notes.append("  (The PCB page of 2026-10-09, 5 PCBs with every option above set, came to $159.17; this model gives $%.2f for it.)" % pcb5)
     if thin:
         notes.append("")
         notes.append("THIN STOCK (fewer than 10x what %d boards need): %s" % (boards, "; ".join("%s %s stock %d need %d" % t for t in thin)))

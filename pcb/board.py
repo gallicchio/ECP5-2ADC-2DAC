@@ -22,9 +22,12 @@ LAYERS = [(0, "F.Cu", "signal"), (1, "In1.Cu", "power"), (2, "In2.Cu", "signal")
 COPPER = ["F.Cu", "In1.Cu", "In2.Cu", "In3.Cu", "In4.Cu", "B.Cu"]
 ROUTE_LAYERS = ["F.Cu", "In2.Cu", "In3.Cu", "B.Cu"]
 
-# JLCPCB JLC06161H-7628: 1.6 mm, 1 oz outer, 0.5 oz inner, 7628 prepreg.
+# JLCPCB JLC06161H-7628: 1 oz outer, 0.5 oz inner, 7628 prepreg, as their Layer Stackup dialog lists it (Jason's
+# screenshot, 2026-10-09): 0.035 / 7628 0.2104 / 0.0152 / core 0.4 / 0.0152 / 7628 0.2028 / 0.0152 / core 0.4 / 0.0152 /
+# 7628 0.2104 / 0.035, which JLCPCB says comes to 1.5544 mm (+-10 %), not the 1.6 mm ordered.  (Builds 1-34 had the middle
+# prepreg at 0.2104; only the file's description changes, not the copper.)
 STACKUP = [("F.Cu", "copper", 0.035), ("d1", "prepreg", 0.2104), ("In1.Cu", "copper", 0.0152),
-           ("d2", "core", 0.4), ("In2.Cu", "copper", 0.0152), ("d3", "prepreg", 0.2104),
+           ("d2", "core", 0.4), ("In2.Cu", "copper", 0.0152), ("d3", "prepreg", 0.2028),
            ("In3.Cu", "copper", 0.0152), ("d4", "core", 0.4), ("In4.Cu", "copper", 0.0152),
            ("d5", "prepreg", 0.2104), ("B.Cu", "copper", 0.035)]
 
@@ -465,7 +468,7 @@ def document(body, numof, title_extra=""):
         if kind == "copper":
             st.append('\t\t\t(layer "%s" (type "copper") (thickness %g))' % (nm, th))
         else:
-            st.append('\t\t\t(layer "dielectric %s" (type "%s") (thickness %g) (material "FR4") (epsilon_r 4.5) (loss_tangent 0.02))' % (nm[1:], kind, th))
+            st.append('\t\t\t(layer "dielectric %s" (type "%s") (thickness %g) (material "FR4") (epsilon_r %g) (loss_tangent 0.02))' % (nm[1:], kind, th, 4.4 if kind == "prepreg" else 4.5))     # 7628 prepreg: JLCPCB's 4.4
     st.append('\t\t\t(copper_finish "ENIG")\n\t\t\t(dielectric_constraints no)\n\t\t)')
     paper = '(paper "User" %g %g)' % (PAGE_W, PAGE_H)          # the board at (OX, OY) with 25 mm margins, the title block below it (pcb/place.py)
     return ('(kicad_pcb\n\t(version 20241229)\n\t(generator "ecp5-2adc-2dac")\n\t(generator_version "9.0")\n'
