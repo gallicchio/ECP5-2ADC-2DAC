@@ -31,6 +31,7 @@ FEES = {
     "engineering":          (33.00, "order",  "6-layer engineering fee"),
     "board_per_pcb":        (2.64,  "pcb",    "the bare board: $13.20 for 5 of these 158 x 119 mm 6-layer ENIG boards (scaled per PCB beyond 5: an assumption)"),
     "confirm_production":   (1.05,  "order",  "confirm production file"),
+    "enig_per_5":           (18.80, "pcb",    "ENIG surface finish, $18.80 for 5 (cart of 2026-10-09; the itemised cart of 2026-10-08 was OSP, with no such line)"),
     "setup":                (51.50, "order",  "Standard PCBA setup, both sides"),
     "stencil":              (16.54, "order",  "stencils, both sides"),
     "feeder_per_extended":  (2.70,  "extended", "feeder loading: $132.33 for 49 Extended codes ($3 list less a discount, or THT parts cheaper: calibrated, not explained)"),
@@ -45,6 +46,70 @@ FEES = {
     "depanel":              (2.32,  "order",  "depanel boards and edge rail before delivery (advanced option)"),
 }
 DUTY = 0.35              # US DDP duty JLCPCB pre-collects on PCBs and assembly (CLAUDE_PCB.md section 3): not in the cart total
+SHIPPING = (31.23, "DHL Express (DDP), 2-4 business days, 0.45 kg: JLCPCB's estimate, 2026-10-09")
+
+# JLCPCB's order form, field by field IN THE FORM'S OWN ORDER (Jason, 2026-10-09: the notes he uploads from must read down
+# the form, so nothing is missed or mis-set on the many re-uploads).  A value in <angle brackets> is computed in jlc_form().
+# (section, field, value, why)
+JLC_PCB_FORM = [
+    ("", "Base Material", "FR-4", ""),
+    ("", "Layers", "<layers>", "High Precision PCB row"),
+    ("", "Dimensions", "<dims>", "the board outline"),
+    ("", "PCB Qty", "<pcbs>", "JLCPCB's minimum; <boards> of them assembled"),
+    ("", "Product Type", "Industrial/Consumer electronics", "the only true one of the three (Aerospace, Medical); duty is 35% whatever is chosen"),
+    ("PCB Specifications", "Different Design", "1", ""),
+    ("PCB Specifications", "Delivery Format", "Single PCB", "JLCPCB adds and removes the assembly rails (see Depanel below)"),
+    ("PCB Specifications", "PCB Thickness", "<thickness>", "the stack-up's total"),
+    ("PCB Specifications", "PCB Color", "Green", ""),
+    ("PCB Specifications", "Silkscreen", "White", ""),
+    ("PCB Specifications", "Material Type", "FR4 TG155", "a 0.8 mm BGA reflowed twice (both sides) plus through-hole: TG155 rather than the TG135 default.  If Specify Stackup sets the material, take what it sets"),
+    ("PCB Specifications", "Surface Finish", "ENIG", "not OSP: flat for the 0.8 mm BGA and 0.4 mm QFP/QFN, survives the second side's reflow and the through-hole soldering, keeps for rework and probing"),
+    ("PCB Specifications", "Gold Thickness", "1 U\"", "appears under ENIG; 2 U\" is for gold fingers and wearing contacts, and the board has none"),
+    ("High-spec Options", "Outer Copper Weight", "1 oz", "the stack-up's"),
+    ("High-spec Options", "Inner Copper Weight", "0.5 oz", "the stack-up's"),
+    ("High-spec Options", "Specify Layer Sequence", "No", "the Gerber names and the job file give the order"),
+    ("High-spec Options", "Specify Stackup", "Yes: <stackup>", "the 50 ohm SMA feeds (<rfw> mm) and the 100 ohm MDI pairs are drawn for it.  If it is not offered, STOP and ask"),
+    ("High-spec Options", "Via Covering", "Epoxy Filled & Capped", "via-in-pad under the BGA and the back-side decoupling on ball vias"),
+    ("High-spec Options", "Min via hole size/diameter", "<minvia>", "the board's smallest via is <smallvia>"),
+    ("High-spec Options", "Board Outline Tolerance", "+-0.2mm (Regular)", "the extrusion's slots take it"),
+    ("High-spec Options", "Confirm Production file", "Yes", "about $1: JLCPCB's production Gerbers come back to check before they make it"),
+    ("High-spec Options", "Mark on PCB", "Remove Mark", "no order number printed (the back silk's JLCJLCJLCJLC, in the slot band, then prints as plain text)"),
+    ("High-spec Options", "Electrical Test", "Flying Probe Fully Test", ""),
+    ("High-spec Options", "Gold Fingers", "No", ""),
+    ("High-spec Options", "Castellated Holes", "No", ""),
+    ("High-spec Options", "Press-Fit Hole", "No", ""),
+    ("High-spec Options", "Edge Plating", "No", ""),
+    ("High-spec Options", "Blind Slots", "No", ""),
+    ("High-spec Options", "UL Marking", "No", ""),
+    ("High-spec Options", "Backdrill", "No", ""),
+    ("High-spec Options", "Humidity Indicator Card", "No", ""),
+]
+JLC_PCBA_FORM = [
+    ("PCB Assembly", "PCB Assembly", "On", ""),
+    ("PCB Assembly", "PCBA Type", "Standard", "Economic cannot assemble both sides"),
+    ("PCB Assembly", "Assembly Side", "<sides>", "<sides_why>"),
+    ("PCB Assembly", "PCBA Qty", "<boards>", ""),
+    ("PCB Assembly", "Tooling holes", "Added by JLCPCB", ""),
+    ("PCB Assembly", "Confirm Parts Placement", "Yes", "free: the placement preview, read against PLACEMENT_CHECKS.txt -- BOTH sides"),
+    ("PCB Assembly", "Stencil Storage", "No", ""),
+    ("PCB Assembly", "Fixture Storage", "No", ""),
+    ("PCB Assembly", "Parts Selection", "By Customer (Self-Service)", "the BOM carries every LCSC code"),
+    ("Advanced Options", "Bake Components", "No", ""),
+    ("Advanced Options", "Photo Confirmation", "No", ""),
+    ("Advanced Options", "Board Cleaning", "No", ""),
+    ("Advanced Options", "Conformal Coating", "No", ""),
+    ("Advanced Options", "Special stencil", "No", ""),
+    ("Advanced Options", "Packaging", "Antistatic bubble film", "the default"),
+    ("Advanced Options", "Depanel boards & edge rail before delivery", "Yes", "about $2: the boards come without JLCPCB's rails"),
+    ("Advanced Options", "Solder Paste", "High temp.", "the default, lead-free"),
+    ("Advanced Options", "Flying Probe Test", "No", "the bare boards are already flying-probe tested"),
+    ("Advanced Options", "Nitrogen reflow soldering", "(leave as offered)", ""),
+    ("Advanced Options", "Function test", "No", ""),
+    ("Advanced Options", "Assembly remark", "No", ""),
+    ("Stencil", "Stencil", "Off", "the assembly makes its own"),
+    ("Files", "BOM", "<name>_bom.csv", ""),
+    ("Files", "CPL", "<name>_cpl_jlcpcb_upload.csv", "not the _kicad_native one"),
+]
 sys.path.insert(0, os.path.join(ROOT, "gen"))
 import parts as PARTS
 import footprint_check as FC
@@ -331,6 +396,38 @@ def cost(rows, boards, refresh=False):
     return lines, total_parts, ext, thin
 
 
+def jlc_form(m, boards, rows, rf_w):
+    """The order form as text, in JLCPCB's order: section headings, then 'field ...... value   (why)'."""
+    import place as P
+    pcbs = max(5, boards)
+    layers = sum(1 for l in ("F.Cu", "In1.Cu", "In2.Cu", "In3.Cu", "In4.Cu", "B.Cu"))
+    vias = m["vias"]                                          # (diameter, drill)
+    d_min = min(d for _, d in vias); s_at = min(s for s, d in vias if d == d_min)
+    options = [(0.3, (0.4, 0.45)), (0.25, (0.35, 0.4)), (0.2, (0.3, 0.35)), (0.15, (0.25, 0.3)), (0.1, (0.2, 0.25))]
+    hole, dias = next((h, ds) for h, ds in options if h <= d_min + 1e-6)
+    sides = sorted({r["side"] for r in rows if r["cls"] in ("smt", "tht")})
+    subs = {"<layers>": "%d (High Precision PCB)" % layers, "<dims>": "%g x %g mm" % (P.BW, P.BH), "<pcbs>": str(pcbs),
+            "<boards>": str(boards), "<thickness>": "1.6mm", "<stackup>": "JLC06161H-7628", "<rfw>": "%.2f" % rf_w,
+            "<minvia>": "%gmm/(%g/%gmm)" % (hole, dias[0], dias[1]), "<smallvia>": "%g mm across, %g mm drill" % (s_at, d_min),
+            "<sides>": "Both Sides" if len(sides) == 2 else ("Top Side" if sides == ["top"] else "Bottom Side"),
+            "<sides_why>": "parts on both sides (the BGA's decoupling, the regulators, the magnetics and the microSD on the back)" if len(sides) == 2 else "",
+            "<name>": NAME}
+    def fill(s):
+        for k, v in subs.items():
+            s = s.replace(k, v)
+        return s
+    out = ["JLCPCB ORDER FORM -- set it top to bottom; the fields are in the form's own order (as of 2026-10-09)", ""]
+    for title, form in (("PCB", JLC_PCB_FORM), ("PCBA", JLC_PCBA_FORM)):
+        last = None
+        for sec, field, value, why in form:
+            head = sec or title
+            if head != last:
+                out.append("  %s" % head); last = head
+            out.append("    %-44s %-30s %s" % (field + " " + "." * max(2, 42 - len(field)), fill(value), ("(" + fill(why) + ")") if why else ""))
+        out.append("")
+    return out
+
+
 def calibration_total(rows, lines, ext, smt_pads, tht_joints, n_tht):
     """The model's total for the order it was calibrated on (5 PCBs, 2 assembled), whatever --boards says: a check that
     the fees and the parts model still add up to JLCPCB's $616.06 when prices move."""
@@ -470,6 +567,7 @@ def main(argv):
     cart = [("PCB", "engineering fee", f["engineering"]),
             ("PCB", "board (%d PCBs)" % pcbs, f["board_per_pcb"] * pcbs),
             ("PCB", "confirm production file", f["confirm_production"]),
+            ("PCB", "surface finish, ENIG (%d PCBs)" % pcbs, f["enig_per_5"] * pcbs / 5.0),
             ("PCBA", "setup fee", f["setup"]),
             ("PCBA", "stencil", f["stencil"]),
             ("PCBA", "components (%d lines, with JLCPCB's attrition)" % len(lines), parts_cost),
@@ -490,6 +588,9 @@ def main(argv):
             w.writerow(row)
     notes = []
     notes.append("%s rev A -- FABRICATION NOTES (written %s)\n" % (NAME, datetime.date.today().isoformat()))
+    rf_w = float(re.search(r"^RF_W = ([\d.]+)", open(os.path.join(ROOT, "pcb", "build_pcb.py")).read(), re.M).group(1))   # the 50 ohm width, from its one source
+    notes += jlc_form(m, boards, rows, rf_w)
+    notes.append("NOTES")
     notes.append("Board: %.0f x %.0f mm, 6 layers, 1.6 mm, JLCPCB stackup JLC06161H-7628 (1 oz outer, 0.5 oz inner, 7628 prepreg)." % (P.BW, P.BH))
     notes.append("Surface finish: ENIG (there is a 0.8 mm pitch BGA).  Solder mask green, silkscreen white.")
     notes.append("Via-in-pad under the BGA: all 0.3 mm / 0.15 mm vias must be epoxy filled and capped (JLCPCB's default for 6+ layers; tick it).")
@@ -522,8 +623,8 @@ def main(argv):
     for group, what, usd in cart:
         notes.append("  %-6s %-62s $%8.2f" % (group, what, usd))
     notes.append("  %-6s %-62s $%8.2f  ($%.0f per assembled board)" % ("TOTAL", "before shipping and duty", est_total, est_total / boards))
-    notes.append("  US duty, DDP, about %.0f%% of that: ~$%.0f more; shipping extra." % (100 * DUTY, DUTY * est_total))
-    notes.append("  (The order of 2026-10-08, 5 PCBs and 2 assembled, came to $616.06 in JLCPCB's cart; this model gives $%.2f for it.)" % calibration_total(rows, lines, ext, smt_pads, tht_joints, n_tht))
+    notes.append("  US duty, DDP, about %.0f%% of that: ~$%.0f more.  Shipping: $%.2f, %s." % (100 * DUTY, DUTY * est_total, SHIPPING[0], SHIPPING[1]))
+    notes.append("  (The order of 2026-10-08, 5 PCBs and 2 assembled with OSP, came to $616.06 in JLCPCB's cart; this model gives $%.2f for it.)" % calibration_total(rows, lines, ext, smt_pads, tht_joints, n_tht))
     if thin:
         notes.append("")
         notes.append("THIN STOCK (fewer than 10x what %d boards need): %s" % (boards, "; ".join("%s %s stock %d need %d" % t for t in thin)))

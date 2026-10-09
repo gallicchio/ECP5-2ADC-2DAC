@@ -2990,3 +2990,52 @@ to CLAUDE_PCB.md.
 Sources: JLCPCB, "U.S. Tariff Policy FAQ" (https://jlcpcb.com/help/article/us-tariff-policy-faq, updated 2026-09-09);
 JLCPCB, "Important: US Tariff Logistics Policy Update" (https://jlcpcb.com/news/logistics-update-us-china-tariff,
 2026-03-17).
+
+## Prompt 39
+
+There is a new "OSP" Surface Finish option. Should I still pick ENIG?
+To minimize error when I upload (over and over as we make changes), the FABRICATION_NOTES.txt need to be spelled out in list or table form, in the same order as JLCPCB does. (This should go in CLAUDE_PCB.md so in the future I get these parameters in the same, easy to read format. The order of the options are (I just copied and pasted here, but also gave you two screen shots):
+Base Material / Layers / High Precision PCB / More / Dimensions 158 * 119 mm / PCB Qty / Product Type /
+PCB Specifications: Different Design / Delivery Format / PCB Thickness / PCB Color / Silkscreen / Material Type / Surface Finish /
+High-spec Options: Outer Copper Weight / Inner Copper Weight / Specify Layer Sequence / Specify Stackup (Impedance calculator >) / Via Covering / Min via hole size/diameter / Board Outline Tolerance / Confirm Production file / Mark on PCB / Electrical Test / Gold Fingers / Castellated Holes / Press-Fit Hole / Edge Plating / Blind Slots / UL Marking / Backdrill / Humidity Indicator Card
+
+(Screenshots of JLCPCB's PCB form as set: FR-4, 6 layers, 158 x 119, qty 5, Product Type Industrial/Consumer electronics (or Aerospace, Medical), single PCB, 1.6 mm, green, white, FR4 TG135, OSP (new, selected) / ENIG, 1 oz / 0.5 oz, layer sequence No, stackup No, Epoxy Filled & Capped, min via 0.3mm/(0.4/0.45mm), +-0.2 mm, Confirm Production file No, Remove Mark, flying probe, the rest No.)
+
+When I pick ENIG, I get more options about the thickness (screenshot: Gold Thickness 1 U" / 2 U").
+
+(While this was being done:) And here are the assembly options, which you should also make a list or table-format for.  (Screenshot of the PCB Assembly section and its Advanced Options, and the charge panel: Surface Finish $18.80 for ENIG, Board $12.20, shipping DHL Express DDP $31.23, 0.45 kg.)  (I haven't actually picked our settings yet, just gave you screenshots as quickly as I could.)
+
+## Response 39 2026-10-09 09:05 - 08:37 Claude Opus 5.5 Max
+
+**ENIG, with 1 U" of gold.**  OSP is flat too, but it is a thin organic coat that each heating uses up.  This board is
+reflowed twice, once per side, then gets its through-hole parts, and the second pass is where OSP pads solder worst.
+OSP also keeps for months rather than years, and test pads under it do not probe well.  ENIG costs $18.80 for the five,
+JLCPCB's own figure in your screenshot.  The 1 U" gold only protects the nickel until soldering; 2 U" is for gold fingers
+and wearing contacts, and the board has none.
+
+**`FABRICATION_NOTES.txt` now opens with the order form, field by field in JLCPCB's own order:** the PCB section, PCB
+Specifications, High-spec Options, then PCB Assembly and its Advanced Options, then Stencil and the files.  Each field has
+the value to pick, and the reason wherever it is not the default.  The values that come from the board are computed by
+`mfg/make_fab.py`, not typed: the size, the layers, the smallest via's option, the sides that carry parts, the 50 ohm
+width.  CLAUDE_PCB.md section 8 has the rule and the form's field order, so every board's notes come out this way.
+
+Settings where JLCPCB's defaults are wrong for this board:
+
+| field | default | set |
+|---|---|---|
+| Material Type | FR4 TG135 | FR4 TG155 (two reflows plus through-hole; if Specify Stackup sets the material, take it) |
+| Surface Finish | OSP | ENIG, Gold Thickness 1 U" |
+| Specify Stackup | No | Yes, JLC06161H-7628 (the 0.35 mm 50 ohm feeds and the MDI pairs are drawn for it; if it is not offered, stop) |
+| Min via hole size/diameter | 0.3mm/(0.4/0.45mm) | 0.15mm/(0.25/0.3mm): the board's smallest vias are 0.3 mm with 0.15 mm drills |
+| Confirm Production file | No | Yes (about $1) |
+| PCBA Type, Assembly Side | Economic, one side | Standard, Both Sides |
+| PCBA Qty | 5 | 2 |
+| Confirm Parts Placement | No | Yes (free; read both sides) |
+| Depanel boards & edge rail | No | Yes (about $2) |
+
+**Product Type answers yesterday's tariff question.**  The field is Product Type, with Industrial/Consumer electronics,
+Aerospace and Medical.  All your boards are Industrial/Consumer electronics, and the duty is 35% whichever you pick.
+
+The cost estimate now adds ENIG ($18.80), so the total is $632.64 before duty, about $221 of duty and $31.23 of shipping.
+The 0.15 mm via option, TG155 and the specified stack-up may each raise the board price: send the cart once they are set
+and I will calibrate those lines too.  The release files you upload are unchanged; only the notes changed.
