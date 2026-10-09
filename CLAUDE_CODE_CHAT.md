@@ -2778,3 +2778,49 @@ preview's to judge.  The bottom side's seven polarized parts are still the first
 | cost for 5 | ~$1116 | ~$1100 |
 
 Committed, not pushed.
+
+## Prompt 34
+
+For D501, it is hard to tell if it is in the correct orientation because the silkscreen has no U shape, only two bars. At least on JLCPCB's viewer
+D309 is also difficult to tell
+D201 too
+If these look good, I'll send the board off. If not, fix them and I'll upload a new CPL. The other things look ok by eye. The only other thing I want you to check is whether the PMOD connectors are too far away from the edge. Does the PMOD standard specify how close they should be to the board edge?
+
+(Three screenshots of JLCPCB's viewer: D501, a SOD-123 1N4148W, with "+" on its left pad and "-" and the band on its right, between two plain silkscreen bars; D309, the RGB LED, with "+" on its upper-right pad and a small triangle on the right; D103, the photodiode, with "+" on the left pad and "-" on the right.)
+
+## Response 34 2026-10-08 20:52 - 21:22 Claude Opus 5.5 Max
+
+**All four are the right way round, and so is every other diode and LED on the top side: send it.**  No CPL change.
+
+| part | our pad on the board | JLCPCB's viewer |
+|---|---|---|
+| D501, 1N4148W | cathode (pad 1, USB_DP) on the right | "-" and the band on the right |
+| D309, RGB LED | common anode (pad 2, +3V3) upper right | "+" upper right |
+| D201, 2835 LED | cathode (pad 1, the large pad) on the right | JLCPCB's drawing: "-" on the large pad, which lands on the right at 180 |
+| D103, photodiode | anode (pad 2, -4V2) on the left | "+" on the left |
+
+Your third screenshot was D103; D201 had none, so it was read from JLCPCB's land drawing, where the large pad carries the
+"-".  The rest were checked by a new test, not by eye.  `mfg/preview_check.py` now takes the pin names from JLCPCB's own
+symbol for each part (K, A, COM+) and puts that pad where the CPL puts the part.  It must land on our pad with the same
+role.  All 23 top-side diodes and LEDs pass.  A scratch CPL with D501, D309 and D602 turned 180 fails all three as
+REVERSED.  D602 is one of the 0603 LEDs, whose JLCPCB library numbers the cathode 2, so the test follows the pin's name,
+not its number.
+
+**Why D501 is hard to read: our silkscreen dropped its cathode line.**  KiCad's SOD-123 draws a U: two bars and a line at
+the cathode end.  `pcb/board.py` drops any library silk line that comes near a pad, judging "near" by a square the size of
+the pad's longer side.  That square reaches past the cathode line, 0.2 mm from the pad.  It has done the same to almost
+every outline on the board: the ICs, SOT-23s, resistors and capacitors.  Pin-1 marks survive because KiCad draws them as
+filled triangles, and D501's is the only cathode mark lost.  The other diodes and LEDs keep theirs (D601's SMA bar, the
+0603 LEDs' bar, the 2835's triangle, the photodiode's symbol).  It changes nothing JLCPCB does: they place by the CPL and
+the part's own band.  Fixing it is a silkscreen-only rebuild with new gerbers, and the label placement would have to
+avoid lines beside 191 resistors.  I put it on the rev B list rather than delay the order.
+
+**The Pmod sockets are where the standard puts them.**  Digilent's Pmod Interface Specification 1.3.1, Figure 5, places a
+host port's pin row nearer the edge 0.40" (10.16 mm) from the board edge.  Ours is 10.06 mm, with the socket face flush
+with the edge, so on the bench a module seats fully.  The one catch is the Hammond box.  A module's board, 0.8" wide,
+cannot pass the end plate's 17.5 mm cutout.  The 1.45 mm plate plus the board's 0-2 mm float in its slots cost 1.5-3.5 mm
+of the pins' roughly 6 mm of engagement: they still mate, but less deeply.  Standing the sockets 2.5 mm past the edge,
+as the USB-Cs do, fixes that.  It is on the rev B list too.
+
+Committed (the polarity test and these notes), not pushed.  After you order: tag the commit and zip `mfg/release/` with
+its SHA-256 sums (CLAUDE_PCB.md section 1, "Rev A until ordered"), and start `REVB_CHANGES.md`.

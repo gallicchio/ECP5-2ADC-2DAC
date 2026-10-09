@@ -309,6 +309,17 @@ TCXO itself (25 MS/s), a Si5351 output, or a low-jitter source on CLK IN.
 * The 45F/85F FPGA (a BOM change), DDR3 (a second BGA), the TX series resistors at the FPGA end of the
   RGMII lines, a damping leg on the converter clock lines: the items in Decisions and in the review
   responses.
+* **Silkscreen outlines** (found checking JLCPCB's preview, 2026-10-08): `pcb/board.py` drops any library silk line that
+  comes near a pad, judging "near" by a square the size of the pad's longer side.  That removed almost every footprint
+  outline -- the ICs', the SOT-23s', the passives' -- and D501's cathode line, 0.2 mm from its pad (the other diodes and
+  LEDs keep their cathode marks, and the ICs their pin-1 triangles, which are filled polygons).  Judge by the pad's real
+  outline plus the fab's 0.15 mm, and re-place the labels around the restored lines.  A silkscreen-only change, left out
+  of rev A because it needs a rebuild and new gerbers the day of the order.
+* **Pmod sockets 2.5 mm past the edge**, like the USB-Cs, for the enclosure.  They sit where Digilent's Pmod Interface
+  Specification 1.3.1 puts a host port (Figure 5: the pin row nearer the edge 0.40" = 10.16 mm from it; ours 10.06 mm, the
+  socket face flush with the edge), so on the bench a module seats fully.  In the Hammond box a module's board cannot pass
+  the end plate's 17.5 mm cutout, and the plate (1.45 mm) and the board's float in its slots (0-2 mm) take 1.5-3.5 mm of
+  its pins' ~6 mm of engagement.
 * From the round-2 reviews (build 31): the DAC_CLK/DAC_WRT 33 Ω at the FPGA end, as source terminations
   (Gemini; rev A has them at the DAC); a stitching capacitor where DAC_CLK1/DAC_WRT1 leave the +1V1 corridor on
   In4 if the first board's scope shows ringing there (CopilotSDK: the nearest ground via is 5-6 mm away); the HDMI
