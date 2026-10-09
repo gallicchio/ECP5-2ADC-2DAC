@@ -3023,15 +3023,15 @@ Settings where JLCPCB's defaults are wrong for this board:
 
 | field | default | set |
 |---|---|---|
-| Material Type | FR4 TG135 | FR4 TG155 (two reflows plus through-hole; if Specify Stackup sets the material, take it) |
-| Surface Finish | OSP | ENIG, Gold Thickness 1 U" |
-| Specify Stackup | No | Yes, JLC06161H-7628 (the 0.35 mm 50 ohm feeds and the MDI pairs are drawn for it; if it is not offered, stop) |
-| Min via hole size/diameter | 0.3mm/(0.4/0.45mm) | 0.15mm/(0.25/0.3mm): the board's smallest vias are 0.3 mm with 0.15 mm drills |
-| Confirm Production file | No | Yes (about $1) |
-| PCBA Type, Assembly Side | Economic, one side | Standard, Both Sides |
-| PCBA Qty | 5 | 2 |
-| Confirm Parts Placement | No | Yes (free; read both sides) |
-| Depanel boards & edge rail | No | Yes (about $2) |
+| Material Type | FR4 TG135 | **FR4 TG155** (two reflows plus through-hole; if Specify Stackup sets the material, take it) |
+| Surface Finish | OSP | **ENIG**, Gold Thickness **1 U"** |
+| Specify Stackup | No | **Yes, JLC06161H-7628** (the 0.35 mm 50 ohm feeds and the MDI pairs are drawn for it; if it is not offered, stop) |
+| Min via hole size/diameter | 0.3mm/(0.4/0.45mm) | **0.15mm/(0.25/0.3mm)** (the board's smallest vias are 0.3 mm with 0.15 mm drills) |
+| Confirm Production file | No | **Yes** (about $1) |
+| PCBA Type, Assembly Side | Economic, one side | **Standard, Both Sides** |
+| PCBA Qty | 5 | **2** |
+| Confirm Parts Placement | No | **Yes** (free; read both sides) |
+| Depanel boards & edge rail | No | **Yes** (about $2) |
 
 **Product Type answers yesterday's tariff question.**  The field is Product Type, with Industrial/Consumer electronics,
 Aerospace and Medical.  All your boards are Industrial/Consumer electronics, and the duty is 35% whichever you pick.
@@ -3039,3 +3039,22 @@ Aerospace and Medical.  All your boards are Industrial/Consumer electronics, and
 The cost estimate now adds ENIG ($18.80), so the total is $632.64 before duty, about $221 of duty and $31.23 of shipping.
 The 0.15 mm via option, TG155 and the specified stack-up may each raise the board price: send the cart once they are set
 and I will calibrate those lines too.  The release files you upload are unchanged; only the notes changed.
+
+## Prompt 40
+
+Make the "Set to" column bold, so that I don't accidentally pick up on the Default setting in a late-night or "office-hours-is-about-to-start" rush.
+
+(While this was being done:) Oh wait, your text document only has the new options. I thought you might have the same format as the table in the chat. What you had is probably ok.  /  I do like explaining the non-defaults.
+
+## Response 40 2026-10-09 09:20 - 08:52 Claude Opus 5.5 Max
+
+**The "set" column of Response 39's table is bold in this log, and `FABRICATION_NOTES.txt` now marks the same thing in
+plain text.**  The notes list every field of the form in JLCPCB's order, and the 12 that differ from JLCPCB's default
+start with `>>`.  Each of those names the default to avoid, then gives the reason:
+
+    >>  Min via hole size/diameter ......  0.15mm/(0.25/0.3mm)   NOT the default 0.3mm/(0.4/0.45mm).  (the board's smallest via ...)
+
+The fields left at their defaults are listed too, unmarked, so the list reads straight down the form.  The defaults come
+from your screenshots (`mfg/make_fab.JLC_DEFAULTS`), and the build counts the differences: 12 on this board.
+CLAUDE_PCB.md section 8 has the rule: `>>` in plain text, the value to set **bold** in a Markdown table, and the value
+spelled exactly as the form spells it.  Only the notes changed.

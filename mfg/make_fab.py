@@ -396,6 +396,26 @@ def cost(rows, boards, refresh=False):
     return lines, total_parts, ext, thin
 
 
+# JLCPCB's defaults as the form opens (screenshots of 2026-10-09).  A field whose value here differs is marked ">>" in the
+# notes, with the default to avoid: a late-night upload must not keep a default by mistake (Jason, 2026-10-09).
+JLC_DEFAULTS = {
+    "Layers": "2", "PCB Qty": "5", "Product Type": "Industrial/Consumer electronics", "Different Design": "1",
+    "Delivery Format": "Single PCB", "PCB Thickness": "1.6mm", "PCB Color": "Green", "Silkscreen": "White",
+    "Material Type": "FR4 TG135", "Surface Finish": "OSP", "Gold Thickness": "1 U\"", "Outer Copper Weight": "1 oz",
+    "Inner Copper Weight": "0.5 oz", "Specify Layer Sequence": "No", "Specify Stackup": "No",
+    "Via Covering": "Epoxy Filled & Capped", "Min via hole size/diameter": "0.3mm/(0.4/0.45mm)",
+    "Board Outline Tolerance": "+-0.2mm (Regular)", "Confirm Production file": "No", "Mark on PCB": "Remove Mark",
+    "Electrical Test": "Flying Probe Fully Test", "Gold Fingers": "No", "Castellated Holes": "No", "Press-Fit Hole": "No",
+    "Edge Plating": "No", "Blind Slots": "No", "UL Marking": "No", "Backdrill": "No", "Humidity Indicator Card": "No",
+    "PCB Assembly": "Off", "PCBA Type": "Economic", "Assembly Side": "Top Side", "PCBA Qty": "5",
+    "Tooling holes": "Added by JLCPCB", "Confirm Parts Placement": "No", "Stencil Storage": "No", "Fixture Storage": "No",
+    "Parts Selection": "By Customer (Self-Service)", "Bake Components": "No", "Photo Confirmation": "No",
+    "Board Cleaning": "No", "Conformal Coating": "No", "Special stencil": "No", "Packaging": "Antistatic bubble film",
+    "Depanel boards & edge rail before delivery": "No", "Solder Paste": "High temp.", "Flying Probe Test": "No",
+    "Function test": "No", "Assembly remark": "No", "Stencil": "Off",
+}
+
+
 def jlc_form(m, boards, rows, rf_w):
     """The order form as text, in JLCPCB's order: section headings, then 'field ...... value   (why)'."""
     import place as P
@@ -416,15 +436,24 @@ def jlc_form(m, boards, rows, rf_w):
         for k, v in subs.items():
             s = s.replace(k, v)
         return s
-    out = ["JLCPCB ORDER FORM -- set it top to bottom; the fields are in the form's own order (as of 2026-10-09)", ""]
+    out = ["JLCPCB ORDER FORM -- set it top to bottom; the fields are in the form's own order (as of 2026-10-09).",
+           "A line marked >> is NOT JLCPCB's default: change it, and do not leave the default named on its right.", ""]
+    n_change = 0
     for title, form in (("PCB", JLC_PCB_FORM), ("PCBA", JLC_PCBA_FORM)):
         last = None
         for sec, field, value, why in form:
             head = sec or title
             if head != last:
                 out.append("  %s" % head); last = head
-            out.append("    %-44s %-30s %s" % (field + " " + "." * max(2, 42 - len(field)), fill(value), ("(" + fill(why) + ")") if why else ""))
+            v = fill(value)
+            d = JLC_DEFAULTS.get(field)
+            change = d is not None and not v.startswith(d) and not v.startswith("(")
+            n_change += change
+            mark = ">> " if change else "   "
+            tail = ("NOT the default %s.  " % d if change else "") + (("(" + fill(why) + ")") if why else "")
+            out.append("  %s %-44s %-30s %s" % (mark, field + " " + "." * max(2, 42 - len(field)), v, tail))
         out.append("")
+    out.insert(2, "%d fields differ from JLCPCB's defaults." % n_change)
     return out
 
 

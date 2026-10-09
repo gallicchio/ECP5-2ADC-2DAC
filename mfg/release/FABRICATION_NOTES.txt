@@ -1,70 +1,72 @@
 ECP5-2ADC-2DAC rev A -- FABRICATION NOTES (written 2026-10-09)
 
-JLCPCB ORDER FORM -- set it top to bottom; the fields are in the form's own order (as of 2026-10-09)
+JLCPCB ORDER FORM -- set it top to bottom; the fields are in the form's own order (as of 2026-10-09).
+A line marked >> is NOT JLCPCB's default: change it, and do not leave the default named on its right.
+12 fields differ from JLCPCB's defaults.
 
   PCB
-    Base Material .............................  FR-4                           
-    Layers ....................................  6 (High Precision PCB)         (High Precision PCB row)
-    Dimensions ................................  158 x 119 mm                   (the board outline)
-    PCB Qty ...................................  5                              (JLCPCB's minimum; 2 of them assembled)
-    Product Type ..............................  Industrial/Consumer electronics (the only true one of the three (Aerospace, Medical); duty is 35% whatever is chosen)
+      Base Material .............................  FR-4                           
+  >>  Layers ....................................  6 (High Precision PCB)         NOT the default 2.  (High Precision PCB row)
+      Dimensions ................................  158 x 119 mm                   (the board outline)
+      PCB Qty ...................................  5                              (JLCPCB's minimum; 2 of them assembled)
+      Product Type ..............................  Industrial/Consumer electronics (the only true one of the three (Aerospace, Medical); duty is 35% whatever is chosen)
   PCB Specifications
-    Different Design ..........................  1                              
-    Delivery Format ...........................  Single PCB                     (JLCPCB adds and removes the assembly rails (see Depanel below))
-    PCB Thickness .............................  1.6mm                          (the stack-up's total)
-    PCB Color .................................  Green                          
-    Silkscreen ................................  White                          
-    Material Type .............................  FR4 TG155                      (a 0.8 mm BGA reflowed twice (both sides) plus through-hole: TG155 rather than the TG135 default.  If Specify Stackup sets the material, take what it sets)
-    Surface Finish ............................  ENIG                           (not OSP: flat for the 0.8 mm BGA and 0.4 mm QFP/QFN, survives the second side's reflow and the through-hole soldering, keeps for rework and probing)
-    Gold Thickness ............................  1 U"                           (appears under ENIG; 2 U" is for gold fingers and wearing contacts, and the board has none)
+      Different Design ..........................  1                              
+      Delivery Format ...........................  Single PCB                     (JLCPCB adds and removes the assembly rails (see Depanel below))
+      PCB Thickness .............................  1.6mm                          (the stack-up's total)
+      PCB Color .................................  Green                          
+      Silkscreen ................................  White                          
+  >>  Material Type .............................  FR4 TG155                      NOT the default FR4 TG135.  (a 0.8 mm BGA reflowed twice (both sides) plus through-hole: TG155 rather than the TG135 default.  If Specify Stackup sets the material, take what it sets)
+  >>  Surface Finish ............................  ENIG                           NOT the default OSP.  (not OSP: flat for the 0.8 mm BGA and 0.4 mm QFP/QFN, survives the second side's reflow and the through-hole soldering, keeps for rework and probing)
+      Gold Thickness ............................  1 U"                           (appears under ENIG; 2 U" is for gold fingers and wearing contacts, and the board has none)
   High-spec Options
-    Outer Copper Weight .......................  1 oz                           (the stack-up's)
-    Inner Copper Weight .......................  0.5 oz                         (the stack-up's)
-    Specify Layer Sequence ....................  No                             (the Gerber names and the job file give the order)
-    Specify Stackup ...........................  Yes: JLC06161H-7628            (the 50 ohm SMA feeds (0.35 mm) and the 100 ohm MDI pairs are drawn for it.  If it is not offered, STOP and ask)
-    Via Covering ..............................  Epoxy Filled & Capped          (via-in-pad under the BGA and the back-side decoupling on ball vias)
-    Min via hole size/diameter ................  0.15mm/(0.25/0.3mm)            (the board's smallest via is 0.3 mm across, 0.15 mm drill)
-    Board Outline Tolerance ...................  +-0.2mm (Regular)              (the extrusion's slots take it)
-    Confirm Production file ...................  Yes                            (about $1: JLCPCB's production Gerbers come back to check before they make it)
-    Mark on PCB ...............................  Remove Mark                    (no order number printed (the back silk's JLCJLCJLCJLC, in the slot band, then prints as plain text))
-    Electrical Test ...........................  Flying Probe Fully Test        
-    Gold Fingers ..............................  No                             
-    Castellated Holes .........................  No                             
-    Press-Fit Hole ............................  No                             
-    Edge Plating ..............................  No                             
-    Blind Slots ...............................  No                             
-    UL Marking ................................  No                             
-    Backdrill .................................  No                             
-    Humidity Indicator Card ...................  No                             
+      Outer Copper Weight .......................  1 oz                           (the stack-up's)
+      Inner Copper Weight .......................  0.5 oz                         (the stack-up's)
+      Specify Layer Sequence ....................  No                             (the Gerber names and the job file give the order)
+  >>  Specify Stackup ...........................  Yes: JLC06161H-7628            NOT the default No.  (the 50 ohm SMA feeds (0.35 mm) and the 100 ohm MDI pairs are drawn for it.  If it is not offered, STOP and ask)
+      Via Covering ..............................  Epoxy Filled & Capped          (via-in-pad under the BGA and the back-side decoupling on ball vias)
+  >>  Min via hole size/diameter ................  0.15mm/(0.25/0.3mm)            NOT the default 0.3mm/(0.4/0.45mm).  (the board's smallest via is 0.3 mm across, 0.15 mm drill)
+      Board Outline Tolerance ...................  +-0.2mm (Regular)              (the extrusion's slots take it)
+  >>  Confirm Production file ...................  Yes                            NOT the default No.  (about $1: JLCPCB's production Gerbers come back to check before they make it)
+      Mark on PCB ...............................  Remove Mark                    (no order number printed (the back silk's JLCJLCJLCJLC, in the slot band, then prints as plain text))
+      Electrical Test ...........................  Flying Probe Fully Test        
+      Gold Fingers ..............................  No                             
+      Castellated Holes .........................  No                             
+      Press-Fit Hole ............................  No                             
+      Edge Plating ..............................  No                             
+      Blind Slots ...............................  No                             
+      UL Marking ................................  No                             
+      Backdrill .................................  No                             
+      Humidity Indicator Card ...................  No                             
 
   PCB Assembly
-    PCB Assembly ..............................  On                             
-    PCBA Type .................................  Standard                       (Economic cannot assemble both sides)
-    Assembly Side .............................  Both Sides                     (parts on both sides (the BGA's decoupling, the regulators, the magnetics and the microSD on the back))
-    PCBA Qty ..................................  2                              
-    Tooling holes .............................  Added by JLCPCB                
-    Confirm Parts Placement ...................  Yes                            (free: the placement preview, read against PLACEMENT_CHECKS.txt -- BOTH sides)
-    Stencil Storage ...........................  No                             
-    Fixture Storage ...........................  No                             
-    Parts Selection ...........................  By Customer (Self-Service)     (the BOM carries every LCSC code)
+  >>  PCB Assembly ..............................  On                             NOT the default Off.  
+  >>  PCBA Type .................................  Standard                       NOT the default Economic.  (Economic cannot assemble both sides)
+  >>  Assembly Side .............................  Both Sides                     NOT the default Top Side.  (parts on both sides (the BGA's decoupling, the regulators, the magnetics and the microSD on the back))
+  >>  PCBA Qty ..................................  2                              NOT the default 5.  
+      Tooling holes .............................  Added by JLCPCB                
+  >>  Confirm Parts Placement ...................  Yes                            NOT the default No.  (free: the placement preview, read against PLACEMENT_CHECKS.txt -- BOTH sides)
+      Stencil Storage ...........................  No                             
+      Fixture Storage ...........................  No                             
+      Parts Selection ...........................  By Customer (Self-Service)     (the BOM carries every LCSC code)
   Advanced Options
-    Bake Components ...........................  No                             
-    Photo Confirmation ........................  No                             
-    Board Cleaning ............................  No                             
-    Conformal Coating .........................  No                             
-    Special stencil ...........................  No                             
-    Packaging .................................  Antistatic bubble film         (the default)
-    Depanel boards & edge rail before delivery .. Yes                            (about $2: the boards come without JLCPCB's rails)
-    Solder Paste ..............................  High temp.                     (the default, lead-free)
-    Flying Probe Test .........................  No                             (the bare boards are already flying-probe tested)
-    Nitrogen reflow soldering .................  (leave as offered)             
-    Function test .............................  No                             
-    Assembly remark ...........................  No                             
+      Bake Components ...........................  No                             
+      Photo Confirmation ........................  No                             
+      Board Cleaning ............................  No                             
+      Conformal Coating .........................  No                             
+      Special stencil ...........................  No                             
+      Packaging .................................  Antistatic bubble film         (the default)
+  >>  Depanel boards & edge rail before delivery .. Yes                            NOT the default No.  (about $2: the boards come without JLCPCB's rails)
+      Solder Paste ..............................  High temp.                     (the default, lead-free)
+      Flying Probe Test .........................  No                             (the bare boards are already flying-probe tested)
+      Nitrogen reflow soldering .................  (leave as offered)             
+      Function test .............................  No                             
+      Assembly remark ...........................  No                             
   Stencil
-    Stencil ...................................  Off                            (the assembly makes its own)
+      Stencil ...................................  Off                            (the assembly makes its own)
   Files
-    BOM .......................................  ECP5-2ADC-2DAC_bom.csv         
-    CPL .......................................  ECP5-2ADC-2DAC_cpl_jlcpcb_upload.csv (not the _kicad_native one)
+      BOM .......................................  ECP5-2ADC-2DAC_bom.csv         
+      CPL .......................................  ECP5-2ADC-2DAC_cpl_jlcpcb_upload.csv (not the _kicad_native one)
 
 NOTES
 Board: 158 x 119 mm, 6 layers, 1.6 mm, JLCPCB stackup JLC06161H-7628 (1 oz outer, 0.5 oz inner, 7628 prepreg).
