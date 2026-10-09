@@ -105,7 +105,10 @@ JLC_ROTATION_BY_PART = {
     "C88374": (0, "derived", "U.FL: our footprint is JLCPCB's own drawing with its pad 3 renamed 2 (both grounds are 2)"),
     "C145262": (0, "derived", "photodiode VBPW34S: our footprint is JLCPCB's drawing with the pads renumbered (ours: 1 = cathode); "
                               "the part sits as their library draws it, their pad 1 (anode) on the -4.2 V side"),
-    "C2843878": (0, "derived", "2835 LED: our footprint is JLCPCB's drawing"),
+    # READ in JLCPCB's placement viewer (Jason, 2026-10-08, build 34): at +0 D201 showed its "-" and corner triangle on the
+    # left, where our pad 1 (the cathode, the large pad) is on the right.  Their viewer draws this LED a half turn from
+    # their own land drawing, so "our footprint is their drawing" did not make +0 right.
+    "C2843878": (180, "read", "2835 LED XL-2835SURC-05: +0 showed the cathode on the anode's side in build 34's preview (Jason, 2026-10-08); +180"),
     # "predicted" by the POLARITY MARK in JLCPCB's drawing (the EasyEDA record's png, read 2026-10-06): the
     # cathode ("-", the bar or chamfer) on the LEFT at 0, where KiCad's pad 1 (the cathode) is.  A fit by pad
     # number would say 180 on these, since JLCPCB numbers the cathode 2 (GPiBridge's KT-0805 lesson).

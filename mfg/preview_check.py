@@ -48,8 +48,16 @@ OURS_MARKED = {"D_SOD-123": ("K", "1"), "D_SMA": ("K", "1"), "LED_0603_1608Metri
                "LED-SMD_L3.5-W2.8-RD": ("K", "1"), "LED-ARRAY-SMD_4P-L1.6-W1.5-BR_XL-1615RGBC-RF": ("COM+", "2")}
 
 
+# Parts whose symbol names no pins, and whose marked pad was READ in JLCPCB's viewer instead, with the turn their viewer
+# adds to their land drawing.  The 2835 LED (Jason, 2026-10-08): its "-" is the large pad 1 of the drawing, and the viewer
+# draws the part a half turn from that drawing -- at +0 it showed the cathode on the left where ours is on the right.
+VIEWER_READ = {"C2843878": ("1", 180.0)}
+
+
 def their_pin(code, name):
     """The pad number JLCPCB's symbol gives the pin called `name` (K, A, COM+), or None if the symbol names none."""
+    if code in VIEWER_READ:
+        return VIEWER_READ[code][0]
     res, ts = FC.svgs(code)
     for r in res:
         b = r.get("svg", "")
@@ -108,7 +116,7 @@ def main():
                 tp = [p for p in lp["pads"] if str(p.get("number")) == tn]
                 op = [q for q in ours if str(q["num"]) == our_num]
                 if tp and op:
-                    dx, dy = turn(tp[0]["x"], tp[0]["y"], r)
+                    dx, dy = turn(tp[0]["x"], tp[0]["y"], r + VIEWER_READ.get(code, ("", 0.0))[1])
                     d = math.hypot(cx + dx - op[0]["x"], cy + dy - op[0]["y"])
                     if d > PAD_TOL:
                         msg.append("their %s (pad %s) lands %.2f mm from our %s (pad %s): REVERSED" % (name, tn, d, name, our_num))

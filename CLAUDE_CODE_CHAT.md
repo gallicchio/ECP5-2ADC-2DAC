@@ -2824,3 +2824,27 @@ as the USB-Cs do, fixes that.  It is on the rev B list too.
 
 Committed (the polarity test and these notes), not pushed.  After you order: tag the commit and zip `mfg/release/` with
 its SHA-256 sums (CLAUDE_PCB.md section 1, "Rev A until ordered"), and start `REVB_CHANGES.md`.
+
+## Prompt 35
+
+D201 seems upside down:
+
+(Screenshot of JLCPCB's viewer: D201 with its "-" and its corner triangle on the left, "+" on the right; our silkscreen's triangle at the bottom right.)
+
+## Response 35 2026-10-08 21:05 - 21:24 Claude Opus 5.5 Max
+
+**It was upside down; the CPL is fixed.  Upload `mfg/release/ECP5-2ADC-2DAC_cpl_jlcpcb_upload.csv` again.**  The only
+change is D201's rotation, 180 to 0.  The gerbers and the BOM you uploaded stay as they are; the gerbers on disk are
+byte-identical to them.
+
+My answer to Prompt 34 was wrong about D201.  Our cathode, the large pad 1 on Net-(D201-K), is on the right, and our
+silkscreen's triangle at the bottom right marks it.  I had predicted JLCPCB's side from their land drawing, where the
+large pad is "-": our footprint is that drawing, turned the same 180, so +0 looked right.  Their viewer, which is what
+places the part, draws this LED a half turn from their own drawing.  Your screenshot is the reading, so the rotation
+table now has it as read, +180 (`mfg/jlc_rotation.py`).
+
+The preview check could not catch this because JLCPCB's symbol for this LED names its pins "1" and "2", not K and A.  It
+now carries the part as read in the viewer: marked pad 1, plus the viewer's half turn.  Run on the CPL you uploaded, it
+flags D201 as REVERSED; on the new one all 24 diodes and LEDs pass.  The other three you showed, D501, D309 and D103,
+were checked against JLCPCB's own pin names and your screenshots agree with them.  The lesson: a footprint copied from
+JLCPCB's drawing still needs its rotation read in their viewer.

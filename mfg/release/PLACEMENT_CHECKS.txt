@@ -111,6 +111,7 @@ Not yet seen right in a preview:
 
 Read right in a preview already (the Icepi and GPSDO boards): D103 D201 J107 J108 J109 J603 U304 U305 U306 U505 U601 U602 U603 U604 U605
 The method against those readings (its prediction must equal the correction somebody saw):
+  C2843878   LED-SMD_L3.5-W2.8-RD                 read 180, predicted   -: no prediction
   C7836      SOT-23-5                             read 180, predicted 180: AGREES
   C62246     TSOP-II-54_22.2x10.16mm_P0.8mm       read 270, predicted 270: AGREES
   C97521     SOIC-8_5.3x5.3mm_P1.27mm             read 270, predicted 270: AGREES
