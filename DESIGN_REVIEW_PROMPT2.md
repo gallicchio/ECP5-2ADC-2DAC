@@ -374,7 +374,7 @@ it, it says so; where you find one not met that the author did not know, that is
 
 ### 4e. Manufacturing package (§8)
 
-* **Upload files:** gerbers zip, BOM (one line per LCSC code), CPL JLC-corrected (`_cpl.csv`) and native, assembly
+* **Upload files:** gerbers zip, BOM (one line per LCSC code), CPL JLC-corrected (`_cpl.csv`, since 2026-10-08 `_cpl_jlcpcb_upload.csv`) and native, assembly
   notes to paste (`FABRICATION_NOTES.txt`), the cost estimate, `PLACEMENT_CHECKS.txt`.
 * **Nothing hand-soldered:** `hand_solder_bom.csv` is its header alone; the through-hole parts (six SMAs, the RJ45,
   the DIP switch, the headers as 1x40 / 2x40 strips, the Pmod sockets) are fitted by JLCPCB.

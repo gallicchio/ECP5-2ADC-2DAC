@@ -18,7 +18,7 @@ notes) into `mfg/release/`.  `python3 build.py --clean` removes everything it ma
 |---|---|
 | the schematic (7 sheets, A1/A2/A3) | `ECP5-2ADC-2DAC.kicad_sch`, `fpga/adc/dac/ethernet/usb/power.kicad_sch`, renders in `build/sch/*.png` |
 | the board | `ECP5-2ADC-2DAC.kicad_pcb` |
-| manufacturing release | `mfg/release/` (`*_gerbers.zip`, `*_bom.csv`, `*_cpl.csv`, `FABRICATION_NOTES.txt`, `cost_estimate.csv`) |
+| manufacturing release | `mfg/release/` (`*_gerbers.zip`, `*_bom.csv`, `*_cpl_jlcpcb_upload.csv`, `*_cpl_kicad_native.csv`, `FABRICATION_NOTES.txt`, `cost_estimate.csv`) |
 | pin plan, constraints, LiteX platform | `build/fpga_pins.json`, `gateware/ecp5_2adc_2dac.lpf`, `gateware/litex/ecp5_2adc_2dac.py` |
 | gateware proof (every pin, every clock) | `gateware/test/pins.v`, `gateware/test/build.sh` |
 | analog simulations | `sim/*.cir`, run with `python3 sim/run.py sim/*.cir` |
@@ -75,7 +75,7 @@ notes) into `mfg/release/`.  `python3 build.py --clean` removes everything it ma
   pin number predicts the CPL rotation correction for every part nobody has yet read in a placement preview
   (7 of 7 corrections somebody has read agree with it), and where their drawing's origin is not KiCad's (the
   USB-Cs, 1.3 mm; the Pmod sockets) the uploaded CPL is moved to their origin, since JLCPCB places that.
-  `ECP5-2ADC-2DAC_cpl.csv` is the one to upload, `_cpl_native.csv` KiCad's own numbers, and
+  `ECP5-2ADC-2DAC_cpl_jlcpcb_upload.csv` is the one to upload, `_cpl_kicad_native.csv` KiCad's own numbers, and
   `PLACEMENT_CHECKS.txt` lists every predicted or moved part for the preview.  Two-pad polarised parts are
   read by the polarity mark in JLCPCB's drawing, not by pad number (they number the cathode 2).
 * The CPL's bottom side: KiCad's own flip stores a footprint's pads mirrored top-to-bottom, and the mirror
@@ -231,6 +231,32 @@ the first prompt's state line said: the two dangling ground vias and two `connec
 one 0.7 x 0.9 mm crumb of the In4 ground fill at (150.8-151.5, 44.1-45.0), two ground vias 0.7 mm apart between the +5V
 corridor and the +3V3 plane; harmless, and KiCad reports a zone's neck at the zone's anchor, so it took a shrink test
 (shapely) to find.
+
+## What build 34 changed (Prompt 33: JLCPCB's placement preview of build 33)
+
+Jason's upload of build 33 showed two faults in the preview, and both were the release's, not the board's:
+
+* **Every 2.54 mm header appeared as a whole 40-pin strip**, a 100 mm bar centred on its pin 1.  The headers were ordered
+  as 1x40 / 2x40 strips for JLCPCB to snap, as on the GPSDO board, so JLCPCB's drawing was the strip.  Each header is now
+  the stocked part of its own length (XFCN PZ254V-11-02P / -03P / -06P and PZ254V-12-18P): cheaper, drawn and fitted by
+  pin number like any other part, and placed at the middle of its pins (the release's datum shift).
+* **The six SMAs lay along the board edge and the two Pmod sockets stood a quarter turn round.**  JLCPCB numbers those
+  parts' pins unlike KiCad, so no fit by pin number could predict their rotation, and the CPL sent them at KiCad's angle.
+  Their corrections are now read from JLCPCB's land drawings, where the barrel and the socket body show which way the
+  part faces: +90 for the SMA (barrel along +x in their drawing, -y in KiCad's) and +270 for the Pmod socket.  The
+  release now fails on any such part that nobody has read.  The new headers need a correction too: JLCPCB draws them
+  lying along x with pin 1 on the left, KiCad standing along y, so all of them go out at -90 (the 1x3, 1x6 and 2x9
+  predicted by pin number, the 1x2 -- two pads predict nothing -- read off the drawing).
+* **`mfg/preview_check.py` computes the preview**: JLCPCB's own land drawing of every top-side part, placed where the
+  upload CPL says and turned as it says, against the board's pads and courtyards.  Build 34's CPL: all 347 top-side
+  placements land on their pads with their bodies the right way.  Build 33's: the six SMAs and both Pmod sockets
+  flagged, as the preview showed.  It runs in the build after the release and stops it on a wrong placement; the
+  127 bottom-side placements are still the preview's to judge.
+
+And the two CPLs are named for what they are: `ECP5-2ADC-2DAC_cpl_jlcpcb_upload.csv` (upload this one) and
+`ECP5-2ADC-2DAC_cpl_kicad_native.csv`, the convention of every board in this repository since 2026-10-08.  The copper is
+build 33's: compared item by item, all 6905 tracks, vias, footprints, zone fills and texts are the same (the file's UUIDs
+and the silkscreen date differ).  BOM 95 lines, 49 Extended; about $1100 for five boards ($220 each).
 
 ## What builds 32-33 changed (Prompt 32: the second round of reviews)
 

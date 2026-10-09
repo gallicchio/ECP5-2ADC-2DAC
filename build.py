@@ -199,6 +199,11 @@ def main():
     s = Step("9/9  release  <- mfg/make_fab.py")
     out = run([sys.executable, "mfg/make_fab.py", "--boards", str(a.boards)])
     s.done("\n    ".join(out.strip().splitlines()[-8:]))
+    # build 34 (JLCPCB's preview of build 33 showed 40-pin strips and turned SMAs): JLCPCB's own drawings placed where the
+    # upload CPL says, against the board -- the preview, computed.  A placement that would look wrong stops the build.
+    s = Step("9b   preview check  <- mfg/preview_check.py  (JLCPCB's drawings at the CPL's positions and angles)")
+    out = run([sys.executable, "mfg/preview_check.py"])
+    s.done("\n    ".join(out.strip().splitlines()[-6:]))
     s = Step("10   renders  -> docs/images  (schematic PDF and PNGs, board PNGs, 3D views)")
     s.done(render_docs())
     if n_err or n_unc:

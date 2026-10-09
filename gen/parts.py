@@ -125,7 +125,7 @@ LCSC = {
     ("GZ2012D601TF", "L0805"): ("C1017", "Basic 600R@100MHz ferrite, 500 mA"),
     ("BLM18KG601SN1D", "L0603"): ("C85833", "600R@100MHz 1.3 A ferrite (rails that carry current), 941k in stock"),
     ("2.2uH", "L4030"): ("C279948", "the bucks' power inductor, also the PHY's switcher (C1043, the 0805 chip inductor builds 1-23 had there, is rated 50 mA)"),
-    ("Y", "H1x2"): ("C2337", "2.54 mm 1x40 breakable strip, snap to length (through-hole; JLCPCB fits it)"),
+    ("Y", "H1x2"): ("C492401", "2.54 mm 1x2 header PZ254V-11-02P (through-hole; JLCPCB fits it); builds 1-33: the 1x40 strip C2337"),
     ("1N4148W", "SOD123"): ("C81598", "Basic fast diode"),
     ("MF-MSMF050-2", "F1812"): ("C17313", "500 mA resettable fuse for the HDMI 5 V"),
     ("white", "LED0603"): ("C2290", "Basic 0603 white LED, KT-0603W (the Icepi Zero's): the user LEDs"),
@@ -181,8 +181,13 @@ ALIASES = {"AD9238": "AD9238BSTZ-65", "AD9767": "AD9767ASTZRL", "OPA2810": "OPA2
 # the jumper is called.  The 2.54 mm headers come as strips the assembler snaps to length, as on the
 # GPSDO board JLCPCB built; the Pmod sockets are a stocked 2x6 right-angle female header (8910 in
 # stock, 2026-10-06), checked against the footprint by mfg/footprint_check.py.
-LCSC_BY_FP = {"H1x2": "C2337", "H1x3": "C2337", "H1x4": "C2337", "H1x6": "C2337",    # 2.54 mm 1x40 male strip
-              "H2x3": "C29952", "H2x8": "C29952", "H2x9": "C29952",                   # 2.54 mm 2x40 male strip
+# Build 34 (Jason, 2026-10-08, JLCPCB's preview of build 33): every header showed as the whole 40-pin strip, a 100 mm bar
+# centred on its pin 1 across the board.  JLCPCB draws (and stocks) the strip; its engineers snap it, but the preview
+# cannot be checked and the drawing is not the part on the board.  Each header is now the stocked part of its own length
+# (XFCN PZ254V, 2.54 mm, gold flash, all Extended -- the strips were Extended too), so JLCPCB's drawing, pins and
+# origin are the footprint's and footprint_check.py fits them by pin number like any other part.
+LCSC_BY_FP = {"H1x2": "C492401", "H1x3": "C2937625", "H1x4": "C2691448", "H1x6": "C492405",   # PZ254V-11-0nP, 1 row
+              "H2x3": "C29952", "H2x8": "C492425", "H2x9": "C492426",                       # PZ254V-12-nnP, 2 rows (2x3 unused: no stocked black one)
               "PMOD": "C22373932"}                                                     # HC-PM254-8.5H-2x6PW, 2x6 right-angle female
 
 

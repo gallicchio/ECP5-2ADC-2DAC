@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "ECP5-2ADC-2DAC.kicad_sch")
-		(date "2026-10-07T20:09:50")
+		(date "2026-10-08T20:25:24")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
@@ -4410,7 +4410,7 @@
 			(footprint "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical")
 			(fields
 				(field
-					(name "LCSC") "C2337")
+					(name "LCSC") "C492405")
 				(field
 					(name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical")
 				(field
@@ -4427,7 +4427,7 @@
 			)
 			(property
 				(name "LCSC")
-				(value "C2337")
+				(value "C492405")
 			)
 			(property
 				(name "Sheetname")
@@ -4482,7 +4482,7 @@
 			(footprint "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
 			(fields
 				(field
-					(name "LCSC") "C2337")
+					(name "LCSC") "C492401")
 				(field
 					(name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
 				(field
@@ -4499,7 +4499,7 @@
 			)
 			(property
 				(name "LCSC")
-				(value "C2337")
+				(value "C492401")
 			)
 			(property
 				(name "Sheetname")
@@ -11743,7 +11743,7 @@
 			(footprint "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
 			(fields
 				(field
-					(name "LCSC") "C2337")
+					(name "LCSC") "C492401")
 				(field
 					(name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
 				(field
@@ -11760,7 +11760,7 @@
 			)
 			(property
 				(name "LCSC")
-				(value "C2337")
+				(value "C492401")
 			)
 			(property
 				(name "Sheetname")
@@ -11803,7 +11803,7 @@
 			(footprint "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
 			(fields
 				(field
-					(name "LCSC") "C2337")
+					(name "LCSC") "C492401")
 				(field
 					(name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
 				(field
@@ -11820,7 +11820,7 @@
 			)
 			(property
 				(name "LCSC")
-				(value "C2337")
+				(value "C492401")
 			)
 			(property
 				(name "Sheetname")
@@ -12019,7 +12019,7 @@
 			(footprint "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
 			(fields
 				(field
-					(name "LCSC") "C2337")
+					(name "LCSC") "C492401")
 				(field
 					(name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
 				(field
@@ -12036,7 +12036,7 @@
 			)
 			(property
 				(name "LCSC")
-				(value "C2337")
+				(value "C492401")
 			)
 			(property
 				(name "Sheetname")
@@ -12079,7 +12079,7 @@
 			(footprint "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical")
 			(fields
 				(field
-					(name "LCSC") "C2337")
+					(name "LCSC") "C2937625")
 				(field
 					(name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical")
 				(field
@@ -12096,7 +12096,7 @@
 			)
 			(property
 				(name "LCSC")
-				(value "C2337")
+				(value "C2937625")
 			)
 			(property
 				(name "Sheetname")
@@ -12142,7 +12142,7 @@
 			(footprint "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
 			(fields
 				(field
-					(name "LCSC") "C2337")
+					(name "LCSC") "C492401")
 				(field
 					(name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
 				(field
@@ -12159,7 +12159,7 @@
 			)
 			(property
 				(name "LCSC")
-				(value "C2337")
+				(value "C492401")
 			)
 			(property
 				(name "Sheetname")
@@ -12202,7 +12202,7 @@
 			(footprint "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
 			(fields
 				(field
-					(name "LCSC") "C2337")
+					(name "LCSC") "C492401")
 				(field
 					(name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
 				(field
@@ -12219,7 +12219,7 @@
 			)
 			(property
 				(name "LCSC")
-				(value "C2337")
+				(value "C492401")
 			)
 			(property
 				(name "Sheetname")
@@ -12262,7 +12262,7 @@
 			(footprint "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
 			(fields
 				(field
-					(name "LCSC") "C2337")
+					(name "LCSC") "C492401")
 				(field
 					(name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
 				(field
@@ -12279,7 +12279,7 @@
 			)
 			(property
 				(name "LCSC")
-				(value "C2337")
+				(value "C492401")
 			)
 			(property
 				(name "Sheetname")
@@ -12322,7 +12322,7 @@
 			(footprint "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical")
 			(fields
 				(field
-					(name "LCSC") "C2337")
+					(name "LCSC") "C2937625")
 				(field
 					(name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical")
 				(field
@@ -12339,7 +12339,7 @@
 			)
 			(property
 				(name "LCSC")
-				(value "C2337")
+				(value "C2937625")
 			)
 			(property
 				(name "Sheetname")
@@ -12385,7 +12385,7 @@
 			(footprint "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
 			(fields
 				(field
-					(name "LCSC") "C2337")
+					(name "LCSC") "C492401")
 				(field
 					(name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
 				(field
@@ -12402,7 +12402,7 @@
 			)
 			(property
 				(name "LCSC")
-				(value "C2337")
+				(value "C492401")
 			)
 			(property
 				(name "Sheetname")
@@ -12445,7 +12445,7 @@
 			(footprint "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
 			(fields
 				(field
-					(name "LCSC") "C2337")
+					(name "LCSC") "C492401")
 				(field
 					(name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
 				(field
@@ -12462,7 +12462,7 @@
 			)
 			(property
 				(name "LCSC")
-				(value "C2337")
+				(value "C492401")
 			)
 			(property
 				(name "Sheetname")
@@ -12505,7 +12505,7 @@
 			(footprint "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical")
 			(fields
 				(field
-					(name "LCSC") "C2337")
+					(name "LCSC") "C2937625")
 				(field
 					(name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical")
 				(field
@@ -12522,7 +12522,7 @@
 			)
 			(property
 				(name "LCSC")
-				(value "C2337")
+				(value "C2937625")
 			)
 			(property
 				(name "Sheetname")
@@ -16326,7 +16326,7 @@
 			(footprint "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
 			(fields
 				(field
-					(name "LCSC") "C2337")
+					(name "LCSC") "C492401")
 				(field
 					(name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
 				(field
@@ -16343,7 +16343,7 @@
 			)
 			(property
 				(name "LCSC")
-				(value "C2337")
+				(value "C492401")
 			)
 			(property
 				(name "Sheetname")
@@ -16386,7 +16386,7 @@
 			(footprint "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical")
 			(fields
 				(field
-					(name "LCSC") "C2337")
+					(name "LCSC") "C2937625")
 				(field
 					(name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical")
 				(field
@@ -16403,7 +16403,7 @@
 			)
 			(property
 				(name "LCSC")
-				(value "C2337")
+				(value "C2937625")
 			)
 			(property
 				(name "Sheetname")
@@ -23783,7 +23783,7 @@
 			(footprint "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
 			(fields
 				(field
-					(name "LCSC") "C2337")
+					(name "LCSC") "C492401")
 				(field
 					(name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
 				(field
@@ -23800,7 +23800,7 @@
 			)
 			(property
 				(name "LCSC")
-				(value "C2337")
+				(value "C492401")
 			)
 			(property
 				(name "Sheetname")
@@ -29105,7 +29105,7 @@
 			(footprint "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
 			(fields
 				(field
-					(name "LCSC") "C2337")
+					(name "LCSC") "C492401")
 				(field
 					(name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
 				(field
@@ -29122,7 +29122,7 @@
 			)
 			(property
 				(name "LCSC")
-				(value "C2337")
+				(value "C492401")
 			)
 			(property
 				(name "Sheetname")
@@ -29165,7 +29165,7 @@
 			(footprint "Connector_PinHeader_2.54mm:PinHeader_2x09_P2.54mm_Vertical")
 			(fields
 				(field
-					(name "LCSC") "C29952")
+					(name "LCSC") "C492426")
 				(field
 					(name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_2x09_P2.54mm_Vertical")
 				(field
@@ -29182,7 +29182,7 @@
 			)
 			(property
 				(name "LCSC")
-				(value "C29952")
+				(value "C492426")
 			)
 			(property
 				(name "Sheetname")

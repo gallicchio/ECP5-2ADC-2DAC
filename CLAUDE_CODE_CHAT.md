@@ -2712,3 +2712,69 @@ of `DESIGN_REVIEW_PROMPT2.md` for a rerun, and in the root `CLAUDE.md`.
 Committed with the two review reports and their measurements; not committed: Copilot's `kicad_copy/` (a copy of build
 31's project, in git already as `11e2f61`), its 14 MB of copper renders, and two of its log files that name `/home` paths.
 A stale git lock from 18:50 (no git process running; probably a reviewer's interrupted command) was removed first.  Not pushed.
+
+## Prompt 33
+
+I am uploading the board to JLCPCB. Some things to change, which do not require a rebuild:
+* The two cpl files should be called ECP5-2ADC-2DAC_cpl_kicad_native.csv and ECP5-2ADC-2DAC_cpl_jlcpcb_upload.csv
+Add this convention to CLAUDE_PCB.md and fix all of the other OpticsPCBs that use a different convention.
+* The jumpers selected showed up way too long, and the SMAs were rotated. I will check other components later, when I have time, but figure out why this happened and fix it. I've attached a screenshot.
+
+I often had to manually download analog devices datasheets because you could not. I can wget the pdfs directly at addresses like:
+https://www.analog.com/media/en/technical-documentation/data-sheets/adl5511.pdf
+Try that. There are web pages leading to this where wget does not work. In the future, when you ask me to get a datasheet, ask me for the link so that you know the general format and you can try this directly. Add that info to CLAUDE_PCB.md too.
+
+(Screenshot: JLCPCB's placement preview of build 33. Every 2.54 mm header shows as a full 40-pin strip, long bars running across the board and off its edges; the six edge SMAs on the left stand with their barrels along the edge instead of pointing off it.)
+
+## Response 33 2026-10-08 20:15 - 20:44 Claude Opus 5.5 Max
+
+**Build 34's release fixes both faults in the preview.  Upload all three files again from `mfg/release/`:**
+`ECP5-2ADC-2DAC_gerbers.zip`, `ECP5-2ADC-2DAC_bom.csv` and `ECP5-2ADC-2DAC_cpl_jlcpcb_upload.csv`.  The copper is build
+33's, item for item; the BOM changed (the headers) and so did the CPL.
+
+### Why it happened
+
+* **The headers were 40-pin strips.**  Since 2026-10-06 the release ordered every 2.54 mm header as a 1x40 or 2x40
+  break-away strip for JLCPCB to snap, as the GPSDO board was built.  JLCPCB's drawing of that part is the whole strip, so
+  the preview drew a 100 mm bar centred on each header's pin 1.  Each header is now the stocked part of its own length:
+  XFCN PZ254V-11-02P (C492401), -03P (C2937625), -06P (C492405) and PZ254V-12-18P (C492426).  They are cheaper per header,
+  and the CPL places them at the middle of their pins, where JLCPCB's drawings have their origin.
+* **The SMAs and the Pmod sockets were turned.**  Rotations come from fitting JLCPCB's drawing onto our footprint by pin
+  number, and these two parts number their pins differently.  No prediction came out, and the CPL silently kept KiCad's
+  angle.  Their pads cannot say which way the body faces: five holes in a square, a 2x6 grid.  JLCPCB's land drawings can.
+  The SMA's barrel runs along +x there but along -y in KiCad's footprint, so it needs +90.  The Pmod socket needs +270.
+* The same look found a third fault the preview had not shown yet.  JLCPCB draws the new headers lying along x and KiCad
+  stands them along y.  The longer headers predict -90 by pin number, but a two-pin part predicts nothing, so the 1x2
+  jumpers would have shown a quarter turn off their holes.  They have the correction now too.
+
+### What stops it next time
+
+| check | what it does |
+|---|---|
+| `mfg/make_fab.py` | refuses a release with any part of three or more pads whose rotation nothing predicts and nobody has read |
+| `mfg/preview_check.py`, a build step | places JLCPCB's own drawing of every top-side part at the CPL's position and angle; each of their pads must land on ours, and their silkscreen body must face the same way as our courtyard |
+
+On build 34 the preview check passes all 347 top-side placements.  On build 33's CPL it flags the six SMAs, both Pmod
+sockets and the headers, as your screenshot showed.  The 127 bottom-side placements are not covered yet, so they stay the
+preview's to judge.  The bottom side's seven polarized parts are still the first thing to look at.
+
+### The rest
+
+* **CPL names:** `<board>_cpl_jlcpcb_upload.csv` (upload) and `<board>_cpl_kicad_native.csv` (reference), here and in
+  GPSDO-PYNQ-Z2, the Icepi JLC rebuild and SyzygyRadioDrivers' plugin outputs, committed separately as `f911009`.  I told
+  the GPSDO session.  GPiBridge and the Halloween board live in their own repositories and still use their old names.
+* **Analog Devices:** `wget` of `analog.com/media/en/technical-documentation/data-sheets/<name>.pdf` works.  It returned
+  the same bytes as your manual AD9238 and AD9763/5/7 downloads; the product page returns 403.  The name is the datasheet's
+  (the AD9767 lives in `ad9763_9765_9767.pdf`).  `tools/adi_datasheet.py <name>` fetches one into `datasheets/` with its
+  text.
+* **CLAUDE_PCB.md (yours to commit):** the CPL names, ADI downloads, asking you for the link, exact-length headers,
+  unpredicted rotations, the computed preview, and the new rotation table rows.
+
+| | build 33 | build 34 |
+|---|---|---|
+| DRC errors / unconnected / warnings | 0 / 0 / 4 | 0 / 0 / 4 |
+| copper | | identical, all 6905 items |
+| BOM lines (Extended) | 93 (47) | 95 (49) |
+| cost for 5 | ~$1116 | ~$1100 |
+
+Committed, not pushed.

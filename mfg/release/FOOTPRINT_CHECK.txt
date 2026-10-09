@@ -3,7 +3,7 @@ FOOTPRINT vs ORDERED PART -- does the part fit the copper?
 
 board  ../ECP5-2ADC-2DAC.kicad_pcb
 BOM    release/ECP5-2ADC-2DAC_bom.csv
-run    2026-10-07T20:20:11-07:00
+run    2026-10-08T20:41:15-07:00
 478 footprint(s) placed, 1316 drill(s) on the board
 
   ok C1525       C_0402_1005Metric                            C0402              32 placement(s)
@@ -16,18 +16,11 @@ run    2026-10-07T20:20:11-07:00
   ok C23162      R_0603_1608Metric                            R0603              3 placement(s) bottom
   ok C25804      R_0603_1608Metric                            R0603              18 placement(s)
   ok C25804      R_0603_1608Metric                            R0603              2 placement(s) bottom
-  !! C2337       PinHeader_1x02_P2.54mm_Vertical              HDR-TH_40P-P2.54-V 12 placement(s)
-       PADS  part has 40 pad position(s), footprint has 2
-       datum their origin sits at (+0.000, +49.530) mm in our footprint; the JLCPCB CPL is moved there
-  !! C2337       PinHeader_1x03_P2.54mm_Vertical              HDR-TH_40P-P2.54-V 4 placement(s)
-       PADS  part has 40 pad position(s), footprint has 3
-       datum their origin sits at (+0.000, +49.530) mm in our footprint; the JLCPCB CPL is moved there
-  !! C2337       PinHeader_1x06_P2.54mm_Vertical              HDR-TH_40P-P2.54-V 1 placement(s)
-       PADS  part has 40 pad position(s), footprint has 6
-       datum their origin sits at (+0.000, +49.530) mm in our footprint; the JLCPCB CPL is moved there
   ok C1532       C_0402_1005Metric                            C0402              8 placement(s)
   ok C1532       C_0402_1005Metric_BGA                        C0402              7 placement(s) bottom
   ok C21190      R_0603_1608Metric                            R0603              15 placement(s)
+  !! C492401     PinHeader_1x02_P2.54mm_Vertical              HDR-TH_2P-P2.54-V- 12 placement(s)
+       datum their origin sits at (+0.000, +1.270) mm in our footprint; the JLCPCB CPL is moved there
   ok C137714     R_0603_1608Metric                            R0603              12 placement(s)
   ok C23345      R_0603_1608Metric                            R0603              12 placement(s)
   ok C23185      R_0603_1608Metric                            R0603              9 placement(s)
@@ -52,6 +45,8 @@ run    2026-10-07T20:20:11-07:00
   !! C2500       SOT-23                                       SOT-23-3_L2.9-W1.6 2 placement(s) bottom
        land  worst pad-centre miss 0.396 mm (pad 3) at 0 deg, 3 pad(s) matched by name
   ok C88374      UFL_Hirose_U.FL-R-SMT-1                      RF-SMD_FRF05002-JS 4 placement(s)
+  !! C2937625    PinHeader_1x03_P2.54mm_Vertical              HDR-TH_3P-P2.54-V- 4 placement(s)
+       datum their origin sits at (+0.000, +2.540) mm in our footprint; the JLCPCB CPL is moved there
   ok C23260      R_0603_1608Metric                            R0603              4 placement(s)
   ok C22916      R_0603_1608Metric                            R0603              4 placement(s)
   ok C4275       R_0603_1608Metric                            R0603              4 placement(s) bottom
@@ -100,12 +95,13 @@ run    2026-10-07T20:20:11-07:00
        land  worst pad-centre miss 0.200 mm (pad 2) at 0 deg, 2 pad(s) matched by name
   !! C17313      Fuse_1812_4532Metric                         F1812              1 placement(s) bottom
        land  worst pad-centre miss 0.283 mm (pad 2) at 180 deg, 2 pad(s) matched by name
+  !! C492405     PinHeader_1x06_P2.54mm_Vertical              HDR-TH_6P-P2.54-V- 1 placement(s)
+       datum their origin sits at (-0.000, +6.350) mm in our footprint; the JLCPCB CPL is moved there
   ok C386757     RJ45-TH_R-RJ45R08P-C000                      RJ45-TH_R-RJ45R08P 1 placement(s)
   ok C2682170    HDMI-SMD_A71-05H4-111N1                      HDMI-SMD_A71-05H4- 1 placement(s)
   ok C91145      TF-SMD_TF-01A                                TF-SMD_TF-01A      1 placement(s) bottom
-  !! C29952      PinHeader_2x09_P2.54mm_Vertical              HDR-TH_80P-P2.54-V 1 placement(s)
-       PADS  part has 80 pad position(s), footprint has 18
-       datum their origin sits at (+1.269, +49.530) mm in our footprint; the JLCPCB CPL is moved there
+  !! C492426     PinHeader_2x09_P2.54mm_Vertical              HDR-TH_18P-P2.54-V 1 placement(s)
+       datum their origin sits at (+1.270, +10.160) mm in our footprint; the JLCPCB CPL is moved there
   !! C15127      SOT-23                                       SOT-23_L2.9-W1.3-P 1 placement(s)
        land  worst pad-centre miss 0.282 mm (pad 3) at 180 deg, 3 pad(s) matched by name
   ok C21189      R_0603_1608Metric                            R0603              1 placement(s)
@@ -149,8 +145,4 @@ worth a look: datum x6, land x14, names x2
         CPL is moved by it (make_fab.py), the native one not
   names the pads line up but the pin NUMBERS disagree
 
-PROBLEMS: PADS x4
-
-HOLE is a stop-the-order problem: the part cannot sit down on the
-copper at all, and no amount of paste fixes it.  PADS and LAND want
-a human with the two drawings side by side.
+every ordered part fits the footprint it is going on.

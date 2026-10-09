@@ -114,6 +114,12 @@ JLC_ROTATION_BY_PART = {
     "C12624": (0, "predicted", "0603 green LED, by the mark: cathode left in both drawings"),
     "C81598": (0, "predicted", "1N4148W SOD-123, by the mark: cathode bar left in both drawings"),
     "C8598": (0, "predicted", "B5819W SOD-123, by the mark: cathode bar left in both drawings"),
+    # read from JLCPCB's land drawing and the preview of build 33 (2026-10-08): these number their pins differently from
+    # KiCad, so no fit by pin number predicts them, and builds 1-33 sent them at +0 -- the preview showed every SMA lying
+    # along the board edge and both Pmod sockets standing a quarter turn round.  The body is the cue, not the pins.
+    "C492401": (270, "predicted", "1x2 header PZ254V-11-02P: JLCPCB's drawing lies along +x with pin 1 left, KiCad's stands along +y with pin 1 at the top (the 1x3, 1x6 and 2x9 headers predict 270 by pin number; two pads predict nothing)"),
+    "C496551": (90, "predicted", "edge SMA BWSMA-KWE-Z001: JLCPCB's drawing has the barrel along +x at 0, KiCad's along -y (its courtyard runs 12 mm up); +0 put them along the edge in build 33's preview"),
+    "C22373932": (270, "predicted", "2x6 right-angle Pmod socket: JLCPCB's drawing has the body below the pin rows at 0, KiCad's to the left of its pin columns; +0 stood them a quarter turn round in build 33's preview"),
     "C8678": (0, "predicted", "SS34 SMA (build 32), by the mark: the band and the '-' on the left pad at 0 deg in JLCPCB's land drawing, the bar on the left in its symbol; KiCad's D_SMA has pad 1 (cathode) on the left"),
 }
 
@@ -173,9 +179,8 @@ ROTATION_NA = ("R_0402_1005Metric", "R_0201_0603Metric", "C_0402_1005Metric",
                "R_0603_1608Metric", "C_0402_1005Metric_BGA", "C_0805_2012Metric", "C_1206_3216Metric",
                "L_0603_1608Metric", "Fuse_1812_4532Metric", "IND-SMD_L4.0-W4.0", "Crystal_SMD_3225-4Pin_3.2x2.5mm",
                "SW-SMD_L3.9-W3.0-P4.45",
-               # the 2.54 mm pin headers JLCPCB fits since 2026-10-06: a straight header is the same either way round
-               "PinHeader_1x02_P2.54mm_Vertical", "PinHeader_1x03_P2.54mm_Vertical", "PinHeader_1x06_P2.54mm_Vertical",
-               "PinHeader_2x09_P2.54mm_Vertical",
+               # (the 2.54 mm pin headers are NOT here since build 34: a header is the same turned half way round but
+               # not a quarter -- JLCPCB draws them lying along x, KiCad standing along y -- so they need a correction)
                # two-terminal and unpolarised, build 26's parts
                "C_1812_4532Metric", "R_1206_3216Metric")
 

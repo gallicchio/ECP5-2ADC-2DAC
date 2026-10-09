@@ -170,7 +170,7 @@ def write_cpls(rows, fits, preds, outdir):
     asm = assembled(rows)
     unchecked = collections.OrderedDict()                      # code -> placements never seen right in a preview
     moved = []
-    for name, corrected in (("%s_cpl.csv" % NAME, True), ("%s_cpl_native.csv" % NAME, False)):
+    for name, corrected in (("%s_cpl_jlcpcb_upload.csv" % NAME, True), ("%s_cpl_kicad_native.csv" % NAME, False)):
         with open(os.path.join(outdir, name), "w", newline="", encoding="utf-8") as f:
             w = csv.writer(f)
             w.writerow(["Designator", "Mid X", "Mid Y", "Layer", "Rotation"])
@@ -194,7 +194,7 @@ def placement_checks(rows, unchecked, fits, preds, moved, outdir):
     """What to look at in JLCPCB's 'Confirm parts placement' preview, part by part."""
     L = ["%s rev A: PLACEMENT CHECKS for JLCPCB's preview" % NAME, ""]
     if moved:
-        L += ["MOVED in %s_cpl.csv to where JLCPCB's library puts the part's origin (their drawing's zero is not" % NAME,
+        L += ["MOVED in %s_cpl_jlcpcb_upload.csv to where JLCPCB's library puts the part's origin (their drawing's zero is not" % NAME,
               "KiCad's; FOOTPRINT_CHECK.txt's 'datum').  In the preview each should sit squarely on its pads.  If one",
               "sits off them by about the same distance the other way, their library has changed: say so.", ""]
         for r, dx, dy in moved:
@@ -385,6 +385,16 @@ def main(argv):
     bom, hrows, n_asm, n_lines = write_bom(rows, OUT)
     fits = footprint_check(bom, refresh)
     preds = predicted_corrections(rows, fits)
+    # build 34 (JLCPCB's preview of build 33): a part of three or more pads that numbers its pins differently from KiCad
+    # gets no prediction, and builds 1-33 then sent it at KiCad's angle -- the SMAs lay along the edge and the Pmod sockets
+    # stood a quarter turn round.  Every such part must be read from JLCPCB's drawing and put in jlc_rotation's table
+    # (or have its footprint read in a preview) before a release is written.
+    unread = sorted({r["lcsc"] for r in assembled(rows) if preds.get(r["lcsc"], (None, ""))[0] is None
+                     and "no fit by pin number" in preds.get(r["lcsc"], (None, ""))[1]
+                     and r["lcsc"] not in jlc_rotation.JLC_ROTATION_BY_PART and not jlc_rotation.checked(r["fpshort"], r["lcsc"])})
+    if unread:
+        raise SystemExit("FAILED: no rotation for %s: their pins are numbered unlike KiCad's, so nothing predicts how JLCPCB's "
+                         "drawing sits; read the body's direction off its land drawing and add it to mfg/jlc_rotation.JLC_ROTATION_BY_PART" % unread)
     unchecked, moved = write_cpls(rows, fits, preds, OUT)
     placement_checks(rows, unchecked, fits, preds, moved, OUT)
     zpath = export_gerbers(OUT)
@@ -430,7 +440,7 @@ def main(argv):
     notes.append("Assembly (JLCPCB Standard, SMT both sides + through-hole on top): %d SMT placements and %d through-hole parts on %d BOM lines, %d of them Extended parts (each carries a one-off loading fee)."
                  % (n_smt, n_tht, n_lines, ext))
     notes.append("Through-hole, fitted by JLCPCB (Jason, 2026-10-06): the six SMA jacks, the RJ45, the DIP switch, the 2.54 mm headers (ordered as 1x40 / 2x40 strips the assembler snaps to length, as on the GPSDO board) and the two Pmod sockets.  %d through-hole joints incl. the USB-C shells." % tht_joints)
-    notes.append("Upload: %s_bom.csv and %s_cpl.csv (JLCPCB's conventions: the bottom-side mirror, rotations read in previews or predicted from their drawings, the USB-C moved to their origin); %s_cpl_native.csv is KiCad's own numbers for reference."
+    notes.append("Upload: %s_bom.csv and %s_cpl_jlcpcb_upload.csv (JLCPCB's conventions: the bottom-side mirror, rotations read in previews or predicted from their drawings, the USB-C moved to their origin); %s_cpl_kicad_native.csv is KiCad's own numbers for reference."
                  % (NAME, NAME, NAME))
     notes.append("THEN READ THE PLACEMENT PREVIEW against PLACEMENT_CHECKS.txt: %d placements of %d part numbers have a predicted or unverified rotation; the bottom side's %d polarized parts hardest of all (this board stores its back-side pads mirrored left-right, %s)."
                  % (sum(len(g) for g in unchecked.values()), len(unchecked), len([r for r in tht + smt if r["side"] == "bottom" and r["fpshort"] not in jlc_rotation.ROTATION_NA]),

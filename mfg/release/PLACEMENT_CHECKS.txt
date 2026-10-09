@@ -1,13 +1,31 @@
 ECP5-2ADC-2DAC rev A: PLACEMENT CHECKS for JLCPCB's preview
 
-MOVED in ECP5-2ADC-2DAC_cpl.csv to where JLCPCB's library puts the part's origin (their drawing's zero is not
+MOVED in ECP5-2ADC-2DAC_cpl_jlcpcb_upload.csv to where JLCPCB's library puts the part's origin (their drawing's zero is not
 KiCad's; FOOTPRINT_CHECK.txt's 'datum').  In the preview each should sit squarely on its pads.  If one
 sits off them by about the same distance the other way, their library has changed: say so.
 
+  J105   C492401    PinHeader_1x02_P2.54mm_Vertical              moved (+0.000, -1.270) mm (x right, y up)
+  J106   C492401    PinHeader_1x02_P2.54mm_Vertical              moved (+0.000, -1.270) mm (x right, y up)
+  J210   C492401    PinHeader_1x02_P2.54mm_Vertical              moved (+1.270, -0.000) mm (x right, y up)
   J303   C22373932  PinSocket_2x06_P2.54mm_Horizontal            moved (+1.270, +6.350) mm (x right, y up)
   J304   C22373932  PinSocket_2x06_P2.54mm_Horizontal            moved (+1.270, +6.350) mm (x right, y up)
+  J305   C492405    PinHeader_1x06_P2.54mm_Vertical              moved (+6.350, -0.000) mm (x right, y up)
   J501   C5184243   USB_C_Receptacle_GCT_USB4105-xx-A_16P_TopMnt moved (-1.303, -0.000) mm (x right, y up)
   J502   C5184243   USB_C_Receptacle_GCT_USB4105-xx-A_16P_TopMnt moved (-1.303, -0.000) mm (x right, y up)
+  J601   C492401    PinHeader_1x02_P2.54mm_Vertical              moved (+0.000, +1.270) mm (x right, y up)
+  J602   C492426    PinHeader_2x09_P2.54mm_Vertical              moved (+10.160, +1.270) mm (x right, y up)
+  JP101  C492401    PinHeader_1x02_P2.54mm_Vertical              moved (+1.270, -0.000) mm (x right, y up)
+  JP102  C2937625   PinHeader_1x03_P2.54mm_Vertical              moved (-2.540, +0.000) mm (x right, y up)
+  JP103  C492401    PinHeader_1x02_P2.54mm_Vertical              moved (+1.270, -0.000) mm (x right, y up)
+  JP104  C492401    PinHeader_1x02_P2.54mm_Vertical              moved (+1.270, -0.000) mm (x right, y up)
+  JP201  C492401    PinHeader_1x02_P2.54mm_Vertical              moved (+1.270, -0.000) mm (x right, y up)
+  JP202  C2937625   PinHeader_1x03_P2.54mm_Vertical              moved (-2.540, +0.000) mm (x right, y up)
+  JP203  C492401    PinHeader_1x02_P2.54mm_Vertical              moved (+1.270, -0.000) mm (x right, y up)
+  JP204  C492401    PinHeader_1x02_P2.54mm_Vertical              moved (+1.270, -0.000) mm (x right, y up)
+  JP501  C492401    PinHeader_1x02_P2.54mm_Vertical              moved (+1.270, -0.000) mm (x right, y up)
+  JP1203 C2937625   PinHeader_1x03_P2.54mm_Vertical              moved (+2.540, -0.000) mm (x right, y up)
+  JP2009 C2937625   PinHeader_1x03_P2.54mm_Vertical              moved (+2.540, -0.000) mm (x right, y up)
+  JP3001 C492401    PinHeader_1x02_P2.54mm_Vertical              moved (+1.270, -0.000) mm (x right, y up)
 
 The CPL's rotations are this board's stored angles plus mfg/jlc_rotation.py: the bottom-side mirror (this
 board stores its back-side pads mirrored left-right, 180 from KiCad's own convention, and the rule allows
@@ -35,9 +53,13 @@ Not yet seen right in a preview:
   D602, D603, D604, D605, D606 C2286        LED_0603_1608Metric
       value red; correction 0 (predicted)
   J101, J102, J204, J205, J301 C496551      SMA_BAT_Wireless_BWSMA-KWE-Z001
-      value SMA; no prediction: no fit by pin number
+      value SMA; correction 90 (predicted)
+  J105, J106, J210, J601, JP10 C492401      PinHeader_1x02_P2.54mm_Vertical
+      value NOISE/PD EXT/LED EXT/5V IN/TERM/GAIN/FTDI OFF; correction 270 (predicted)
   J303, J304                   C22373932    PinSocket_2x06_P2.54mm_Horizontal
-      value PMOD A/PMOD B; no prediction: no fit by pin number
+      value PMOD A/PMOD B; correction 270 (predicted)
+  J305                         C492405      PinHeader_1x06_P2.54mm_Vertical
+      value JTAG; predicted correction 270, from the top-side fit at 90 deg, 6 pads by number, worst 0.00 mm
   J401                         C386757      RJ45-TH_R-RJ45R08P-C000
       value RJ45; predicted correction 0, from the top-side fit at 0 deg, 14 pads by number, worst 0.01 mm
   J501, J502                   C5184243     USB_C_Receptacle_GCT_USB4105-xx-A_16P_TopMnt_Horizontal
@@ -46,6 +68,10 @@ Not yet seen right in a preview:
       value mini HDMI; predicted correction 0, from the top-side fit at 0 deg, 23 pads by number, worst 0.01 mm
   J504                         C91145       TF-SMD_TF-01A
       value microSD; predicted correction 0, from the bottom-side fit at 180 deg, 13 pads by number, worst 0.01 mm (the bottom rule is untested)
+  J602                         C492426      PinHeader_2x09_P2.54mm_Vertical
+      value RAILS; predicted correction 270, from the top-side fit at 90 deg, 18 pads by number, worst 0.00 mm
+  JP102, JP202, JP1203, JP2009 C2937625     PinHeader_1x03_P2.54mm_Vertical
+      value SRC/ALT/LED; predicted correction 270, from the top-side fit at 90 deg, 3 pads by number, worst 0.00 mm
   Q201, Q601                   C2150        SOT-23
       value SS8050; predicted correction 180, from the top-side fit at 180 deg, 3 pads by number, worst 0.08 mm
   Q602                         C15127       SOT-23
@@ -92,7 +118,7 @@ The method against those readings (its prediction must equal the correction some
   C141836    SOT-23-5                             read 180, predicted 180: AGREES
   C165132    SOT-23-5                             read 180, predicted 180: AGREES
   C2862740   SOT-23-5                             read 180, predicted 180: AGREES
-No orientation to get wrong (two pads, or symmetric): C_0402_1005Metric, C_0402_1005Metric_BGA, C_0603_1608Metric, C_0805_2012Metric, C_1812_4532Metric, Crystal_SMD_3225-4Pin_3.2x2.5mm, Fuse_1812_4532Metric, IND-SMD_L4.0-W4.0, L_0603_1608Metric, PinHeader_1x02_P2.54mm_Vertical, PinHeader_1x03_P2.54mm_Vertical, PinHeader_1x06_P2.54mm_Vertical, PinHeader_2x09_P2.54mm_Vertical, R_0603_1608Metric, R_1206_3216Metric, SW-SMD_L3.9-W3.0-P4.45
+No orientation to get wrong (two pads, or symmetric): C_0402_1005Metric, C_0402_1005Metric_BGA, C_0603_1608Metric, C_0805_2012Metric, C_1812_4532Metric, Crystal_SMD_3225-4Pin_3.2x2.5mm, Fuse_1812_4532Metric, IND-SMD_L4.0-W4.0, L_0603_1608Metric, R_0603_1608Metric, R_1206_3216Metric, SW-SMD_L3.9-W3.0-P4.45
 
 Through-hole parts JLCPCB fits: the SMA jacks' barrels must point off the LEFT edge, the Pmod sockets' openings
 off the RIGHT edge, the RJ45's opening off the right edge, the DIP switch's ON side at the silkscreen's ON.
