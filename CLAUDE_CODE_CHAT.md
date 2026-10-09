@@ -2907,3 +2907,23 @@ the build.
 
 Your rule is now CLAUDE_PCB.md section 8's: a correction goes into the file through the script, from a source of truth,
 never as a nudge in JLCPCB's viewer.
+
+## Prompt 37
+
+I almost forgot to check the back parts. Here the back checked out ok. But make a note in CLAUDE_PCB.md to remind me to check the back too.
+
+## Response 37 2026-10-08 21:42 - 21:42 Claude Opus 5.5 Max
+
+Noted in CLAUDE_PCB.md section 8, as the first item of the preview checks: check the back in JLCPCB's preview too.  It is
+easy to skip because the preview opens on the top, the computed preview check covers only the top, and the back is
+where the rotation rules are least proven.  From now on `PLACEMENT_CHECKS.txt` and every response that hands you an
+upload ends by naming the back-side parts to look at.
+
+Your check also confirms something no preview had until now.  This board's bottom-side convention puts every back-side
+angle 180 from KiCad's own, then applies the mirror rule from the Icepi board.  CLAUDE_PCB.md still called it "not yet
+confirmed in a preview".  It now records it as confirmed on build 34: the three SOT-23-5 regulators, the two BAV99s, the
+magnetics, the microSD and the decoupling under the BGA.
+
+The back-side parts to look at in this upload were the seven polarized ones, and you have looked: D111, D112, J504,
+T401, U603, U604, U605.  Nothing else changed: upload `ECP5-2ADC-2DAC_cpl_jlcpcb_upload.csv` from `8c9e740` with the
+gerbers and BOM you have.
