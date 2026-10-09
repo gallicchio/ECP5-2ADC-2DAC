@@ -2927,3 +2927,66 @@ magnetics, the microSD and the decoupling under the BGA.
 The back-side parts to look at in this upload were the seven polarized ones, and you have looked: D111, D112, J504,
 T401, U603, U604, U605.  Nothing else changed: upload `ECP5-2ADC-2DAC_cpl_jlcpcb_upload.csv` from `8c9e740` with the
 gerbers and BOM you have.
+
+## Prompt 38
+
+Here is the actual current charges (without tariffs and shipping). Make sure that your price estimate model matches this as best you can:
+
+Charge Details
+PCB Price $47.25: Engineering fee $33.00; Via Covering $0.00; Board $13.20; Confirm Production file $1.05
+Standard PCBA Price $566.49: Setup Fee $51.50; Stencil $16.54; Panel $0.00; Large Size $0.00; Components (95 items) $328.93; Feeders Loading fee $132.33; SMT Assembly $8.52; Confirm Parts Placement $0.00; Hand-soldering labor fee $3.61; Manual Assembly $4.59; PCB assembly fixture $16.54; X-Ray Inspection $3.30; Packaging fee $0.51; Special components fee $0.12
+Advanced Options: Depanel boards & edge rail before delivery $2.32
+Build Time: PCB 8-9 days $0.00; Assembly $0.00
+
+(While this was being done:) The site always makes me select what this is for, probably for tariff reasons. Some of my boards can be for more than one thing. For all of the boards (including the ones in other directories that you know about), what should I select for the tariff category to be correct but also the least expensive option.
+
+## Response 38 2026-10-08 21:30 - 21:49 Claude Opus 5.5 Max
+
+**The cost model now reproduces your cart line by line: $613.84 against JLCPCB's $616.06 (5 PCBs, 2 assembled), all of
+the $2.22 in component prices.**  `FABRICATION_NOTES.txt` itemises it the way the cart does:
+
+| line | model | cart |
+|---|---|---|
+| engineering, board (5 PCBs), confirm production file | $33.00 + $13.20 + $1.05 | same |
+| setup, stencil | $51.50, $16.54 | same |
+| components (95 lines) | $326.72 | $328.93 |
+| feeders loading (49 Extended x $2.70) | $132.30 | $132.33 |
+| SMT assembly (1631 pads x $0.0017 + $1.50, x 2) | $8.55 | $8.52 |
+| hand-soldering labour; manual assembly (146 joints x $0.0157 x 2) | $3.61; $4.58 | $3.61; $4.59 |
+| assembly fixture, X-ray, packaging, special, depanel | $16.54, $3.30, $0.51, $0.12, $2.32 | same |
+
+What was wrong before:
+- It priced 5 assembled boards; you assemble 2 of 5 PCBs.
+- The 6-layer board came out at $130 against a real $47.25.
+- Components ignored the attrition JLCPCB adds to each line (`lossNumber`) and each feeder's minimum (`leastPatchNumber`).
+- It had no fixture, X-ray, packaging or depanel lines.
+- Its SMT joint count was three per part instead of the real 1631 pads.
+
+`build.py --boards` now means boards assembled, defaulting to 2.  Duty is listed separately at about 35%, roughly $215,
+and shipping is extra.  The constants and where each came from are in `mfg/make_fab.FEES` and CLAUDE_PCB.md section 8.
+
+**The usage dropdown: pick the board's real primary use.  No truthful choice costs less than another.**  JLCPCB's
+published tariff table pre-collects a flat 35% on every PCB order and every SMT assembly order.  They say they set it
+"based on the product type and material", not on the usage you pick, and they "reserve the right to replace the HS
+code to match the actual product".  The usage you pick is a description for the customs declaration.  Picking something
+for a lower rate would be a misdeclaration, and it would not lower what JLCPCB charges you anyway.  For your boards:
+
+| board | its real use |
+|---|---|
+| ECP5-2ADC-2DAC | teaching and research lab instrument |
+| IcepiZeroADCDAC (both) | course tutorials, education |
+| GPSDO-PYNQ-Z2 | research lab, time and frequency |
+| GPiBridge and GPiBridge Lite | lab instrument interface for research and teaching |
+| SyzygyRadioDrivers boards | research |
+| AI UNLEASHES CHAOS | educational demonstration |
+| Halloween board | a hobby decoration |
+
+All of these sit in the research / education / DIY kind of category.  None is industrial, medical, automotive or
+aerospace, which may also bring stricter manufacturing handling.  Where a board serves two of your purposes, pick the
+one it was built for.  I could not see the dropdown's exact wording from here: the order form needs your login, and
+JLCPCB's help pages do not list it.  If you paste the options, I will name the exact entry for each board and add it
+to CLAUDE_PCB.md.
+
+Sources: JLCPCB, "U.S. Tariff Policy FAQ" (https://jlcpcb.com/help/article/us-tariff-policy-faq, updated 2026-09-09);
+JLCPCB, "Important: US Tariff Logistics Policy Update" (https://jlcpcb.com/news/logistics-update-us-china-tariff,
+2026-03-17).

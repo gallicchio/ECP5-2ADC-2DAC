@@ -23,8 +23,28 @@ GERBER_LAYERS = "F.Cu,In1.Cu,In2.Cu,In3.Cu,In4.Cu,B.Cu,F.Paste,B.Paste,F.Silkscr
 # shell legs already pay JLCPCB's per-order through-hole fee).  A through-hole part without an LCSC code
 # is the only thing left for the hand-solder list.
 HAND = ()
-THT_SETUP = 3.58          # JLCPCB's per-order through-hole labour (Icepi jlcbuild J1); the per-joint rate is
-THT_PER_JOINT = 0.02      # an assumption to calibrate against the cart (CLAUDE_PCB.md: GPiBridge's estimate was $5 low per board)
+# JLCPCB's charges, line by line as their cart itemises them, CALIBRATED against this board's real order (Jason,
+# 2026-10-08: 5 PCBs, 2 assembled, 6 layers, 158 x 119 mm, ENIG, epoxy-filled vias, Standard PCBA both sides plus
+# through-hole, depanelled): PCB $47.25, PCBA $566.49, depanel $2.32, before shipping and duty.  "order" lines are
+# charged once; "per_board" lines scale with the boards assembled; the rest are computed from the BOM.
+FEES = {
+    "engineering":          (33.00, "order",  "6-layer engineering fee"),
+    "board_per_pcb":        (2.64,  "pcb",    "the bare board: $13.20 for 5 of these 158 x 119 mm 6-layer ENIG boards (scaled per PCB beyond 5: an assumption)"),
+    "confirm_production":   (1.05,  "order",  "confirm production file"),
+    "setup":                (51.50, "order",  "Standard PCBA setup, both sides"),
+    "stencil":              (16.54, "order",  "stencils, both sides"),
+    "feeder_per_extended":  (2.70,  "extended", "feeder loading: $132.33 for 49 Extended codes ($3 list less a discount, or THT parts cheaper: calibrated, not explained)"),
+    "smt_per_pad":          (0.0017, "pad",   "SMT assembly per pad (JLCPCB's published rate) ..."),
+    "smt_per_board":        (1.50,  "per_board", "... plus $1.50 a board: 2 x (1631 x 0.0017 + 1.50) = $8.55, the cart said $8.52"),
+    "hand_solder_labour":   (3.61,  "order",  "hand-soldering labour, once an order has through-hole parts"),
+    "tht_per_joint":        (0.0157, "joint", "manual assembly per through-hole joint (146 a board, the USB-Cs' shell legs included)"),
+    "assembly_fixture":     (16.54, "order",  "PCB assembly fixture (double-sided board with through-hole parts)"),
+    "xray_per_board":       (1.65,  "per_board", "X-ray inspection for the BGA ($3.30 for 2)"),
+    "packaging":            (0.51,  "order",  "packaging"),
+    "special_components":   (0.12,  "order",  "special components fee"),
+    "depanel":              (2.32,  "order",  "depanel boards and edge rail before delivery (advanced option)"),
+}
+DUTY = 0.35              # US DDP duty JLCPCB pre-collects on PCBs and assembly (CLAUDE_PCB.md section 3): not in the cart total
 sys.path.insert(0, os.path.join(ROOT, "gen"))
 import parts as PARTS
 import footprint_check as FC
@@ -297,14 +317,37 @@ def cost(rows, boards, refresh=False):
         need = n * boards
         lt = jlc_api.library_type(p)
         stock = int(p.get("stockCount") or 0)
-        price = jlc_api.unit_price(p, max(need, 1))
+        # what JLCPCB buys and charges (calibrated 2026-10-08, the ECP5 cart: $326.72 against their $328.93): the parts
+        # needed plus the attrition they add per line (lossNumber: 10 extra 0402s), and at least a feeder's minimum
+        # (leastPatchNumber), at the price break of that quantity
+        bought = max(need + int(p.get("lossNumber") or 0), int(p.get("leastPatchNumber") or 0), 1)
+        price = jlc_api.unit_price(p, bought)
         if lt not in ("Basic", "Preferred"):
             ext += 1
-        total_parts += price * need
+        total_parts += price * bought
         if stock < need * 10:
             thin.append((code, p.get("componentModelEn", ""), stock, need))
         lines.append((code, n, lt, stock, price, p.get("componentModelEn", "")))
     return lines, total_parts, ext, thin
+
+
+def calibration_total(rows, lines, ext, smt_pads, tht_joints, n_tht):
+    """The model's total for the order it was calibrated on (5 PCBs, 2 assembled), whatever --boards says: a check that
+    the fees and the parts model still add up to JLCPCB's $616.06 when prices move."""
+    f = {k: v[0] for k, v in FEES.items()}
+    parts = 0.0
+    asm = assembled(rows)
+    cnt = collections.Counter(r["lcsc"] for r in asm)
+    for code, n in cnt.items():
+        p, ts = jlc_api.by_code(code)
+        if not p:
+            continue
+        bought = max(n * 2 + int(p.get("lossNumber") or 0), int(p.get("leastPatchNumber") or 0), 1)
+        parts += jlc_api.unit_price(p, bought) * bought
+    return (f["engineering"] + f["board_per_pcb"] * 5 + f["confirm_production"] + f["setup"] + f["stencil"] + parts
+            + f["feeder_per_extended"] * ext + (f["smt_per_pad"] * smt_pads + f["smt_per_board"]) * 2 + (f["hand_solder_labour"] if n_tht else 0)
+            + f["tht_per_joint"] * tht_joints * 2 + f["assembly_fixture"] + f["xray_per_board"] * 2 + f["packaging"]
+            + f["special_components"] + f["depanel"])
 
 
 def gates():
@@ -382,7 +425,7 @@ def measure():
 
 
 def main(argv):
-    boards = 5
+    boards = 2
     refresh = "--refresh" in argv
     if "--boards" in argv:
         boards = int(argv[argv.index("--boards") + 1])
@@ -420,13 +463,26 @@ def main(argv):
     # JLCPCB's public 6-layer pricing is not a formula they publish; these are the
     # 2026 list-price neighbourhoods for a 130 x 95 mm 6-layer ENIG board with
     # via-in-pad, and are labelled as estimates in the notes
-    pcb_est = 70.0 + 12.0 * boards
-    asm_setup = 8.0 + 3.0 * ext            # one-off: setup plus a loading fee per Extended part
-    joints = n_smt * 3
-    asm_per = 0.0017 * joints + 1.5
+    smt_pads = sum(r["npads"] - r["nth"] for r in smt)                        # every SMT pad is a joint (the BGA's 256 included)
     tht_joints = sum(r["nth"] for r in tht) + sum(r["nth"] for r in smt)       # the SMT USB-Cs' shell legs are soldered too
-    tht_per = THT_PER_JOINT * tht_joints
-    est_total = pcb_est + asm_setup + asm_per * boards + THT_SETUP + tht_per * boards + parts_cost
+    pcbs = max(5, boards)
+    f = {k: v[0] for k, v in FEES.items()}
+    cart = [("PCB", "engineering fee", f["engineering"]),
+            ("PCB", "board (%d PCBs)" % pcbs, f["board_per_pcb"] * pcbs),
+            ("PCB", "confirm production file", f["confirm_production"]),
+            ("PCBA", "setup fee", f["setup"]),
+            ("PCBA", "stencil", f["stencil"]),
+            ("PCBA", "components (%d lines, with JLCPCB's attrition)" % len(lines), parts_cost),
+            ("PCBA", "feeders loading fee (%d Extended codes x $%.2f)" % (ext, f["feeder_per_extended"]), f["feeder_per_extended"] * ext),
+            ("PCBA", "SMT assembly (%d pads x $%.4f + $%.2f, x %d)" % (smt_pads, f["smt_per_pad"], f["smt_per_board"], boards), (f["smt_per_pad"] * smt_pads + f["smt_per_board"]) * boards),
+            ("PCBA", "hand-soldering labour fee", f["hand_solder_labour"] if n_tht else 0.0),
+            ("PCBA", "manual assembly (%d through-hole joints x $%.4f x %d)" % (tht_joints, f["tht_per_joint"], boards), f["tht_per_joint"] * tht_joints * boards),
+            ("PCBA", "PCB assembly fixture", f["assembly_fixture"]),
+            ("PCBA", "X-ray inspection (%d x $%.2f)" % (boards, f["xray_per_board"]), f["xray_per_board"] * boards),
+            ("PCBA", "packaging fee", f["packaging"]),
+            ("PCBA", "special components fee", f["special_components"]),
+            ("option", "depanel boards and edge rail", f["depanel"])]
+    est_total = sum(c[2] for c in cart)
     with open(os.path.join(OUT, "cost_estimate.csv"), "w", newline="") as f:
         w = csv.writer(f)
         w.writerow(["LCSC", "per board", "library", "stock", "unit price USD @ %d" % boards, "part"])
@@ -461,13 +517,13 @@ def main(argv):
     notes.append("Coordinates: the board's corner is at (%g, %g) mm on KiCad's page (pcb/place.py OX, OY); the gerbers, the drill file and the CPL all use that frame, so they agree." % (P.OX, P.OY))
     notes.append("End plates: end_panel_left/right.svg and .dxf (1:1, viewed from outside) with every connector's cutout; end_panels.txt lists them.  MEASURE which slot the board rides in and set PCB_TOP_ABOVE_FLOOR in mfg/end_panels.py before milling.")
     notes.append("")
-    notes.append("COST ESTIMATE for %d boards (JLCPCB list prices, parts from their live API on %s):" % (boards, datetime.date.today().isoformat()))
-    notes.append("  PCBs (6-layer, ENIG, via-in-pad)            ~$%.0f" % pcb_est)
-    notes.append("  assembly setup + Extended-part loading fees  ~$%.0f" % asm_setup)
-    notes.append("  SMT assembly per board x %d                  ~$%.0f" % (boards, asm_per * boards))
-    notes.append("  through-hole: $%.2f per order + %d joints x $%.3f x %d boards  ~$%.0f  (per-joint rate assumed: calibrate against the cart)" % (THT_SETUP, tht_joints, THT_PER_JOINT, boards, THT_SETUP + tht_per * boards))
-    notes.append("  parts for %d boards                           $%.2f" % (boards, parts_cost))
-    notes.append("  TOTAL                                        ~$%.0f  (~$%.0f per board)" % (est_total, est_total / boards))
+    notes.append("COST ESTIMATE: %d PCBs, %d assembled, itemised as JLCPCB's cart is (fees calibrated against this board's real order on"
+                 " 2026-10-08; parts from their live API on %s):" % (pcbs, boards, datetime.date.today().isoformat()))
+    for group, what, usd in cart:
+        notes.append("  %-6s %-62s $%8.2f" % (group, what, usd))
+    notes.append("  %-6s %-62s $%8.2f  ($%.0f per assembled board)" % ("TOTAL", "before shipping and duty", est_total, est_total / boards))
+    notes.append("  US duty, DDP, about %.0f%% of that: ~$%.0f more; shipping extra." % (100 * DUTY, DUTY * est_total))
+    notes.append("  (The order of 2026-10-08, 5 PCBs and 2 assembled, came to $616.06 in JLCPCB's cart; this model gives $%.2f for it.)" % calibration_total(rows, lines, ext, smt_pads, tht_joints, n_tht))
     if thin:
         notes.append("")
         notes.append("THIN STOCK (fewer than 10x what %d boards need): %s" % (boards, "; ".join("%s %s stock %d need %d" % t for t in thin)))

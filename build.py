@@ -4,7 +4,7 @@
     python3 build.py                 schematic, ERC, netlist, board, DRC, gateware proof, release
     python3 build.py --no-pcb        stop after the schematic checks
     python3 build.py --no-route      place the board but do not route it (fast)
-    python3 build.py --boards 5      how many boards the cost estimate is for
+    python3 build.py --boards 2      how many boards JLCPCB assembles, for the cost estimate (PCBs: at least 5)
 
 Everything in the repository that is not under gen/, pcb/, mfg/, tools/,
 datasheets/ or gateware/test/ is a product of this script.
@@ -115,7 +115,7 @@ def main():
     ap.add_argument("--no-pcb", action="store_true")
     ap.add_argument("--no-route", action="store_true")
     ap.add_argument("--no-release", action="store_true")
-    ap.add_argument("--boards", type=int, default=5)
+    ap.add_argument("--boards", type=int, default=2)      # boards JLCPCB assembles (of at least 5 PCBs): 2, as ordered on 2026-10-08
     ap.add_argument("--route-budget", type=int, default=3600)
     ap.add_argument("--clean", action="store_true", help="remove everything this script generates, then stop")
     a = ap.parse_args()
