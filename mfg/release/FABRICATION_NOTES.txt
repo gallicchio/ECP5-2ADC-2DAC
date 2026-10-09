@@ -93,7 +93,7 @@ Hand solder (hand_solder_bom.csv): nothing -- every part is assembled by JLCPCB;
 Coordinates: the board's corner is at (25, 25) mm on KiCad's page (pcb/place.py OX, OY); the gerbers, the drill file and the CPL all use that frame, so they agree.
 End plates: end_panel_left/right.svg and .dxf (1:1, viewed from outside) with every connector's cutout; end_panels.txt lists them.  MEASURE which slot the board rides in and set PCB_TOP_ABOVE_FLOOR in mfg/end_panels.py before milling.
 
-COST ESTIMATE: 5 PCBs, 2 assembled, itemised as JLCPCB's cart is (fees calibrated against this board's real order on 2026-10-08; parts from their live API on 2026-10-09):
+COST ESTIMATE: 5 PCBs, 2 assembled, itemised as JLCPCB's cart is (fees calibrated against this board's real order on 2026-10-08 and 2026-10-09; parts from their live API on 2026-10-09):
   PCB    engineering fee                                                $   33.00
   PCB    board (5 PCBs)                                                 $   13.20
   PCB    confirm production file                                        $    1.05
@@ -104,17 +104,17 @@ COST ESTIMATE: 5 PCBs, 2 assembled, itemised as JLCPCB's cart is (fees calibrate
   PCB    4-wire Kelvin test (5 PCBs)                                    $   17.89
   PCBA   setup fee                                                      $   51.50
   PCBA   stencil                                                        $   16.54
-  PCBA   components (95 lines, with JLCPCB's attrition)                 $  326.72
-  PCBA   feeders loading fee (49 Extended codes x $2.70)                $  132.30
-  PCBA   SMT assembly (1631 pads x $0.0017 + $1.50, x 2)                $    8.55
+  PCBA   components (95 lines, with JLCPCB's attrition, x 1.0066)       $  328.84
+  PCBA   feeders loading fee (49 Extended codes x $2.7006)              $  132.33
+  PCBA   SMT assembly (1631 pads x $0.0017 + $1.4873, x 2)              $    8.52
   PCBA   hand-soldering labour fee                                      $    3.61
-  PCBA   manual assembly (146 through-hole joints x $0.0157 x 2)        $    4.58
+  PCBA   manual assembly (146 through-hole joints x $0.0157 x 2)        $    4.59
   PCBA   PCB assembly fixture                                           $   16.54
   PCBA   X-ray inspection (2 x $1.65)                                   $    3.30
   PCBA   packaging fee                                                  $    0.51
   PCBA   special components fee                                         $    0.12
   option depanel boards and edge rail                                   $    2.32
-  TOTAL  before shipping and duty                                       $  725.76  ($363 per assembled board)
-  US duty, DDP, about 35% of that: ~$254 more.  Shipping: $31.23, DHL Express (DDP), 2-4 business days, 0.45 kg: JLCPCB's estimate, 2026-10-09.
-  (The order of 2026-10-08, 5 PCBs and 2 assembled with OSP, came to $616.06 in JLCPCB's cart; this model gives $613.84 for it.)
-  (The PCB page of 2026-10-09, 5 PCBs with every option above set, came to $159.17; this model gives $159.17 for it.)
+  TOTAL  before shipping and duty                                       $  727.89  ($364 per assembled board)
+  US duty, DDP, about 35% of that: ~$255 more.  Shipping: $31.23, DHL Express (DDP), 2-4 business days, 0.47 kg: JLCPCB's estimate, 2026-10-09.
+  (The order of 2026-10-08, 5 PCBs and 2 assembled with OSP, came to $616.06 in JLCPCB's cart; this model gives $615.97 for it.)
+  (The cart of 2026-10-09, 5 PCBs and 2 assembled with every option above set, came to $727.90: PCB $159.17, PCBA $566.41, depanel $2.32; this model gives $727.89 for it, the PCB lines $159.17.)

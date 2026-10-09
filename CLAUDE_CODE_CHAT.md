@@ -3117,3 +3117,40 @@ build, and no copper moves.
 CLAUDE_PCB.md (yours, uncommitted), section 8: every dialog the form raises gets its own line; JLC06161H-7628's layers;
 Impedance Control as its own field and when to choose ±10%; what a 0.15 mm via costs; Edge Rails/Fiducials; the old
 "Specify a location" rule marked superseded.
+
+## Prompt 42
+
+The new cost breakdown is:
+
+(JLCPCB's charge details, pasted: PCB Price $159.17 -- Engineering fee $33.00, Via Covering $0.00, Stackup fee $33.08, Surface Finish $19.00, Board $13.20, Material Type $3.81, 4-Wire Kelvin Test $17.89, Min via hole size/diameter $38.14, Confirm Production file $1.05.  Standard PCBA Price $566.41 -- Setup Fee $51.50, Stencil $16.54, Panel $0.00, Large Size $0.00, Components (95 items) $328.85, Feeders Loading fee $132.33, SMT Assembly $8.52, Confirm Parts Placement $0.00, Hand-soldering labor fee $3.61, Manual Assembly $4.59, PCB assembly fixture $16.54, X-Ray Inspection $3.30, Packaging fee $0.51, Special components fee $0.12.  Advanced Options: Depanel boards & edge rail before delivery $2.32.  Build Time: PCB 8-9 days $0.00, Assembly $0.00.)
+
+## Response 42 2026-10-09 09:57 - 10:03 Claude Opus 5.5 Max
+
+**The model now gives $727.89 for this cart, which came to $727.90**, and $615.97 for the $616.06 cart of 2026-10-08.
+
+| Line | Cart | Model before | Model now |
+|---|---|---|---|
+| PCB, all nine lines | $159.17 | $159.17 | $159.17 |
+| Components (95 items) | $328.85 | $326.69 | $328.84 |
+| Feeders loading | $132.33 | $132.30 | $132.33 |
+| SMT assembly | $8.52 | $8.55 | $8.52 |
+| Manual assembly | $4.59 | $4.58 | $4.59 |
+| Every other PCBA line and depanel | as listed | exact | exact |
+| **Total** | **$727.90** | $725.76 | **$727.89** |
+
+**Components.**  With prices refreshed from JLCPCB's parts API this morning, the model buys the same quantities JLCPCB
+does (the parts needed, plus each line's attrition, at least a feeder's minimum) and comes to $326.69: 0.66 % under the
+cart.  The cart of 2026-10-08 was 0.68 % over the model too ($328.93 against $326.72), so the gap follows the prices,
+not a few lines.  Tested and rejected: attrition stacked on the feeder minimum ($2.33 over), the price break of the
+quantity needed rather than bought (no change), each line rounded up to the cent (recovers $0.46), each unit price
+rounded up to 0.001 (recovers $0.74).  A uniform markup, such as an exchange rate or rounding inside JLCPCB, fits both
+carts, so the model now multiplies the components by 1.0066 and says so on the line.  JLCPCB's BOM page, line by line,
+would show the real cause.
+
+**The fee lines** take the cart's own numbers: feeders $132.33 / 49 Extended codes = $2.7006 each; SMT $1.4873 a board
+on top of the published $0.0017 a pad; manual assembly $0.01572 a through-hole joint.
+
+**The estimate for this order:** $727.89 before shipping, $31.23 DHL Express (DDP, 0.47 kg) and about $255 of duty.
+
+FABRICATION_NOTES.txt's cost section lists both calibration carts with the model's figure for each.  CLAUDE_PCB.md
+(yours, uncommitted): the second cart and the markup, in the cost-model lesson.
