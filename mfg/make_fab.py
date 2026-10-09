@@ -182,6 +182,18 @@ def write_cpls(rows, fits, preds, outdir):
                     if not jlc_rotation.checked(r["fpshort"], r["lcsc"]):
                         unchecked.setdefault(r["lcsc"], []).append(r)
                     dx, dy = datum_shift(r, fits)
+                    if r["lcsc"] in jlc_rotation.VIEWER_HALF_TURN:
+                        # JLCPCB's viewer turns this part's drawing a half turn about its body's centre B; every pad then
+                        # lands 2B (turned with the part) away, so the CPL point goes back by that (x right, y up)
+                        if r["side"] != "top":
+                            raise SystemExit("FAILED: %s: a viewer half turn on the bottom side is not handled" % r["ref"])
+                        bc = FC.body_centre(r["lcsc"])
+                        if bc is None:
+                            raise SystemExit("FAILED: %s: no body outline in JLCPCB's drawing of %s" % (r["ref"], r["lcsc"]))
+                        a = math.radians(rot)
+                        tx = 2 * bc[0] * math.cos(a) + 2 * bc[1] * math.sin(a)          # 2B turned with the part, y down
+                        ty = -2 * bc[0] * math.sin(a) + 2 * bc[1] * math.cos(a)
+                        dx, dy = round(dx - tx, 3), round(dy + ty, 3)
                     if dx or dy:
                         moved.append((r, dx, dy)); x, y = x + dx, y + dy
                 else:
@@ -222,7 +234,7 @@ def placement_checks(rows, unchecked, fits, preds, moved, outdir):
     if not unchecked:
         L.append("  (none)")
     read = sorted({r["ref"] for r in assembled(rows) if r["fpshort"] not in jlc_rotation.ROTATION_NA and jlc_rotation.checked(r["fpshort"], r["lcsc"])})
-    L += ["", "Read right in a preview already (the Icepi and GPSDO boards): " + " ".join(read)]
+    L += ["", "Read right in a preview already (this board's, or the Icepi and GPSDO boards'): " + " ".join(read)]
     L.append("The method against those readings (its prediction must equal the correction somebody saw):")
     seen = set()
     for r in assembled(rows):

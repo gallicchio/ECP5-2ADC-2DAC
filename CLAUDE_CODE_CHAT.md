@@ -2848,3 +2848,62 @@ now carries the part as read in the viewer: marked pad 1, plus the viewer's half
 flags D201 as REVERSED; on the new one all 24 diodes and LEDs pass.  The other three you showed, D501, D309 and D103,
 were checked against JLCPCB's own pin names and your screenshots agree with them.  The lesson: a footprint copied from
 JLCPCB's drawing still needs its rotation read in their viewer.
+
+## Prompt 36
+
+D201 looks too far to the left. Fix that and let me know when I can reupload. The reason I'm asking you to fix it rather than just nudging things over myself is because
+1. I don't want to do that every time I upload the BOM and CPL
+2. It is error prone. Each time I submit a board, I end up doing this upload over and over again. I want to make sure that it's correct in the file, which comes from a correct script, which ultimately got written from a correct CLAUDE_PCB.md and all other sources of truth.
+
+(Screenshot of JLCPCB's viewer: D201 now with "+" on the left and "-" on the right, the right way round, but JLCPCB's body sits left of our pads: our cathode pad sticks out past its right end.)
+
+(Two more messages while this was being fixed.)
+
+I think this picture of the U.FL is correct, but just verify.  (Screenshot: J108 in JLCPCB's viewer.)
+
+Check the crystals. I'm less sure of how their symbol matches their orientation, but these seem ok. If not, explain how I should be reading their symbols for orientation. Y501 has an extra confusing purple dot on the top left. I don't know why.  (Screenshots: X301, Y301, Y401, Y501 in JLCPCB's viewer.)
+
+## Response 36 2026-10-08 21:10 - 21:37 Claude Opus 5.5 Max
+
+**Upload `mfg/release/ECP5-2ADC-2DAC_cpl_jlcpcb_upload.csv` again.  The one change is D201: (36.250, -108.600) becomes
+(36.850, -108.651), still at 0.  The gerbers and the BOM are unchanged.  J108 and the four crystals and oscillators are
+right as they are.**
+
+**D201's position.**  Your screenshot measures it.  JLCPCB's body is drawn 0.56 mm short of our pads along the LED's
+axis.  That is twice the 0.30 mm from the 2835 drawing's origin, the midpoint of its pads, to the middle of its body
+outline.  Their viewer turns this part a half turn about its body, not about the origin, and every pad then moves by
+twice that distance.  The same turn is why +0 had shown it reversed.  The fix lives in the sources:
+- `jlc_rotation.VIEWER_HALF_TURN` names the part and why.
+- `footprint_check.body_centre` reads the body's middle from JLCPCB's drawing.
+- `make_fab.py` moves the CPL point by twice that, turned with the part: 0.600 mm along x and 0.051 mm along y here.
+- `PLACEMENT_CHECKS.txt` lists the move.
+`preview_check.py` draws the part the way the viewer does.  On the CPL you uploaded it flags D201 0.60 mm off, and on the
+new one it passes.
+
+**J108 and the other U.FL taps:** JLCPCB's three pads land within 0.006 mm of ours, its signal pad 1 on our signal pad
+below the two ground pads.  The viewer draws the connector's contacts, which are smaller than its land pattern, so our
+pads show around them.
+
+**The crystals, and how to read them.**  The purple dot is JLCPCB's pin 1 for that part.  A four-pad 3225 crystal has the
+crystal on pins 1 and 3, the diagonal pair, and its case on 2 and 4.  So the dot must sit on a pad wired to the
+oscillator: the chip's XI/XO, or XA/XB.  It must not sit on a ground pad.  The part cannot go in a quarter turn wrong, since
+3.2 x 2.5 mm does not fit 2.5 x 3.2 pads, and a half turn merely swaps the two crystal pins.  The TCXO is stricter:
+its dot must sit exactly on pin 1.  All four are right:
+
+| part | dot | our pad 1 |
+|---|---|---|
+| X301 TCXO | top left | top left |
+| Y301 25 MHz (Si5351) | bottom right | bottom right, XA |
+| Y401 25 MHz (PHY) | bottom left | bottom left, XTAL_IN |
+| Y501 12 MHz (FTDI) | bottom left | bottom left, OSCI |
+
+Pads 2 to 4 land on ours within 0.05 mm too.  **The extra dot at Y501's upper left is U502's**, the FT2232H's pin-1
+mark.  Its pin 1 is the pad at Y501's upper left, 3.4 mm away, and the dot sits at that pin's tip.  Every part gets
+one, so a neighbour's dot can sit next to a small part.
+
+**And no one reads dots again:** `preview_check.py` now also requires JLCPCB's pin 1 on our pad 1 for every part of
+three or more pads.  42 pass.  With X301, Y401 and the ADC turned 180 in a scratch CPL it flags all three.  It runs in
+the build.
+
+Your rule is now CLAUDE_PCB.md section 8's: a correction goes into the file through the script, from a source of truth,
+never as a nudge in JLCPCB's viewer.

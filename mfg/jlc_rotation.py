@@ -126,6 +126,16 @@ JLC_ROTATION_BY_PART = {
     "C8678": (0, "predicted", "SS34 SMA (build 32), by the mark: the band and the '-' on the left pad at 0 deg in JLCPCB's land drawing, the bar on the left in its symbol; KiCad's D_SMA has pad 1 (cathode) on the left"),
 }
 
+# Parts that JLCPCB's placement viewer draws a half turn from their own land drawing, turned about the BODY's centre (the
+# middle of their silkscreen outline), not about the drawing's origin.  Read in the viewer (Jason, 2026-10-08, build 34):
+# D201 needed +180 to put its cathode on ours (the table above), and then sat 0.56 mm short along its axis, which is
+# exactly twice the 0.30 mm from the 2835 LED's pad midpoint (the drawing's origin) to its body's centre.  A half turn
+# about the body moves every pad by twice that, so make_fab.py moves the CPL point back by it, and
+# preview_check.py draws the part the same way to prove the pads land.
+VIEWER_HALF_TURN = {
+    "C2843878": "2835 LED XL-2835SURC-05: turned about its body, 0.30 mm from the origin toward the cathode pad",
+}
+
 # HOW THIS BOARD STORES ITS BOTTOM-SIDE FOOTPRINTS, and why it matters here.
 #
 # BOTTOM_FLIP below was read off a board KiCad itself had flipped: KiCad

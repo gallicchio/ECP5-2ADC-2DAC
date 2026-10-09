@@ -330,6 +330,28 @@ def land_pattern(code, refresh=False):
 # ---------------------------------------------------------------------------
 # the comparison
 # ---------------------------------------------------------------------------
+def body_centre(code):
+    """Centre of the bounding box of JLCPCB's top silkscreen (layer 3) -- the part's body as they draw it -- in mm
+    from their footprint origin, y down; None if the drawing has no silkscreen.  Their placement viewer turns some
+    parts a half turn about this point (jlc_rotation.VIEWER_HALF_TURN), so it decides where the CPL point goes."""
+    res, ts = svgs(code)
+    for r in res:
+        b = r.get("svg", "")
+        if 'c_partid="part_pad"' not in b and 'c_partid="part_hole"' not in b:
+            continue
+        body = b.split("</style>", 1)[-1]
+        m = re.search(r'<g [^>]*c_origin="([-\d.]+),([-\d.]+)"', body)
+        ox, oy = (float(m.group(1)), float(m.group(2))) if m else ORIGIN
+        xs, ys = [], []
+        for pl in re.finditer(r'<polyline points="([^"]+)"[^>]*layerid="3"', body):
+            v = [float(t) for t in pl.group(1).split()]
+            xs += v[0::2]; ys += v[1::2]
+        if not xs:
+            return None
+        return ((min(xs) + max(xs)) / 2 - ox) * UNIT, ((min(ys) + max(ys)) / 2 - oy) * UNIT
+    return None
+
+
 def placed(pts, deg, mirror):
     """Rotate a set of footprint-local points, and mirror them for the back.
 

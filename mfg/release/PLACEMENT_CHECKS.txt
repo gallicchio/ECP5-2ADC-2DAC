@@ -4,6 +4,7 @@ MOVED in ECP5-2ADC-2DAC_cpl_jlcpcb_upload.csv to where JLCPCB's library puts the
 KiCad's; FOOTPRINT_CHECK.txt's 'datum').  In the preview each should sit squarely on its pads.  If one
 sits off them by about the same distance the other way, their library has changed: say so.
 
+  D201   C2843878   LED-SMD_L3.5-W2.8-RD                         moved (+0.600, -0.051) mm (x right, y up)
   J105   C492401    PinHeader_1x02_P2.54mm_Vertical              moved (+0.000, -1.270) mm (x right, y up)
   J106   C492401    PinHeader_1x02_P2.54mm_Vertical              moved (+0.000, -1.270) mm (x right, y up)
   J210   C492401    PinHeader_1x02_P2.54mm_Vertical              moved (+1.270, -0.000) mm (x right, y up)
@@ -109,7 +110,7 @@ Not yet seen right in a preview:
   X301                         C5742665     Oscillator_SMD_Fox_FT5H_5.0x3.2mm
       value FT5HNBPK25.0-T1; predicted correction 270, from the top-side fit at 90 deg, 4 pads by number, worst 0.05 mm
 
-Read right in a preview already (the Icepi and GPSDO boards): D103 D201 J107 J108 J109 J603 U304 U305 U306 U505 U601 U602 U603 U604 U605
+Read right in a preview already (this board's, or the Icepi and GPSDO boards'): D103 D201 J107 J108 J109 J603 U304 U305 U306 U505 U601 U602 U603 U604 U605
 The method against those readings (its prediction must equal the correction somebody saw):
   C2843878   LED-SMD_L3.5-W2.8-RD                 read 180, predicted   -: no prediction
   C7836      SOT-23-5                             read 180, predicted 180: AGREES

@@ -247,11 +247,18 @@ Jason's upload of build 33 showed two faults in the preview, and both were the r
   release now fails on any such part that nobody has read.  The new headers need a correction too: JLCPCB draws them
   lying along x with pin 1 on the left, KiCad standing along y, so all of them go out at -90 (the 1x3, 1x6 and 2x9
   predicted by pin number, the 1x2 -- two pads predict nothing -- read off the drawing).
+* **D201, the 2835 LED, as read in JLCPCB's viewer** (Jason's screenshots, 2026-10-08): +180, and its CPL point 0.60 mm
+  along its axis.  Our footprint is JLCPCB's own drawing, yet their viewer draws this part a half turn from it, about
+  its body's centre, 0.30 mm from the drawing's origin, so every pad lands twice that away
+  (`jlc_rotation.VIEWER_HALF_TURN`; `make_fab.py` computes the move from the drawing).
 * **`mfg/preview_check.py` computes the preview**: JLCPCB's own land drawing of every top-side part, placed where the
   upload CPL says and turned as it says, against the board's pads and courtyards.  Build 34's CPL: all 347 top-side
   placements land on their pads with their bodies the right way.  Build 33's: the six SMAs and both Pmod sockets
-  flagged, as the preview showed.  It runs in the build after the release and stops it on a wrong placement; the
-  127 bottom-side placements are still the preview's to judge.
+  flagged, as the preview showed.  It also requires JLCPCB's pin 1 (the purple dot in their viewer) on our pad 1 for
+  every part of three or more pads (42), which a four-pad crystal or oscillator needs because its pads fit either way
+  round, and JLCPCB's cathode or anode, by their own symbol's pin names, on ours for every diode and LED (24).  It runs
+  in the build after the release and stops it on a wrong placement; the 127 bottom-side placements are still the
+  preview's to judge.
 
 And the two CPLs are named for what they are: `ECP5-2ADC-2DAC_cpl_jlcpcb_upload.csv` (upload this one) and
 `ECP5-2ADC-2DAC_cpl_kicad_native.csv`, the convention of every board in this repository since 2026-10-08.  The copper is

@@ -13,31 +13,11 @@ Pmod sockets turned, none of which any check had caught, because every check com
 import os, sys, csv, math, re, json
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE); sys.path.insert(0, os.path.join(ROOT, "pcb")); sys.path.insert(0, os.path.join(ROOT, "gen"))
-import footprint_check as FC, fplib, netmap, place as P
+import footprint_check as FC, fplib, netmap, place as P, jlc_rotation
 
 NAME = "ECP5-2ADC-2DAC"
 PAD_TOL = 0.35          # mm: a pad landing further than this from all of ours is wrong
 BODY_MIN = 1.0          # mm: their outline's centre must be this far from the origin to say which way the body faces
-
-
-def silk_centre(code):
-    """Centre of the bounding box of their top silkscreen (layer 3), footprint-local mm, y down; None if none."""
-    res, ts = FC.svgs(code)
-    for r in res:
-        b = r.get("svg", "")
-        if 'c_partid="part_pad"' not in b and 'c_partid="part_hole"' not in b:
-            continue
-        body = b.split("</style>", 1)[-1]
-        m = re.search(r'<g [^>]*c_origin="([-\d.]+),([-\d.]+)"', body)
-        ox, oy = (float(m.group(1)), float(m.group(2))) if m else FC.ORIGIN
-        xs, ys = [], []
-        for pl in re.finditer(r'<polyline points="([^"]+)"[^>]*layerid="3"', body):
-            v = [float(t) for t in pl.group(1).split()]
-            xs += v[0::2]; ys += v[1::2]
-        if not xs:
-            return None
-        return ((min(xs) + max(xs)) / 2 - ox) * FC.UNIT, ((min(ys) + max(ys)) / 2 - oy) * FC.UNIT
-    return None
 
 
 # Our marked pin by footprint: the cathode of every diode and LED footprint on this board is pad 1 (KiCad's convention,
@@ -48,10 +28,10 @@ OURS_MARKED = {"D_SOD-123": ("K", "1"), "D_SMA": ("K", "1"), "LED_0603_1608Metri
                "LED-SMD_L3.5-W2.8-RD": ("K", "1"), "LED-ARRAY-SMD_4P-L1.6-W1.5-BR_XL-1615RGBC-RF": ("COM+", "2")}
 
 
-# Parts whose symbol names no pins, and whose marked pad was READ in JLCPCB's viewer instead, with the turn their viewer
-# adds to their land drawing.  The 2835 LED (Jason, 2026-10-08): its "-" is the large pad 1 of the drawing, and the viewer
-# draws the part a half turn from that drawing -- at +0 it showed the cathode on the left where ours is on the right.
-VIEWER_READ = {"C2843878": ("1", 180.0)}
+# Parts whose symbol names no pins, and whose marked pad was READ in JLCPCB's viewer instead.  The 2835 LED (Jason,
+# 2026-10-08): its "-" is the large pad 1 of their drawing.  (Their viewer also turns it a half turn about its body:
+# jlc_rotation.VIEWER_HALF_TURN, applied to every pad below.)
+VIEWER_READ = {"C2843878": ("1", 0.0)}
 
 
 def their_pin(code, name):
@@ -70,6 +50,10 @@ def their_pin(code, name):
     return None
 
 
+# Parts whose JLCPCB drawing numbers its pads unlike our footprint (the rotation table says how they were read instead).
+PIN_NUMBERS_DIFFER = {"C496551", "C22373932", "C88374", "C145262"}
+
+
 def turn(x, y, deg):
     """A counter-clockwise turn as seen on the board (y down)."""
     a = math.radians(deg)
@@ -83,7 +67,7 @@ def main():
     path = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, "mfg", "release", NAME + "_cpl_jlcpcb_upload.csv")
     cpl = {r["Designator"]: r for r in csv.DictReader(open(path))}
     bad, ok, skipped = [], 0, 0
-    polar_ok, polar_unread = [], []
+    polar_ok, polar_unread, pin1_ok = [], [], []
     lp_cache, silk_cache = {}, {}
     for ref, row in sorted(cpl.items()):
         if row["Layer"] != "top" or ref not in placed:
@@ -91,10 +75,13 @@ def main():
         code = lcsc.get(ref)
         if code not in lp_cache:
             lp_cache[code] = FC.land_pattern(code)[0] if code else None
-            silk_cache[code] = silk_centre(code) if code else None
+            silk_cache[code] = FC.body_centre(code) if code else None
         lp = lp_cache[code]
         if not lp or not lp["pads"]:
             skipped += 1; continue
+        if code in jlc_rotation.VIEWER_HALF_TURN:                                  # as the viewer draws it: a half turn about the body
+            bx, by = FC.body_centre(code)
+            lp = dict(lp, pads=[dict(p, x=2 * bx - p["x"], y=2 * by - p["y"]) for p in lp["pads"]])
         x, y, rot, layer = placed[ref]
         fp = fplib.load(fps[ref])
         ours = fplib.pads_at(fp, x, y, rot, back=False)                         # board frame, y down
@@ -119,9 +106,24 @@ def main():
                     dx, dy = turn(tp[0]["x"], tp[0]["y"], r + VIEWER_READ.get(code, ("", 0.0))[1])
                     d = math.hypot(cx + dx - op[0]["x"], cy + dy - op[0]["y"])
                     if d > PAD_TOL:
-                        msg.append("their %s (pad %s) lands %.2f mm from our %s (pad %s): REVERSED" % (name, tn, d, name, our_num))
+                        msg.append("their %s (pad %s) lands %.2f mm from our %s (pad %s): %s" % (name, tn, d, name, our_num,
+                                   "REVERSED" if d > 1.0 else "shifted"))
                     else:
                         polar_ok.append(ref)
+        # pin 1 (build 34, Jason's crystals): a four-pad crystal or oscillator lands on its pads either way round, so
+        # JLCPCB's pad 1 -- the purple dot in their viewer -- must land on our pad 1.  Not for the parts whose two
+        # libraries number the pins differently (their body or marked pin is checked instead).
+        if code not in PIN_NUMBERS_DIFFER and len(lp["pads"]) >= 3:
+            t1 = [p for p in lp["pads"] if str(p.get("number")) == "1"]
+            o1 = [q for q in ours if str(q["num"]) == "1"]
+            if t1 and o1:
+                dx, dy = turn(t1[0]["x"], t1[0]["y"], r)
+                d1 = math.hypot(cx + dx - o1[0]["x"], cy + dy - o1[0]["y"])
+                if d1 > PAD_TOL:
+                    on = min(ours, key=lambda q: math.hypot(cx + dx - q["x"], cy + dy - q["y"]))["num"]
+                    msg.append("their pin 1 lands on our pad %s, not pad 1" % on)
+                else:
+                    pin1_ok.append(ref)
         if worst > PAD_TOL:
             msg.append("a pad lands %.2f mm from ours" % worst)
         sc = silk_cache[code]
@@ -141,6 +143,7 @@ def main():
         print("  WRONG  " + b)
     print("%d top-side placements land on their pads with their bodies the right way; %d look wrong; %d not checked "
           "(bottom side, or no land drawing)" % (ok, len(bad), skipped))
+    print("pin 1: %d parts of three or more pads with JLCPCB's pin 1 on ours" % len(pin1_ok))
     print("polarity: %d diodes and LEDs with JLCPCB's marked pin on ours%s" % (len(polar_ok), "" if not polar_unread else
           "; %d whose JLCPCB symbol names no pin, read from the land drawing instead: %s" % (len(polar_unread), " ".join(polar_unread))))
     return 1 if bad else 0
