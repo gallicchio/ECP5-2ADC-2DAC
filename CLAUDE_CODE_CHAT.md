@@ -3154,3 +3154,16 @@ on top of the published $0.0017 a pad; manual assembly $0.01572 a through-hole j
 
 FABRICATION_NOTES.txt's cost section lists both calibration carts with the model's figure for each.  CLAUDE_PCB.md
 (yours, uncommitted): the second cart and the markup, in the cost-model lesson.
+
+## Prompt 43
+
+ECP5-2ADC-2DAC/design_review_CopilotSDK2/kicad_copy/ is listed as untracked. If something in there should be tracked, add it and commit. If not, .gitignore it.
+
+## Response 43 2026-10-10 15:43 - 15:43 Claude Opus 5.5 Max
+
+**Ignored, nothing tracked.**  `kicad_copy/` is the copy of the project the reviewer ran KiCad's DRC and ERC on (its report
+says so).  The five real files are byte-identical to build 31 at commit 11e2f61.  The `.kicad_prl` is KiCad's window
+state.  The other eight entries are symlinks with absolute `/home/jason/...` targets into the live tree, which would break
+the no-absolute-paths rule and would point at today's sheets, not build 31's.  What the copy produced is already tracked
+in the folder (the DRC and ERC outputs, the layer renders).  The root `.gitignore` now ignores
+`ECP5-2ADC-2DAC/design_review_*/kicad_copy/`, beside the rule for a reviewer's `repo/` copy.  Committed as 2b77104.
