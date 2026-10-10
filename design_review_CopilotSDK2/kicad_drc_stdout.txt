@@ -1,0 +1,3 @@
+Found 4 violations
+Found 0 unconnected items
+Saved DRC Report to design_review_CopilotSDK2/drc_fresh.json

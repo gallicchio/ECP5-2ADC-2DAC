@@ -1,0 +1,3 @@
+Found 4 violations
+Found 0 unconnected items
+Saved DRC Report to /home/jason/mudd/OpticsPCBs/ECP5-2ADC-2DAC/design_review_CopilotSDK2/drc.json
