@@ -1,5 +1,9 @@
 # ECP5 + 2 ADC + 2 DAC
 
+![The board](docs/images/render-iso.png)
+
+<p><img src="docs/images/render-top.png" alt="top" width="49%"> <img src="docs/images/render-bottom.png" alt="bottom" width="49%"></p>
+
 A 158 x 119 mm, 6-layer board (M3 holes in the corners, sized to slide into a Hammond 1455Q1601 extruded enclosure): a Lattice ECP5 (LFE5U-25F, caBGA256) with 32 MB SDRAM, 16 MB QSPI flash,
 gigabit Ethernet, FT2232H (JTAG and serial on one USB-C that also powers the board), a second USB-C straight
 to the FPGA, mini-HDMI (GPDI), microSD, two Pmods -- and the analog part that is the point of it:
