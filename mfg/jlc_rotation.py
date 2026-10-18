@@ -121,7 +121,7 @@ JLC_ROTATION_BY_PART = {
     # KiCad, so no fit by pin number predicts them, and builds 1-33 sent them at +0 -- the preview showed every SMA lying
     # along the board edge and both Pmod sockets standing a quarter turn round.  The body is the cue, not the pins.
     "C492401": (270, "predicted", "1x2 header PZ254V-11-02P: JLCPCB's drawing lies along +x with pin 1 left, KiCad's stands along +y with pin 1 at the top (the 1x3, 1x6 and 2x9 headers predict 270 by pin number; two pads predict nothing)"),
-    "C496551": (90, "predicted", "edge SMA BWSMA-KWE-Z001: JLCPCB's drawing has the barrel along +x at 0, KiCad's along -y (its courtyard runs 12 mm up); +0 put them along the edge in build 33's preview"),
+    "C496551": (0, "read", "edge SMA BWSMA-KWE-Z001: READ on CostasLink rev A's preview (2026-10-17, the same vendored footprint): at +90 every SMA needed a quarter turn clockwise, so +0.  The footprint's body runs along +x at 0 as JLCPCB's drawing does; the earlier +90 misread KiCad's barrel as along -y, and the build 33 note that +0 lay along the edge is contradicted.  Re-read in this board's own preview; the release must be regenerated before the order"),
     "C22373932": (270, "predicted", "2x6 right-angle Pmod socket: JLCPCB's drawing has the body below the pin rows at 0, KiCad's to the left of its pin columns; +0 stood them a quarter turn round in build 33's preview"),
     "C8678": (0, "predicted", "SS34 SMA (build 32), by the mark: the band and the '-' on the left pad at 0 deg in JLCPCB's land drawing, the bar on the left in its symbol; KiCad's D_SMA has pad 1 (cathode) on the left"),
 }
