@@ -3167,3 +3167,24 @@ state.  The other eight entries are symlinks with absolute `/home/jason/...` tar
 the no-absolute-paths rule and would point at today's sheets, not build 31's.  What the copy produced is already tracked
 in the folder (the DRC and ERC outputs, the layer renders).  The root `.gitignore` now ignores
 `ECP5-2ADC-2DAC/design_review_*/kicad_copy/`, beside the rule for a reviewer's `repo/` copy.  Committed as 2b77104.
+
+## Prompt 44
+
+I got an email from JLCPCB asking to confirm the orientation of D309. I included a screenshot of their placement at
+'ECP5-2ADC-2DAC/mfg/release/Screenshot From 2026-10-22 08-50-51.png' for you to look at.  [Then:] yes. do that. and
+rename it to be something more reasonable, like a check on the RGB LED orientation.
+
+## Response 44 2026-10-22 08:52 - 09:00 Claude Opus 5.5
+
+**D309 is right as JLCPCB shows it, at 0; tell them to proceed.**  D309 is the XL-1615RGBC-RF (C965840) at (159.5, 137),
+0 deg, on top.  Its pads: 1 lower right (R), 2 upper right (+3V3, the common anode), 3 upper left (B), 4 lower left (G).
+The datasheet's top view (`docs/datasheets/drawings/rgb1615_dim-08.png`) is the footprint turned a half turn, with R and
+the anode on one side and its triangle between them pointing outward.  EasyEDA numbers G and B the other way from the
+datasheet (B=3, G=4), but the nets follow the pads' places, so the colours are right.  In their snapshot the "+" is on our
++3V3 pad, the pin-1 mark on our pad 1 (R, beside our silkscreen dot), and the triangle on the right, pointing out.  The
+dark circle on the body at the upper right is the via at (160.4, 136.4) in the +3V3 pad, seen through their model; it is
+epoxy filled and capped like every via on this order.
+
+Recorded: the snapshot is now `mfg/jlcpcb_order/2026-10-22_D309_RGB_LED_orientation_check.png` (moved out of the release
+directory); `mfg/jlc_rotation.py` has C965840 as read at 0, with the reading.  The committed `PLACEMENT_CHECKS.txt` still
+lists D309 as predicted until the next build; the CPL does not change.

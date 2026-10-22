@@ -109,6 +109,12 @@ JLC_ROTATION_BY_PART = {
     # left, where our pad 1 (the cathode, the large pad) is on the right.  Their viewer draws this LED a half turn from
     # their own land drawing, so "our footprint is their drawing" did not make +0 right.
     "C2843878": (180, "read", "2835 LED XL-2835SURC-05: +0 showed the cathode on the anode's side in build 34's preview (Jason, 2026-10-08); +180"),
+    # 2026-10-22, before production: JLCPCB's engineer asked to confirm D309's orientation (their snapshot is
+    # mfg/jlcpcb_order/2026-10-22_D309_RGB_LED_orientation_check.png).  At +0 their "+" is on our pad 2 (+3V3, the
+    # common anode, upper right), their pin-1 mark on our pad 1 (R, lower right, beside our silkscreen dot) and the
+    # datasheet's triangle between them, pointing out on the right.  EasyEDA numbers G and B the other way from the
+    # datasheet (B=3, G=4), but the nets follow the pads' places.  Answered yes (Prompt 44).
+    "C965840": (0, "read", "1615 RGB LED XL-1615RGBC-RF (D309): +0, JLCPCB asked before production and the snapshot was read against the board file (2026-10-22)"),
     # "predicted" by the POLARITY MARK in JLCPCB's drawing (the EasyEDA record's png, read 2026-10-06): the
     # cathode ("-", the bar or chamfer) on the LEFT at 0, where KiCad's pad 1 (the cathode) is.  A fit by pad
     # number would say 180 on these, since JLCPCB numbers the cathode 2 (GPiBridge's KT-0805 lesson).
