@@ -29,6 +29,15 @@ notes) into `mfg/release/`.  `python3 build.py --clean` removes everything it ma
 | the generators | `gen/` (schematic), `pcb/` (placement, BGA escape, pin swaps, router, silkscreen, board writer), `mfg/` (release), `tools/` (JLCPCB queries) |
 | decisions and questions | this file, `QUESTIONS.md` (gitignored, for Jason), `CLAUDE_CODE_CHAT.md` (the log) |
 
+## Bring-up (the boards arrived 2026-11-05)
+
+`BRINGUP.md` is the procedure (stages 0-8 with pass conditions; the dead-on-arrival table); `bringup/` runs it from the
+bench PC (`bench.py`: the E3646A, the Fluke 45, the SDS2104X Plus, the SDG1032X and the board in one tool; `BRINGUP_LOG.md`,
+`REVB.md`); `gateware/bringup/` is the gateware it uses: `build/blink.bit` (LEDs, CLK OUT, a serial greeting) and
+`build/bringup.bit` (a register bus over the FT2232H's serial channel at 1 Mbaud: frequency counters on every clock input,
+the Si5351 and the PHY's MDIO bit-banged, DAC generators, an ADC capture of 8192 samples a channel with statistics, an
+SDRAM tester), with `host/ecp5bu.py` to drive it.  Both are simulated end to end in iverilog (`make sim`, `make test`).
+
 ## Checks that are not DRC
 
 * `python3 tools/trace_paths.py > docs/SIGNAL_PATHS.md` walks every signal path through the netlist (SMAs,
