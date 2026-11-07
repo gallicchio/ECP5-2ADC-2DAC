@@ -33,8 +33,8 @@ python3 host/ecp5bu.py ident                     # the serial channel is the sec
 
 The FT2232H enumerates as 0403:6010 with two interfaces: A is the JTAG (openFPGALoader takes it from the
 `ftdi_sio` driver while it runs), B the serial channel (`/dev/ttyUSB1` when nothing else is plugged in; check with
-`ls /dev/serial/by-id/`).  openFPGALoader needs USB permissions: its udev rules
-(`/usr/share/openFPGALoader/99-openfpgaloader.rules` or the oss-cad-suite's `share/openFPGALoader/`), or run it as root.
+`ls /dev/serial/by-id/`).  openFPGALoader needs USB permission on 0403:6010: a udev rule giving it to
+the user's group (on bell the `openocd` package's `60-openocd.rules` does; the oss-cad-suite ships none), or run it as root.
 
 ## What the simulation says about timing
 

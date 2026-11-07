@@ -32,7 +32,7 @@ What goes where:
 | an **Ethernet cable** to the lab switch | stage 7 | have |
 | a loupe or the USB microscope; `mfg/release/ECP5-2ADC-2DAC_assembly_top.pdf` and `_bottom.pdf` and `PLACEMENT_CHECKS.txt`, open on a screen | stage 0 | have |
 | the IR camera or thermometer | stage 1.4 | have |
-| the oss-cad-suite's `openFPGALoader` (any machine with the USB cable; the bench PC has it at the path in `gateware/bringup/build.sh`) and its udev rule installed (root: Jason) | stages 2-3 | have |
+| the oss-cad-suite's `openFPGALoader` (any machine with the USB cable; the bench PC has it at the path in `gateware/bringup/build.sh`); USB permission for 0403:6010 (on bell the `openocd` package's `/lib/udev/rules.d/60-openocd.rules` already gives it to `plugdev`, checked 2026-11-06) | stages 2-3 | have |
 
 ## The board, as the bench sees it
 
@@ -101,8 +101,10 @@ About 3 W, 0.6-0.7 A at 5 V with everything running.
 
 0.3 **The bench PC**: `python3 ~/lab-instrument-control/scpi_link.py identify` for the supply's and the Fluke's ports;
     `python3 bringup/bench.py check` (writes `bringup/bench_config.json`, says who answers); the scope and the generator
-    on the LAN.  `openFPGALoader --Version` runs; its udev rule is installed (`ls /etc/udev/rules.d/`).  Nothing from
-    this folder needs `sudo`; what does is Jason's, as a copy-paste block in the chat.
+    on the LAN.  `openFPGALoader --Version` runs.  USB permission for the FT2232H (0403:6010): on bell the `openocd`
+    package's `/lib/udev/rules.d/60-openocd.rules` already gives it `MODE 660, GROUP plugdev` and Jason is in `plugdev`
+    (checked 2026-11-06 with the two FT232 adapters, which the same file covers); no rule to install.  Nothing from this
+    folder needs `sudo`; what does is Jason's, as a copy-paste block in the chat.
 
 0.4 **Jumpers** as the table says; nothing on any SMA or header yet; JP2009 open.
 
@@ -170,9 +172,10 @@ About 3 W, 0.6-0.7 A at 5 V with everything running.
     `dmesg -w` in another terminal while plugging: no "device descriptor read" errors.  *Pass:* 0403:6010 and two ports.
 
 2.2 **The FPGA answers**: `openFPGALoader --detect -c ft2232` prints the IDCODE **0x41111043** (LFE5U-25F).  It
-    detaches ftdi_sio from channel A while it runs; channel B stays a tty.  A permission error is the udev rule (Jason:
-    `sudo cp <oss-cad-suite>/share/openFPGALoader/99-openfpgaloader.rules /etc/udev/rules.d/ && sudo udevadm control
-    --reload && sudo udevadm trigger`, then re-plug); no IDCODE at all is the JTAG wiring (TCK T10, TMS T11, TDI R11, TDO
+    detaches ftdi_sio from channel A while it runs; channel B stays a tty.  A permission error (`ls -l /dev/bus/usb/<bus>/<dev>` not `root plugdev`) means
+    the openocd rule did not apply; the fix is Jason's: `sudo cp /lib/udev/rules.d/60-openocd.rules /etc/udev/rules.d/ &&
+    sudo udevadm control --reload && sudo udevadm trigger`, then re-plug (the oss-cad-suite ships no rule file of its own).
+    No IDCODE at all is the JTAG wiring (TCK T10, TMS T11, TDI R11, TDO
     M10, pulled as the sheet says) or JP501 fitted.  *Pass:* the IDCODE.
 
 2.3 **USB power alone**: `psu off`, the board now powered by the PC's port through F601/Q602: the LEDs stay on, `--detect`

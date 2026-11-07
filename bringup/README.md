@@ -25,8 +25,9 @@ this folder is how it is run on the bench and what it found.
    paths (it sends `*IDN?` only); put them in `bench_config.json` (`python3 bringup/bench.py check` writes the file
    with defaults the first time and says who answers).
 2. The FPGA tools: the oss-cad-suite at the path in `../gateware/bringup/build.sh` (`OSS_CAD_SUITE` to override); the
-   bitstreams are committed, so only `openFPGALoader` is needed to load them.  Its udev rule is root's to install
-   (`sudo cp .../99-openfpgaloader.rules /etc/udev/rules.d/ && sudo udevadm control --reload && sudo udevadm trigger`).
+   bitstreams are committed, so only `openFPGALoader` is needed to load them.  USB permission for the FT2232H: on bell
+   the `openocd` package's `/lib/udev/rules.d/60-openocd.rules` already covers 0403:6010 for `plugdev` (no rule to
+   install; see BRINGUP.md 0.3 and 2.2).
 3. `pip install pyserial numpy` if missing (`python3 -c "import serial, numpy"`).
 
 ## The stages as commands
