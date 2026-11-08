@@ -3538,3 +3538,57 @@ ends of its frames: every finale now stays within 0.85 of the centre).  The whol
 three bitstreams) takes 181 seconds.
 The second movie (Prompt 56): `images/show_finales.mp4`, the seal once and then every finale one after another (80 s;
 `make_show.py` renders it beside the main movie, and the finales sheet comes from it).
+
+## Prompt 57
+
+(With five photos: the hexacopter in flight with the BicoLog antenna under it, the mesh-grid radio dish with its Yagi
+on a wheeled tripod mount, the two together in the field, the hexacopter from above, and the overhead view of the Sagnac
+source on its optical table; then a sixth, the William Optics refractor on its pier with the optics cage and the camera
+behind the focuser.)
+
+In your EM wave, you could show one going through a half wave plate to rotate its polarization by 45 degrees and another
+going through a quarter wave plate to turn it into circularly-polarized light.  Another demo I'm bringing out is a Sagnac
+source of entanglement, so showing a simple view of that would be good too.  Show some drones.  Another demo I'm bringing
+out is a drone with a BicoLog antenna used to map out the beam pattern of radio astronomy antennas.  I've attached some
+photos of that setup to inspire you to add one or more finales based on that.  I've also attached an overhead photo of
+our Sagnac source of entangled photons and some of our telescopes, with our custom optics for free-space classical and
+quantum communication next.
+
+## Prompt 58
+
+The way entire set of gears rotates in your movie just makes it look like it's getting squished.  Since that one is 2D,
+maybe the gears can not rotate.  Another animation that might be good is an animation of DNA replication, DNA to RNA
+transcription, and RNA to protein translation.
+
+## Response 57 2026-11-08 Claude Fable 5.1
+
+(Prompts 57 and 58 together.  Sent to the chat: the finales sheet, the simulated frames, the compact movie.)
+
+Six finales added, seventeen in all (`FINALES` in `make_show.py`; the index now goes to 32), the gears flat (no nod),
+and the telescope redrawn from the photo.  Polarization: one wave, vertical, through a half-wave plate, after which it
+is at 45 degrees, through a quarter-wave plate, after which it is circular (a helix), travelling; the three parts are
+three matrix groups of the same stored (x, cos kx, sin kx) wave, the matrices making sin(kx - wt) in the right planes,
+so the quarter-wave plate's input is the 45-degree light the half-wave plate made, which is the standard way to make
+circular light.  The Sagnac source is laid out as on your table: the pump laser at the right, a plate, the dichroic
+mirror, the polarizing beam splitter at the bottom of the loop, the two mirrors and the crystal in the far leg, the
+two detectors below with their fibre coils; photons (dashes) flow in along the pump, both ways round the loop, and
+pairs (double dashes) leave down to the detectors.  The drone: the hexacopter with the BicoLog under it, its six
+propellers spinning (alternate ways), sweeps on an arc through the beam pattern (a main lobe and side lobes as a
+surface of revolution) of the mesh dish with its Yagi on the wheeled tripod, as in the mapping flights.  The telescope
+now has the objective at the right, the red focuser with its knobs, the adapter, the optics cage behind it with the
+beam-splitter cube and the branch going up, the camera at the back, on the pier; the light comes in from the right and
+converges through the tube and the cage into the camera.  The central dogma, three schematics with moving parts since
+the engine moves rigid pieces: replication (the parent helix opens at the fork, the helicase ring, into two daughter
+helices each with a dashed new strand; nucleotides fly in to the new strands), transcription (the polymerase slides
+along the DNA with the RNA strand trailing out of it; nucleotides fly in to it), translation (the ribosome's two
+subunits slide along the mRNA with its codon ticks; the peptide chain of beads grows out of the top; tRNAs with their
+amino acids arrive into it).  They are in the list one after the other, but the seal comes between finales on the
+scope, so a visitor sees them a minute apart; the compact movie shows them in a row.
+
+Room: the scene memory is full (8019 of 8192 vertices: the globe's grid and a few objects were thinned to fit; adding
+an object means trimming one), the program is 1650 of 2048 instructions (the program memory doubled, two more block
+RAMs), the longest section 204.  The ECP5: 37 of 56 block RAMs, 23 of 28 multipliers, the converter clock at 64.7 MHz for
+50; the Icepi pair at 64.5 and 52.4.  All simulations pass; the whole run takes 263 seconds.
+Also: the engine now takes a frame's ranges at the frame's start (a mode change mid-frame used to draw the new ranges
+with the old matrices for the rest of that frame, which on the Icepi pair could reach the burst's codes and fake a
+burst), and `host/show.py` knows the wider registers (`finale N` picks one).
