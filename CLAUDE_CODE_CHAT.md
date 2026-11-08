@@ -3658,3 +3658,25 @@ both twins' x, y, z), the Y board decodes it from its ADC through the tee, and t
 before it mod 256, so the Y board only loads a burst it decoded correctly (noise or a false gap would otherwise scramble
 its frame).  Both ends computed that sum in one clock as an adder tree over the whole payload, which grew from 47 bytes to
 87 and now 102 until it was the Y board's longest path; now each end adds a byte to a running sum as it goes by.
+
+## Prompt 62
+
+In the DNA replication animation, shouldn't the new strands only be single stranded (until the new bases get added)?
+For the RNA synthesis (transcription), can you make the RNA that's coming out look like its moving away?  Maybe its
+sine-wave shape should look like it's oscillating back and forth a bit while being attached to the transcription site.
+For the translation, the protein needs to extend all the way down to where the tRNA joins (the docking site) and then
+it should move up (if it moves up continuously as the new amino acid is added for ease of animation, that's fine.
+
+## Response 62 2026-11-08 Claude Fable 5.1
+
+(Sent to the chat: the finales sheet, the simulated frames, the compact movie.)
+
+Replication: each arm out of the fork is now the template strand alone for its first third (single-stranded), and from
+the growing point on it has its new strand (dashed) and the rungs; the nucleotides fly in to the growing points.
+Transcription: the RNA out of the polymerase is its own matrix group, stored as (s, cos ks, sin ks) along its own axis
+like the EM wave, so the animator's matrix makes a wave that runs along it away from the polymerase while its root
+stays at the exit; the wave uses the EM phase (half a wavelength a second).  Translation: the peptide chain of beads
+starts at the docking site (where the tRNAs' amino acids land, between the subunits), runs up through the large subunit
+with the ribosome, and the part outside rides up continuously, two beads a cycle of a sawtooth phase, which is one period
+of its zigzag, so the pattern is seamless where the moving part leaves the fixed one and at the wrap.  Everything
+re-rendered, re-simulated and rebuilt: the ECP5 at 69.5 MHz for 50, the Icepi pair at 70.2 and 65.0; all pass.
