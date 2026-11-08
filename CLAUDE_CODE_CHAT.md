@@ -3421,3 +3421,37 @@ The animator now advances its seven phases in real time (a millisecond tick), th
 in-plane axis (seen normally when the turn is zero), the Lorenz view has its own three phases that advance only in mode
 3, and the twin runs all the time, so both carry on between cycles.  The run on 2026-11-08: all simulations pass,
 all three bitstreams close timing (62, 64 and 58 MHz for 50).  The LED mirror is dropped.
+
+## Prompt 50
+
+This looks great except for a few things.  First, the ramp-up might ramp up too quickly.  At least in the video, it reaches
+persistence with a few seconds to go of the 5.  Maybe with the real analog scope it will look better.  I'd note this, but
+probably keep it.  Second, the compass in front of the globe needs to be fixed.  When the globe starts rotating, you need a
+better compass, whose right arm looks more like its left arm.  Right now, the right arm has a bunch of random stuff left over
+from where it used to cross the globe.  Fix this and re-render.
+
+[Mid-way:] The two scopes that I have access to are Tektronix 2235 and 2212 oscilloscopes.  I can adjust their brightness.
+I don't know if their phosphors share the same persistence, but you can look that up.
+
+## Prompt 51
+
+What, if anything, about this 30-minute build can be done in parallel?  Does the movie come from simulating the verilog or
+through an independent path?  If everything is independent, the build should do it all in parallel.
+
+## Response 50 2026-11-08 Claude Fable 5.1
+
+The dividers: their own outline is stroke 10 of the traced seal, which gave the real geometry (the knob centred at
+x = -0.252, the left leg's edges and tip); the right leg is now the left's mirror about the knob's vertical axis, the knob
+stays as traced, and only a strip 0.028 wide along each leg is cut from what lies under it (the sun's rays on the left, the
+globe's grid on the right), where before a band kept fragments of the globe's grid with the right leg.  The ramp: noted in
+`make_show.py` and the README, the numbers kept.  The scopes: the 2235's CRT is P31, Tektronix's standard phosphor then
+(the 2212 almost surely the same), which decays in tens of microseconds, so the persistence seen is the eye's, 50-100 ms,
+which is what the movie's 0.08 s phosphor models; set the intensity for the full-speed picture.  Re-rendered, re-simulated
+and rebuilt.
+
+## Response 51 2026-11-08 Claude Fable 5.1
+
+The movie is the float reference, not the Verilog; after the tables (seconds) the movie, the three simulations and the three
+bitstreams are independent, and `make_show.py` now runs them all at once (the Icepi build script takes a role argument so
+the two bitstreams build side by side).  The run: 111 seconds for everything, against the previous sequence that took
+half an hour under its own contention; all pass, all close timing.
