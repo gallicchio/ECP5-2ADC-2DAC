@@ -3592,3 +3592,69 @@ RAMs), the longest section 204.  The ECP5: 37 of 56 block RAMs, 23 of 28 multipl
 Also: the engine now takes a frame's ranges at the frame's start (a mode change mid-frame used to draw the new ranges
 with the old matrices for the rest of that frame, which on the Icepi pair could reach the burst's codes and fake a
 burst), and `host/show.py` knows the wider registers (`finale N` picks one).
+
+## Prompt 59
+
+Some suggested improvements: The robot arm seems small.  Maybe it needs to be that small to not go off the edge, but if
+it can me made bigger, it should.  The Sagnac source is not possible: the UV light (and returning IR light), in real life,
+either goes straight through the polarizing beam splitter or it turns 90 degrees, whereas in your drawing it magically
+turns 45 or -45 degrees.  (The Sagnac triangle just needs to be oriented properly with respect to the beam
+splitter/recombiner)  In the polarization demo, get rid of the half wave plate and only keep the "linear to circular"
+transition, but move it to the middle.  Add a Chua's circuit simulation.  In this and in the Lorentz simulation, it's not
+obvious from the 5 seconds that anything is changing.  Could you show the equivalent speed of the "nice" setting in
+ai-unleashes-chaos, and each time the thing is drawn (at 200 Hz or whatever the final persistence refresh rate it is),
+pause a bit on the final point to make it brighter.  This way it'll be obvious that it moves.  The order is good, with
+things like the "drone beam mapping" shown after the "parabolic transmission", and all of the central dogma ones next to
+each other (though I'd move the double helix up right before those).  My one criticism with the central dogma ones is
+that, as shown, the protein synthesis (translation) one starts toward the end of the strand and then loops back to the
+beginning.  If it's only 5 seconds, it should need need to reset party way through.
+
+## Prompt 60
+
+If Chua keeps breaking timing, drop it.  Adding Chua is not worth sacrificing a lot.  If a few tweaks can make it go,
+great.
+
+## Response 59 2026-11-08 Claude Fable 5.1
+
+(Prompts 59 and 60 together.)
+
+(Sent to the chat: the finales sheet, the simulated frames, the compact movie.)
+
+The arm is 1.25 times bigger with its shoulder carried a little up (the largest that stays on the screen through a whole
+turn of the viewpoint, checked over 14 s: the old pose reached 0.93 of the height when it pointed at the viewer).  The
+Sagnac loop is a right triangle with the polarizing beam splitter at its right angle: the pump comes in along one leg
+and goes straight through, or turns 90 degrees up the other; the crystal sits square in the hypotenuse; the mirrors turn
+the beams by the angles that geometry needs, and nothing turns 45 degrees at the splitter any more.  The polarization
+demo is the quarter-wave plate alone, in the middle, its axes drawn at 45 degrees: vertical light in, circular (the
+helix) out.  Chua's circuit is a second digital twin (`chua.v`): the double scroll with alpha 15.625, beta 28, m1 -23/32
+and (m0 - m1)/2 -7/32, chosen so every product is shifts and adds (the multipliers were 82 % used), Runge-Kutta 4 at
+dt 2^-10, into a second 2048-point ring; it is the second finale, drawn through the same turning view as Lorenz and
+carrying on between cycles like it.  Both tails now run at the analog board's "nice!" speed (an integrator time constant
+of 102 ms, so 9.8 Lorenz time units a second, some 14 orbits a second; the ring then holds the last 2.9 s), and the
+engine holds the beam on a ring's newest point for 20 us every frame (`TAIL_HOLD_US`; a register too), a bright head
+that visibly runs along the attractor; Chua runs at 2.5 time units a second.  The order: Chua after Lorenz, the double
+helix moved down to sit just before replication.  The walkers: a finale can now put phases to zero when it starts
+(`zero` in `KINDS`), so the polymerase and the ribosome start at the left each time, and their walk (one per 6.7 s) is
+a little longer than the finale (6.5 s), so neither wraps.
+
+Room: scene memory 7970 of 8192 vertices, the program 1632 of 2048; the ECP5 at 43 of 56 block RAMs (the second ring
+took six), 17 of 28 multipliers (the second ring's scaling would have needed six more and ran the chip out, so the two
+rings now share one scaler that forms the three products one after the other, which also gave back what the first ring
+used), the converter clock at 69.1 MHz for 50; the Icepi pair at 64.5 and 65.9, the burst
+grown to 824 bits with the Chua state (which pushed the Y board's clock below 50 MHz: its critical path was the
+burst's checksum, a one-cycle sum of 102 bytes; both ends now add the bytes up as they go by, and the Y board closes
+again).  Chua's own derivative was the first offender, at 30 MHz as one long chain of adders; pipelined to one or two
+adders a clock (32 clocks a step of the 1246 available) it closes everywhere, so it stays.  All simulations pass (the pair: 70 bursts, none bad); the run takes 369 seconds.
+
+## Prompt 61
+
+What was the 102-byte one-cycle checksum for?
+
+## Response 61 2026-11-08 Claude Fable 5.1
+
+The two-Icepi fallback's sync burst, nothing on the ECP5 board: the X board starts every frame by sending its state down
+its DAC as a burst of bits (the frame number, mode and finale, the dwell, its tick count, the 32 phases' top 16 bits,
+both twins' x, y, z), the Y board decodes it from its ADC through the tee, and the last byte is the sum of all the bytes
+before it mod 256, so the Y board only loads a burst it decoded correctly (noise or a false gap would otherwise scramble
+its frame).  Both ends computed that sum in one clock as an adder tree over the whole payload, which grew from 47 bytes to
+87 and now 102 until it was the Y board's longest path; now each end adds a byte to a running sum as it goes by.
