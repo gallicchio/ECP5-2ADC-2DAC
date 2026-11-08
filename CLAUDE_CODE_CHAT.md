@@ -3188,3 +3188,197 @@ epoxy filled and capped like every via on this order.
 Recorded: the snapshot is now `mfg/jlcpcb_order/2026-10-22_D309_RGB_LED_orientation_check.png` (moved out of the release
 directory); `mfg/jlc_rotation.py` has C965840 as read at 0, with the reading.  The committed `PLACEMENT_CHECKS.txt` still
 lists D309 as predicted until the next build; the CPL does not change.
+
+## Prompt 45
+
+(`/remote-control bell-ECP5-2ADC-2DAC`, 2026-11-05)  The PCBs came in, but I haven't unwrapped them. What is the bring-up
+procedure? If that's not written down, write it down and check it in. Assume you'll be in my office with access to a 2
+channel power supply that you can control using the library in ~/mudd/lab-instrument-control, which you can modify and
+commit to if needed. I'll try to plug in the USB-C programming cable and the oscilloscope and function generator and
+anything else you need. Then you'll do the bring up with me over chat while I check in occasionally on your progress and
+do any physical changes that need doing. When you write that document, summarize it here, giving more detail to the first
+few steps. I want you to be as ready for tomorrow morning as you can, with firmware written and debugged in a simulator
+where possible, and with python scripts to control the instruments (2 channel power supply, nicer of the two Siglent
+oscilloscopes, Siglent and HP function generators, etc.)
+
+## Response 45 2026-11-05 evening - 22:22 Claude Fable 5.1
+
+Done and committed (`db3706a`, not pushed).  Nothing had been written down for the bring-up before; it is now
+`ECP5-2ADC-2DAC/BRINGUP.md`, with a bench tool and gateware behind it.  Nothing has touched real hardware yet.
+
+**What is in the repository**
+
+- `BRINGUP.md`: stages 0 to 8, each with a pass condition, the reviews' open questions as measurements, and a
+  dead-on-arrival table saying which stage retires which risk.
+- `bringup/bench.py`: the E3646A, the Fluke 45, the SDS2104X Plus, the SDG1032X and the board in one tool, every
+  reading logged to `bringup/data/` (gitignored).  `BRINGUP_LOG.md` and `REVB.md` are ready to fill.  The instrument
+  drivers in `lab-instrument-control` already covered everything, so nothing changed there.
+- `gateware/bringup/`: two bitstreams, committed.  `blink.bit` needs only the TCXO: LED chaser, buttons, the TCXO on
+  CLK OUT, a serial greeting.  `bringup.bit` is a register bus over the FT2232H's serial channel with frequency
+  counters on every clock input, ADC capture of 8192 samples per channel with statistics, two DAC generators, an SDRAM
+  tester, and bit-banged I2C and MDIO for the Si5351 and the PHY.  `host/ecp5bu.py` drives it.
+- Verification: the full testbench passes 60 checks, the Python driver passes 17 checks against the RTL, blink and the
+  SDRAM unit test pass, and nextpnr meets timing on every clock.  The simulation found four real bugs along the way
+  (DAC data clocked on the wrong edge, a lost start during refresh, dropped UART bytes during a reply, and ecppack
+  refusing a DDR register on DAC 2's bank 8 pins), all fixed; the last is rev B list row 1.
+
+**The procedure, first steps in detail**
+
+1. **Stage 0, before power.**  Unwrap, photograph, mark the boards A and B.  With the loupe, check polarities in order of
+   what a mistake costs: D601 (the SS34 by the 5 V IN header) cathode toward +5V, Q602 and Q601 pin 1, the eight power
+   LEDs and eight white LEDs, the BAV99 clamps, pin 1 on U103, U201, U401, U502, U301, U606, the SMAs pointing off the
+   edge.  Set the jumpers: TERM shunts in on both ADC inputs and CLK IN, SRC to SMA, both GAIN shunts in (x1), JP2009
+   open, JP501 open, SW101 all off.  Run `python3 bringup/bench.py check` so the serial ports are in the config.
+2. **Stage 1, first power from the E3646A into J601, no USB.**  The staircase: 1.0 V at a 0.3 A limit, then 2.5, 4.0,
+   5.0 V, reading the current at each.  Under 30 mA at 1 V is no short.  Then the nine rails on the RAILS header J602
+   with the Fluke (odd pins rails, even pins ground, in the printed order +5V, +3V3, +1V1, +2V5, +3V3_ADC, +3V3_DAC,
+   +5VA, +1V0_PHY, -4V2), and all eight red LEDs lit.  Then five minutes under the IR camera, then the scope on +3V3
+   against +1V1 at power-on for the sequencing question the reviews left open.
+3. **Stage 2, USB PROG.**  `lsusb` shows 0403:6010 and two serial ports appear.  `openFPGALoader --detect -c ft2232`
+   reads the ECP5 IDCODE 0x41111043.  Then confirm the board also runs from USB alone.
+4. **Stage 3, the bitstreams.**  Load `blink.bit` and watch the chaser, the buttons, 25 MHz on CLK OUT, and the
+   greeting at 115200 baud.  Load `bringup.bit`, run `bench.py board ident`, then write it to the flash and power-cycle
+   to see the board boot alone.
+5. **Stages 4 to 7**, each a `bench.py run` command: the clocks and the Si5351, the SDG's 10 MHz into CLK IN for the
+   TCXO's error, DAC DC codes and a 1 MHz sine on the scope, ADC noise floor, generator sine, the U.FL taps, gains,
+   the DAC-to-ADC loopback for SFDR, first light through the LED and photodiode, the SDRAM latency scan and full 32 MB
+   test, the PHY ID and gigabit link.
+
+**What I need from you tomorrow**: a 2-pin lead from the E3646A to J601, a USB-C cable to J501, SMA-to-BNC adapters
+for the scope and generator, one SMA lead for the loopback, and U.FL pigtails for the taps (the full list is at the top
+of `BRINGUP.md`); one root command before stage 2 (the openFPGALoader udev rule); and two numbers are estimates until
+measured: the expected currents in the staircase, and the SDRAM read latency and ADC capture phase, which the tools scan
+automatically.
+
+## Prompt 46
+
+I was not able to do this today.  Give me "the openFPGALoader udev rule" and I can run it remotely, now.  Check that I
+didn't already install it for another project first, though.
+
+## Response 46 2026-11-06 21:00 - 21:10 Claude Fable 5.1
+
+Nothing to run.  The rule is already installed, by the `openocd` package rather than by you.
+`/lib/udev/rules.d/60-openocd.rules` (openocd 0.12.0, from apt) matches FTDI 0403:6010, the FT2232H's ID, with mode 660,
+group plugdev and the uaccess tag; you are in plugdev; the two FT232 RS-232 adapters plugged in now are covered by the
+same file and their device nodes are `root plugdev`, so the rule is active.  `/etc/udev/rules.d/` holds only your
+bench-instrument rule and the Pi and snap rules; the oss-cad-suite ships no rule file of its own, so my earlier docs
+pointed at a file that does not exist.  The three places that told you to install a rule now say none is needed, with
+the only fallback (`sudo cp /lib/udev/rules.d/60-openocd.rules /etc/udev/rules.d/ && sudo udevadm control --reload &&
+sudo udevadm trigger`).  Committed as `3c64bc8`.
+
+## Prompt 47
+
+I'd like to have this board up and running in a few days to do a demo for trustees of and potential donors to Harvey
+Mudd college.  The session is for interdisciplinary science and engineering.  I don't know if there is a simple thing
+that demonstrates the full capabilities of this board without a ton of extra stuff that I don't have time to build or
+scrape together.  The trustees will be milling about a lobby area and there will be a table with this and the "AI
+Unleashes Chaos" PCB.  I want something immediately appealing that doesn't take much time to set up or explain.  The theme
+is interdisciplinary engineering plus science.  My science is physics, but if there is an easy to set up demo for another
+science, I'd be open to that too.  There is also a sub-theme of AI in the physical world.  The fact that you, Claude,
+designed most of this board and will write its firmware might already check this box, but if the demo itself can further
+check that box, all the better.  Come up with a list of 10 to 20 demonstrations that can show off this board and some
+engineering+science and/or physical AI in an eye-catching way to trustees and donors walking past the table.  For each
+idea, estimate the "bang for the buck" in terms of extra hardware setup effort.  I probably don't have time to buy stuff
+for this, but image that we have things that typical physics and engineering departments would have.  The firmware effort
+will be all yours, so something where I can set up some sort of closed loop feedback to you, such that you can write and
+debug the gateway would be great.
+
+Take your time on this -- a few hours if you need to look up things on the internet or write draft gateway that you
+simulate.  You can put this in a new sub-directory called trustee-show-and-tell.  If you talk about ideas here in the chat,
+I may or may not be able to check my phone to give you feedback.  You're more likely to get feedback from me if I happen
+to step away and see some interesting images here in the chat -- sketches or simulations of your ideas.
+
+[Mid-way:] The 2D chaos is not as interesting with the analog board next to it.  If you need a 2D thing on a scope, look
+into the Harvey Mudd Seal (the old logo with the globe and the compass for drawing circles rather than the new logo that
+just says "HMC").
+
+## Response 47 2026-11-07 17:50 - 20:00 Claude Fable 5.1
+
+(Images sent to the chat as they were made: the chaos-board twin locking and unlocking, the scope in XY as a vector
+display, the seal traced from the official artwork, the analog x against the twin's x, the board's HDMI screen decoded from
+the simulated TMDS bits.)
+
+Finished.  The final state, committed through `dc654be` on master and not pushed:
+
+- `ECP5-2ADC-2DAC/trustee-show-and-tell/README.md`: the 18-idea list with bang for the buck, and the recommendation of
+  three demos from one bitstream (the chaos board's digital twin with the knob readout and the button, the scope as a
+  vector display drawing the College seal or whatever Claude is asked for, sound over the on-board LED to the on-board
+  photodiode with a theremin mode).
+- `SETUP.md`: the table cable by cable with a sketch, the jumpers, the commands and the card texts.
+- `gateware/build/demo.bit`: meets timing on every clock (video 136 MHz for 125, converters 64 for 50, UART 115 for 25);
+  the build script sweeps eight placer seeds and all eight pass.
+- `gateware/sim/tb_demo.v`: the whole top with the analog board replayed into the ADC pins over the real serial protocol.
+  All 12 checks pass: lock, divergence with BTN0 held, relock, the knob estimate following the replayed knob from 28 to
+  32, and the four DAC modes.  The screen frame sent to the chat is decoded from that run's HDMI bits.
+- `host/demo.py` for the table, `host/seal.json` traced from the official seal.
+
+Two things the simulation cannot settle, both noted in the README: HDMI has no bench history on this board, and a few
+stray pixels per sweep appear on the simulated screen whose cause I did not find (possibly the testbench's ADC model).
+Everything waits on the bring-up reaching the ADC and DAC stages.
+
+## Prompt 48
+
+I like that the digital twin of the chaos board uses both the DACs and ADCs, but 'm less excited about this one than I am
+the others -- I don't think people will appreciate at a glance that one is analog and one is digital.  The most
+interesting thing that could be done with the Lorentz digital twin, which has access to the Lorentz equations' x, y, a z,
+is to show the Lorentz trace rotating in 3D.
+
+I like the College seal on an XY analog scope.  Some other effects would be fun: One is to draw it faster and faster until
+it reached its 200 frames per second or whatever was required to look persistent.  Another would be to do something with a
+3D effect.  Rotating the "flat" seal in 3D seems easy.  Don't just rotate it around the X or Y axes, since this would just
+look like you're squishing it vertically or horizontally.  If you rotate around an axis in 3D that itself rotates, it would
+look more 3D.  A more complicated (but more interesting) effect would be to animate the globe to have it rotate.  You'd
+need to project hemispheres of some actual map, but do it in the style of the existing globe to remain recognizable.  I also
+like the "ask Claude to draw it" mode.
+
+I like the theremin mode, but this is probably going to be outside in unknown lighting.  Let's not do that or the
+photodiode audio.  The "Measure the speed of light" with a mirror might be an interesting way to control the vector
+display.  With no mirror, it should just do its vector XY default thing, but if someone puts a mirror up, within some
+reasonable range it can control the refresh rate or rotation or something.  Unfortunately, there are only 2 DACs and both
+are needed for the XY.  The only hacky thing I can think of is that the LED could be the X ADC or Y ADC directly and the
+DAC does a lag-correlation to determine distance.  Can the hardware output both to the LED and to the SMA out without
+putting the LED's nonlinearity on the SMA out?
+
+Some of the other ideas, like the magnetic levitation, are already in the OWLternating current board in `~/pcbs`.  Take a
+look at that, other PCBs in `~/pcbs`, and other PCBs here in OpticsPCBs for more inspiration, but I'm 90% certain that an
+XY vector display involving the Harvey Mudd Seal for at least part of the time is the way to go, especially if you can get
+the FPGA to do cool 3D effects.
+
+Form my standpoint, one good thing about an "output only" demo is that you can simulate the whole thing as you're writing
+the gateware and other code.  Whenever there is an input, the environmental conditions and other signal conditions are
+uncertain, and I suspect I will need to spend a lot of time debugging it in person.  If I need to debug it in person *on
+site*, that would be even worse -- the demo would need to be really amazing for that.  I'm already going to spend a huge
+number of in-person on-site hours getting the OWLternating Current and Costas PCB to work for this event.
+
+[Mid-way:] Keep going on this.  When you're done, I want you to consider the possibility that the ECP5-2ADC-2DAC board
+will not work as manufactured.  I still have two of the Icepi Zero devices with the adapter board and a ADC+DAC on them.
+These are used in the long set of tutorials in `~/mudd/133electronics/icepi-zero-dac-adc`.  If this custom ECP5 PCB does
+not work, would it be possible to use two of those Icepi Zero + ADC + DAC stacks to do the same demo?  Each one's DACs
+could be split to go to one channel of the scope and to the other one's DAC for synchronization.  I'd like you to write
+the firmware for this too, using the set of things in the `~/mudd/133electronics/icepi-zero-dac-adc` as a starting point.
+I could test this before I could bring up the ECP5-2ADC-2DAC board.
+
+[And:] Keep going.  I hope you're still logging all of my prompts and your responses in ECP5-2ADC-2DAC/CLAUDE_CODE_CHAT.md
+
+## Response 48 2026-11-07 20:30 - 2026-11-08 Claude Fable 5.1
+
+(Images sent to the chat as they were made: the float previews of the 3D globe in the seal, the tumble, the spinning
+globe, the Lorenz tail and the slow-draw ramp; then the Verilog's own DAC samples rendered frame by frame.)
+
+The demo is now an output-only scope show, and it is in `trustee-show-and-tell/`:
+
+- **The ECP5 show** (`gateware/build/show.bit`, `host/show.py`): the two DACs steer a scope in XY from a 3D vector engine
+  whose scene memory starts with the College seal; a sequencer cycles the seal drawn slowly then faster until it fuses
+  (the dwell ramp), the seal tumbling about a wandering axis with perspective, the seal's globe replaced by a wireframe
+  globe from the Natural Earth coastline in the same style, spinning on its tilted axis with its far half hidden, and the
+  twin's Lorenz attractor as a 2048-point tail tumbling in 3D; BTN0 next, BTN1 hold; mode 4 draws whatever a Claude
+  session uploads.  Timing closes (60 MHz for 50).  The whole thing is simulated: every DAC sample recorded and rendered
+  (`images/sim_show_sheet.png`, `sim_show.gif`).
+- **The mirror**: the LED driver forces the LED's current from DAC 1's node at a high-impedance input, so the LED carries X
+  plus a constant while the SMA stays clean; a mirror's return would give a robust correlation amplitude but time of
+  flight needs sub-sample work; not done, not recommended for an outdoor table.
+- **The Icepi Zero fallback** (`icepi/`): the same engine on two tutorial stacks, one 8-bit DAC each; board A starts every
+  frame with a burst on its DAC (a gap, then its mode, dwell, animator phases and twin state as bits), board B decodes it
+  from its ADC through a tee, loads the state, draws the same frame and trims its sample rate; both bitstreams close
+  timing, and the two-board simulation through a modelled cable draws the seal from A's X and B's Y.
+- The chat log is caught up (Prompts 45-48).
