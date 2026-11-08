@@ -3680,3 +3680,71 @@ starts at the docking site (where the tRNAs' amino acids land, between the subun
 with the ribosome, and the part outside rides up continuously, two beads a cycle of a sawtooth phase, which is one period
 of its zigzag, so the pattern is seamless where the moving part leaves the fixed one and at the wrap.  Everything
 re-rendered, re-simulated and rebuilt: the ECP5 at 69.5 MHz for 50, the Icepi pair at 70.2 and 65.0; all pass.
+
+## Prompt 63
+
+You have an 1104X-E scope connected through USB.  Two IcePi Zeros are plugged into USB.  One is connected to the scope's X
+and one to the Scope's Y.  Their ADCs are split.  Half goes to the scope and half to the other one's DAC.  If you need 50
+ohm terminators externally, I can add those later.  Check that everything is wired as expected and start to debug the demo
+with the actual scope.
+
+[Mid-way:] I'm switching you from Fable to Opus for now.
+
+[Mid-way:] Are you using ~/lab-instrument-control?  If so, feel free to update that code to account for the issues you
+found.
+
+[Mid-way:] Yes, please use lab-instrument-control and keep it up to date with all of the quirks and bugs that you find.
+Would it be good or bad to add external termination?  I don't remember what the termination situation of these boards
+are, but you did investigate his in `~/mudd/133electronics/icepi-zero-dac-adc` along with the "voltage to code" levels of
+two particular boards, which may be these two.
+
+[Mid-way:] They may not be these boards.  I've swapped the ADC+DAC modules between Icepi Zero units, so don't rely on any
+old mapping of FTDI id to anything.  But you can read that to get a sense of termination experiments and levels.
+
+[Mid-way:] Should I swap the 'scope channels or are you going to swap which icepi is which?
+
+[Mid-way:] The cabling is (I think) DAC to 10cm SMA cable which goes into an SMA splitter screwed directly on the ADC SMA
+input, to a 1 meter SMA to BNC cable, then to the scope.
+
+[Mid-way:] My thinking was that the signal from the DAC passes by the ADC and goes to the scope, where it can be terminated
+there if needed.  In its current configuration, it probably reflects back from the scope, passes by the ADC a second time,
+and then gets series terminated in the DAC.  I may be wrong, but I think the DAC has roughly 50 ohm series termination and
+the ADC on these boards is high impedance.
+
+[Mid-way:] They each can talk to each other: Their cabling is symmetric.  The two things that break the symmetry are the
+FTDI numbers and which BNC I happened to connect to scope channel 1 vs 2.
+
+[Mid-way:] Let me know right away if I need to change any cabling or add any terminators.  I need to leave in a few
+minutes.  You can debug with the board for the next few hours.
+
+[Mid-way:] i will swap the BNCs at the scope now.
+
+[Mid-way:] Swapped.  Eventually I'd like you to put some XY plots here in the chat.  Once things are debugged, I'll look up
+one of the Tektronix analog scopes and take some videos.
+
+## Response 63 2026-11-08 Claude Opus 5.5
+
+(Sent to the chat: the XY sheets from the scope, the last with every mode and finale right.)
+
+The wiring checked out (each board's DAC held at known codes, the other board's ADC and both scope channels read): both
+cross-links work, and the only swap was the scope inputs, which you swapped.  No terminators: the DAC is series-terminated
+(about 50 ohm) and the ADC and scope are high-impedance, so the reflection off the scope passes the ADC 10 ns later and is
+absorbed at the DAC, invisible at 25 MS/s; a terminator would halve the swing and the sync margin.  All of the show now
+draws right on the SDS1104X-E in XY with no bad bursts (`images/icepi_bench_xy.png`).  What the bench found and what fixed
+it (the Icepi README has the table): the burst's gap reads code 30 on the ADC, not near 0, so the Y board never synced
+(threshold from the measured transfer, the drawing in 0.8 of the range); two samples a bit were too few for the module's
+edge and ringing (four, decided two in); the rate trim's gain did not scale with the frame length; the Lorenz twin started
+at the origin, a fixed point, on both boards unless a host loaded it (now at power-up); the Y board's twins replayed on
+their own step clocks and skipped ring points written just before a burst, which garbled Lorenz and Chua (the burst now
+carries the step counters and the rings' state); mode 0 could show the seal tilted (now zeroed on entry, the ECP5 board
+too); the burst's streak (the Y board parks below the screen during it); and the start skew, TX_DELAY 9 measured; and the Y board's rate trim, which a counter reset at each burst biased by up to a
+tick a frame (now differences of free-running counts summed over 10 ms: -3 +/- 2 ppm in every mode; the testbench's Y
+clock, which its comments called 60 ppm fast, is 100 ppm fast at the simulator's 1 ps resolution, and the trim matches it
+to 1 ppm).  The boards are flashed with this and boot into the show.
+
+The scope: lab-instrument-control's SDS1104X-E driver now works over USB and has `xy()`; its notes and code record what
+this firmware (8.1.6.1.35R2) does: `SAST?` never answers once an acquisition has stopped (so `single()` hung) and
+`SANU? C2` never answers at all (the point count now comes from the waveform descriptor); polling `PAVA?` back to back
+keeps the value from updating; reading `/dev/usbtmcN` directly loses replies and an abandoned screenshot stays queued.
+Those edits are not committed there (that repository's rules say to ask).  The bench tools are `host/bench_icepi.py`,
+`host/skew.py` and `host/scope.py`.
