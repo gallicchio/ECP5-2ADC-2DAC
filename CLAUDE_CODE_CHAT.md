@@ -3455,3 +3455,86 @@ The movie is the float reference, not the Verilog; after the tables (seconds) th
 bitstreams are independent, and `make_show.py` now runs them all at once (the Icepi build script takes a role argument so
 the two bitstreams build side by side).  The run: 111 seconds for everything, against the previous sequence that took
 half an hour under its own contention; all pass, all close timing.
+
+## Prompt 52
+
+This is much better.  The Lorentz thing is a little out of place.  Are there other physics, math, chemistry, bio,
+engineering, or CS demos that could be added?  I'd want the seal to do exactly what it's doing now for around 5+5+5=15
+seconds.  That last 5 seconds can be Lorentz or one of the many interesting things that you can think of that are
+appropriate.  Maybe some cool organic chemistry 3D rotating thing, like the caffeine molecule.  Maybe a cool gear mechanism for engineering, even better a lerobot robot arm moving around
+(because hopefully I'll have one of those).  Maybe a cool rotating double helix for bio.  I'm happy to hear other ideas.
+I don't have a good sense for where things are stored on these boards, so I don't know if we're going to run out of room
+or fail to meet timing.
+
+## Prompt 53
+
+Do the gears "go" while the thing is rotating?  That would be nice.  Are there some more "physicsy" looking simulations
+that can be done and shown in 3D?  Optics?  Quantum?  Something recognizable by a generally-informed person with a
+technical background, but not only by someone specializing in that field.  Maybe lines of electromagnetic radiation
+propagating out (there will be radio dishes there from the Costas board), a wavefront of light being focused into a
+telescopes (there will be telescopes there from my free-space quantum communications projects and quasar telescopes).
+We made some online demos in `~/mudd/brainflux`, but some of those are probably too technical for a general
+STEM-background person to recognize in 5 seconds as rendered with an XY dot.
+
+## Prompt 54
+
+To add one thing, do the arm joints move as the animation spins?
+
+## Prompt 55
+
+Don't label any of them (especially LSD!).  Get rid of the C60, since that just looks like a soccer ball.  The telescope
+light one also doesn't look great.  The parabolic antenna looks good, but I think it's less clear that the telescope one
+is a telescope.  Since we already have the wavefront in the parabolic dish, the telescope animation should be something
+else recognizably optics.  I do have refracting telescopes, mostly from William Optics, like Gran Turismo 81, William
+Optics GT71, and William Optics Fluorostar FLT91.  If you make the telescope look like those, people will recognize it
+as the telescopes they are standing next to.  I don't know what, other than wavefronts, would make a good animation.
+
+## Prompt 56
+
+When you're all done, make a movie of the Harvey Mudd seal stuff, and then all of the finales, one after another.  This
+won't be what shows on the oscilloscope, since the Harvey Mudd seal will play for around 15 seconds between each finale,
+but for me to debug, the movie without the repeated Harvey Mudd seal stuff would be helpful.
+
+## Response 52 2026-11-08 Claude Fable 5.1
+
+(Prompts 52-55 answered together.  Sent to the chat: the simulated frames of every finale, the finales sheet, the movie.)
+
+The seal's fifteen seconds are untouched; mode 3 is now a finale, a different one each time round.  Eleven of them, in
+`make_show.py`'s `FINALES` list (the order and the seconds are constants; repeat or delete as you like), no labels: the
+Lorenz attractor (as before), caffeine and LSD (PubChem's 3D structures, bonds as lines and atoms as small rings,
+tumbling), DNA (B-DNA proportions, spinning and nodding), a trefoil knot, a planetary gear train, a robot arm, an
+electromagnetic wave, a refracting telescope, a radio dish transmitting, and satellites round the Earth.  C60 is gone
+(the buckyball stays in `objects.py`, unused).  The gears go: the sun drives, the three planets go round on their
+carrier and spin the other way against the fixed ring gear, the teeth meshing, since the carrier's and the planets'
+phases run at the ratios the tooth counts give (12, 9, 30: the carrier at 2/7 of the sun), and the whole train nods
+thirty degrees so it reads as 3D.  The arm's five joints (base yaw, shoulder, elbow, wrist pitch, wrist roll with a
+gripper, the SO-100's proportions) wave on sines of one phase while the viewpoint turns round it; the links are chained
+by forward kinematics in the animator.  The physics finales for the table's company: the EM wave is the textbook picture
+of E and B in perpendicular planes travelling along the axis (a trick makes it travel with no vertex changing: the wave
+is stored as (x, cos kx, sin kx) and a matrix with cos wt and sin wt in it produces sin(kx - wt)); the telescope is drawn
+in the William Optics proportions (the dew shield wider than the tube, the rack-and-pinion focuser with its knobs, the
+drawtube, a diagonal and an eyepiece, tube rings on a dovetail), and its animation is the light itself: dashes stream in
+along parallel rays and converge through the tube to the focus (the dashes inside are scaled about the focus, so they
+slide down the rays and shrink), which is a telescope gathering light rather than a wavefront picture; the dish is a
+paraboloid with its feed, plane wavefronts leaving along its axis and spreading; the satellites are three on inclined
+orbits round the seal's globe drawn large and spinning, each pointing a link beam at the ground.  Quantum I left out: an
+orbital or a wave packet is not recognisable in five seconds as a line drawing; the brainflux demos are field
+simulations on grids, which a vector display cannot draw at all; what the engine can do is anything that is fixed
+polylines under a per-group matrix that changes every frame, which covers travelling waves, growing wavefronts, sliding
+dashes, orbits and mechanisms.
+
+Room: the scene memory is now 8192 vertices (the seal and its globes 3727, the eleven objects 2896, 1569 free); the
+matrices come from a 1024-register file in block RAM that the animator writes and the engine reads through the RAM's
+second port, with sixteen matrix groups instead of four; the animator has 32 phases and a 893-instruction program in
+sections (the seal's, and one per finale; it gained SIN and COS of a register, for the joints and the nods).  The ECP5
+uses 35 of 56 block RAMs and the same 23 of 28 multipliers; the converter clock closes at 66.2 MHz for 50, the
+Icepi pair at 62.6 and 53.9.  The movie now runs the gateware's own microprogram bit for bit (one cycle per finale,
+about four minutes), and `images/finales_sheet.png` shows three moments of each; the Verilog simulation draws every
+finale (`images/sim_show_sheet.png`); the Icepi burst carries the finale and all 32 phases, the X board's wait after its
+burst is the animator's measured time plus a 9-tick calibration, so the two boards stay in step whichever section runs,
+and the Y board's rate trim now compares its tick count with the X board's (carried in the burst; the old loop compared
+the Y board with itself, and a false burst from a drawing that touched the screen's edge kicked it off, which smeared the
+ends of its frames: every finale now stays within 0.85 of the centre).  The whole run (tables, movie, three simulations,
+three bitstreams) takes 181 seconds.
+The second movie (Prompt 56): `images/show_finales.mp4`, the seal once and then every finale one after another (80 s;
+`make_show.py` renders it beside the main movie, and the finales sheet comes from it).
