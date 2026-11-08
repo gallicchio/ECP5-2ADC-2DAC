@@ -3382,3 +3382,42 @@ The demo is now an output-only scope show, and it is in `trustee-show-and-tell/`
   from its ADC through a tee, loads the state, draws the same frame and trims its sample rate; both bitstreams close
   timing, and the two-board simulation through a modelled cable draws the seal from A's X and B's Y.
 - The chat log is caught up (Prompts 45-48).
+
+## Prompt 49
+
+This is looking good, but I'd like the following: Show the Harvey Mudd Seal mostly as is for 5 seconds, "ramping up" the
+speed of drawing it from an obviously moving point until it's persistent in the last second.  Then show the globe rotating
+while the seal is viewed normally.  This should last 5 or so seconds, and the globe should go all the way around once.
+Then, keep the globe rotating relative to the seal and rotate the entire seal.  This should last 5-10 seconds, letting the
+whole seal go far enough to be viewed from the back, where the lettering is obviously backwards.  Then pick up the Lorentz
+3D view from where the Lorentz equations left off last time and where the view was last time.  Animate Lorentz for 5
+seconds.  Then back to the beginning.
+
+Make a python file with constants that I can modify.  Running this python file should generate a movie of at least 3
+cycles (to see the Lorentz evolve).  It's a movie so that I can pause and scrub it.  It should also generate an animated
+gif and all of the firmware and any tests you run.  It should also load the firmware onto the correct boards if they are
+connected through USB.  If there is one ECP5-2ADC-2DAC board, load it on that.  If there are two Icepi Zeros, always load
+the "X" onto one and "Y" onto the other.  It should be the same each time.  I'll just swap the cables on the oscilloscope
+if it's opposite the first time.  Don't bother with the LED mirror thing.  When you are done writing and testing this, I
+will play with tweaking the times and watching the movie until I like it.
+
+[Mid-way:] "once around in 5 s" does not need to be exact.  They can advance once per frame.  The times I give as
+parameters can be approximate.
+
+## Response 49 2026-11-08 Claude Fable 5.1
+
+(Sent to the chat: a one-cycle GIF and frames of the new sequence, then the three-cycle movie.)
+
+`trustee-show-and-tell/make_show.py` is the file.  Its constants at the top are the times (T_SEAL 5 with a 4 s ramp from
+DWELL0 2048, T_GLOBE 5 with one turn, T_FLIP 7.5 with one turn about an in-plane axis that drifts 8 degrees a second,
+T_LORENZ 5 with the view's three rates), the Lorenz speed and tail, the perspective, the movie's length, frame rate and
+phosphor.  Running it writes `show_params.vh` for both targets and regenerates the scene tables, renders
+`images/show_movie.mp4` (three cycles, 30 fps, scrubbable, a caption with the time, the mode and the dwell) and
+`show_movie.gif` (the first cycle), runs the three simulations (the twin bit-exact, the ECP5 show with every DAC sample
+rendered, the two Icepi boards through the modelled cable), builds `gateware/build/show.bit` and `icepi/build/icepi_x.bit`
+and `icepi_y.bit`, and loads the boards on USB: the ECP5 board through its FT2232H, or two Icepi Zeros with X on the lower
+FT231X serial number and Y on the other, every time; `--quick`, `--movie`, `--no-sim`, `--no-build`, `--no-load`, `--sram`.
+The animator now advances its seven phases in real time (a millisecond tick), the seal's matrix is a turn about an
+in-plane axis (seen normally when the turn is zero), the Lorenz view has its own three phases that advance only in mode
+3, and the twin runs all the time, so both carry on between cycles.  The run on 2026-11-08: all simulations pass,
+all three bitstreams close timing (62, 64 and 58 MHz for 50).  The LED mirror is dropped.
