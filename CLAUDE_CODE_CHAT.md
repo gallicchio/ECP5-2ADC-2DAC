@@ -3879,3 +3879,23 @@ fast regime steps every 20 and 24 ticks (back-to-back steps let the Y board's tr
 burst, now 4 ms on, corrects; the board steps every 623 and 9766 ticks).  All simulations pass; ECP5 69.6 MHz, Icepi
 64.3 / 60.2 MHz.  The Siglent in XY samples at 10 MS/s, so it still shows the moves between strokes and to the park as
 scattered dots, which on the Tek should be faint streaks.
+
+## Prompt 71
+
+There are awkward transitions between the Harvey Mudd seal frame rate increasing, the static seal, and the
+globe-spinning seal.  Something strange happens, where things "snap into focus" or are otherwise drawn differently.  On
+the Icepi Zero, at least, let's skip the "increasing frame-rate" 5-second clip and go right to the next thing, which I
+think is the static seal for a few seconds.
+
+## Response 71 2026-11-09 Claude Opus 5.5
+
+The Icepi pair now starts mode 0 at full speed: the still seal for 3 s (`ICEPI_RAMP` False, `ICEPI_T_SEAL` 3.0), then
+the globe turning (5 s) and the seal turning over (7.5 s), measured on the board in its own sequence (3.0, 5.0, 7.5 s).
+The ECP5 board keeps the ramp (`ECP5_RAMP`; one board, so its ramp never had the Y board's problem).  The other snap:
+mode 0 draws the seal's own globe (the traced artwork, the Americas) and mode 1 swaps in the 3D wireframe globe, which
+faced longitude 0 (Africa) at rest and whose spin runs in every mode, so it came in at any longitude.  The 3D globe now
+faces 45 W at rest (`scene.GLOBE_FACE_LON`: South America in the middle, Africa at the edge, as on the seal) and mode 1
+zeroes its spin on entry (`ZERO_GLOBE`), so it always starts looking like the globe it replaces; on the bench, mode 1
+entered after 1.0 s and after 3.3 s of mode 2 gives the same globe (correlation 0.987, where the spin alone would have
+turned it 165 degrees).  The two styles still differ (the seal's globe is its engraving, the 3D one a 30 degree grid
+and the coastline).  All simulations pass; rebuilt (ECP5 68.5 MHz, Icepi 64.5 / 60.2 MHz) and flashed.
