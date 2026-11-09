@@ -3899,3 +3899,29 @@ zeroes its spin on entry (`ZERO_GLOBE`), so it always starts looking like the gl
 entered after 1.0 s and after 3.3 s of mode 2 gives the same globe (correlation 0.987, where the spin alone would have
 turned it 165 degrees).  The two styles still differ (the seal's globe is its engraving, the 3D one a 30 degree grid
 and the coastline).  All simulations pass; rebuilt (ECP5 68.5 MHz, Icepi 64.5 / 60.2 MHz) and flashed.
+
+## Prompt 72
+
+The main difference between the seal and the wireframe globe is that in the seal, the view is at directly at latitude 0
+and the poles are exactly at the top and bottom.  If you can switch to the wireframe in the same orientation as the
+seal, it would be less jarring.  Then the wireframe can rotate, and then the rest of the seal.  Let's try that.  If it
+still looks jarring, we'll only ever show the wireframe globe, but it should begin in the same "poles at the top and
+bottom" orientation as the seal.  I'm sure you can find the correct longitudinal orientation that best matches the seal.
+
+## Response 72 2026-11-09 Claude Opus 5.5
+
+The 3D globe now comes in exactly as the seal's: upright, seen from the equator, the poles at the top and bottom.  It
+had been tilted 23.4 degrees, so it was seen from 23 N with its parallels drawn as ellipses (`scene.SEAL_GLOBE_TILT`
+is now 0; the satellites' Earth keeps its tilt).  The longitude was fitted to the engraving.  The real coastlines were
+projected as the engine does, and the mean distance between them and the traced strokes, both ways, was minimised.  At
+latitude 0 the best fit is 64 W (`scene.GLOBE_FACE_LON`, which was 45 W).  South America fits best there (a mean
+distance of 0.0035 of the half-width), and so does North America.  Africa alone would fit at 44 W: the engraving
+squeezes it in from the edge.  Mode 1 now starts with the globe held still for 1 s where the seal's was (`GLOBE_HOLD_S`;
+`show_seq` keeps the spin at zero for `GLOBE_HOLD_MS`), so the change of drawing is seen apart from the motion.  It then
+turns once, eastward, in the other 4 s, so mode 2 starts with it facing the seal's way again, and the seal turns over.
+The seal's globe section is now R0 Ry(s), 23 instructions shorter (the program is 1661 instructions).  All simulations
+pass.  Rebuilt (ECP5 69.3 MHz, Icepi 62.4 / 64.8 MHz) and both Icepi boards flashed.  On the SDS1104X-E, mode 1 held
+and 0.4 s in shows the upright wireframe with the Americas where the engraving has them; 2 s in it is turning; 6845
+bursts, none bad, -3.8 ppm.  The bench sheet's mode 1 tile was retaken.  What still differs is the style: the engraving
+has about 12 degree ocean cells, the wireframe a 30 degree grid over land and sea.  If the swap still looks jarring,
+the next step is yours from the prompt: draw only the wireframe, in mode 0 too, starting upright the same way.
