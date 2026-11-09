@@ -3849,3 +3849,33 @@ costs: the burst every frame (small finales draw at 2.7-4.4 kHz, so it is 40-63 
 15-40 %), 8-bit DACs with sub-steps of up to 2 codes held 2 samples (the beads), the drawing in 0.8 of the range, two
 clocks.  The ECP5 board would draw continuous lines 78-99 % of the time with no burst or skew, but shares the hold, the
 stroke order, the hidden vertices and the ramp's shape, which are in the common engine and scene.
+
+## Prompt 70
+
+Yes.  [To: "Want me to go ahead with all six?" (park the beam off-screen whenever it isn't drawing; redo mode 0 as whole
+drawings at 4, 8, 16 ... Hz; order and chain each object's strokes; skip the hidden vertices; Icepi: one burst every
+~4 ms with the frame redrawn in between; Icepi: steps of at most one code, one sample each).]
+
+## Response 70 2026-11-09 Claude Opus 5.5
+
+All six done, simulated, built, flashed on the Icepi pair and measured on the SDS1104X-E.  The engine (`vec3d.v`, the
+ECP5 board's too): y parked at 0, below the screen, from the end of a frame to the first segment of the next, and after
+16 samples without a segment (skipping the globe's hidden vertices left the beam on the last visible point for up to
+58 us while the engine worked through a few hundred of them); hidden vertices skipped instead of visited; the dwell
+taken at the start of each frame.  The scene (`gen_scene.order_strokes`, shared with the movie's model): each object's
+strokes nearest end first, joined where they meet (7841 of 8192 entries now; jumps per frame on the ECP5 down 2-8x).
+Mode 0: the dwell halved every 0.6 s from the one that draws the seal at 4 Hz, then full speed after the last step at or
+below 150 Hz (`RAMP_START_HZ`, `RAMP_STEP_S`, `RAMP_END_HZ`); the line generator holds a segment's last sub-step one
+sample, so a slow frame lasts dwell x sum(2^k - 1), which the first measurement (189 ms where 250 was meant) showed; on
+the bench now 249, 125, 63, 31, 16 and 8 ms frames, the whole seal each time, then full speed.  The Icepi pair: a burst
+every 4 ms (`ICEPI_SYNC_PERIOD_S`), both boards drawing the frame again every rep_f ticks in between (the interval in the
+burst, now 920 bits; a frame that overruns its slot ends the period), the X board taking the mode and finale as a period
+starts (a change between its animator and its burst would have mixed two finales for 4 ms); sub-steps of half a code
+to one, one sample each (`ICEPI_STEP_SHIFT` 3, dwell 1).  Measured: the beam on the drawing 90 % of the time (38-79 %
+before), the longest stop on the screen under 4 us (12-27 us before; what is left is fine lettering a code at a time),
+no left-edge dash, bursts every 3.8 ms with none bad in 11,000, the skew 0 ns, the trim -3 to -4 ppm.  The testbenches
+start mode 0 at full speed (the power-up frame is now 250 ms) and wait for a mode to take effect; the two-board one's
+fast regime steps every 20 and 24 ticks (back-to-back steps let the Y board's trimmed tick drop one, which the next
+burst, now 4 ms on, corrects; the board steps every 623 and 9766 ticks).  All simulations pass; ECP5 69.6 MHz, Icepi
+64.3 / 60.2 MHz.  The Siglent in XY samples at 10 MS/s, so it still shows the moves between strokes and to the park as
+scattered dots, which on the Tek should be faint streaks.
