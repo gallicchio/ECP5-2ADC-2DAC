@@ -4022,3 +4022,31 @@ further on one board than the other.  On the pair, each period's rings are now d
 carried, less the 64 oldest slots, which the twins overwrite during the period (`ICEPI_RING_SKIP`).  Both boards then
 draw the same 1984 points all period, and the tail moves 50 times a second.  On the bench afterwards there were no
 smeared periods in 640 of Lorenz and Chua.
+
+## Prompt 76
+
+All of the demos are *so* much better.  I notice no shear.  The one slightly strange thing is that in the seal animation,
+when the earth is rotating but before the whole scene rotates (when the poles are still at the top and bottom), the
+horizontal equator looks like its jumping up and down a tiny bit, as if some rounding error was pushing the equator a
+little high or a little low.  Fix that.
+
+## Response 76 2026-11-09 Claude Opus 5.5
+
+It was rounding, as you suspected.  The upright globe's equator lies exactly on the screen's centre line, 12-bit code
+2048.  On the Icepi pair's 8-bit DACs, that is exactly where code 127 steps to 128.  The matrices are in Q2.14, and their
+rounding put the equator's vertices a speck above or below the line, changing as the globe and the seal's turn axis
+turned.  The projection rounded down, so a speck below zero became 2047, DAC code 127.
+
+In a bit-exact copy of the engine's arithmetic over 200 moments of a turn:
+- at 15 moments the whole visible equator sat one code low;
+- at 36 it was split between the two codes (a step in the line);
+- in the RTL simulation, with the globe and the axis spun up, 15 % of the equator's samples were on 127.
+
+The fixes:
+- the projection rounds to the nearest code (`vec3d.v`, both boards);
+- the Icepi tops round the 12-bit codes to 8, so the centre line is in the middle of DAC code 128, not on its edge.
+
+Now the equator is on 2048, code 128, at every moment, in both the arithmetic copy and the RTL.  All simulations pass.
+ECP5 66.9 MHz; Icepi 60.9 / 62.9 MHz.  Both boards are flashed; there were no bad bursts and no out-of-step periods at
+the globe's start of turning.  The bench could not resolve a one-code shift directly: zoomed in, the rest of the drawing
+clips onto the window's edges.  So the scope is your judge.
