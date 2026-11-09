@@ -3781,3 +3781,18 @@ branches are older and not this work: `icepi-maze-router`'s one commit is alread
 git, so neither is merged.  This shell has no GitHub key, so the push is from your terminal (`git pull --no-rebase`
 first, so that if anything new arrived the 18 commits are merged and not replayed).  The "X11 forwarding request failed"
 line is ssh asking github.com for X11 forwarding and is harmless.
+
+## Prompt 66
+
+I got a clean status, so I thought I could do a quick pull, but I was wrong: [a plain `git pull` stopped again at
+`pick 39e436c` on `tb_lorenz.vvp`; then `git pull --no-rebase`: "You are not currently on a branch."]  Fix what needs
+fixing and give me a command do this right.
+
+## Response 66 2026-11-08 Claude Opus 5.5
+
+Response 65 was wrong that `--no-rebase` mattered only if something new had been pushed: with `pull.rebase=true`, a
+pull rebases whenever the unpushed history holds a merge, even with nothing new upstream, and a rebase without
+`--rebase-merges` flattens the merge, so it replays the 18 commits and stops on the same build product (reproduced in a
+scratch repository, git 2.53).  The second command then ran in the middle of that rebase, on no branch.  The rebase was
+aborted (master `a4ef361` again, origin unchanged at `d1f18d7`).  The command is `git pull --no-rebase --no-edit && git
+push` on master; once the merge is on GitHub, a plain `git pull` is fine again (also checked in the scratch repository).
