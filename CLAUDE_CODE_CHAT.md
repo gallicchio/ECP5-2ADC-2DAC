@@ -4050,3 +4050,46 @@ Now the equator is on 2048, code 128, at every moment, in both the arithmetic co
 ECP5 66.9 MHz; Icepi 60.9 / 62.9 MHz.  Both boards are flashed; there were no bad bursts and no out-of-step periods at
 the globe's start of turning.  The bench could not resolve a one-code shift directly: zoomed in, the rest of the drawing
 clips onto the window's edges.  So the scope is your judge.
+
+## Prompt 77
+
+It would be fun if you could make a planetary gear STL file that I could print and put next to the oscilloscope. It
+would be nice to make it look like the gear finale. It would be great if you could print a closed-back housing and print
+all of the gears In a way that required minimal human assembly. I don't know if it's possible to print this "inflated
+place" in a semi-enclosed thing that can't fall apart or if it's better to just print things separately and toss them in
+once. You decide. Make it and tell me the path to the STL file with everything that I can quickly send to 3dprinteros.
+
+## Response 77 2026-11-09 Claude Opus 5.5
+
+The STL is `renders/planetary_gears.stl` (`~/OpticsPCBs/ECP5-2ADC-2DAC/trustee-show-and-tell/renders/planetary_gears.stl`).
+It holds the set and its cradle, one plate, 166 x 90 mm, about 50 g of PLA.  `print/planetary_gears.py` makes it.
+
+I chose print-in-place, all in one go: no assembly, and it can't fall apart.  A closed back can't be printed in place:
+the back would be on the bed and the gears would have to be printed in mid-air above it.  It isn't needed either.  The
+teeth are herringbone (a V across the face), and the V locks every gear to its neighbours along the axle, so nothing
+slides out of the housing either way, front or back.  The only assembly is dropping the set into its cradle, which
+stands it on edge like the scope's screen.
+
+It looks like the finale:
+* the same gears: sun 12, three planets 9, ring 30;
+* the ring fixed, the sun turned by a knob, the planets rolling round at 12/42 of its rate;
+* the finale's hub circles as holes.
+
+The teeth:
+* the planets' are 20-degree involutes;
+* the sun's and the ring's are cut by a planet rolling round them, as a gear-shaper would, so each pair meshes by
+  construction.
+
+The clearances:
+* every part is shrunk 0.22 mm all round, so neighbours are 0.44 mm apart;
+* the first 0.6 mm of each part is 0.3 mm smaller again, against the first layers' squash;
+* the helix is 35 degrees, so the flanks overhang about 35 degrees at most.
+
+Checked as it turns:
+* in the plane, over a third of a carrier turn, never closer than 0.44 mm;
+* in 3D, turned to four moments, 0.36 mm across the slanted flanks;
+* each gear slides 0.67 mm along its axle at most before the V stops it;
+* the STL is watertight (every edge shared by two triangles), six bodies, all on the bed.
+
+Slice with no supports, no brim and no raft; a skirt is fine.  A brim would fill the gaps.  After printing, hold the
+housing and give the knob a firm first twist.
