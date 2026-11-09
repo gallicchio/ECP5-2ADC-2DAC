@@ -3925,3 +3925,100 @@ and 0.4 s in shows the upright wireframe with the Americas where the engraving h
 bursts, none bad, -3.8 ppm.  The bench sheet's mode 1 tile was retaken.  What still differs is the style: the engraving
 has about 12 degree ocean cells, the wireframe a 30 degree grid over land and sea.  If the swap still looks jarring,
 the next step is yours from the prompt: draw only the wireframe, in mode 0 too, starting upright the same way.
+
+## Prompt 73
+
+There is still a jarring transition.  Get rid of the non-wireframe seal.  Start with your wireframe globe with its
+initial orientation, matching that of the seal as best as possible.  It should hold for a second, then the globe should
+start rotating and then the seal as before.  If this shortens the seal time, that's fine.
+
+There are also some distracting dots above the U in MUDD at the top of the the logo.  These show up more on the analog
+scope than on the digital one, but you can still see them sparkling occasionally on the digital scope.  There are other
+vertical lines and other distractions that are more prominent on the analog scope.  Please try to minimize these.  If
+these are caused by the synchronization, have that happen less often -- if the image gets slightly sheared due to lack
+of synchronization, it's not as annoying as these extra dots and lines.
+
+## Response 73 2026-11-09 Claude Opus 5.5
+
+The seal as traced, with its engraved globe, is gone from the show.  The cycle is now mode 1, mode 2, a finale, mode 1,
+and power-up starts in mode 1: the seal with the wireframe globe, upright and facing 64 W, still for a second, then
+turning.  The ECP5 board's beam ramp went with mode 0; mode 0 remains only as a mode the host can select.
+
+Measured on the SDS1104X-E (500 MS/s records of X and Y), the dots above the U were the beam coming back from the park
+below the screen to the frame's first point, the U: a 5.9 V step that overshot by 0.6 V and rang.  That happened every
+frame, about 1,400 times a second.  The vertical lines were parks in the middle of each frame, 13 to 19 of them, 13-20 %
+of the time: with a 16-deep FIFO the engine could not keep the beam fed while it worked through the globe's hidden half.
+The upright globe added lone points at the poles of the meridians behind it, which now lie exactly on its edge.
+
+The fixes, in the engine (`vec3d.v`, the ECP5 board's too):
+- a 512-entry FIFO in a block RAM;
+- at least 8 sub-steps on a drawn segment (`MIN_SUBSTEPS`), so the engine runs ahead of the beam;
+- the next vertex read while the current one is transformed, and a hidden one known a state earlier (6 clocks, from 9);
+- a jump sent only when a drawn segment follows it;
+- frames back to back, every other one drawn backwards, so each starts where the last ended.
+
+On the Icepi pair, the period's frames are drawn back to back and the number of frames travels in the burst.  The burst
+now comes every 20 ms instead of 4 (`ICEPI_SYNC_PERIOD_S`, register 1F).  On the bench, 70 ms of the seal now has only
+the four parks for the bursts, 1 % of the time; this morning there were 23 a millisecond, 23 % of the time.  Nothing
+lands above the U any more.  The burst's return now lands at the bottom of the seal, once per 20 ms, overshooting 0.3 V.
+
+All simulations pass.  ECP5 65.7 MHz, 44 of 56 block RAMs; Icepi 61.6 / 68.1 MHz.  Both boards flashed; no bad bursts in
+50,000, rate trim -3 to -5 ppm.
+
+## Prompt 74
+
+In the scene where the drone hovers above the antenna, there is a lot of random dots sprinkled everywhere.  I suspect
+that you're going back and forth between the drone and antenna, whereas if you did all of one first and then all of the
+other, there wouldn't be the annoying sprinkling of dots.  Have you optimized the order of drawing the scenes, such that
+the beam minimizes time where it needs to sweep from one object in the scene to another across large gaps?
+
+## Response 74 2026-11-09 Claude Opus 5.5
+
+Partly.  Each group's strokes were already drawn together, nearest end first, and the drone scene's groups never
+alternated: the dish with its beam pattern, then the drone, then its propellers.  The scattered dots came mostly from
+the old firmware.  The drone's frames are about 110 us, and each was followed by a park and a return, some 9,000 a
+second; those are gone (response 73).
+
+But the groups did come in the order each object was made, and each group's tour began at its first stroke.
+`gen_scene.order_strokes` now:
+- takes the next group to be the one with the nearest stroke end;
+- tries every stroke as the start, both ways round;
+- measures the jumps on the screen at 8 moments of the finale's motion, from the animator's own matrices.
+
+Jump travel per frame, before and after:
+
+| scene | change |
+|---|---|
+| drone | -34 % (the 2.7 V jump from the dish group to the drone is gone) |
+| telescope | -46 % |
+| dish | -35 % |
+| arm | -30 % |
+| transcription | -29 % |
+| the rest | -3 to -23 % |
+
+On the bench the drone scene has no steps over 1 V between 10 ns samples.
+
+## Prompt 75
+
+Something is also happening now that wasn't happening before: Occasionally there are glitches that seem to draw a large
+rectangle worth of spots in the whole screen.  This happens, for example, right as the globe starts to rotate.  Fix that.
+
+## Response 75 2026-11-09 Claude Opus 5.5
+
+A rectangle of spots means the two boards were drawing different things, so X and Y were uncorrelated.  The X board's
+animator reads the phases over its first 224 clocks, but the burst took the phases only after the run, up to 30 us
+later.  A millisecond tick in between, about 3 % of periods whenever something moves, gave the Y board a globe one tick
+further on.  Different vertices were then hidden, so the two boards' frames had different lengths.  With frames back to
+back the boards stayed apart for the rest of the 20 ms period.  The old per-frame restart had kept this to a little
+drift, which is why it wasn't happening before.
+
+The fix: the X board's phases are held from its animator's start until the burst has taken them (a tick in that 0.2 ms is
+applied just after).  In simulation the unfixed board gave the Y board different matrices in 1 of 71 animator runs; the
+fixed one in none.  On the bench, 12 starts of the globe's turn (8.4 s recorded) show no period out of step.
+
+The same scan found the Chua finale smeared for a period now and then (2 in 35).  The Y board's twin replays the X
+board's about 148 us late, and each frame took the ring's write pointer as it started, so a frame could begin one point
+further on one board than the other.  On the pair, each period's rings are now drawn from the pointers the burst
+carried, less the 64 oldest slots, which the twins overwrite during the period (`ICEPI_RING_SKIP`).  Both boards then
+draw the same 1984 points all period, and the tail moves 50 times a second.  On the bench afterwards there were no
+smeared periods in 640 of Lorenz and Chua.
