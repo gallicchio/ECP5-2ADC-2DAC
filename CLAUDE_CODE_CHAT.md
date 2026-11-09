@@ -3748,3 +3748,36 @@ this firmware (8.1.6.1.35R2) does: `SAST?` never answers once an acquisition has
 keeps the value from updating; reading `/dev/usbtmcN` directly loses replies and an abandoned screenshot stays queued.
 Those edits are not committed there (that repository's rules say to ask).  The bench tools are `host/bench_icepi.py`,
 `host/skew.py` and `host/scope.py`.
+
+## Prompt 64
+
+Great.  Commit on both repos.
+
+## Response 64 2026-11-08 Claude Opus 5.5
+
+Committed, not pushed: OpticsPCBs `25a2bc5` on master (the bench work), lab-instrument-control `9bb0958` on main (the
+SDS1104X-E driver over USB, `xy()`, the firmware 8.1.6.1.35R2 workarounds, `siglent.md` and `AGENTS.md`; its offline
+test passes).  `CLAUDE_PCB.md` was a change already there before this session, not mine, and was left out.
+
+## Prompt 65
+
+I am seeing this error when I pulled: [`git pull` in ~/OpticsPCBs: "error: The following untracked working tree files
+would be overwritten by merge: ECP5-2ADC-2DAC/trustee-show-and-tell/gateware/sim/tb_lorenz.vvp ... Aborting", the rebase
+stopped at `pick 39e436c`.]  Is this because you're doing something with branches?  (Other than just working in main?)
+Do what you need to do to fix then.  Then I want to pull and push so everything is in sync.  If you're on a different
+branch, don't do that.  Merge back into main and work in main.
+
+## Response 65 2026-11-08 Claude Opus 5.5
+
+No branches: all of this work is on master (`~/OpticsPCBs` is the same repository as the one under `~/mnt/local4TB`).
+Local master was 18 commits ahead (the bring-up and the show, never pushed, plus your `CLAUDE_PCB.md` commit) and 4
+behind (a colleague's SyzygyRadioBoard BOM/CPL passes).  The two sides touch no file in common.  The pull is set to rebase,
+which replays the 18 commits one by one; the first show commit had `gateware/sim/tb_lorenz.vvp` in it (a simulator
+build product, untracked and ignored later), and the copy on disk was in the way, so git stopped.  The rebase was
+aborted (master back to `c8982cd`, the tree as it was) and origin/master merged instead (`f1f643e`): a merge keeps the
+commit names this log quotes (`db3706a`, `3c64bc8`, `dc654be`), which a rebase would have changed.  The other local
+branches are older and not this work: `icepi-maze-router`'s one commit is already in master, and
+`backup/pre-data-rewrite` and the agent worktree's branch hold the CostasLink history from before the bench data left
+git, so neither is merged.  This shell has no GitHub key, so the push is from your terminal (`git pull --no-rebase`
+first, so that if anything new arrived the 18 commits are merged and not replayed).  The "X11 forwarding request failed"
+line is ssh asking github.com for X11 forwarding and is harmless.
