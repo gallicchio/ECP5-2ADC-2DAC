@@ -3819,3 +3819,33 @@ Left the history and the tracked files as they are; what is rendered from now on
 `render_icepi.py` and `preview3d.py` their GIFs, and `.gitignore` has `renders/`; the PNG sheets the READMEs show stay
 in `images/` (re-rendered, they came out byte for byte the same).  `images/` keeps the movies of 2026-11-08 as a
 snapshot, and `renders/` starts with copies of them.  The READMEs and SETUP.md say where the movies are now.
+
+## Prompt 69
+
+Don't check this in, but I took a video of the demo on an analog scope.  Things look ok, but not great.  The video is
+`trustee-show-and-tell/renders/20261108_230454_XY_demo_1st_try_analog_scope.mp4`.  Some things I notice: the part where
+the Mudd seal is drawn faster and faster just looks awkward and blocky rather than drawing the whole thing slowly at
+4 Hz, then 8 Hz, then 16 Hz, etc. up to 200 Hz or whatever.  There is often a very bright spot in the middle of the
+screen.  On the digital scope and even on the analog scope, there are a lot of ghost dots and dashes, as if the path
+isn't optimized and instead often goes off to a blank area of the screen for a bit.  I hooked it back up to the digital
+scope.  If you can do captures, try to diagnose some of these issues.  Would this look better with the ECP5 board's
+higher-resolution converters and lack of a need for synchronization?  What compromises in image quality needed to be
+made for the pair of Icepi Zeros?
+
+## Response 69 2026-11-08 Claude Opus 5.5
+
+(Diagnosed from the video's frames (Tek 2213), 1.4 M-point records of X and Y on the SDS1104X-E at 500 MS/s, and the
+simulations' exact DAC streams; nothing changed yet.)  The ramp: on the Icepi pair it is broken: the X board lowers the
+dwell every 67 ms but the Y board takes it only from a burst, once per (seconds-long) slow frame, so the two draw at
+different speeds and the seal is scrambled (a capture at a fixed dwell draws right, the ramp's does not); and by design it
+is a continuous 7/8 decay from a 2 s frame, never whole drawings at 4, 8, 16 Hz.  The bright spot: the frame's last
+point is held while the animator runs, twice a frame on the X board (before the burst and the matching wait after it),
+8-34 us, against 40-80 ns for a drawn dot; the last vertex is often near the middle (the arm's exactly).  The ghosts: the
+strokes are in the order they were made, so the jumps between them add up to as much as the drawing (the seal 99 %, the
+telescope 400 %, the molecules 250 %; nearest-end ordering gives 20 %, 73 %, 50 %); with no blanking every jump is a
+streak and its landing rings; the digital scope at 10 MS/s catches jumps as dots; the globe's hidden vertices are still
+visited as jumps; the left-edge dash at mid-height is the burst's start before the Y board parks.  The Icepi's own
+costs: the burst every frame (small finales draw at 2.7-4.4 kHz, so it is 40-63 % of the time and the drawing gets
+15-40 %), 8-bit DACs with sub-steps of up to 2 codes held 2 samples (the beads), the drawing in 0.8 of the range, two
+clocks.  The ECP5 board would draw continuous lines 78-99 % of the time with no burst or skew, but shares the hold, the
+stroke order, the hidden vertices and the ramp's shape, which are in the common engine and scene.
