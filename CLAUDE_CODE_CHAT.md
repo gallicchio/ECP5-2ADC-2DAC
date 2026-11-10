@@ -4278,3 +4278,50 @@ from the logo's file.  If Jason means another mark, a file of it can be traced i
 git).
 
 Also: a README section with the table.  Committed, not pushed.
+
+## Prompt 83
+
+Hey rid of the flat globe and anything no longer used.  When you say "All 32 phases are assigned," what do you mean?
+What is a phase in this context? You were right about the monogram. I was wrong about the initials. Make a table like
+this with all of the existing ones too (marked as such) at that i can decide about resource allocation versus how much
+is like each one.  (Then, mid-turn:) I meant "get rid of" things no longer used.  (And:) For the rotations, do you use
+matrices, quaternions, or something else?
+
+## Response 83 2026-11-09 Claude Opus 5.5
+
+Removed (the show draws the same; the three simulations pass and the three bitstreams build, the ECP5 at 70.4 MHz
+for 50, 44 of 56 block RAMs):
+* The engraved (flat) globe: 556 vertices back, so 911 of the scene memory's 8192 are free.
+* Mode 0, which drew the seal with that globe.  Any mode but 1-3 is now the host's.
+* The seal's wobble (its rate was 0) and its register 0x16; the gears' nod (its size was 0); a sixth sawtooth nothing
+  used.  Three phases are free (2, 15, 25).  The program is 1651 instructions of 2048.
+* The buckyball, the label maker, `sim/preview3d.py` (the old float preview, which still drew the engraved globe).
+* A race in `make_show.py`: the movie's processes rewrote `show_params.vh` while yosys read it, which broke the ECP5
+  build on this run.  They no longer write it.
+
+Left alone: `images/` (the frozen snapshot), the separate `demo.bit` design (HDMI, the twin locked to the analog
+board: "possible later"), mode 4 ("ask Claude to draw it").
+
+A phase is a 32-bit angle (2^32 = a turn) that the hardware advances by its own fixed rate every millisecond, so
+motion runs in real time whatever the frame rate.  Every frame the hardware writes each phase's sine, cosine and turn
+value (a sawtooth 0 to 1) into the animator's registers, and the program builds the matrices from those alone.  A
+finale switches on the phases it uses.  "All 32 assigned" was wrong: every slot had a name, but three were dead; they
+are free now.  Phases are shared when a rate suits (the physics view's swing serves ten finales, the five sawtooths
+six), and twice a phase or the sum of two costs only program, so most of the proposals need no new phase at all.
+
+Rotations are matrices: each group has a 3x3 matrix and a translation, in Q2.14, rebuilt every frame from the
+phases' sines and cosines (products of rotations about the axes).  Nothing is integrated from frame to frame, so
+nothing drifts and there is nothing for quaternions to fix; the engine needs a matrix to transform a vertex anyway;
+and a matrix also shears and scales, which several finales use (the travelling waves, the engine's rod, the bridge's
+twist, the growing wavefronts).
+
+The table of all 31 (the 18 in the show and the 13 proposed), with what each costs in vertices, groups, phases,
+program and other hardware, is in `trustee-show-and-tell/README.md` ("What each finale costs").  The proposals' program
+sections are estimates.  Without changing the gateware, three to five of the small proposals fit; the program runs out
+about as soon as the vertices and the phases.  10 of the 12 free block RAMs would hold all thirteen (2048 more
+vertices, 2048 more instructions), with wider addresses; a table of rates per finale would end the phase limit.
+
+Found, not fixed: `host/show.py draw` puts a drawing in group 2, which mode 4's program never writes, so it does not
+tumble.
+
+The spinner keeps the stacked wordmark.  Committed, not pushed.
