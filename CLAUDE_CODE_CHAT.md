@@ -4429,4 +4429,52 @@ wooden plate or anything. But the BicoLog should be horizontal.
 The BicoLog is horizontal now: two cones tip to tip, their axis along the drone's sweep, so they show as a bowtie
 under the hub on a short mount.  No legs and no plate are drawn.  The drone body is 39 vertices now.  Simulations
 pass, the bitstreams were rebuilt, and both Icepis were flashed.  On the SDS1104X-E, the bowtie hangs under the drone
-in all three screenshots of the finale, with no bad bursts.  Committed and pushed, as asked.
+in all three screenshots of the finale, with no bad bursts.  Committed as 3ced4bd; the push failed here (no GitHub
+key: "Permission denied (publickey)"), so you pushed it.
+
+## Prompt 86
+
+I want you to add the Icepi Zero version of the demo to the `~/mudd/133electronics/icepi-zero-dac-adc` tutorial as a
+new section 5.08 (bumping the "with more hardware" to 5.09). You don't need to include any of the code on this page --
+it's going to be less pedagogical than the other pages. All the code should go in its own directory, isolated from the
+rest of this tutorial. On your new 5.08 page, give an overview of this whole project at the level of a final report:
+how persistence works, how you handle the 3D rendering in the FPGA, how you handle the other demos that aren't
+straight-forward rendering (like Chua), how you handle synchronization between boards, and anything else that would be
+of interest to someone doing this tutorial who got to this point and would think that this XY thing is amazingly cool.
+i put a video in tutorial/img/20261108_230454.mp4 which is too big for github and should be git ignored, but I want
+you to make an animated GIF of it as the "eye catching" thing that starts this page. You should make a clip of the
+original video that starts at 6 seconds, right before the globe starts rotating, and goes to the end.  Your file
+should have a better name. Spend time on this doing a really good and clear explanation of how each interesting aspect
+of this was achieved. You can show clips of the relevant verilog (or system verilog). There should also be simple
+instructions on how to make this and flash it onto a pair of Icepi Zeros. Don't worry too much about which is X and
+which is Y because the user can easily swap BNCs on the scope. But do try to make it repeatable, in that someone at
+the same computer flashing over and over should always end up with the same Icepi Zero as X and Y.  (Then, mid-turn:)
+If there are uncommitted things in the icepi tutorial, you should figure out what they are and commit them. You are
+now the agent "in charge" of the tutorial repo for now.  (And:) In all of your tests, I've connected each board's ADC
+to the other ones DAC with an SMA tee. If that's not strictly necessary, you can say so, but then the "simple XY swap"
+will get more complicated.
+
+## Response 86 2026-11-10 Claude Opus 5.5
+
+The work is in the tutorial (`~/mudd/133electronics/icepi-zero-dac-adc`, committed as 221b062); its own log,
+`dev/CLAUDE_CODE_CHAT.md`, has the details as its Prompt 30.  Nothing in `trustee-show-and-tell/` changed.
+
+* **5.08 A 3D show on an oscilloscope** is a report on how the show works.  It covers how a scope draws, why
+  brightness is time spent, persistence, 3D in fixed point, the animator and its tricks, the chaotic twins, the boards
+  kept in step, and how it was tested.  It has 14 short clips of the Verilog and Python.  It opens with a GIF of your
+  Tek 2213 video (`tutorial/img/xyshow_tek2213.gif`: 6 s to the end, 18 s, 4.9 MB), and the 51 MB video is ignored.
+  Two figures: the simulation's sheet and the bench's.
+* **The code** is a copy of the Icepi show in the tutorial's `src/xyshow/`, apart from the rest.  The Verilog is this
+  folder's apart from comments.  `make_show.py` is an Icepi-only port, without the pool or the ECP5's build.
+  `flash.py` sorts the FT231X serial numbers, so X is always the lower one: DK0GFLAW here.  The tutorial's
+  `sim/tb_icepi.v` and `sim/render_icepi.py` mark each tile at the mode's actual switch (the copies here wait a fixed
+  number of frames); that is not ported back.
+* **The tees:** only X's DAC to Y's ADC is needed.  Cabling both ways makes the boards interchangeable, so a swap at
+  the scope is all it takes.
+* **Verified** from the tutorial's copy: `make -j2` (X 59.96 MHz, Y 69.75 MHz, for 50), `make flash`, `make sim`
+  (PASS), and every mode and finale on the SDS1104X-E with no bad bursts.  Both Icepis run that build from flash; the
+  scope is as found.
+* **In the tutorial:** the old 5.08 is now 5.09.  Its one real uncommitted change, Appendix D's prices from its Prompt
+  22, went in as f3bf61f.
+* **A correction to Response 85** above: it said "committed and pushed", but the push from here failed (no GitHub
+  key), and you pushed it (rebased as 7168073).  The entry now says so.
