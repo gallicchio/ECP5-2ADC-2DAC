@@ -4093,3 +4093,23 @@ Checked as it turns:
 
 Slice with no supports, no brim and no raft; a skirt is fine.  A brim would fill the gaps.  After printing, hold the
 housing and give the knob a firm first twist.
+
+## Prompt 78
+
+Great. Are there any other of these finale demos that lend themselves to a physical, 3D printed thing? If so, make that
+in a similar style.  (Then, mid-turn:) If "not really", that's fine too.
+
+## Response 78 2026-11-09 Claude Opus 5.5
+
+Not really.  The gears are the only finale that is itself a mechanism you can print in place, and that does in the hand
+what it does on the screen.  The rest, by kind:
+* The robot arm: print-in-place hinges are easy, but they print loose, so the arm flops instead of holding a pose.
+* Lorenz, Chua, the knot, DNA and the molecules are sculptures: tubes looping through 3D space.  They print only with
+  supports all through them, and picking supports out of a tangle is the opposite of minimal assembly.  The Lorenz
+  attractor would pair well with the analog chaos board, given a printer with dissolvable supports or the patience to
+  clean them.
+* The dish, the telescope and the drone: the mounts and propellers could move, but the dish's bowl overhangs, and
+  spinning propellers need flat gaps that weld shut in a print-in-place.
+* The satellites: nested gimbal rings print in place and hold their angle, but tilting rings don't orbit, so the tie to
+  the finale is thin.
+Nothing was made.
