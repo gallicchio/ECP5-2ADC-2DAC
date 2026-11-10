@@ -4200,3 +4200,21 @@ width.
 
 All twelve need only the animation program (no new gateware) and together come to ~2,400 vertices.  With the flat
 globe taken out about 900 are free, so 4-5 fit; more means dropping finales.
+
+## Prompt 81
+
+Then add a row that's a fidget spinner with the new harvey Mudd logo in the center (not the seal, the one that is
+mostly HMC letters.) This fidget spinner is somet that is sometimes given out.
+
+## Response 81 2026-11-09 Claude Opus 5.5
+
+Row 13: the HMC fidget spinner (~270 vertices).
+* What moves: a three-lobed spinner with its three outer bearings is flicked, whirls into a blur on the phosphor, and
+  coasts down to a stop.  The college's HMC logo sits still and readable on the centre cap, as a real spinner's does
+  under your fingers.
+* Vertices: ~150 for the spinner, ~120 for the logo's letter outlines.
+* Two matrices and the animation program only.  The spin-down is the angle's quadratic in time (a phase times itself).
+* Needs the logo itself: the file from Jason or the college's site, kept out of git as the seal's SVG is.  Its traced
+  outline is fine in git, as the seal's is.
+
+The twelve before it come to ~2,400 vertices, ~2,650 with this.  With the flat globe out, about 900 are free.
