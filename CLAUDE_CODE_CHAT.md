@@ -4325,3 +4325,95 @@ Found, not fixed: `host/show.py draw` puts a drawing in group 2, which mode 4's 
 tumble.
 
 The spinner keeps the stacked wordmark.  Committed, not pushed.
+
+## Prompt 84
+
+[An image: a Tektronix 2235 propped on its carrying handle, a sine and a square wave on its screen.]  Ones to get rid of
+(move into a pool off to the side of ones we're not putting on the FPGA) are: EM wave without the quarter wave plate,
+transcription, translation, trefoil knot, LSD, Lorenz attractor
+
+Of the new ones, my order of preference to include would be: LIGO, circuit board, the fidget spinner, the top, pendulum
+wave, the AC motor, flyball governor, sonic boom. Put as many of these as can fit.
+
+If you can make the radio dish transmitter transmit less often, that would help viewers see the dish by itself. If you
+could send out HMC in Morse, that would be cool. If that would make it even more crowded, just do fewer outgoing
+plane-wave wavefronts.
+
+The drone beam-mapping one is great, but the drone might be more complicated than it needs to be. It should still be a
+hexacopter and still have an obvious BicoLog hanging from it, but the drone body seems more dense with vertices than is
+necessary. I bet you could save some space there.
+
+The left side of the circuit board should have SMAs in and out, just like a board that this is running on.
+
+One last idea is an oscilloscope, displaying an XY drawing of an oscilloscope, displaying an even smaller XY drawing of
+an oscilloscope, etc., down a reasonable number of levels. It should be a Tektronix 2235 with its carrying arm under
+it, propping it up like I pasted into the chat.
+
+I would like the Galton board if the balls stuck around, but not now, because they disappear. The top of the Galton
+board demo is great with the balls bouncing down, but then the ball hits some zig-zag stuff on the bottom and
+disappears rather than obviously building up. Maybe building up a stack of balls would be too much work.
+
+Keep the "rejected" ones in a pool somewhere off to the side.
+
+As for the sequence, I don't like that it goes to the seal sequence after *every* one. It should be after every 3.
+
+Make two movies: 1. the seal intro and all of the ones I decided to keep. 2. The ones that are in the reject pool off
+to the side.
+
+Take this all the way to FPGA firmware, load it on the pair of Icepi Zeros, and debug it with the oscilloscope. Make it
+look good. You've got all night.
+
+Be sure that you are still recording these prompts and your responses in a chat log .md file.
+
+## Response 84 2026-11-09 Claude Opus 5.5
+
+All eight new ones fit, and so does the oscilloscope in an oscilloscope.  The Icepi pair runs it from flash.  I checked
+every mode and finale on the SDS1104X-E: 23 holds, three screenshots each, no bad bursts on the Y board.  The
+sequence, logged from the X board's registers for two minutes, is the seal, then three finales, then the seal again,
+wrapping from finale 20 to 0.
+
+The show, 21 finales in this order, the seal after every three (3.9 minutes a round): Chua's circuit, the fidget
+spinner, the gears | LIGO, caffeine, the governor | the dish, the top, the arm | the circuit board, the satellites, the
+pendulum wave | the telescope, the AC generator, DNA | the drone, the sonic boom, polarization | the Sagnac source, the
+oscilloscope in an oscilloscope, replication.
+
+The pool beside the show (not on the boards; `make_show.py --pool` renders it): the Lorenz attractor, the EM wave,
+transcription, translation, the trefoil knot, LSD, and the proposals not chosen (the Galton board, the engine, the
+escapement, CartPole, the bridge).  Moving a finale between POOL and FINALES in `make_show.py` is all it takes.
+
+Movies: `renders/show_finales.mp4` (2.6 min: the seal once, then every finale), `renders/show_pool.mp4` (70 s), and
+`renders/show_movie.mp4` (3.9 min: the show exactly as it runs, the seal every three).
+
+The asks:
+* The dish: alone for a second, then HMC in Morse (.... -- -.-.), each dot and dash a plane-wave packet, then alone
+  again.  It is slow enough that the phosphor doesn't smear the packets into a band.  Each packet is drawn only in
+  flight: its vertices carry the engine's cull bit, and the animator makes the cull test negative outside its flight.
+  No gateware change was needed.
+* The drone body: from 123 vertices to 41 (the hub, three lines for the six arms, the BicoLog hanging on its line,
+  bigger); the props mark the motors.
+* The circuit board: four SMAs on its left edge, two in and two out, flange, hex nut and barrel.
+* The oscilloscope: a Tek 2235 propped on its handle (the side hub, the arms, the bar on the bench), four levels deep.
+  Each inner level is the outer one's matrix x the screen's frame (scaled, flattened) x the view, so they all turn
+  together.  On the Icepi's 8-bit DACs the second level reads as a scope and the third is a dot; the ECP5 board's
+  12 bits will show more.
+* The seal after every three: a counter in the sequencer.  The phases that start from zero are now zeroed at each
+  finale's start too, not only on a change of mode.
+
+To fit it, the gateware changed in four places:
+* The animator's program memory is 4096 instructions (it was 2048, and needed about 2600).
+* Constants also live in registers 768-1023, and each section reuses the working registers.
+* A ramp on phase 15 lets the spinner be flicked and coast to a stop a lobe up.
+* Only the show's program sections go into the bitstream.
+
+The new sections are checked against the models' float motion (`host/check_prog.py`).  The bitstreams use 48 of 56
+block RAMs and meet timing (ECP5 67.8 MHz, Icepi X 61.0 and Y 61.3, for 50).  Every simulation passes.  620 of the
+8192 vertices and none of the 32 phases are free; several finales share phases.
+
+On the Icepi pair, fast spins (the spinner at full speed, the top, the props) show three or four distinct copies
+rather than a smooth blur.  That is its 50-per-second update (the 20 ms burst period you chose).  The ECP5 board
+updates every frame.
+
+Also fixed: the movie's model sent the beam to hidden vertices, which the engine skips.  The simulation sheets
+labelled some finales with their neighbour's frames; the testbenches now mark a new mode after the FIFO has drained.
+
+The Lorenz twin is still on the boards: the lamp follows it.  Committed, not pushed.
