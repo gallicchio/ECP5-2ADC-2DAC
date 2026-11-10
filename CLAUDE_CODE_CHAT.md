@@ -4113,3 +4113,53 @@ what it does on the screen.  The rest, by kind:
 * The satellites: nested gimbal rings print in place and hold their angle, but tilting rings don't orbit, so the tie to
   the finale is thin.
 Nothing was made.
+
+## Prompt 79
+
+Given the list of finale demos you've done and your sense for what works and what doesn't, come up 10 more, focusing on
+engineering and physics and their overlap. I'll look at your list and ask you to add some. If there's not room, I can
+give you suggestions about which to drop.
+
+## Response 79 2026-11-09 Claude Opus 5.5
+
+What works on the scope:
+* rigid parts, each moved by its own matrix (the gears, the arm);
+* travelling or standing waves (the EM wave);
+* wavefronts that expand as scaled circles (the dish);
+* a twin's glowing tail (Lorenz, Chua);
+* in every case, a few hundred vertices, recognisable in 5 s with no words.
+
+What doesn't:
+* shapes that deform continuously (fluid flow, field lines breaking away);
+* swarms of independent particles;
+* flat things that nod edge-on (they look like a squash);
+* anything that needs a label.
+
+Room: 355 vertices are free.  The engraved flat globe (556) is drawn only in mode 0, which has left the show, so taking it
+out of the scene memory frees about 900.  About 400 of the 2048 program instructions are free.  That is room for 3-5 of
+the ten below without dropping a finale.
+
+1. The four-stroke engine.  Crank, connecting rod and piston; the valves open in turn; a spark flash.  ~180 vertices.
+2. Watt's flyball governor.  The balls swing out as it speeds up and fall as it slows: the first feedback controller.
+   ~150 vertices.
+3. The sonic boom.  A jet leaves expanding wavefronts that pile into a Mach cone as it passes Mach 1 (the dish's
+   wavefront trick).  ~250 vertices.
+4. LIGO.  The L's arms stretch and squeeze in turn, while a ring of test masses beside it flexes into ellipses.
+   ~200 vertices.
+5. A spinning top, precessing and nodding: one matrix; gyros are how the drone knows which way is up.  ~120 vertices.
+6. The pendulum wave.  Twelve pendulums drift from a line into snakes and back; one per matrix group.  ~150 vertices.
+7. A clock's anchor escapement.  The pendulum swings, the anchor rocks, and the escape wheel ticks a tooth a swing.
+   ~250 vertices.
+8. The AC generator.  A coil turns between N and S, with its sine output scrolling beside it in step.  ~200 vertices.
+9. CartPole.  A cart darts to keep a pole upright: control theory, and reinforcement learning's hello-world.
+   ~80 vertices.
+10. Tacoma Narrows.  The deck twists in a travelling torsion wave and the cables sway.  ~250 vertices.
+
+In reserve:
+* a double pendulum with a glowing tail (mechanical chaos; it needs a third twin);
+* a tokamak with a particle spiralling round the torus;
+* MRI spin precession on a Bloch sphere;
+* Fourier epicycles drawing a shape;
+* a Stirling engine tracing its PV loop;
+* a steam locomotive's drive wheels;
+* a wind turbine.
