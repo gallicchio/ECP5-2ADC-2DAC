@@ -4417,3 +4417,16 @@ Also fixed: the movie's model sent the beam to hidden vertices, which the engine
 labelled some finales with their neighbour's frames; the testbenches now mark a new mode after the FIFO has drained.
 
 The Lorenz twin is still on the boards: the lamp follows it.  Committed, not pushed.
+
+## Prompt 85
+
+[A photo of the hexacopter in flight, the blue BicoLog under it.]  The BicoLog antenna is oriented horizontally on the
+drone that will be there. Change it to horizontal. I've attached a photo. You don't need to draw the legs or the
+wooden plate or anything. But the BicoLog should be horizontal.
+
+## Response 85 2026-11-09 Claude Opus 5.5
+
+The BicoLog is horizontal now: two cones tip to tip, their axis along the drone's sweep, so they show as a bowtie
+under the hub on a short mount.  No legs and no plate are drawn.  The drone body is 39 vertices now.  Simulations
+pass, the bitstreams were rebuilt, and both Icepis were flashed.  On the SDS1104X-E, the bowtie hangs under the drone
+in all three screenshots of the finale, with no bad bursts.  Committed and pushed, as asked.
