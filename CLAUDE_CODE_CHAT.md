@@ -4163,3 +4163,40 @@ In reserve:
 * a Stirling engine tracing its PV loop;
 * a steam locomotive's drive wheels;
 * a wind turbine.
+
+## Prompt 80
+
+Redo that table and add two more: 1. a gallon board that shows how a series of binary coin flips add to a gaussian
+(start the animation after there has been sufficient accumulation to see the gaussian). 2. Something tgat looks like
+traces on a PCB with electrons flowing in the traces between chips. Estimate the other columns of the table and give me
+the new table wirh 12 rows.
+
+## Response 80 2026-11-09 Claude Opus 5.5
+
+| # | Finale | What moves | Vertices |
+|---|---|---|---|
+| 1 | Four-stroke engine | Crank, connecting rod and piston; the two valves open in turn; a spark flash | ~180 |
+| 2 | Watt's flyball governor | The balls swing out as it speeds up and drop as it slows: the first feedback controller | ~150 |
+| 3 | Sonic boom | A jet leaves expanding wavefronts that pile into a Mach cone as it passes Mach 1 | ~250 |
+| 4 | LIGO | The L's arms stretch and squeeze in turn; a ring of test masses beside it flexes into ellipses | ~200 |
+| 5 | Spinning top | Precesses and wobbles; gyros are how the drone knows which way is up | ~120 |
+| 6 | Pendulum wave | Twelve pendulums drift from a line into snakes and back into line | ~150 |
+| 7 | Clock escapement | The pendulum swings, the anchor rocks, the escape wheel ticks one tooth a swing | ~250 |
+| 8 | AC generator | A coil turns between N and S poles; its sine output scrolls beside it in step | ~200 |
+| 9 | CartPole | A cart darts back and forth to keep a pole upright | ~80 |
+| 10 | Tacoma Narrows bridge | The deck twists in a travelling wave and the cables sway | ~250 |
+| 11 | Galton board | Balls bounce left or right at each of 8 rows of pegs and drop into 9 bins; the bars are already a clear bell curve when the finale starts and keep rising under the bell curve's outline | ~200 |
+| 12 | Circuit board | Chips with pins, joined by 45-degree traces and vias; electrons stream along the traces from chip to chip as moving dots | ~350 |
+
+Galton board: the animator has no random numbers and can't count, so the coin flips are pseudo-random (a phase times a
+large constant, its top bit), and the bars grow together as the binomial's expected shape (one matrix), starting about
+70 % full.  The balls are drawn from the same distribution but don't add to the bars one by one.  Up to six balls fall
+at once.
+
+Circuit board: dots can only slide along straight runs, so every run in the same direction shares one matrix.  With
+45-degree routing there are at most eight directions, and the dots wrap every dot-spacing, so the flow looks continuous.
+The dots leave a short gap at each bend.  Fewer dots cost fewer vertices: ~350 is with dots every ~3 % of the screen
+width.
+
+All twelve need only the animation program (no new gateware) and together come to ~2,400 vertices.  With the flat
+globe taken out about 900 are free, so 4-5 fit; more means dropping finales.
