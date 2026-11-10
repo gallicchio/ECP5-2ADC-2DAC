@@ -4478,3 +4478,32 @@ The work is in the tutorial (`~/mudd/133electronics/icepi-zero-dac-adc`, committ
   22, went in as f3bf61f.
 * **A correction to Response 85** above: it said "committed and pushed", but the push from here failed (no GitHub
   key), and you pushed it (rebased as 7168073).  The entry now says so.
+
+## Prompt 87
+
+You are now in charge of the icepi zero tutorial and are primarily focused on that for the next hour. Do a full 360
+review of this whole tutorial. Start with the most complicated and interesting tutorial pages. Make the writing
+tighter and easier to read. (Students aren't reading this like a novel, they are going coming in and out as they try
+to actually do the tutorial.) As an example, you can look at the types of changes I made to the first few tutorials
+when I went through them by hand. Test what you can with the two devices you have connected. Spend the next hour
+improving things as much as possible. Stop before 2pm and make sure everything is committed and git is clean.  (Then,
+mid-turn:) Keep in mind that the wiring to the oscilloscope through 1 meter BNC cables might cause different
+reflections than the direct cables. This is a good challenge for robustness, but it if it makes the plots messier,
+stick with the plots from the simpler cabling without the 1-meter cable to the oscilloscope.
+
+## Response 87 2026-11-10 Claude Opus 5.5
+
+The work is in the icepi-zero-dac-adc tutorial (20 commits, 221b062..682d238).  Its own log,
+`dev/CLAUDE_CODE_CHAT.md`, has the details as its Prompt 31, including the list of possible errors found, page by
+page.
+
+* 63 pages tightened in the style of your hand edits of 0.00-1.03, by nine agents working in parallel from the hardest
+  pages down.  Every page was checked by script: code, headings, links, images and numbers unchanged.  `make check`: 0
+  errors.
+* Chapters 5 and 6 tested on the Icepi pair, through the tees and the scope's 1 m cables (the pages keep their plots).
+  5.01, 5.03, 5.05, 6.02, 6.03, 6.04, 6.06, 6.07, 6.09, 6.10 and 6.11's FPGA modem all work.  5.04's coupling only
+  locks this pair, 4.7 ppm apart, with `--detune`, and the page now says so.
+* Fixes: stale section references in `src/comms`; NumPy 2's `np.int64(...)` in three scripts' printouts; 6.11's stale
+  check output; small pointers and one wrong number.
+* Both Icepis run the show again, loaded into RAM from the same bitstreams as their flash, and in step.  The scope was
+  not touched.
