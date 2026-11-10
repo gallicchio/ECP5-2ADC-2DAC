@@ -4507,3 +4507,28 @@ page.
   check output; small pointers and one wrong number.
 * Both Icepis run the show again, loaded into RAM from the same bitstreams as their flash, and in step.  The scope was
   not touched.
+
+## Prompt 88
+
+You made planetary_gears.stl but the gaps between gears are too big. The gears just fall out. When the system of gears
+is on the table, I can slide the center gear back and forth quite a bit -- something like 6mm. I would have thought
+that it should be able to slide only 1mm or maybe 2mm to keep it captive with the rest. Carefully examine this design
+and shrink this gap to the appropriate level. I'll reprint.
+
+## Response 88 2026-11-10 Claude Opus 5.5
+
+The 6 mm came mostly from the root clearance, not from the gap itself.  The gaps were 0.44 mm, and the teeth also had
+the usual 0.25 module (0.63 mm) of clearance between each tip and the other gear's root.  So each mesh let its two
+gears close in about 1.1 mm.  There is no carrier, so the planets float: a push on the sun goes through two meshes to
+the ring, and three planets share it.  The sun's play is therefore about six times one mesh's.  Measured on the
+script's own outlines, the old design slides 6.6 mm end to end, as you found.
+
+* The tips now meet the roots, so the gap is the only clearance; that alone takes the play to 3.5 mm.
+* The gap is now 0.30 mm (0.25 mm across the slanted flanks), down from 0.44.
+* Each mesh now closes 0.30 mm where a tip meets a root, and up to 0.52 mm halfway between, where the flanks set the
+  limit.  So the sun slides 1.8 to 2.6 mm end to end as the teeth turn.
+* The set still turns without touching, and the V still holds every gear along its axle (0.46 mm of axial slide, down
+  from 0.67).
+* The script now prints the sideways play too.  `GAP = 0.125` would give 1.5 to 2.2 mm with 0.25 mm gaps, but that
+  risks fusing on many printers.
+* renders/planetary_gears.stl is rebuilt.  It is gitignored; the script and the README are committed.
