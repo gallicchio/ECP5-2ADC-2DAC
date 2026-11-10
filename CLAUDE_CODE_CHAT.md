@@ -4218,3 +4218,63 @@ Row 13: the HMC fidget spinner (~270 vertices).
   outline is fine in git, as the seal's is.
 
 The twelve before it come to ~2,400 vertices, ~2,650 with this.  With the flat globe out, about 900 are free.
+
+## Prompt 82
+
+Make all of these and make them into a movie, but don't write the verilog yet.
+
+## Response 82 2026-11-09 Claude Fable 5.2
+
+All thirteen are built as models and rendered back to back: `trustee-show-and-tell/renders/show_proposals.mp4`
+(97.6 s; each is captioned with its name and vertex count).  `images/proposals_sheet.png` has three moments of each.
+Nothing is in the gateware: no Verilog, no tables, nothing added to `FINALES`, and `make_show.py` was not run.
+
+* `host/proposals.py` holds each proposal as a finale is held, in floating point: polylines in rigid groups, and the
+  groups' matrices at time t, made only of what the animator computes.
+* `make_proposals.py` draws them with the show's own line generator, phosphor and brightness scale (40 s for all).
+  It checks that each stays on the screen and inside the fixed point's range.  All thirteen do.
+
+| # | Proposal | s | Vertices | Groups | Beyond its vertices and a program section |
+|---|---|---|---|---|---|
+| 1 | Four-stroke engine | 6.5 | 179 | 9 | 2 phases |
+| 2 | Watt's flyball governor | 6.5 | 175 | 7 | 2 phases |
+| 3 | Sonic boom | 7 | 247 | 9 | 8 staggered sawtooths (the show has 5) and a slow phase |
+| 4 | LIGO | 7 | 157 | 8 | 3 phases |
+| 5 | Spinning top | 6 | 124 | 2 | 3 phases |
+| 6 | Pendulum wave | 12 | 140 | 13 | 12 phases, each its own rate; group 3 as well as 4-15 |
+| 7 | Clock escapement | 7 | 154 | 3 | 2 phases |
+| 8 | AC generator | 7 | 119 | 3 | 1 phase |
+| 9 | CartPole | 7 | 77 | 5 | 2 phases |
+| 10 | Tacoma Narrows bridge | 8 | 170 | 4 | 2 phases |
+| 11 | Galton board | 8 | 231 | 8 | New gateware: a random path for each of 6 balls; 1 phase |
+| 12 | Circuit board | 8 | 334 | 9 | 1 sawtooth faster than the show's |
+| 13 | HMC fidget spinner | 7.6 | 253 | 2 | New gateware: a phase whose rate ramps |
+
+The thirteen come to 2360 vertices.  355 are free, 911 with the flat globe out.  All 32 phases are assigned, so each
+addition takes its phases from a finale that leaves, or the animator gets more.
+
+Two corrections to the tables of responses 80 and 81, which said every row needed only the animation program:
+* Galton board: each ball needs a coin flip at every row and a hop between pegs.  The animator has no source for
+  that, so it needs a small block of its own (an LFSR and a hop counter).  The heap and its bell curve are one matrix.
+* Fidget spinner: it turns 14 2/3 times, and the animator's values stop at 2 turns, so the angle can't be a phase
+  squared.  It needs a phase whose rate ramps up in the flick and down to nothing.
+
+How they read in the movie:
+* Clearest: the engine, the escapement, the bridge, the generator, the Galton board, the circuit board, the spinner,
+  the sonic boom.
+* Weaker: the pendulum wave (the long pendulums smear, and it costs 12 phases and 13 groups), the governor at top
+  speed (the balls are a blur, as they would be), the CartPole in mid-run, LIGO (the stretch is small; the ring of
+  masses carries it).
+
+What changed from the proposals while building them:
+* The pendulum wave runs half its cycle (12 s): from a line, through the waves, to two alternating sets.
+* The escapement is a Graham dead-beat with a 30-tooth wheel that moves half a tooth each swing.
+* The generator has no N and S on its poles, as the show has no labels.
+* The charge on the circuit board is short bars across the traces: a point is lost in the trace's own light.
+
+The logo on the spinner: the college's identity pages show no "HMC" monogram, only the stacked wordmark HARVEY / MUDD /
+COLLEGE, so the cap carries that.  It is drawn in the show's stroke letters with the logo's row heights, not traced
+from the logo's file.  If Jason means another mark, a file of it can be traced in its place (the file stays out of
+git).
+
+Also: a README section with the table.  Committed, not pushed.
