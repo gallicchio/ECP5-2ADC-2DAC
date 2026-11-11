@@ -4581,3 +4581,28 @@ phi should turn into 2phi and 3 phi, etc. If that makes things rotate too fast, 
   only by their earlier deliberate lines.  The tutorial's 5.08 and its sim sheet are updated.
 * **Not done:** the bench grid of Siglent screenshots.  Its inputs read 0 V; the BNCs are probably on the Tek.  5.08
   keeps the 2026-11-09 grid with a dated caption.  The Siglent is back at 0.8 V/div, XY, as found.
+
+## Prompt 90
+
+Yes, dither the last code bit, with a "probability" that is proportional to how far between the 12-bit value lies.....
+or use some more clever deterministic noise-shaping kind of dither. Whatever. But please get rid of the stair steps.
+(Then, mid-turn:) I'll move the BNCs in a few seconds.
+
+## Response 90 2026-11-10 Claude Opus 5.5
+
+* **The dither:** first-order error feedback, deterministic, at the DAC's 50 MS/s (it latches every clock).  Each
+  clock's rounding error goes into the next clock's value.  A value f/16 of a code above a code then spends f/16 of
+  the time one code up, the toggling pushed towards 25 MHz.  It replaces `to8`/`to8x` in `top_icepi.v` (the quantizer
+  `dq`, the same rounding and `X_OFFSET`).  On at power-up; register 13 turns it off (`host/show.py dither 0` in
+  either repo, `dither 1` back).  On the Siglent, a held line rising 7 codes over 215 shows 7 stairs with the dither
+  off and a smooth ramp with it on.
+* **A bug found on the way:** a host drawing lost its first stroke.  The scene memory's write address was `vaddr_h -
+  1`.  That is right for the ECP5 board, whose write pulse crosses into `clk_s` after the address has stepped, but one
+  early in the Icepi's single clock domain.  So the first vertex fell before the range, over the last object's last
+  vertex, until the next reload.  It is now `.vaddr(vaddr_h)` in `top_icepi.v`; HELLO's H has both legs.
+* **Checked:** both repos' `top_icepi.v` code identical, the tables byte-identical.  `make_show.py`: every simulation
+  passes and all three bitstreams build (Icepi X 63.4, Y 63.9 MHz for 50).  The tutorial: built, `make sim` PASS,
+  flashed into both Icepis, in step with 0 bad bursts.  The bench grid of Siglent screenshots was retaken at 1 V/div
+  with the dither on (5.08), and the Siglent put back to 0.8 V/div.
+* README, icepi/README (register 13, the two findings), the tutorial's 5.08 (a dither section with its code, the
+  address fix), both show.py.
