@@ -4606,3 +4606,22 @@ or use some more clever deterministic noise-shaping kind of dither. Whatever. Bu
   with the dither on (5.08), and the Siglent put back to 0.8 V/div.
 * README, icepi/README (register 13, the two findings), the tutorial's 5.08 (a dither section with its code, the
   address fix), both show.py.
+
+## Prompt 91
+
+Put the transcription and translation finales back in.
+
+## Response 91 2026-11-11 Claude Opus 5.5
+
+* **The show:** transcription and translation moved from `POOL` to `FINALES`, after replication, so the central
+  dogma's three schematics play in order.  22 finales (6.5 s each for the two); a round is still about four minutes.
+* **Budgets:** the scene memory 8027 of 8192 (165 free, enough for a host drawing of about two words), the program
+  2849 of 4096 instructions, 243 constants.  Both share phases already running (`pv`, `sl`, `em`, `u0`-`u3`): `pv` now
+  serves fourteen finales, `u0`-`u4` five.
+* **Checked:** `make_show.py`: every simulation passes (the Icepi pair 846 frames, the trim -101.1 ppm), and all
+  three bitstreams build (ECP5 64.6 MHz on `clk_s`; Icepi X 59.2 MHz, Y 69.7 MHz for 50).  The tutorial's copy
+  (its Prompt 34, commit 6c611e8): the same change by hand, the tables byte-identical, the Verilog unchanged; built,
+  `make sim` PASS, flashed into both Icepis (build 20261111), in step with 0 bad bursts.  Its Siglent grid was retaken
+  with 24 tiles at 1 V/div, and the Siglent put back to 0.8 V/div.
+* README (the show's table, the budgets, the cost table, the pool's history), SETUP (the order, where the sonic boom
+  was still listed), the image sheets, the tutorial's 5.08 and 5.00.
