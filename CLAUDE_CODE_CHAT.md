@@ -4708,3 +4708,16 @@ finales, the scope-in-a-scope taken 5 s in.  The kaleidocycle was also taken at 
 inside out on the scope as in the model, each hinge's edge through its neighbour's knuckle.  The grid is
 the tutorial's `img/xyshow_siglent.png` (5 x 5 now).  The scope is back as found: 0.8 V/div, XY, 5 ms/div, auto
 trigger on C1 at 0 V falling.  Both boards are on auto (ctrl 0x7) with the dither on.
+
+## Prompt 96
+
+Check things in and commit lab-instrument-control.
+
+## Response 96 2026-11-11 Claude Opus 5.5
+
+lab-instrument-control had one piece of uncommitted work, from 2026-11-08: a BK Precision 9130 driver (`bk/bk_9130.py`,
+`bk/test_bk.py`, `bk/bk.md`) and its README row, written from the manual and not yet run against a supply.  It is
+committed as 29e85ae (1 ahead of origin).  It was read in full, it compiles, and it matches scpi_link's Link.  Its
+tests were not run: they would probe the FT232R port that is plugged in here.  MANUALS.md already listed the 9130's
+manuals.  Two small changes: `bk/.gitignore` keeps the load tests' `results/` JSON out of git, as hp/results does,
+and `SETTLE_S` was tagged as measured when nothing has been, so it now says not yet measured.
