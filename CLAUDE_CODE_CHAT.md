@@ -4625,3 +4625,23 @@ Put the transcription and translation finales back in.
   with 24 tiles at 1 V/div, and the Siglent put back to 0.8 V/div.
 * README (the show's table, the budgets, the cost table, the pool's history), SETUP (the order, where the sonic boom
   was still listed), the image sheets, the tutorial's 5.08 and 5.00.
+
+## Prompt 92
+
+The planetary gear 3D print was still too loose. Tighten by 1-2mm.
+
+## Response 92 2026-11-11 Claude Opus 5.5
+
+* **Why it was loose:** the sideways stop is a tooth tip meeting the other gear's root, and that gap was the full
+  0.30 mm.  The herringbone's slices are the mesh at phases spanning half a tooth pitch, so some slice always has a tip
+  on a root; each mesh closed 0.30 mm, and the floating planets multiply that by six: the sun slid 1.8 mm in the model.
+* **The change:** `TIP = 0.18` in `print/planetary_gears.py`: every tip (planet, sun, ring) 0.18 mm longer, the root
+  it meets no deeper (the planet that cuts the sun and the ring has its root, not its tip, lengthened).  A tip now
+  stops 0.12 mm from a root; the flanks, which slide, keep 0.30 mm in the plane (0.25 mm across the slant).  The tips
+  are still at least 1.3 mm wide 0.2 mm below their ends, three passes of a 0.4 mm nozzle.
+* **Checked:** the sun slides about 0.7 mm end to end (1.1 mm tighter).  Turning, the parts come no closer than
+  0.12 mm (0.115 mm in 3D), always tip to root, with no overlap, and the V still holds every gear (0.46 mm axial).
+  `TIP = 0.20` would give 0.6 mm with 0.10 mm at the tips, and 0.15 would give 0.9 mm with 0.15 mm.  The play check
+  now takes the herringbone into account: 24 phases a pitch, the least closing within the span of the half face.
+* `renders/planetary_gears.stl` and `planetary_gears_and_cradle.stl` rewritten (gitignored); README's section and the
+  script's docstring.
