@@ -4532,3 +4532,52 @@ script's own outlines, the old design slides 6.6 mm end to end, as you found.
 * The script now prints the sideways play too.  `GAP = 0.125` would give 1.5 to 2.2 mm with 0.25 mm gaps, but that
   risks fusing on many printers.
 * renders/planetary_gears.stl is rebuilt.  It is gitignored; the script and the README are committed.
+
+## Prompt 89
+
+Change the names. "set" implies the solar system plus the holder. Gears implies just the gears. Call them "gears" for
+just the gears" and "gears_and_cradle" for both.  Back to tweaking the animation:  Get rid of the sonic boom demo. It
+doesn't really fit.  Make oscilloscopes inside of each other rotate independently. The whole point of this is that
+it's kind of a self-referential joke about recursion. The audience is looking at a real oscilloscope, where the outer
+oscilloscope animation is drawn and rotating, but that one should have the next-level inner oscilloscope drawn on its
+face, also rotating. Etc.  (Then, mid-turn:) Lastly, maybe I wasn't looking carefully enough before, but diagonal
+lines (and more so, the nearly vertical or nearly horizontal lines) even on the analog scope seem quite
+jagged/blocky/rastered. Maybe this is the rounding or the DAC steps. But I thought it used to look like jagged. Are
+you sure you're not skipping DAC steps now where you weren't before? Is the range of your fixed width math
+appropriate? Can you have the animations take up more of the DAC range, even if that pushes the sync burst and other
+off-screen things closer? It's not the end of the world if the sync pulse is just on the edge of the screen -- it will
+allow me and the students to point to something when they discuss how the two boards synchronize each other.
+Unfortunately, you now have to keep things up to date and in sync, both in the ECP5-2ADC-2DAC and in the
+icepi-zero-tutorial repos. Be very careful about that.  (And:) Inheriting the outer scope's rotation isn't what I
+want. IF they rotate together, it doesn't have that "camera pointed at a screen with a delay" kind of effect. Angle
+phi should turn into 2phi and 3 phi, etc. If that makes things rotate too fast, make the inner rotations independent.
+
+## Response 89 2026-11-10 Claude Opus 5.5
+
+* **The prints:** `renders/planetary_gears.stl` is the gears alone (in their housing),
+  `planetary_gears_and_cradle.stl` both on one plate, `planetary_cradle.stl` the cradle; `planetary_set.stl` is gone.
+* **The sonic boom** is in the pool (its object and program section kept; `--pool` renders it).  The show is 20
+  finales, so the seal's turns fall after a different three each time round.
+* **The oscilloscope in an oscilloscope** is a camera pointed at its own screen, with a delay.  The scope swings ±20°
+  about −18° every 6.7 s (on the phase sl, put to zero when the finale starts).  Its screen shows the scope as the
+  camera saw it 0.25 s earlier, so that drawing turns by the swing again on the face (2 phi from the room), and the
+  next by it again (3 phi).  The old one had this structure, but its swing was ±11° over 12.5 s, and so slow that the
+  levels seemed to move together.  The program (181 instructions) matches the float model to 0.0065; the movie shows
+  the inner drawing turned about twice as far as the outer scope.
+* **The jagged lines:** no DAC steps are skipped.  In the simulation, 98.3% of drawn samples move 0 or 1 code, and the
+  rest are jumps between strokes.  The 12-bit engine has 16 steps per DAC code; the stairs are the 8-bit DAC's own
+  codes.  The drawing had been 0.8 of the range (codes 25-230) since 2026-11-08, before the Tek video.  Now it is
+  0.934, and the X board's is moved up 7.5 codes (`to8x`, `X_OFFSET`): codes 16-255 on X, 9-248 on Y, 240 codes across
+  instead of 206.  X's lowest code still reads 8 ADC codes above the gap on the worse cable, so the threshold is 34
+  (was 38).  The burst's streak now lies along the picture's bottom-left edge.  The scope needs 1 V/div now
+  (SETUP.md).  A further step, if the stairs still show: sub-code dither with an on/off register, to compare on the
+  Tek.
+* **Checked:** `make_show.py` passes every simulation (the twin; the ECP5 show; the Icepi pair, B's trim −101 ppm) and
+  builds all three bitstreams (ECP5 68.5, Icepi X 59.5, Y 67.7 MHz for 50).  The tutorial's copy builds (X 58.1, Y
+  68.3), passes `make sim`, and is flashed into both Icepis.  A full round of the show gave 13,366 good bursts and 0
+  bad.  The threshold set live to 34, 36 and 38 received the same bursts with the seal held, so none are missed.  The
+  seal draws at 1,313 frames a second (1,400 before: the lines are longer).
+* **The two repos:** all ten tables are byte-identical, `top_icepi.v`'s code is identical, and the host scripts differ
+  only by their earlier deliberate lines.  The tutorial's 5.08 and its sim sheet are updated.
+* **Not done:** the bench grid of Siglent screenshots.  Its inputs read 0 V; the BNCs are probably on the Tek.  5.08
+  keeps the 2026-11-09 grid with a dated caption.  The Siglent is back at 0.8 V/div, XY, as found.
