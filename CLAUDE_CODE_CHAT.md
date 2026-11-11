@@ -4645,3 +4645,66 @@ The planetary gear 3D print was still too loose. Tighten by 1-2mm.
   now takes the herringbone into account: 24 phases a pitch, the least closing within the span of the half face.
 * `renders/planetary_gears.stl` and `planetary_gears_and_cradle.stl` rewritten (gitignored); README's section and the
   script's docstring.
+
+## Prompt 93
+
+I'll 3D print that later. In the mean time, I already have a 3D printed version of `~/mudd/models_3Dprint/Print-in-Place Kaleidocycle - 4761150` that would be cool to incorporate as an animation. The interesting thing about this device is that it can turn inside out even though it's made of rigid components. If you can animate it turning inside out while rotating at a reasonable speed, that would be great. The hardest thing to do will be to keep the joints from looking like they are slipping, which involves figuring out exactly what position things need to rotate around and by how much.
+
+## Response 93 2026-11-11 Claude Opus 5.5
+
+* **The kaleidocycle is in**, after the top (23 finales).  Six links turn inside out on `sl` at 0.15 turns a second.
+  The phase is zeroed at the start, so the ring begins flat as printed, flips four times and is flat again at 6.7 s.
+  The view turns on `av` (0.07 turns a second, the arm's).  Each link is drawn as a flat paddle.  Its straight edge
+  lies on its own hinge's axis.  Its round end is the knuckle about the next hinge's axis, centred on that axis and as
+  wide as the print's barrels.  It costs 96 vertices (69 free), 194 instructions (3043 of 4096) and no new phase.
+* **The kinematics, exactly.**  The STL gives the geometry: hinges at right angles, 40.4 mm apart, the common normal
+  meeting each at its middle, the twist alternating +90/-90.  A numerical solution of the six-hinge loop showed the
+  odd joints share one angle and the even ones another, with (1 + cos theta)(1 + cos phi) = 1.  It also showed the
+  ring is threefold symmetric with a mirror through every hinge: each hinge's middle stays at its own azimuth, and its
+  axis stays in that vertical plane.  That gives the hinges in closed form from one drive angle chi.  With
+  A = sqrt(1 + cos^2 chi) and B = sqrt(1 + sin^2 chi):
+  - the middles are r1 u_k - h z and r2 u_k + h z;
+  - the axes are (sqrt 2 cos chi u_k + sin chi z)/A and (sqrt 2 sin chi u_k - cos chi z)/B;
+  - r1 = sqrt(2/3) B/A, r2 = sqrt(2/3) A/B and h = (sqrt 3/2) sin chi cos chi/(AB).
+
+  Every link's constraints hold to 1e-15 over a turn (`proposals.Kaleido.check()`).
+* **No slipping, by construction.**  Chaining joint rotations would let rounding open the last joint, so the animator
+  does not chain them.  It computes the six hinges once and places link k by R = [a b_k, 0, p_k+1 - p_k], t = p_k.  Its
+  far end is then p_k+1, the same registers that place link k + 1.  In the bit-exact model:
+  - every hinge's middle is identical in both its links, to the last bit;
+  - each knuckle's axis is within 0.05 degrees of the next link's hinge;
+  - the links keep their shape to 0.1 % (one 12-bit code).
+
+  1/A and 1/B are four cosine harmonics of 2 chi (7e-5 off).  `check_prog.py` puts the section 0.0059 from the float
+  model, which is the sine table's step.
+* README (a row in the show table, a section on the kinematics, the budgets and the cost table: the arm's `av` is
+  now shared), SETUP, the docstrings, `host/proposals.py` (`Kaleido`, `KAL`), `gen_matrix_prog.py` (the section),
+  `objects.py`, `check_prog.py`, `make_show.py` (KINDS, FINALES, the rates' asserts).  The tutorial's copy is
+  identical in its tables (its Prompt 35).
+
+## Prompt 94
+
+Do one more finale before going back to the Harvey Mudd logo. How many finales are there total now?
+
+## Response 94 2026-11-11 Claude Opus 5.5
+
+There are 23 finales: the kaleidocycle made 23.  Four now play between the seal's turns (`FINALES_PER_SEAL` 3 -> 4,
+`PER_SEAL` in show_params.vh; show_seq's counter holds up to 7, so no logic changed).  A round of all 23 is about
+3.8 minutes (it was 4.2), and the seal falls after a different four each time round.  README, SETUP, make_show.py's
+docstring and comments, and the comments in show_seq.v, top_show.v and gateware/README.md are updated; top_show.v's
+finale list was stale (it still had the sonic boom) and is now current.  All simulations pass (twin, show, Icepi:
+905 frames, the trim -101.1 ppm).  The three bitstreams are rebuilt: ECP5 clk_s 69.65 MHz, Icepi X 61.64 MHz and
+Y 68.68 MHz, all for 50.  The tutorial's copy is identical in its tables (its Prompt 36).
+
+## Prompt 95
+
+I connected the BNCs to the digital scope (from the analog scope). You should be able to test things out there again.
+
+## Response 95 2026-11-11 Claude Opus 5.5
+
+The tutorial's build (four per seal) is flashed into the pair: X is DK0GFLAW and Y is DP051TLX.  On the SDS1104X-E
+(XY, 1 V/div), every part of the show is right in all 25 tiles, with 0 bad bursts: both seal modes and the 23
+finales, the scope-in-a-scope taken 5 s in.  The kaleidocycle was also taken at 0.6, 1.5, 2.6 and 3.6 s: it turns
+inside out on the scope as in the model, each hinge's edge through its neighbour's knuckle.  The grid is
+the tutorial's `img/xyshow_siglent.png` (5 x 5 now).  The scope is back as found: 0.8 V/div, XY, 5 ms/div, auto
+trigger on C1 at 0 V falling.  Both boards are on auto (ctrl 0x7) with the dither on.
