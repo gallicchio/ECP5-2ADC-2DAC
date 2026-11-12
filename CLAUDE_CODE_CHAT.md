@@ -4737,3 +4737,18 @@ responses are summaries: what was done, the numbers, what was sent to the chat. 
 its `dev/CLAUDE_CODE_CHAT.md` (Prompts 1-37, the show's prompts copied there with their number here).
 lab-instrument-control has no log of its own: its commit (prompt 96) is recorded here.  The CostasLink work is in
 `CostasLink-PYNQ-Z2/CLAUDE_CODE_CHAT.md`.  All three trees are clean and committed; nothing is pushed.
+
+## Prompt 98
+
+Do a pull and a merge in ~/lab-instrument-control and deal with the merge. Then I'll push.
+
+## Response 98 2026-11-11 Claude Opus 5.5
+
+The pull's fetch can't run from here: the repository is private, and there is no GitHub key here, over SSH or HTTPS.
+So the merge is of origin/main as fetched on this PC at 16:40 today, fabbe60.  It brought 5 commits: the SDS1104X-E
+over USB, `scpi_link.py usb` and `usbtmc_node(..., serial=)`, the lab laptop's bench in AGENTS.md, and the DSA875,
+E36xxA and 8720ES changes.  Merged into the BK 9130 commit as bd1088e, with no conflicts.  README keeps the bk/ row
+and gains the USB-node paragraph.  scpi_link.py changed only on the USB side; the BK driver uses the serial Link,
+whose arguments are unchanged.  Everything compiles and bk_9130 imports against the merged scpi_link.  No tests were
+run (they talk to instruments).  main is 2 ahead of origin/main; Jason's `git pull --no-rebase --no-edit && git push`
+merges anything newer first.
