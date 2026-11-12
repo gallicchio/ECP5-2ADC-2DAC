@@ -3497,7 +3497,7 @@ but for me to debug, the movie without the repeated Harvey Mudd seal stuff would
 
 ## Response 52 2026-11-08 Claude Fable 5.1
 
-(Prompts 52-55 answered together.  Sent to the chat: the simulated frames of every finale, the finales sheet, the movie.)
+(Prompts 52-56 answered together.  Sent to the chat: the simulated frames of every finale, the finales sheet, the movie.)
 
 The seal's fifteen seconds are untouched; mode 3 is now a finale, a different one each time round.  Eleven of them, in
 `make_show.py`'s `FINALES` list (the order and the seconds are constants; repeat or delete as you like), no labels: the
@@ -4721,3 +4721,19 @@ committed as 29e85ae (1 ahead of origin).  It was read in full, it compiles, and
 tests were not run: they would probe the FT232R port that is plugged in here.  MANUALS.md already listed the 9130's
 manuals.  Two small changes: `bk/.gitignore` keeps the load tests' `results/` JSON out of git, as hp/results does,
 and `SETTLE_S` was tagged as measured when nothing has been, so it now says not yet measured.
+
+## Prompt 97
+
+Are all of my prompts and your responses included (or at least summarized) in a CLAUDE_CHAT.md document somewhere? If
+so, I think I'll call the current state of things good and pack it up for Friday.
+
+## Response 97 2026-11-11 Claude Opus 5.5
+
+Yes, in `CLAUDE_CODE_CHAT.md` (not CLAUDE_CHAT.md).  This file has every prompt of this session word for word, 1 to 97,
+from the first board prompt on 2026-10-02, with no number missing.  Every one has an answer.  Prompts that arrived
+while a turn was still running were answered in one response, which names the prompts it covers (3-4, 5-10, 11-13,
+52-56, 57-58, 59-60; the 52 note said 52-55 though it also answered 56's movie, and it now says 52-56).  The
+responses are summaries: what was done, the numbers, what was sent to the chat.  The tutorial's own work is also in
+its `dev/CLAUDE_CODE_CHAT.md` (Prompts 1-37, the show's prompts copied there with their number here).
+lab-instrument-control has no log of its own: its commit (prompt 96) is recorded here.  The CostasLink work is in
+`CostasLink-PYNQ-Z2/CLAUDE_CODE_CHAT.md`.  All three trees are clean and committed; nothing is pushed.
