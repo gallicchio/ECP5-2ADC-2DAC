@@ -29,14 +29,19 @@ notes) into `mfg/release/`.  `python3 build.py --clean` removes everything it ma
 | the generators | `gen/` (schematic), `pcb/` (placement, BGA escape, pin swaps, router, silkscreen, board writer), `mfg/` (release), `tools/` (JLCPCB queries) |
 | decisions and questions | this file, `QUESTIONS.md` (gitignored, for Jason), `CLAUDE_CODE_CHAT.md` (the log) |
 
-## Bring-up (the boards arrived 2026-11-05)
+## Bring-up (the boards arrived 2026-11-05; nothing powered yet as of 2026-11-15)
 
-`BRINGUP.md` is the procedure (stages 0-8 with pass conditions; the dead-on-arrival table); `bringup/` runs it from the
-bench PC (`bench.py`: the E3646A, the Fluke 45, the SDS2104X Plus, the SDG1032X and the board in one tool; `BRINGUP_LOG.md`,
-`REVB.md`); `gateware/bringup/` is the gateware it uses: `build/blink.bit` (LEDs, CLK OUT, a serial greeting) and
-`build/bringup.bit` (a register bus over the FT2232H's serial channel at 1 Mbaud: frequency counters on every clock input,
-the Si5351 and the PHY's MDIO bit-banged, DAC generators, an ADC capture of 8192 samples a channel with statistics, an
-SDRAM tester), with `host/ecp5bu.py` to drive it.  Both are simulated end to end in iverilog (`make sim`, `make test`).
+**Where it stands and what happens next: [`bringup/STATUS.md`](bringup/STATUS.md).**  `BRINGUP.md` is the procedure: five
+visits (one cable configuration each, with a picture in `bringup/figs/`), then the stages 0-8 with their pass conditions
+and the dead-on-arrival table.  `bringup/bench.py` runs it from the bench PC, each visit a command (the E3646A, the
+Fluke 45, the SDS2104X Plus, the SDG1032X, the 33220A and the board in one tool; `--sim` runs the same commands against
+the simulated board and a simulated bench); `BRINGUP_LOG.md` and `REVB.md` take what it finds.  `gateware/bringup/` is the
+gateware: `build/blink.bit` (LEDs, CLK OUT, a serial greeting) and `build/bringup.bit` (a register bus over the FT2232H's
+serial channel at 1 Mbaud: frequency counters on every clock input, the Si5351 and the PHY's MDIO bit-banged, DAC
+generators, an ADC capture of 8192 samples a channel with statistics, an SDRAM tester, and since 2026-11-15 the RGMII
+data path, the microSD socket, USB USER's lines and an HDMI test picture), with `host/ecp5bu.py` to drive it.  Most of
+the bring-up needs no instrument: three SMA cables (DAC 1 OUT to ADC A IN, DAC 2 OUT to ADC B IN, CLK OUT to CLK IN) let
+the board measure itself.  Everything is simulated in iverilog (`make sim`, `make test`, `make cosim`).
 
 ## Checks that are not DRC
 
@@ -126,7 +131,8 @@ its 40 mA at the rails; the second preamp's own 49.9 Ω output resistor is in se
 The five reviews of build 25 (section 5 of `DESIGN_REVIEW_RESPONSE.md` has the table): a BAV99 anti-parallel
 across each THS4521's inputs; the ADC input resistors 1206; a bead and 10 µF between the LM27761 and the op
 amps, the pump at -4.15 V instead of -4.4; the Bob Smith capacitor a 1 nF 3 kV 1812 and no 1500 V claim; both
-RGMII delays inside the PHY (the RXD1 strap pulled up: TXDLY = 1), so the gateware adds none; a 2.2 pF across
+RGMII delays inside the PHY (the RXD1 strap pulled up: TXDLY = 1), so the gateware adds none (on the receive side
+the FPGA's own input delay cell is still wanted: `bringup/REVB.md` row 9, 2026-11-15); a 2.2 pF across
 the DAC difference amplifier's 2 kΩ to ground, and ±0.9 V / ±1.8 V on the sheet and silkscreen instead of
 ±1 / ±2 V; a TLV3501 comparator for CLK IN; 100 nF on PROGRAMN and an honest power-sequencing note; the USB-C
 and HDMI jacks out to the edge and end-plate cutouts that pass the plugs; `+1V0_PHY` on the RAILS header; the

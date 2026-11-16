@@ -1,38 +1,162 @@
 # ECP5-2ADC-2DAC rev A: the bring-up
 
-Written 2026-11-05, the evening the boards arrived (JLCPCB: 5 PCBs, 2 assembled, build 34 of 2026-10-09), for the
-bring-up of 2026-11-06 in Jason's office, run over chat: Jason plugs in cables and moves jumpers, the session drives the
-bench supply, the scope, the generators and the board, and logs every reading.  The rule of the bench (CLAUDE_PCB.md
-section 9): **plug in; do not solder or hold a probe.**  Every node worth a look has a U.FL tap or a header pin, and
-every stage below says which one to plug into.  The stages are in order; each has a *pass* condition; the
-dead-on-arrival table at the end says which stage retires which risk.
+The boards arrived 2026-11-05 (JLCPCB: 5 PCBs, 2 assembled, build 34 of 2026-10-09).  Nothing has been powered yet.
+**Where the bring-up stands today, and the next thing Jason does, is always in [`bringup/STATUS.md`](bringup/STATUS.md)**
+(`python3 bringup/bench.py where` prints it).
 
-What goes where:
+This file has two parts.  **The visits** (below) are what Jason does: five short physical configurations, each with a
+picture, the exact cables, and the words to type in the chat when it is cabled.  Between visits the session works
+alone, for as long as it takes, on what is plugged in.  **The stages** (after the visits) are the measurements
+themselves with their pass conditions, the reference the visits point into.  The rule of the bench (`CLAUDE_PCB.md`
+section 9) holds throughout: **plug in; do not solder or hold a probe** (two steps of visit 3 are the exceptions, and
+say so).
+
+Rewritten around visits on 2026-11-15 (Prompt 99): the lab time is the scarce thing, so the plan is ordered by cable
+changes, not by subsystem, and the board tests itself wherever it can.  Three short SMA cables (DAC 1 OUT to ADC A IN,
+DAC 2 OUT to ADC B IN, CLK OUT to CLK IN) turn its own converters and counters into the instruments, so everything but
+absolute calibration runs with a power supply and two USB cables.
 
 | thing | where |
 |---|---|
-| this procedure | `BRINGUP.md` (this file) |
-| running it: the bench tool, the log, the rev B list | [`bringup/`](bringup/README.md): `bench.py`, `BRINGUP_LOG.md`, `REVB.md`; raw data in `bringup/data/` (not in git) |
-| the gateware it uses | [`gateware/bringup/`](gateware/bringup/README.md): `build/blink.bit`, `build/bringup.bit`, `host/ecp5bu.py`; simulated end to end in iverilog (`make sim`, `make test`), not yet run on silicon |
-| the instruments | `~/lab-instrument-control` (E3646A, Fluke 45, SDS2104X Plus, SDG1032X, 33220A); `bench_config.json` holds the addresses |
+| where we are, what is cabled now, what is next | [`bringup/STATUS.md`](bringup/STATUS.md) |
+| this procedure | `BRINGUP.md` (this file); the pictures: `bringup/figs/` (`python3 bringup/make_figs.py`) |
+| running it | [`bringup/`](bringup/README.md): `bench.py` (every visit is a command), `BRINGUP_LOG.md`, `REVB.md`; raw data in `bringup/data/` (not in git) |
+| the gateware it uses | [`gateware/bringup/`](gateware/bringup/README.md): `build/blink.bit`, `build/bringup.bit`, `host/ecp5bu.py`; simulated in iverilog (`make sim`, `make test`), and the bench procedures themselves are run against the simulated board (`bench.py --sim`, `host/cosim.py`); not yet run on silicon |
+| the instruments | `~/lab-instrument-control`: E3646A, Fluke 45, SDS2104X Plus, SDG1032X, 33220A; `bench_config.json` holds the addresses; `bench_claims.py` there records which project holds which channel |
 | what the board is | [`README.md`](README.md); the reviews' open questions for the first board: `DESIGN_REVIEW_RESPONSE.md` section 6 (R2-11, R2-12), stage 8 below |
 
 ## What to have on the bench
 
-| thing | why | have |
+| thing | for | have |
 |---|---|---|
-| **E3646A** bench supply, output 1, into **J601 "5V IN"** (2-pin header: + and GND as printed) through a 2-pin lead with 2.54 mm female ends; 5.00 V, 1.0 A limit, OVP 5.6 V | stage 1: a bench input that reads its own current; J601 also turns the USB power path off (Q602), so the PC's port is never asked for the board's 0.7 A.  4.75-5.25 V at the header (the LM27761's absolute maximum is 5.8 V); the SS34 (D601) drops 0.3-0.5 V on the way to +5V | have; the lead: make |
-| a **USB-C cable** to the PC, into **J501 "USB PROG"** (the upper of the two USB-Cs, below the RJ45) | stage 2 on: JTAG and the serial channel.  The board can also run from this alone (0.6-0.7 A: a USB 3 or USB-C port, not a 2.0 one) | have |
-| **Fluke 45** (or any DMM) with a probe and a **ground spring** or clip | stage 1: the nine rails on J602 | have |
-| **SDS2104X Plus** scope, BNC leads, two SMA-to-BNC adapters | stages 1, 4-6: the DAC outputs, CLK OUT, the taps | have |
-| **SDG1032X** generator, an SMA-to-BNC lead | stages 4 and 6: CLK IN, the ADC inputs | have |
-| **U.FL-to-SMA pigtails**, 2 or more (Hirose U.FL-LP-088, 100-200 mm; 30 matings each) | the four taps J107 TAP A, J108 TAP B, J109 TAP TIA, J603 TAP -4V2 (49.9 ohm in series: a 50 ohm input sees half) | buy if none |
-| **SMA male-male lead**, 1, and a 50 ohm SMA termination | stage 6: DAC 1 OUT to ADC A IN | have |
-| 2.54 mm **jumper shunts**, 10 | JP101-104, JP201-204, JP1203, JP2009, JP3001, JP501 (table below) | have |
-| an **Ethernet cable** to the lab switch | stage 7 | have |
-| a loupe or the USB microscope; `mfg/release/ECP5-2ADC-2DAC_assembly_top.pdf` and `_bottom.pdf` and `PLACEMENT_CHECKS.txt`, open on a screen | stage 0 | have |
-| the IR camera or thermometer | stage 1.4 | have |
-| the oss-cad-suite's `openFPGALoader` (any machine with the USB cable; the bench PC has it at the path in `gateware/bringup/build.sh`); USB permission for 0403:6010 (on bell the `openocd` package's `/lib/udev/rules.d/60-openocd.rules` already gives it to `plugdev`, checked 2026-11-06) | stages 2-3 | have |
+| **Agilent E3646A**, output 1, with two leads ending in 2.54 mm female pins (or mini-grabbers) | visit 1 on: the board's 5 V through J601, with the current read back and the switch under the PC's control | have; the lead: make |
+| **Fluke 45** with its two probes | visit 1: the nine rails | have |
+| **2 USB-C cables** to the PC (`bell`) | visit 1 on: USB PROG (JTAG, serial) and USB USER | have |
+| **3 SMA male-male cables**, 10-30 cm | visit 1: the self-test cabling | have (the Icepi demo's) |
+| an **Ethernet cable** to the lab switch (the 192.168.8.x one `bell` is on) | visit 1 on | have |
+| a **microSD card**, any (it is only read) | visit 1 on | have |
+| **SDS2104X Plus**, **SDG1032X**, **33220A**, and **6 BNC cables with SMA-male ends** (or BNC cables and SMA-BNC adapters) | visit 2 | have |
+| a **U.FL-to-SMA pigtail** (Hirose U.FL-LP-088, 100-200 mm; 30 matings) | visits 2-3: the four taps | buy if none |
+| 2 scope probes with hook tips, 3 female-female jumper wires | visit 3: the power-on sequence on the RAILS header | have |
+| a monitor with a **mini-HDMI** (type C) cable; 8 male-male jumper wires | visit 3: HDMI, the Pmod loop (both optional) | check |
+| a loupe or the phone's macro camera; the IR thermometer or camera | visits 0 and 3 | have |
+| jumper shunts, 10 | visit 0 | have |
+
+## The visits
+
+One board at a time: **board A** through visits 0-3, then **board B** through visits 0 and 1 (`--board B`).  After every
+visit the session says in the chat what it found, what it is doing next alone, and what the next visit is;
+`bringup/STATUS.md` says the same for whoever sits down cold.  The words in **bold quotes** are what to type in the chat.
+
+### Visit 0: unwrap, mark, look, set the jumpers (15 min, at a desk, no instruments, no power)
+
+![the jumpers](bringup/figs/visit0_jumpers.png)
+
+1. Unwrap.  Mark the two assembled boards **A** and **B** with a pen on the back.  Count the three bare boards.
+2. Photograph each assembled board, top and back, straight down in good light, plus one close-up of the lower right
+   corner of the top (J601, the fuses, the POWER LEDs) and one of the left edge (the analog strips).  Paste the photos
+   into the chat: the session checks them against the assembly drawings (polarity marks, pin-1 dots, missing parts)
+   and names anything it wants looked at with the loupe.  Stage 0.2 below is the full list.
+3. Set the shunts as in the picture (the table under "Jumpers" below is the same thing in words).  JP2009 and JP501
+   stay open; SW101 all off.  (JP501, FTDI OFF beside the FT2232H, holds the FT2232H in reset if a shunt is on it.
+   Board A came with none: the session read one into a photo, and a header's pins seen at a slant look bridged.)
+4. Type **"v0 done"**, with anything that looked wrong.
+
+### Visit 1, step A: power only (5 min at the bench)
+
+![power only](bringup/figs/visit1a_power.png)
+
+1. E3646A **output 1**: the red (+) lead to the pin of **J601 "5 V IN"** printed **+5V** (the upper pin, toward the
+   board's middle; J601 pin 2), the black (-) lead to the pin printed **GND** (the lower pin, nearer the bottom edge;
+   pin 1, the square pad).  Nothing else on the board: no USB, no SMA, no Ethernet.  Leave the supply's own output switch
+   alone: the PC switches it.  The supply's RS-232 adapter is in the PC.  **Short, thick leads straight from the supply's
+   terminals to J601**, not through a BNC cable or thin wire: on board A (2026-11-16) a BNC cable and thin wire lost
+   0.47 V at 0.385 A (5.00 V at the supply, 4.52 V at J601), and the configured board draws nearly twice that.
+2. The Fluke 45's RS-232 adapter in the PC; its probes within reach, set down, touching nothing.
+3. Type **"v1a ready"**.  The session claims the supply for this board, raises the input in four steps (1.0, 2.5, 4.0,
+   5.0 V with a low current limit) and stops at the first sign of a short.  Then it leaves 5.0 V on and says so.
+4. Look: the **eight red POWER LEDs** by the RAILS header, all lit?  Say which are dark.
+5. Type **"rails go"** and within 15 seconds start the walk: black probe on any pin of the RAILS header's **top row**
+   (all ground, **although the rail names are printed above it**: the names belong to the row below), red probe on
+   each pin of the **bottom row** (the row farther from the names), left to right, **three seconds each**, lifting clear
+   between pins: +5V, +3V3, +1V1, +2V5, 3V3A, 3V3D, +5VA, 1V0, -4V2.  The PC reads the Fluke the whole time and takes
+   each steady reading as the next rail; nothing needs typing.  It says which rails passed.
+6. Touch the board for anything hot (the two bucks, U604 by the ADC and the PHY are allowed warm).
+
+### Visit 1, step B: USB and the self-test cables (5 min; then you can leave)
+
+![the self-test cabling](bringup/figs/visit1b_selftest.png)
+
+With the supply still on:
+
+1. **USB-C cable 1** from the PC into **USB PROG** (the upper USB-C).
+2. **USB-C cable 2** from the PC into **USB USER** (the lower USB-C).
+3. **Three SMA cables**: CLK OUT to CLK IN; DAC 1 OUT to ADC A IN; DAC 2 OUT to ADC B IN.  (If the two DAC cables end
+   up crossed, leave them: the software finds which is where.)
+4. **Ethernet** from the RJ45 to the lab switch.
+5. A **microSD card** into the socket on the back.
+6. Type **"v1b ready"**.  The session reads the FPGA over JTAG, loads the two bitstreams and writes the flash, then
+   checks each cable by what it does (a small DC step on each DAC, a clock on CLK OUT, the card's answer, the host's
+   reset on USB USER, the link) and says in one table what it found plugged where.  Then it runs alone, an hour or
+   more (`bench.py v1b --list` is the order): every clock, the Si5351, the whole
+   SDRAM, the PHY and the Ethernet data path (in the PHY's loopback, then real frames to and from the PC), the card,
+   USB USER's lines, the capture timing, the DAC-to-ADC transfer, noise, sines to 10 MHz with their spurs, cross-talk,
+   running from USB power alone, and a soak.  Nothing needs watching.
+
+### Visit 2: generators and scope (10 min; then you can leave)
+
+![the instruments](bringup/figs/visit2_instruments.png)
+
+1. Type **"usb out"** after pulling **both USB-C cables** from the board (the supply stays).  The session power-cycles
+   the board ten times and reads the supply current each time: the board must boot from its flash by itself.  A minute.
+   Watch the white LEDs restart their chase each time.  When it says so, plug both USB-C cables back.
+2. Take the three SMA cables off.  Then, with BNC cables that end in SMA plugs (not the 10x probes):
+
+   | instrument | channel | to the board's SMA |
+   |---|---|---|
+   | SDG1032X | **CH1** | **ADC A IN** |
+   | SDG1032X | **CH2** | **CLK IN** |
+   | 33220A | **Output** | **ADC B IN** |
+   | SDS2104X Plus | **CH1** | **DAC 1 OUT** |
+   | SDS2104X Plus | **CH2** | **DAC 2 OUT** |
+   | SDS2104X Plus | **CH3** | **CLK OUT** |
+   | SDS2104X Plus | CH4 | a U.FL pigtail on **TAP A** (J107), if there is one; else nothing |
+
+   Leave every generator output off: the PC switches them.
+3. Type **"v2 ready"**.  The session claims the channels, then checks each cable with a signal too small to hurt
+   anything it might have been plugged into by mistake (0.1 V), says what it found, and only then runs: the ADCs'
+   volts per code against both generators, their response to 30 MHz (channel B to 14.5 MHz: the 33220A's reach),
+   over-range, channel-to-channel leakage, CLK IN's sensitivity and the TCXO against the SDG's timebase, the DACs'
+   levels and sines on the scope, CLK OUT from three sources.  It puts the scope's channel settings back as it found
+   them.
+
+### Visit 3: the sit-down session (30-40 min, together)
+
+![the places](bringup/figs/visit3_places.png)
+
+One change at a time: the session names the step and the one thing to move, you move it and type **"next"**, it
+measures and answers.  In this order (each line is one `bench.py step`):
+
+| step | you do | it measures |
+|---|---|---|
+| `leds`, `buttons`, `prog` | watch the white LEDs walk and the RGB LED go red, green, blue; press BTN0 and BTN1; press SW303 PROG | every LED, both buttons, a reboot from the flash |
+| `gain_x10` | pull the shunts of JP103 and JP203 | both channels at x10 against the generators |
+| `gain_x100` | pull JP104 and JP204 too | x100, and the noise floor there; then all four back |
+| `term_open` | pull JP101 | the high-impedance input: twice the amplitude; back |
+| `noise_0`, `noise_10k` | JP102 to NOISE, both gain stages at x10; SW101 switch 1 on (0 ohm), then switch 4 instead (10 k) | the Johnson noise of 10 k against 0 ohm at x100; back |
+| `light` | JP2009 to LED, JP202 to ALT | the on-board LED seen by the on-board photodiode; back |
+| `tap`, `tap_b`, `tap_tia`, `tap_n4v2` | the pigtail on J107, then J108, J109, J603 | each tap on scope CH4 |
+| `poweron` | pull both USB-C; scope probes (hooks on jumper wires) on RAILS pins +3V3 and +1V1 | the power-on order (review R8), ten cycles; USB back |
+| `dac_clock` | hold a probe on the 33 ohm by U201 pin 18 (the one held probe) | the DAC clock's edge (review R2-11) |
+| `hdmi`, `pmod` | plug a monitor; eight wires Pmod A to Pmod B, pin for pin (optional) | the test picture and the monitor's EDID; every Pmod pin both ways |
+
+Two of the reviews' questions are not commands yet and are taken by hand in this session with `bench.py scope shot`:
++1V0_PHY's rise against +3V3 (R2-12: a third probe on the RAILS header's 1V0 pin during `poweron`), and +5V's ring
+when the USB-C is plugged with the supply off (stage 8).
+
+### Visit 4: board B (10 min; then alone)
+
+Visits 0 and 1 again on board B with `--board B`; visit 2 only if board A showed something that needs a second sample.
 
 ## The board, as the bench sees it
 
@@ -47,7 +171,9 @@ it; U103 the AD9238 and U201 the AD9767 to its left; U401 the PHY and U502 the F
 Pmod A.
 
 **The RAILS header J602** (2 x 9, by U601/U602): the odd pins are the rails, the even pins ground, so a probe with a ground
-spring reaches every rail without a clip.  In order as printed: +5V, +3V3, +1V1, +2V5, +3V3_ADC, +3V3_DAC, +5VA, +1V0_PHY,
+spring reaches every rail without a clip.  **The rail names are printed above the top row, and the top row is ground**: the
+rails are the bottom row (REVB.md row 10; on board A's first walk the probes went on the wrong rows and every pin read
+-2.5 V, the +2V5 pin against ground).  In order as printed: +5V, +3V3, +1V1, +2V5, +3V3_ADC, +3V3_DAC, +5VA, +1V0_PHY,
 -4V2.
 
 **The POWER GOOD LEDs** (dim red, 0.3 mA, in a row by the header): D602 +5V, D603 +3V3, D604 +2V5, D605 +3V3_ADC, D606
@@ -81,8 +207,10 @@ About 3 W, 0.6-0.7 A at 5 V with everything running.
 
 0.2 **Look**, with the loupe, against the assembly drawings and `PLACEMENT_CHECKS.txt` (the parts JLCPCB rotated by rule
     rather than by a preview reading are the ones to check).  In order of what a mistake would cost at first power:
-    (a) D601 (SS34, by J601): its cathode bar toward +5V (the side away from the header).  Backwards, the bench supply
-        sees a diode across its output and the staircase of stage 1.2 finds it at 1 V.
+    (a) D601 (SS34, just above J601): in series from J601 pin 2 to F602 and +5V, its cathode bar toward F602 (the
+        right end, as the silkscreen's bracket).  Backwards it blocks: nothing reaches the board, every step of the
+        staircase reads a few mA (R7601 and R7602 only) and every LED stays dark; no harm.  (Until 2026-11-16 this line
+        said a backwards D601 would sit across the supply; the netlist says it is in series.)
     (b) Q602 (AO3401A, SOT-23 by F601) and Q601 (SS8050 by D609): pin 1 by the dot.
     (c) The eight power LEDs D602-D609 and the eight white LEDs: cathode marks all the same way along each row (backwards
         they stay dark; no harm).  D309's reading was confirmed by JLCPCB's e-mail of 2026-10-22.
@@ -94,7 +222,8 @@ About 3 W, 0.6-0.7 A at 5 V with everything running.
     (f) The six SMAs' barrels straight out past the left edge; the two Pmod sockets' openings facing the right edge; the
         USB-Cs and the HDMI jack 1-2 mm past the edge with their shells soldered; J504's card slot facing east.
     (g) Nothing missing: every IC's position populated; the three crystals (Y301, 25 MHz, by the Si5351; Y401, 25 MHz, by the PHY; Y501, 12 MHz, by the
-        FTDI) and the TCXO X301 present; both 4030 inductors (L617, L618, the bucks') on the back.
+        FTDI) and the TCXO X301 present; both 4030 inductors (L617, L618, the bucks', marked 2R2) on the top in the POWER
+        box, and L401 (the PHY's, 2.2 uH) on the back.
     A part that differs from the preview is JLCPCB's placement, not the CPL: a photo to their support, and no power to that
     board until the part is turned.  Normal and wanting nothing: the vias are filled and capped; through-hole pins have
     no inner-layer rings.
@@ -122,7 +251,7 @@ About 3 W, 0.6-0.7 A at 5 V with everything running.
     threshold: the LEDs' resistors and leakage); at 2.5 V the bucks starting, 50-200 mA; at 4.0 V 0.2-0.4 A; at 5.0 V
     0.3-0.6 A with the FPGA unconfigured (the ADC is on with no clock, the DAC on, the PHY running, the FTDI enumerating
     nothing).  The supply in CC at any step (`mode` = CC in the log) is a short or a reversed part: off, and the IR camera
-    at 1.0 V, 0.3 A finds what is warm.  *Pass:* every step in CV, the current rising with the voltage, under 0.7 A at 5 V.
+    at 1.0 V, 0.3 A finds what is warm.  *Pass:* every step in CV, the power (V x I) rising with the voltage (the current need not: the bucks draw about constant power once they regulate; board A 0.388 A at 4.0 V, 0.369 A at 5.0 V), under 0.7 A at 5 V.
 
 1.3 **The rails**: `bench.py psu on`, then the Fluke on each odd pin of J602 with the ground spring on the pin beside it:
     `bench.py dmm +5V`, `dmm +3V3`, `dmm +1V1`, `dmm +2V5`, `dmm +3V3_ADC`, `dmm +3V3_DAC`, `dmm +5VA`, `dmm +1V0_PHY`,
@@ -211,6 +340,10 @@ About 3 W, 0.6-0.7 A at 5 V with everything running.
 
 ## Stage 4: the clocks (board A)
 
+In visit 1B the SMA cable from CLK OUT to CLK IN lets the board's own counter read every clock it can put on CLK OUT
+(the TCXO, half of it, the PLL's 50 MHz, the three Si5351 outputs) through the output buffer, the cable and the CLK IN
+comparator: `v1b`'s `clkloop`.  The generator of 4.3 comes in visit 2.
+
 4.1 `bench.py run stage4.clocks`: every clock input's frequency from the board's own counters (1 s gate from the TCXO):
     `tcxo` 25,000,000 by construction (it counts its own gate: a check of the method), `clk_s` 50,000,000 ±1 (the PLL),
     `clk_in` 0 (nothing on the SMA), `si0`-`si2` 0 (the Si5351 unprogrammed; its outputs power up off), `rxc` 0 or 25 MHz
@@ -263,6 +396,13 @@ termination, DC coupled, centred on 0 V; code 8192 is 0 V, 16383 is +2 V (+1 V i
 
 ## Stage 6: the ADCs (board A)
 
+In visit 1B the two SMA cables (DAC 1 OUT to ADC A IN, DAC 2 OUT to ADC B IN) make the whole analog chain measure
+itself: a full-scale DAC is +-1 V into the ADC input's 50 ohm, which is the ADC's full scale at gain x1, so an ideal
+board reads ADC code = 2048 + (DAC code - 8192) / 4.  `v1b` measures that line (slope, offset, straightness), the
+noise with the DACs at mid-scale, sines from 100 kHz to 10 MHz with their spurs, the capture phase, and the leakage
+from one channel to the other (`dc_transfer`, `noise`, `sine`, `phase`, `xtalk`).  What a loop cannot tell is which
+half an error belongs to, or the volts: the generators and the scope of visit 2 (6.3 on, and stage 5) do.
+
 Each channel: SMA, 49.9 ohm termination by JP, 100 ohm 1206 in series, a BAV99 clamp to the rails, the SRC jumper, two
 OPA1612 stages (x1 or x10 each by jumper), a 49.9 ohm into the U.FL tap, then the THS4521 fully differential driver at
 gain 1 into the AD9238 through 33 ohm and 22 pF.  ±1 V at the SMA is full scale at x1; offset binary, 2048 is 0 V.  The
@@ -285,23 +425,25 @@ second; the running statistics (min, max, mean over 65536 samples) read in milli
     its 33 ohm; the scope on the 33 ohm at the ADC's pin 63 CLK_A / pin 18 CLK_B) or the data lines.
 
 6.3 `bench.py run stage6.adc_gen`: the SDG channel 1, 100 kHz sine, 1 Vpp into 50 ohm (the generator told load = 50),
-    into J101 ADC A IN: a 100 kHz sine of **1024 codes peak-to-peak** ±5 % (±0.5 V of ±1 V full scale) centred on
+    into J101 ADC A IN: a 100 kHz sine of **2048 codes peak-to-peak** ±5 % (±0.5 V of ±1 V full scale: 2048 codes
+    per volt; the "1024" that stood here until 2026-11-15 was its amplitude, not its peak to peak) centred on
     2048; channel B at its noise floor (the cross-talk, in dB: the ratio of B's component at 100 kHz to A's).  Then the
     same lead on J102 for channel B.  Then 1.8 Vpp (90 % of full scale), then 2.4 Vpp: the out-of-range flag (`otr` in the
     capture) counts the clipped samples, and the clamp holds the preamp input to the rails.  Then 1 MHz and 10 MHz at
-    1 Vpp: the amplitude within 1 dB at 1 MHz; at 10 MHz the input filter's roll-off (log it).  *Pass:* 1024 ±50 codes
+    1 Vpp: the amplitude within 1 dB at 1 MHz; at 10 MHz the input filter's roll-off (log it).  *Pass:* 2048 ±100 codes
     on both channels, OTR on the overdrive, the amplitude flat to 1 MHz.
 
 6.4 **The taps**: a pigtail from J107 TAP A to the scope at 1 MOhm with the 100 kHz 1 Vpp on the SMA: the preamp chain's
     output, 1 Vpp (x1) in phase with the input, DC coupled.  At 50 ohm, half.  The same on J108 for B.  *Pass:* 1 Vpp
     at 1 MOhm.
 
-6.5 **Gain x10 and x100**: JP103 open (stage 1 of channel A at x10.1): 0.1 Vpp in reads 1024 codes ±5 %; both open
+6.5 **Gain x10 and x100**: JP103 open (stage 1 of channel A at x10.1): 0.1 Vpp in reads 2048 codes peak-to-peak ±5 %; both open
     (x102): 10 mVpp.  The noise floor at x100 with the SMA terminated: the chain's 1.1 nV/rtHz x 100 over 12 MHz is 0.4 mV
     rms = 0.8 codes rms above the floor; log it.  Back to x1.  *Pass:* the gains within 5 % of 10.1 and 102.
 
 6.6 `bench.py run stage6.loopback`: an SMA lead from J204 DAC 1 OUT to J101 ADC A IN (TERM in: the DAC drives 50 ohm,
-    ±1 V, exactly the ADC's full scale): a 1 MHz full-scale sine captured at 25 MS/s; 2048 codes peak-to-peak ±10 %,
+    ±1 V, exactly the ADC's full scale): a 1 MHz sine captured at 25 MS/s, at half scale so that nothing clips (2048 codes peak-to-peak ±10 %; full scale
+    is the ADC's whole 4096 and tells only whether the out-of-range flag counts),
     and the SFDR from the FFT of the capture (the DAC's images are above Nyquist of the capture; the harmonics of the
     two output stages and the ADC chain are what shows): **over 60 dB** is the chain working as designed (the AD9238's
     80 dB and the OPA2810's distortion say 70 is possible).  Then 100 kHz and 10 MHz.  Save the captures (`bringup/data`).
@@ -341,10 +483,29 @@ second; the running statistics (min, max, mean over 65536 samples) read in milli
 7.4 **Buttons, RGB, user LEDs, the FTDI's modem lines**: covered by stage 3; `bench.py board ident` shows RTS/DTR as the
     PC sets them (`python3 -c` with pyserial `setRTS`): a reset line for the LiteX design later.
 
-7.5 **Not this day** (they need gateware that does not exist yet, and nothing on the board for them can be hurt by
-    waiting): USB USER (J502: a soft USB device; D+/D- at G14/G13, the pull-up at H13), HDMI (J503), microSD (J504).
-    The ECP5 LiteX platform file is generated (`gateware/litex/ecp5_2adc_2dac.py`); a VexRiscv SoC with liteeth and
-    litesdcard is the next gateware.
+7.5 **The RGMII data path** (`v1b`'s `eth_loop` and `eth_wire`; since 2026-11-15): the PHY's ID and link say nothing about
+    the twelve data lines, so the gateware sends frames and checks what comes back.  First with no cable: the PHY in its
+    own loopback (BMCR 0x4140), a frame built on the PC written into the transmit buffer, 1000 of them sent, every one
+    counted and CRC-checked by the receiver, the first read back byte for byte; then 1000 full-length frames.  The straps
+    are read back too (page 0xd08: both RGMII delays on).  Then on the wire: the board broadcasts UDP datagrams that a
+    socket on the PC receives, and the PC broadcasts some that the board counts.  *Pass:* every looped frame good, 0 bad;
+    the PC sees the board's datagrams.  One bad frame in a thousand is a timing margin: the eye is on the 33 ohm
+    resistors' side of the PHY (rev B candidate: series resistors at the FPGA end).
+
+7.6 **microSD** (`sd`): a card in the socket on the back, in SPI mode (CLK, CMD as data in, DAT0 as data out, DAT3 as
+    chip select): CMD0, CMD8, ACMD41 until ready, the OCR, the CID and block 0, each data block's CRC-16 checked.
+    Nothing is written.  DAT1 and DAT2 are only read as levels (high).  *Pass:* the card initialises and both blocks'
+    CRCs are right.  The 4-bit mode is litesdcard's, after the bring-up.
+
+7.7 **USB USER** (`usb`): no USB core; the lines as pins.  With the board's 1.5 k pull-up on, the PC's port sees a
+    full-speed device, resets the bus (both lines low for 10 ms or more) and sends packets nothing answers; the FPGA
+    counts the reset and edges on both lines, and the PC's kernel log shows the attempt ("new full-speed USB device",
+    then "device descriptor read/64, error").  Then D- driven high by its pin alone: the PC logs a low-speed device.
+    *Pass:* the reset and packets seen on both lines for both attaches.  A real device core is later gateware.
+
+7.8 **HDMI** (`hdmi`, visit 3): the hot-plug pin, the monitor's EDID over DDC (bit-banged; header and checksum), then a
+    640 x 480 test picture: a one-pixel white border, eight colour bars, a grey ramp, a block that moves.  *Pass:* the
+    EDID reads; the monitor shows the picture whole, the border on all four sides, the block moving.
 
 ## Stage 8: the reviews' open questions, and what goes on the rev B list
 
@@ -382,7 +543,10 @@ the reading that showed it, the day it is seen.
 | the ADC front end (a preamp, the FDA, a clamp diode conducting) | the wrong amplitude or offset on one channel | 6.3, 6.4 |
 | the SDRAM (the address and data rivers, the clock) | errors in the scan at every latency | 7.1 |
 | the PHY (its straps, its 1.0 V switcher's inductor L401, the magnetics) | no ID over MDIO; no link | 7.2 |
-| the HDMI, USB USER, microSD | not tested | later gateware |
+| the RGMII data lines and their timing (TXD/RXD, the two clocks, the PHY's delay straps) | looped frames lost or with bad CRCs | 7.5 |
+| the microSD socket (on the back: its orientation, the card's four used lines) | no answer to CMD0 | 7.6 |
+| USB USER (the 1.5 k pull-up, D+, D-, the connector) | the PC's port sees nothing, or the FPGA sees no reset | 7.7 |
+| HDMI (four pairs, DDC, hot plug) | no EDID; no picture | 7.8 |
 
 ## After the bring-up
 

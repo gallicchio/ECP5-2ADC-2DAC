@@ -4752,3 +4752,210 @@ and gains the USB-node paragraph.  scpi_link.py changed only on the USB side; th
 whose arguments are unchanged.  Everything compiles and bk_9130 imports against the merged scpi_link.  No tests were
 run (they talk to instruments).  main is 2 ahead of origin/main; Jason's `git pull --no-rebase --no-edit && git push`
 merges anything newer first.
+
+## Prompt 99
+
+(`/remote-control bell-ECP5-2ADC-2DAC`, 2026-11-15)  Read CLAUDE_CODE_CHAT.md and come up with a bring up and test plan
+for PCBs that came in.  All prompts (including this and following ones) along with your responses should go into that
+document.  The limiting factor will be my time in the lab.  To this end, write the bring up plan to use
+~/mudd/lab-instrument-control/ and modify lab-instrument-control repository if bugs are discovered or new features should
+be added.  If there is any firmware for this project, write it and simulate it as best you can before connecting any
+hardware.  This includes one-off things just for the bringup process.  Install any tools you need to install in ~/.local/
+kicad is there.  Various versions of Vivado are in ~/Downloads/Xilinx/ and you can use whichever if appropriate.  If you
+need to look at other pcb projects in ~/pcbs/ or ~/OpticsPCBs/ you should feel free to look.  You should also modify
+~/OpticsPCBs/CLAUDE_PCB.md with any lesions learned that should be applied to future PCB work.  In the next day or in the
+next few days, I'll hook up appropriate instruments to this computer to debug this PCB.  Any problems should go into a
+REVB.md or REVC.md list that you'll maintain as you discover problems with the current revision that we will test.
+Again, any lessons learned should go into ~/OpticsPCBs/CLAUDE_PCB.md for future PCB designs.  When you are done with the
+plan, print it here in the chat, with very explicit instructions on which channels of which instruments should connect to
+which places on the PCB.  I'll be juggling several of these PCB bringups at once, and it'll be easy for me to get confused
+when I pop in and change some physical configuration, so you'll need to always remind me of where we're at so that I can
+sit down and *correctly* do what needs doing in the brief windows that I have before I need to run to my next meeting.
+
+[Mid-way:] The instruments plugged in are being used for something else.  Assume that I can attach any of the
+lab-instrument-control instruments that would be helpful.
+
+[Mid-way:] I will probably do one board bringup at a time, but I want to plan them in parallel.
+
+## Response 99 2026-11-15 evening - 2026-11-16 00:55 Claude Fable 5.2
+
+(Sent to the chat: the cabling pictures of the visits, then the plan.)
+
+Nothing was powered and nothing was sent to any instrument (the bench's instruments were in another experiment's use;
+only `lsusb`, `/dev/serial/by-id` and `scpi_link.py usb`, which read sysfs, were run).  A bring-up procedure, a bench
+tool and simulated gateware existed from Prompt 45 (2026-11-05) and had never been used; this turn rebuilt them around
+Jason's lab time.  Nothing is committed.
+
+**The plan** (`BRINGUP.md`, rewritten at the top; the stages 0-8 stay below as the reference):
+
+* Five visits, each one cable configuration with a picture (`bringup/figs/`, drawn from the board's render and
+  `build/placement.json` by `bringup/make_figs.py`), a table of cables, and the words to type in the chat:
+  visit 0 (15 min at a desk: unwrap, mark A and B, photos into the chat, ten jumper shunts; "v0 done"); visit 1A (5 min:
+  E3646A output 1 on J601, the staircase, the eight LEDs, the Fluke walked along the RAILS header; "v1a ready",
+  "rails go"); visit 1B (5 min: USB PROG, USB USER, three SMA cables, Ethernet, a microSD card; "v1b ready"; then the
+  session alone for an hour or more); visit 2 (10 min: both USB out for ten cold boots watched by the supply's current,
+  "usb out"; then SDG1032X CH1 to ADC A IN, CH2 to CLK IN, the 33220A to ADC B IN, SDS2104X Plus CH1/CH2/CH3 on DAC 1 OUT,
+  DAC 2 OUT, CLK OUT, CH4 on TAP A; "v2 ready"; then alone); visit 3 (30-40 min together: LEDs, buttons, the gain,
+  termination, noise and LED jumpers, the taps, the power-on scope shot, HDMI; "next" after each move); visit 4
+  (board B: visits 0 and 1).
+* The idea that shortens it: three SMA cables (DAC 1 OUT to ADC A IN, DAC 2 OUT to ADC B IN, CLK OUT to CLK IN) let
+  the board measure itself, since a full-scale DAC is the ADC's full scale, so everything but absolute calibration
+  needs only the supply and two USB cables.  The tool finds out what is plugged where from a small DC step on each DAC
+  (which cable, the termination shunt, the gain jumpers) and accepts crossed cables.
+* `bringup/STATUS.md` says where the bring-up stands, what is cabled, and the next thing Jason does; the root
+  `CLAUDE.md` now tells any session to read and rewrite it and to open its messages with it.
+
+**The gateware** (`gateware/bringup/`, `build/bringup.bit` version 20261115, seed 1): every connector now has a test.
+New: `rtl/eth_test.v` (frames from a buffer the PC fills, sent N times; the receiver counts, checks each CRC-32 and keeps
+the first; used through the PHY's own loopback, so no cable), `rtl/hdmi_test.v` (a 640 x 480 test picture; the
+monitor's EDID is read over bit-banged DDC), `rtl/periph.v` (one SPI byte at a time to the microSD socket; USB USER's
+two lines watched and driven as pins, no USB core), a three-output PLL written by hand (125, 50, 25 MHz from a 500 MHz
+VCO: `ecppll` gave 52.08 or 150 MHz for the second output), `bringup_extra.lpf` (this design's pulls, the HDMI pins'
+4 mA, fast edges on the RGMII transmit pins), a seed loop in `build.sh`.  Timing: the RGMII transmit clock 198 MHz and
+the receive clock 234 MHz against 125, the converters' clock 69 against 50, the TCXO domain 104 against 25, the pixel
+clock 119 against 25.  Simulations: `make sim` 60 checks, `make test`, `make sim-eth` 61, `make sim-hdmi` 28 (it decodes
+the TMDS bits back into the picture), all pass.  The two blocks with their own testbenches were written by sub-agents to
+port lists given to them; the first Ethernet block met 125 MHz alone and 98-117 MHz inside the design, and was reworked
+(counters that count down through zero, a block RAM instantiated with its output register) to 224-261 MHz alone.
+
+**The co-simulation** (`sim/tb_cosim.v`, `host/cosim.py`): the board's driver talks to the simulated board through two
+named pipes, with a simulated bench around it (the SMA cables or a generator as knobs, the SDRAM, the Si5351, the PHY in
+loopback on its own clock, a microSD card with true CRCs, a USB host that resets the bus, a monitor's EDID, a Pmod
+loop).  What it found: the first frequency-counter gate after a clock switch straddles the switch (`clocks(gates=2)`);
+a detached USB port with a host's pull-downs reads as a reset too (the counters are zeroed after the attach); a
+resynchronise must discard what the board already sent; `si5351_set` switched the other two outputs off each time it
+programmed one (fixed: the old stage 4.2 would have read 0 Hz on two outputs and blamed the crystal).
+
+**The bench tool** (`bringup/bench.py` with `visit1.py`, `visit2.py`, `visit3.py`, `analysis.py`, `report.py`,
+`simbench.py`, `test_bench.py`; written by a sub-agent to a specification, about 5800 lines): a command per visit
+(`v1a`, `rails`, `v1b`, `coldboot`, `v2`, `step NAME`, `report`, `where`, `claim`, `release`), `--sim` for the simulated
+board and simulated instruments, every finding a row with what was wanted.  `test_bench.py`: 206 checks pass in 21
+minutes, among them 22 injected faults.  It checks each fake instrument's method names and parameters against the real
+drivers.  It uses `bench_claims.py`, which the op-amp-pcb session added to lab-instrument-control the same evening
+(four bring-ups share the bench): nothing is switched on unless this project holds the claim.  The rails walk needs no
+typing (the person at the bench does not see a script's prompts): steady readings in order are the rails.
+
+**Corrections to the earlier procedure:** stages 6.3, 6.5 and 6.6 gave 1024 codes peak to peak for 1 Vpp; it is 2048
+(2048 codes per volt; 1024 is the amplitude).  SFDR is measured at tones that fit the capture exactly (976,562.5 Hz for
+"1 MHz"): at round frequencies the leakage read as a 44 dB spur on an ideal chain.  Stage 7.5's "not this day" is now
+stages 7.5-7.8.
+
+**Not proven by any of this**, and said so in `bringup/README.md` and `gateware/bringup/README.md`: nothing that opens
+a real instrument or the board's port has run; openFPGALoader has not been run on this board; the Ethernet-on-the-wire
+test, the kernel-log reading and the USB-power test are untested code; every analog window is a design number on an
+ideal simulated chain; the staircase's currents and the cold-boot rule (5 % more current once configured) are guesses;
+on the board itself: the RGMII receive delay (a DELAYG in each input, since a plain ECP5 input register needs 3.3 ns of
+hold and the PHY gives 1.2), which IDDRX1F output is a byte's first nibble, the transmit edges, the HDMI bit order.
+
+**`bringup/REVB.md`**: nine rows now, none measured.  The board: no way to power-cycle it from the PC while USB PROG is
+in (the P-FET hands it to USB); rails readable only by a person with a probe; gain, termination and source choices are
+jumpers; no on-board loopback; buttons and LEDs need a person.  The generators: the LPF pulls USB USER's lines up
+inside the FPGA; it carries no drive or slew settings; the README's "the gateware adds no RGMII delay" is not the whole
+story on the receive side.
+
+**`CLAUDE_PCB.md`** section 31 (after section 30, which the AMOD session wrote the same evening about visits and
+rehearsals): a board with converters should test itself through a few cables and in the next revision through none;
+find out what is plugged in; the person at the bench does not see the script's prompts; a board its USB cable also
+powers cannot be cold-booted from the PC; every connector gets a test before the order; run the bench procedures
+against the RTL live; four FPGA tool facts.
+
+**lab-instrument-control**: nothing changed by this session.  Four driver notes are in `bringup/STATUS.md`, to be
+applied with the instruments in hand (the scope driver's settings do not round-trip; `waveform()` cannot bound its
+record; the 33220A has no voltage limit; the Fluke's default port was stale, which another session was already fixing).
+
+Memory: `ecp5-bringup-state` rewritten (start from STATUS.md; the chat words; always say where we are).
+
+## Prompt 100
+
+(Four photos of the board's top, then three of its back.)  Check the photos.  I'll put the shunts in later.  Reprint the
+Visit 0 and Visit 1 TODO lists in the chat.
+
+## Response 100 2026-11-16 08:50 - 09:00 Claude Opus 5.5
+
+The photos checked against the board's render, part by part at the photos' full resolution (the back photos at chat
+resolution: they did not arrive as files).  Every position is populated on both sides; pin 1 is where it is drawn on
+every chip whose mark the photos show (the ECP5, AD9238, AD9767, FT2232H, RTL8211F, the flash, both OPA1612, both
+THS4521, both OPA2810, the TIA), and so are the BAV99s D101/D102 and the transistors Q601/Q602; the SMAs, USB-Cs, HDMI
+and Pmods face out; the microSD card is already in, from the right side; SW101 is all off.  **JP501 (FTDI OFF) has a
+shunt on it**, which the BOM did not ask for: with it in, the FT2232H is held in reset and USB PROG shows nothing, so it
+comes off in visit 0.  Not readable at this resolution: D601's cathode band, the Si5351, the -4.2 V pump, the CLK IN
+comparator, the LEDs' cathode marks, the photodiode; a short from any of them shows at the staircase's current limit,
+and the rest are harmless if wrong.
+
+Three corrections to `BRINGUP.md` from the photos and the netlist: D601 is in series (J601 pin 2 to F602 to +5V), so
+backwards it blocks and nothing reaches the board (the old text said it would sit across the supply); J601's +5V is
+the upper pin (pin 2) and GND the lower pin nearer the bottom edge (pin 1, the square pad), now said in words and in
+the visit 1A picture; the bucks' inductors L617/L618 are on the top, not the back.  `bringup/STATUS.md` and
+`BRINGUP_LOG.md` record the inspection.  Then the visit 0 and visit 1 lists, reprinted in the chat.
+
+
+## Prompt 101
+
+JP501 does not have a shunt in. You've misinterpreted this before -- in photos of boards, things that stick up out of the board cause you trouble with 3D perspective.
+
+v0 done.
+
+v1a ready  (E3646A output 1 hooked up to J601)
+
+*Sent while the session worked:*
+
+8 LEDs went on. I'll probe now with the fluke.
+
+Ok, you said that the top row was ground, but this is *horribly* labeled. The actual voltage labels are on the top of the header. Those need to be the voltages. Ground needs to be on the bottom row. Do this for revB. Add this to the revB list.
+
+I put the meter in backwards. All voltages read -2.5V, which should have been +2.5V if I put it in correctly. I don't know why they were all so low.
+
+I did the "fluke probe one at a time along the bottom row" thing.
+
+Now the voltages look better. What was different this time?
+
+The power supply reads 5V, but at the pin where it comes in, it reads only 4.5V. It does go through a BNC cable and some wire that may be too thin for this, but it might explain why the "5V" only read lower.
+
+Power off the supply for now. I need to come back later.
+
+## Response 101 2026-11-16 10:28 - 10:55 Claude Opus 5.5
+
+Board A was powered for the first time.  The staircase passed in constant voltage at every step, the eight LEDs are
+lit, and 0.385 A flows at 5.0 V with the FPGA unconfigured.  Seven of the nine rails are in their windows.  +5V and
++5VA read 4.22 V, and the cause is the leads: 5.00 V at the supply was 4.52 V at J601.  The supply is off at Jason's
+request; the leads stay on J601 and the claim stays held.
+
+* **JP501:** corrected everywhere: no shunt, and none was ever there.  The session misread a slanted photo of a bare
+  header.  The lesson is in `CLAUDE_PCB.md` section 33 and a memory: from a photo, anything that stands up is "check by
+  eye".
+* **The bench:** `scpi_link.py identify` found the E3646A (second unit, CAL count +61) on FTDI `A9PUYBUD` and the
+  Fluke 45 on `A95AME9U`; both are now in `bench_config.json`.  The supply was found off, both outputs at 0 V and 3 A,
+  OVP 22 V.  `claim v1` took E3646A:1 and Fluke45.
+* **The staircase:** the first run stopped on a wrong rule of the tool, "the current rises with the voltage" (0.388 A
+  at 4.0 V, then 0.369 A at 5.0 V).  Once the bucks regulate they draw constant power, so the current falls; the rule
+  now checks the power.  The second run passed (0.00, 0.22, 1.55, 1.94 W) and left 5.0 V on: 5.001 V, 0.385 A.
+* **The first Fluke walk:** every pin read -2.507 V, which is minus the +2V5 rail.  So one probe was on +2V5 and the
+  other walked the ground row: the names are printed above the ground row.  The tool's "a negative reading is -4V2,
+  so the walk is over" rule ended that walk after 9 s; it now needs seven rails first.  This is REVB row 10
+  (**accepted**: rails next to the names, ground on the far row) and `CLAUDE_PCB.md` section 33.
+* **The second walk** (red along the bottom row): +5V 4.220, +3V3 3.331, +1V1 1.106, +2V5 2.508, +3V3_ADC 3.296,
+  +3V3_DAC 3.293, +5VA 4.226, +1V0_PHY 1.011, -4V2 -4.115 V.
+* **+5V:** 4.51-4.54 V at J601, so 0.47 V is lost in the BNC cable and thin wire (about 1.2 ohm).  4.22 V at J602's +5V,
+  so 0.30 V across D601 and F602, which is normal for an SS34 at 0.39 A.  Configured, the board draws nearly twice
+  this, so thick leads come before visit 1B.  REVB row 11 (candidate): an ideal-diode FET and a real input connector.
+* **Files:** `BRINGUP.md` (JP501; thick leads; which row of J602), the figures redrawn, `BRINGUP_LOG.md`, `STATUS.md`
+  and `REVB.md` rows 10-11.  `test_bench.py` re-run after the two rule changes: 206 checks, 0 failed (21 min).
+
+Next for Jason: short thick leads from E3646A output 1 to J601; "v1a ready"; the Fluke on J602's +5V and +5VA (black
+on the top row); then visit 1B.
+
+## Prompt 102
+
+Commit changes so I can pull changes in another PCB directory.
+
+## Response 102 2026-11-16 11:25 Claude Opus 5.5
+
+Committed on master; not pushed (the session has no GitHub key).  The commit holds Prompts 99-102:
+* the plan, with its figures;
+* the bench tool and its dry run;
+* the bring-up gateware;
+* visit 1A's results.
+
+It also holds `CLAUDE.md`, and all of `CLAUDE_PCB.md`: sections 30 and 32, and three earlier hunks, were written by
+the AMOD/RF-MOD and op-amp bring-up sessions and were uncommitted in the same file.  The board photos (31 MB) stay on
+the PC: `bringup/board_photos/` is now in `.gitignore`, beside `bringup/data/` and `bench_config.json`.

@@ -54,11 +54,13 @@ def run(script):
     script(b, t)
     os.makedirs(BUILD, exist_ok=True)
     vvp = os.path.join(BUILD, 'tb_file.vvp')
-    if not os.path.exists(vvp):
-        subprocess.check_call([os.path.join(OSS, 'bin', 'iverilog'), '-g2012', '-o', vvp, '-s', 'tb_file',
-                               os.path.join(TOP, 'sim', 'tb_file.v')] +
-                              [os.path.join(RTL, f) for f in 'top.v uart.v regbus.v cdc.v clkcount.v adc_capture.v dac_gen.v sdram_test.v pll_sys.v'.split()] +
-                              [os.path.join(TOP, 'sim', f) for f in 'ecp5_sim_models.v models.v sdram_model.v'.split()])
+    rtl = 'top.v uart.v regbus.v cdc.v clkcount.v adc_capture.v dac_gen.v sdram_test.v pll_sys.v periph.v eth_test.v hdmi_test.v'.split()
+    if os.path.exists(os.path.join(RTL, 'tmds_enc.v')):
+        rtl.append('tmds_enc.v')
+    srcs = ([os.path.join(TOP, 'sim', 'tb_file.v')] + [os.path.join(RTL, f) for f in rtl] +
+            [os.path.join(TOP, 'sim', f) for f in 'ecp5_sim_models.v models.v models2.v sdram_model.v rgmii_phy_model.v'.split()])
+    if not os.path.exists(vvp) or any(os.path.getmtime(f) > os.path.getmtime(vvp) for f in srcs):
+        subprocess.check_call([os.path.join(OSS, 'bin', 'iverilog'), '-g2012', '-o', vvp, '-s', 'tb_file'] + srcs)
     with open(os.path.join(RTL, 'cmd.txt'), 'w') as f:
         for k, v in t.cmds:
             f.write('%s %02x\n' % (k, v) if k == 'S' else '%s %d\n' % (k, v))

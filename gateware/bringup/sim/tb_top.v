@@ -35,7 +35,9 @@ module tb_top;
         .sdram_a(sdram_a), .sdram_ba(sdram_ba), .sdram_dq(sdram_dq), .sdram_clk(sdram_clk), .sdram_cke(sdram_cke), .sdram_cs_n(sdram_cs_n),
         .sdram_ras_n(sdram_ras_n), .sdram_cas_n(sdram_cas_n), .sdram_we_n(sdram_we_n), .sdram_dqml(sdram_dqml), .sdram_dqmh(sdram_dqmh),
         .eth_rxc(eth_rxc), .eth_int_n(1'b1), .eth_mdc(eth_mdc), .eth_rst_n(eth_rst_n), .eth_mdio(eth_mdio),
-        .usb_pullup(usb_pullup), .i2c_scl(i2c_scl), .i2c_sda(i2c_sda), .pmoda(pmoda), .pmodb(pmodb));
+        .usb_pullup(usb_pullup), .i2c_scl(i2c_scl), .i2c_sda(i2c_sda), .pmoda(pmoda), .pmodb(pmodb),
+        // the 2026-11-15 ports: nothing on them here (sim/tb_cosim.v has the card, the host, the monitor and the PHY's data path)
+        .eth_rx_ctl(1'b0), .eth_rxd(4'b0), .gpdi_hpd(1'b0), .gpdi_cec(1'b1));
 
     adc_model adc_a (.clk(adc_a_clk), .d(adc_a_d), .otr(adc_a_otr), .which(2'd0));
     adc_model adc_b (.clk(adc_b_clk), .d(adc_b_d), .otr(adc_b_otr), .which(2'd1));
@@ -117,7 +119,7 @@ module tb_top;
     always @(posedge dut.we) $display("  reg write %02x <= %08x at %t", dut.addr, dut.wdata, $time);
 `endif
     initial begin
-        $dumpfile("../build/tb_top.vcd"); $dumpvars(0, tb_top);
+        if ($test$plusargs("vcd")) begin $dumpfile("../build/tb_top.vcd"); $dumpvars(0, tb_top); end   // 3 GB: only when asked (vvp ... +vcd)
         $readmemh("sine_lut.hex", lut);
         #2000;
         // 1. the bus
