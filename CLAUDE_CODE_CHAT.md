@@ -5903,3 +5903,17 @@ and `/interface ethernet monitor [find where name~"sfp28"] once` for all sixteen
   yes) and in sfp28-5 (an FS S28-PC02 2 m SFP28 cable, 25G link).  sfp28-1 is empty: the settings went to the wrong
   port.  Next: set sfp28-2.  Also: the bridge includes ether1; if that is the CRS510's 100 Mbit/s management port and
   the Netgear's path ran through it, that alone explains last night's 96 Mbit/s cap (check its rate).
+
+## Prompt 137 2026-11-17 11:03
+
+On bell here, I keep getting a warning message about some networking going up and down. Is this because I have two
+paths to the 192.168.8.* set of switches? Is there a network configuration problem here on bell that you can detect?
+
+## Response 137 2026-11-17 11:03 Claude Opus 5.5
+
+* Not two paths: **enp22s0f1np1** (a port of bell's second Mellanox card, now with an RJ45 SFP, linked at 1 Gbit/s
+  since 10:16:56) gets no DHCP answer; NetworkManager's "Wired connection 4" retries every 45 s (48 failures so far),
+  hence the warnings.  The MikroTik announces only on enp1s0f0np0, and no DHCP server answers on the new cable: it goes
+  to a segment without the router (the Netgear, presumably).  Proposed: a fixed address on its own subnet, no gateway
+  (10.77.0.1/24, the board 10.77.0.177 by the bridge's --board-ip): the warnings stop and the board gets a gigabit path
+  with no routing ambiguity.  bell's other interfaces: enp6s0 campus (1 change since boot), enp1s0f0np0 100G (1).
