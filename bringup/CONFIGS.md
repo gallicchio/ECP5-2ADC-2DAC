@@ -58,6 +58,13 @@ for REVB 21 and 22 (new tonight), the session loads the tutorial's `fast.bit` (D
 * **1d. CLK IN's limits with a sine:** the SDG's CH2 at 1, 10 and 30 MHz, at 1 Vpp, then 0.3 Vpp.  Last night a 3.3 V
   square wave from CLK OUT counted exactly to 300 MHz; a generator's sine is the harder case.
 
+* **1e. The two ADC channels' timing skew** (an open question of the tutorial's 1.15: equivalent-time sampling finds
+  A and B 0.01-0.02 ns apart, the 25 MS/s designs 0.6-0.7 ns; nextpnr models both ADC clock pins at the same 0.25 ns
+  from the clock net, so the tools can't tell).  A **BNC tee**: the SDG's CH1 (a 5 MHz sine, 1 Vpp) into both J101 ADC
+  A IN and J102 ADC B IN at once (two BNC-SMA cables from the tee), so the DACs' own paths drop out.  The session runs
+  `capture.sv` (the TCXO's clock straight to both ADC clock pins, E4 and R2) and `fast.sv` (the ADC clocks from a
+  register) and compares B - A in each: the difference is the clock pins' skew.
+
 The generators off and the three SMA-SMA cables back afterwards (configuration 0).
 
 ## 2. The Fluke on USB USER (REVB 20; 10 minutes)
