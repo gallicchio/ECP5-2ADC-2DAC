@@ -5637,3 +5637,96 @@ toolchain" and take your time getting it right.
   Two traps on the way: the BIOS runs boot.json's last file (it must be OpenSBI), and the device tree's initrd-end
   must match the root file system (`br_images.py` rewrites it and checks the reserved regions).  Tutorial pages E.08
   and L.01; commits 0336cff, 7a56b04.
+
+## Prompt 123 2026-11-16 22:53 (and 22:55, 22:57)
+
+Was there both a linux+processor IIO path and also a faster verilog IIO path? Are you building the kernel IIO driver
+for the converter block now? Are you working on anything? I thought that this was going to take much longer than it
+seems to have taken, but maybe you're waiting on things that I don't know about.  (Then, 22:55:) First, commit relevant
+changes in lab-instrument-control. Then, can you make a gigabit fast path for the UDP streaming (like IIO)?  (Then,
+22:57:) It would be nice for the standard tools work unmodified, and it would be educational for me and my students to
+learn how to get this all set up and working on a completely open source CPU. I don't know of any other stack that does
+this level of open-source and open-hardware all the way down to the converters. If you know of any, mention them.
+Otherwise, sell this point in the new ecp5 tutorial.
+
+## Response 123 2026-11-16 22:53 - 23:24 Claude Opus 5.5
+
+* **Two IIO paths**, both serving libiio's network protocol on port 30431, so `iio_info`, `iio_readdev`, pylibiio and
+  GNU Radio's IIO blocks work unmodified against either:
+  * the FPGA's UDP stream (`udp_awg.sv`) with `iiod_bridge.py` on the PC: the fast one;
+  * the board's own Linux (the 50 MHz VexRiscv): a kernel driver, `src/linux/driver/ecp5_adda.c` (a Buildroot
+    package), under libiio's stock `iiod`; CPU-bound at about 370 kB/s.  Tested on board A (d196334, 9f1c9d5, page
+    L.01), with a libiio patch for cyclic buffers on mainline Linux.
+* lab-instrument-control committed (9bd7a72 `bench_claims.py` with its test and docs; 9ac3328 notes); Jason pushes.
+* **The gigabit bridge** (3f4b48e): `recvmmsg` into a NumPy ring on its own thread, sequence-gap and overrun
+  accounting; `fake_udp_awg.c` plays the board's stream on loopback: both channels at 25 MS/s into GNU Radio with
+  nothing missing.
+* **Open all the way down** (README, 4037a1f): every layer from GNU Radio through libiio, Linux, OpenSBI, the
+  VexRiscv, LiteX, yosys/nextpnr and the gateware to the converters' pins is open source.  The closest others, said on
+  the page: Red Pitaya, PlutoSDR and ADALM2000 (open software and HDL, but closed CPUs and vendor tools); ARTIQ/Sinara
+  (open hardware and gateware, Xilinx tools); the ULX3S and the Icepi (open FPGA flow, no converters of this class).
+* Then a down-converter (73211dc: NCO, mixer, CIC, I/Q as the IIO device `ecp5-ddc`) and FM through it in GNU Radio
+  Companion (246742a), both on board A.
+
+## Prompt 124 2026-11-16 22:58 (and 23:01, 23:03, 23:04)
+
+I thought that there was a 100 gigabit cable from bell to one of the switches. And I thought that the switches were at
+least all gigabit. Is bell using the wrong interface to do these tests?  (Then:) I thought that router was only being
+used to provide DHCP to things connected to the fast switches. Do the packets need to go through that router?  (Then:)
+Between the computer called bell and the one called szilard at 192.168.8.180, iperf3 gives speeds like 21.2
+Gbits/sec.  (Then:) I'll figure out the network issues tomorrow. Keep going on whatever else you can, but target
+gigabit ethernet speeds. That will hopefully get sorted out tomorrow.
+
+## Response 124 2026-11-16 22:58 - 23:12 Claude Opus 5.5
+
+* bell is using the right interface: 192.168.8.207 is its ConnectX-5 at 100 Gbit/s, and the board is on the same
+  subnet, so the packets go switch to switch, not through the router (the GL.iNet at 192.168.8.1 only answers DHCP).
+* Board A's PHY links at 1000 to its switch port, and the FPGA sends 858 Mbit/s with no overruns, yet about 10,900
+  packets a second (96 Mbit/s) arrive whatever the board sends: a 100 Mbit/s link somewhere on board A's branch.
+  `bringup/CONFIGS.md` section 4 is tomorrow's test: the known facts, which ports to look at, and the commands that
+  show the board's full rate once the branch is gigabit (6f18e38).
+
+## Prompt 125 2026-11-16 23:07
+
+Keep going all night with whatever you can accomplish with the current cabling. Install whatever compilers and
+emulators and synthesis tools and other tools you need into the local directory.
+
+## Response 125 2026-11-16 23:07 - (running) Claude Opus 5.5
+
+* **The DACs as a stream** (8b97204, c79fe27 here): 'P' packets into a 16384-pair ring on the board, paced by the
+  board's own reports of its fill; the board answers ARP (`arp_tx.sv`), so the stream is unicast.  A sender in C
+  (`udptx.c`, 6bc026e): never dry at 1.5625 MS/s on board A, and none at 25, 12.5, 6.25 or 1.5625 MS/s against the
+  fake board; full duplex at 25 MS/s both ways (3e9632f).  A clock-crossing bug in the ring's write pointer found and
+  fixed.
+* **A phasemeter** (02e73e0, e29f8d8 here): the phase between ADC A and ADC B, 1.6 urad/sqrt(Hz) from 20 Hz to 12 kHz,
+  which is the ADCs' noise (1.54 predicted).  A small modulation came back short; traced (00:30-00:39) to the test
+  tone: 64 cycles in 16384 samples, streamed at every 16th sample, shows the ADC only 16 phases of the tone; 72 cycles
+  show 128 and the error shrinks from -5 % to +3 % at 1 mrad (a9ec537).
+* **A time-to-digital converter** (be97a83, a9ec537): a 256-bit carry chain sampled at 125 MHz, edges from CLK IN:
+  21.4 ps a code on average, 3.9 ps rms from a straight line once calibrated by a code-density test (the Si5351's CLK0,
+  its own crystal, out of CLK OUT), one edge 32-42 ps rms through CLK OUT, the cable and the comparator.
+* Tutorial pages 1.16 (an SDR receiver), 1.17 (the phasemeter), 1.18 (the TDC), E.09 (the DAC stream): 29 pages, 0
+  errors.
+
+## Prompt 126 2026-11-16 23:09 (and 23:11, 23:12)
+
+When you get a chance, git commit enough to pull. I want to get a colleague's latest changes on an unrelated board.  (Then:)
+that rule is only for large data.  (Then:) I just pulled
+
+## Response 126 2026-11-16 23:09 - 23:13 Claude Opus 5.5
+
+Committed at 23:11: the pin audit (712a7b6), CLAUDE_PCB.md (b3047ab), the Icepi adapter (137b318) and board A's
+bring-up (d8619fa), then 6f18e38 and STATUS (cbcf6ad, 23:13).  Jason's pull rebased them onto a colleague's a5a2c36.  The
+memory note now says only large data (bench captures) stays out of git.
+
+## Prompt 127 2026-11-16 23:51
+
+I've only got about 20 GB free on this disk. It may be wise to move the huge linux builds off of
+/home/jason/mnt/local4TB and onto the SSD in /home/jason/tmp. When you reach a stopping point, do this move.
+
+## Response 127 2026-11-16 23:51 - 23:57 Claude Opus 5.5
+
+Moved to `/home/jason/tmp/ecp5-2adc-2dac-tutorial/` (the SSD): the tutorial's `tools/` (Buildroot and its 12 GB of
+output, the toolchain, QEMU) and `src/linux/build/`, each symlinked back so every path still works (tools linked
+23:53); a `.trackerignore` there (23:57); the repo's `.gitignore` follows the links (4c93d84).  New large builds go
+on /home/jason/tmp.
