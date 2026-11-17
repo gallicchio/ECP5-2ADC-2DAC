@@ -5951,3 +5951,12 @@ one cable
 * One cable (J204 DAC 1 OUT -> J101 ADC A IN, ADC B empty): REVB 24's steps persist with nothing on ADC B (inside its
   chain on the board); REVB 22: DAC 1 still puts -56.1 dBc into ADC B at 3.2 MHz: an on-board path from DAC 1 driving a
   load.  Next: the Fluke on the RAILS rails one at a time during the steps (3V3A first), to find the rail that moves.
+
+## Prompt 140 2026-11-17 14:11
+
+Fluke on 3V3A
+
+## Response 140 2026-11-17 14:11 - (running) Claude Opus 5.5
+
+* 3V3A (the ADC's 3.3 V) the same in both of ADC B's states (3.28992 V, -0.010 mV apart): not that rail either.
+  Next: +5VA.
