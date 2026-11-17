@@ -5745,3 +5745,17 @@ on /home/jason/tmp.
   board holds udp_awg.bit, the Si5351's outputs off, the IIO bridge stopped, no instrument claimed or switched on.
   STATUS.md and CONFIGS.md rewritten for the morning: CONFIGS 1 (the generators and scope, with 1e's tee and 1f's REVB 24
   tests), 2 (the Fluke on USB USER), 3 (the microSD), 4 (gigabit to the PC), 5 (HDMI), 6 (board B).
+
+## Prompt 128 2026-11-17 08:54
+
+I have unplugged and replugged USB PROG. I have plugged in the SDG1032X, 33220A, and SDS2104X as suggested in the
+table. I did not plug in external 50 ohm terminators, so you'll need to use the internal terminators. Do 1a–1d.
+
+Also, I have plugged in two Icepo Zeros with their ADC and DAC boards cross connected so that you can test all of the
+changes you made to that tutorial on real hardware. Do that too.
+
+When you tell me what to do next, like "1e: move the 33220A's cable off J102. Put a BNC tee on SDG CH1 and run two
+cables from it to J101 and J102." don't just give jumper numbers like J101 and J102. Always give the silkscreen names of
+these things in addition.
+
+## Response 128 2026-11-17 08:54 - (running) Claude Opus 5.5
