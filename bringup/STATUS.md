@@ -4,17 +4,15 @@
 messages (`python3 bringup/bench.py where`).  The procedure is [`../BRINGUP.md`](../BRINGUP.md); results are in
 [`BRINGUP_LOG.md`](BRINGUP_LOG.md); problems for the next revision in [`REVB.md`](REVB.md).
 
-Updated: **2026-11-16 23:13, by Claude (Prompts 116-122, "you've got all night"): board A's USB PROG works (rework done,
-swapped cable); visit 1B ran (66 pass, every failure explained).  Tonight the tutorial's designs pushed every interface
-board A can test alone, all clean at or past their ratings (serial 12 Mbaud, Ethernet at line rate, DACs 187.5 MS/s,
-ADCs 87.5 MS/s, Si5351 225 MHz, CLK IN 300 MHz); new: REVB 21 (large-signal distortion), 22 (cross-talk), 23 (USB USER
-as a dual-role port); REVB 20 narrowed (D501 is not backwards).  Then instruments from the board: an MCA, an Allan
-deviation, a cross-spectrum, **the board as an IIO device in GNU Radio**, a lock box, equivalent-time sampling (it
-shows REVB 21's distortion is the ADC front end slewing); and **Linux runs on board A** (network boot to a login,
-ping, all 32 MB; TCP 133 kB/s); **the board serves IIO from its own Linux** (iio_info and GNU Radio straight to
-192.168.8.177, as to a PlutoSDR); and a Linux built here with Buildroot (cross-compiler, kernel with IIO, libiio's iiod)
-boots on it.  What's left needs your hands:
-[`CONFIGS.md`](CONFIGS.md).**
+Updated: **2026-11-17 01:36, by Claude (Prompts 116-127, "keep going all night"): board A's USB PROG works (rework done,
+swapped cable); visit 1B ran (66 pass, every failure explained).  Overnight, with this cabling only, the tutorial's
+designs pushed every interface board A can test alone (serial 12 Mbaud, Ethernet at line rate, DACs 187.5 MS/s, ADCs
+87.5 MS/s, Si5351 225 MHz, CLK IN 300 MHz); **the board is an IIO device two ways** (gigabit UDP from the FPGA through
+`iiod_bridge.py`, and its own Linux with a kernel driver and libiio's iiod), in GNU Radio unmodified; the DACs stream
+too (never dry); an SDR receiver, a lock box, a phasemeter (1.6 urad/rtHz), a 21 ps carry-chain TDC, a TRNG.  The
+network caps board A at 96 Mbit/s somewhere on its branch (CONFIGS 4).  New problems: REVB 21 (large-signal distortion
+from the ADC front end slewing), 22 (cross-talk), 23 (USB USER dual-role), **24 (ADC B steps 0.1-0.4 codes on a ~1.9 s
+grid with the ddc_awg bitstreams: source unknown)**.  What's left needs your hands: [`CONFIGS.md`](CONFIGS.md).**
 
 ## Now
 
@@ -25,7 +23,7 @@ boots on it.  What's left needs your hands:
 | **Cabled to the board** | the swapped USB-A-to-C cable in USB PROG; USB-C to USB USER; SMA CLK OUT to CLK IN, DAC 1 OUT to ADC A IN, DAC 2 OUT to ADC B IN; Ethernet to the lab switch (gigabit link); E3646A output 1 on J601 (off); no microSD card answers; no monitor; nothing on the Pmods. |
 | **Instruments claimed for this board** | none (E3646A:1 and Fluke45 released 2026-11-16 20:14, unused since 10:34); visit 2's `bench.py` claims what it needs. |
 | **What is in the board's flash** | `bringup.bit` of 2026-11-16 (version 20261116): the board boots it by itself. |
-| **What the session is doing alone** | the ECP5 version of the tutorial (`~/mudd/133electronics/ecp5-2adc-2dac-tutorial`), on board A over USB PROG and Ethernet (the FPGA's SRAM holds whichever tutorial design ran last; the flash still holds bringup.bit); the FPGA's SRAM holds the tutorial's `udp_awg.bit` (the gigabit IIO path's FPGA side) since 23:10; Linux with libiio's own iiod and a kernel driver (as a PlutoSDR) boots from the tutorial's `src/linux` (L.01); unplugging USB PROG puts bringup.bit back.  The session goes on all night with this cabling; the AMOD session waits for "port free". |
+| **What the session is doing alone** | the ECP5 version of the tutorial (`~/mudd/133electronics/ecp5-2adc-2dac-tutorial`, 30 pages), on board A over USB PROG and Ethernet.  The FPGA's SRAM holds the tutorial's `udp_awg.bit`; the flash still holds bringup.bit (unplugging USB PROG puts it back).  The tutorial's IIO bridge runs on bell (`iiod_bridge.py`, port 30431).  The Si5351's outputs are off.  The session goes on with this cabling; the AMOD session waits for "port free". |
 
 ## Visit 1B on board A (2026-11-16 17:00-18:00)
 
@@ -48,8 +46,9 @@ jumpers, what the PC runs and what a pass looks like.  In order of time:
    USB PROG (the board boots `bringup.bit` from its flash), or `openFPGALoader -c ft2232 gateware/bringup/build/bringup.bit`.
 1. **CONFIGS 3, a microSD card** (2 min): into J504 on the back, then `bench.py v1b --only sd`.
 2. **CONFIGS 2, the Fluke on USB USER** (10 min, REVB 20): D501's anode and cathode with the pull-up on, D- at rest.
-3. **CONFIGS 1, visit 2 plus tonight's questions** (20 min): the generators and the scope on the six SMAs; REVB 21
-   (which stage distorts) and REVB 22 (where the cross-talk is).
+3. **CONFIGS 1, visit 2 plus tonight's questions** (30 min): the generators and the scope on the six SMAs; REVB 21
+   (which stage distorts), REVB 22 (where the cross-talk is), 1e (the ADC channels' skew, a tee), **1f (REVB 24: ADC B's
+   1.9 s steps, with ddc_awg.bit: cables crossed, B terminated, USB PROG unplugged, a warm finger)**.
 4. CONFIGS 5 (a monitor on mini-HDMI), 4 (gigabit all the way to the PC), 6 (board B), when convenient.
 
 ## The visits
