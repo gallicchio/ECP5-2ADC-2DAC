@@ -5941,3 +5941,13 @@ crossed.  Also, I unplugged the 2nd cable now that the Netgear router talks to t
 * Crossed: REVB 24's steps stay on ADC B (fed by DAC 1 now; ADC A clean): not DAC 2's side.  REVB 22: the 2-11 MHz
   cross-talk follows DAC 1 as the aggressor (-52.3 dBc at 3.2 MHz crossed, -52.6 as cabled), the 30 MHz rise follows
   ADC A as the victim.  Next: one cable only, J204 DAC 1 OUT -> J101 ADC A IN, ADC B left open (JP201 terminates it).
+
+## Prompt 139 2026-11-17 14:05
+
+one cable
+
+## Response 139 2026-11-17 14:05 - 2026-11-17 14:07 Claude Opus 5.5
+
+* One cable (J204 DAC 1 OUT -> J101 ADC A IN, ADC B empty): REVB 24's steps persist with nothing on ADC B (inside its
+  chain on the board); REVB 22: DAC 1 still puts -56.1 dBc into ADC B at 3.2 MHz: an on-board path from DAC 1 driving a
+  load.  Next: the Fluke on the RAILS rails one at a time during the steps (3V3A first), to find the rail that moves.
