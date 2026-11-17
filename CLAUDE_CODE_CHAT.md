@@ -5837,3 +5837,15 @@ some of the SFP/SFP+ modules have worked in the past. What is the problem?
   never came up.  To try: `/interface ethernet monitor sfp28-N once` (module seen? RouterOS version), then
   auto-negotiation off with speed 1G-baseX, then 1G-baseT-full.  Surest ways round: 1000BASE-X fiber SFPs at both ends
   if the Netgear has SFP slots, or a 10GBASE-T module with rate adaptation (10G to the MikroTik, 1G to the Netgear).
+
+## Prompt 132 2026-11-17 10:07
+
+From fs.com, I have these two and more: Generic Compatible 10/100/1000BASE-T SFP SGMII Copper RJ-45 100m Transceiver
+Module; Generic Compatible 1000BASE-T SFP Copper RJ-45 100m Transceiver Module
+
+## Response 132 2026-11-17 10:07 Claude Opus 5.5
+
+* Use the 1000BASE-T one: the 10/100/1000 SGMII module (FS SFP-GB-GE-T) needs a host that speaks SGMII; the
+  1000BASE-T-only kind normally talks plain 1000BASE-X to the host (FS's own datasheet for it not found, so try it).
+  In the CRS510: `auto-negotiation=no speed=1G-baseX` on the port, then re-seat the module; if no link, auto-negotiation
+  on advertising 1G-baseX only.  The SGMII one with `speed=1G-baseT-full` is the less likely second try.
