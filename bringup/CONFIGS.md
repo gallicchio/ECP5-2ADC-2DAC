@@ -65,6 +65,13 @@ for REVB 21 and 22 (new tonight), the session loads the tutorial's `fast.bit` (D
   `capture.sv` (the TCXO's clock straight to both ADC clock pins, E4 and R2) and `fast.sv` (the ADC clocks from a
   register) and compares B - A in each: the difference is the clock pins' skew.
 
+* **1f. ADC B's 1.9 s steps (REVB 24)**, no generator: `make load-udp_awg`, the bridge, and `python3 trng.py --seconds
+  60` in the tutorial's `src/verilog` (it prints the health tests; the steps show as B's "10 ms means" far above A's).
+  First as cabled (configuration 0), to see it is still there; then the two DAC -> ADC cables crossed (DAC 2 -> ADC
+  A); then ADC B IN with a 50 ohm SMA terminator and nothing else; then with USB PROG unplugged (Ethernet only, the
+  bitstream already loaded).  Each run 60 s.  Meanwhile look and listen along the bench for anything switching every
+  1.9 s.
+
 The generators off and the three SMA-SMA cables back afterwards (configuration 0).
 
 ## 2. The Fluke on USB USER (REVB 20; 10 minutes)
