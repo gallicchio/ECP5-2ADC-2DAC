@@ -85,8 +85,10 @@ runs 1a-1d with the table's cabling; 1e and 1f each change one thing, said there
   prints each channel's "10 ms means wander"; with the steps, B's is 0.13-0.16 codes and A's 0.02-0.03.  First as
   cabled, to see it is there; then, 60 s each: (1) the two DAC cables crossed, **J204 DAC 1 OUT -> J102 ADC B IN and
   J205 DAC 2 OUT -> J101 ADC A IN** (does it move to A?); (2) back as configuration 0, then J102 ADC B IN with a 50 ohm
-  SMA terminator instead of its cable (the ADC side alone); (3) back, and J501 USB PROG unplugged (the bitstream stays
-  loaded; the bridge needs only Ethernet).  Received Ethernet frames were ruled out remotely (REVB 24).  The period
+  SMA terminator instead of its cable (the ADC side alone); (3) back, then **the board's power moved to J601 (5 V IN)**
+  first (the E3646A's output 1 on at 5.0 V, 1 A limit, by the session: the board switches over to it), and only then
+  J501 (USB PROG) unplugged: the board stays powered and keeps its bitstream, and the bridge needs only Ethernet.
+  (Unplugging USB PROG while it powers the board switches the board off.)  Received Ethernet frames were ruled out remotely (REVB 24).  The period
   (1.895-1.899 s) drifts like an RC timer's, so a warm finger on candidate parts while trng.py runs, watching whether
   the flips come faster, may find it.
 
