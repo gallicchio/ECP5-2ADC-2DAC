@@ -6034,3 +6034,15 @@ try.
   0.3 % but the top 500 codes (0.983): the DC test's compression is slow (it shows when a level is held), not a bent
   transfer curve.
 * The list of what's next with SMA cables (and software), sent to Jason; then the AMOD-P and AMOD-A tiles.
+
+## Prompt 147 2026-11-17 15:17
+
+I added an SMA from DAC 2 to ADC A. Do the "No hands" tests 1 and 2 with both of these paths. If 3 is short, do that
+too. 4 takes an hour, and I'll set that up later.
+
+## Response 147 2026-11-17 15:17 - 2026-11-17 15:24 Claude Opus 5.5
+
+* Tests 1-3 on both paths (DAC 1 -> ADC B, DAC 2 -> ADC A): ENOB at -20 dBFS 8.9-10.6 bits to 12 MHz, at -1 dBFS
+  falling from 10 bits (0.1 MHz) to 2 (10 MHz); IMD3 at -10 dBFS each -76 dBc (1 MHz), -46 (3), -36 (5), -21 (10 MHz);
+  the three-cornered hat: the Si5351's plain crystal the steadiest (7e-9 at 1 s), the TCXO 1.9e-8, the switch 2.8e-8.
+  Saved in bringup/configs1 (chain_char.py, three_cornered_hat.py, clocks_hat.sv and the results).
