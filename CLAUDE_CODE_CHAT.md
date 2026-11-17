@@ -5866,3 +5866,14 @@ bell to the Netgear, can you choose to go over that interface to try to communic
   The modules were tried before the ports were set for 1G; RouterOS is old for 1G modules in SFP28 ports.
 * Bell has no spare gigabit RJ45: enp6s0 (1G) is its campus link; the others are fiber/DAC cages.  A USB
   3 gigabit adapter to the Netgear would work, with a host route to the board through it (one sudo line).
+
+## Prompt 134 2026-11-17 10:37
+
+> /interface ethernet set sfp28-1 auto-negotiation=no speed=1G-baseX
+syntax error (line 1 column 59)
+
+## Response 134 2026-11-17 10:37 Claude Opus 5.5
+
+* Column 59 is the speed's value: RouterOS names speeds the old way (`1Gbps`, `10Gbps`, `25Gbps`); the link-mode
+  names (`1G-baseX`, `1G-baseT-full`) came later (7.12 or so).  So `speed=1Gbps`; Tab after `speed=` lists what this
+  version takes.
