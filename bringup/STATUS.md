@@ -4,7 +4,7 @@
 messages (`python3 bringup/bench.py where`).  The procedure is [`../BRINGUP.md`](../BRINGUP.md); results are in
 [`BRINGUP_LOG.md`](BRINGUP_LOG.md); problems for the next revision in [`REVB.md`](REVB.md).
 
-Updated: **2026-11-16 22:40, by Claude (Prompts 116-122, "you've got all night"): board A's USB PROG works (rework done,
+Updated: **2026-11-16 23:13, by Claude (Prompts 116-122, "you've got all night"): board A's USB PROG works (rework done,
 swapped cable); visit 1B ran (66 pass, every failure explained).  Tonight the tutorial's designs pushed every interface
 board A can test alone, all clean at or past their ratings (serial 12 Mbaud, Ethernet at line rate, DACs 187.5 MS/s,
 ADCs 87.5 MS/s, Si5351 225 MHz, CLK IN 300 MHz); new: REVB 21 (large-signal distortion), 22 (cross-talk), 23 (USB USER
@@ -25,7 +25,7 @@ boots on it.  What's left needs your hands:
 | **Cabled to the board** | the swapped USB-A-to-C cable in USB PROG; USB-C to USB USER; SMA CLK OUT to CLK IN, DAC 1 OUT to ADC A IN, DAC 2 OUT to ADC B IN; Ethernet to the lab switch (gigabit link); E3646A output 1 on J601 (off); no microSD card answers; no monitor; nothing on the Pmods. |
 | **Instruments claimed for this board** | none (E3646A:1 and Fluke45 released 2026-11-16 20:14, unused since 10:34); visit 2's `bench.py` claims what it needs. |
 | **What is in the board's flash** | `bringup.bit` of 2026-11-16 (version 20261116): the board boots it by itself. |
-| **What the session is doing alone** | the ECP5 version of the tutorial (`~/mudd/133electronics/ecp5-2adc-2dac-tutorial`), on board A over USB PROG and Ethernet (the FPGA's SRAM holds whichever tutorial design ran last; the flash still holds bringup.bit); board A runs Linux in the FPGA's SRAM (the tutorial's Buildroot images on the converter SoC `sdcal_rx39_adda`), serving IIO on 192.168.8.177 (try `iio_info -u ip:192.168.8.177`); unplugging USB PROG puts bringup.bit back; the AMOD session waits for "port free". |
+| **What the session is doing alone** | the ECP5 version of the tutorial (`~/mudd/133electronics/ecp5-2adc-2dac-tutorial`), on board A over USB PROG and Ethernet (the FPGA's SRAM holds whichever tutorial design ran last; the flash still holds bringup.bit); the FPGA's SRAM holds the tutorial's `udp_awg.bit` (the gigabit IIO path's FPGA side) since 23:10; Linux with libiio's own iiod and a kernel driver (as a PlutoSDR) boots from the tutorial's `src/linux` (L.01); unplugging USB PROG puts bringup.bit back.  The session goes on all night with this cabling; the AMOD session waits for "port free". |
 
 ## Visit 1B on board A (2026-11-16 17:00-18:00)
 
