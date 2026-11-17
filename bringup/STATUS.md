@@ -4,20 +4,21 @@
 messages (`python3 bringup/bench.py where`).  The procedure is [`../BRINGUP.md`](../BRINGUP.md); results are in
 [`BRINGUP_LOG.md`](BRINGUP_LOG.md); problems for the next revision in [`REVB.md`](REVB.md).
 
-Updated: **2026-11-17 11:07, by Claude (Prompts 128-137): **gigabit to the PC works**: both ADCs at 25 MS/s into GNU Radio
-with no packet missing, both DACs streamed at 25 MS/s never dry, and both at once (Jason joined the Netgear to the
-MikroTik's sfp28-2 at 1 Gbit/s).  This morning's CONFIGS 1a-1e: the ADC front end makes REVB 21's distortion; REVB
-22's cross-talk is neither half alone (the cables, probably); CLK IN counts sines from 0.3 Vpp (REVB 26); B's path
-0.1-0.28 ns the shorter on the ADC side.  New: REVB 25 (the RAILS labels).  The Icepi tutorial's changes passed on
-the two Icepis.  Next: configuration 0's REVB 24 and REVB 22 tests ([`CONFIGS.md`](CONFIGS.md) 1f).**
+Updated: **2026-11-17 14:54, by Claude (Prompts 128-145).  **Board A's ADC stage was hurt at about 14:35**: a U.FL pigtail fitted to
+J108 (TAP B) on the powered board shorted something near the ADC; the board reset, and since then both ADC channels
+compress their largest swings (1.5-3 % at +-0.75 of full scale; small signals, noise and distortion unchanged; the
+preamp output still straight, so U103 the AD9238 most likely: REVB 27).  Everything else passes (`bench.py v1b`: 55
+pass).  Rule from now on: the board powered off for any U.FL work.  Earlier today: gigabit works both ways; CONFIGS
+1a-1e done; REVB 22's 3 MHz cross-talk is on the board, from DAC 1 driving a load; REVB 24's steps are inside ADC B's
+chain after its preamp (no rail moves, not the TCXO).  Next: your choice (below).**
 
 ## Now
 
 | | |
 |---|---|
 | **Board on the bench** | **A**, reworked: FB6241 gone, a wire from R6222's +3V3 end to its left pad (VPHY 3.3 V); USB PROG through the D+/D- swapped cable.  Board B still in the bag. |
-| **Powered?** | **yes, from USB PROG** (+5V 4.975 V, -4V2 -4.150 V on the Fluke; the E3646A's output is OFF). |
-| **Cabled to the board** | **configuration 0**: SMA J204 (DAC 1 OUT) -> J101 (ADC A IN), J205 (DAC 2 OUT) -> J102 (ADC B IN), J302 (CLK OUT) -> J301 (CLK IN); J401 (ETHERNET) to the Netgear, which reaches bell through the MikroTik's sfp28-2 at 1 Gbit/s; both USB-C; the Fluke on J602 (RAILS) -4V2.  No generator or scope on the board. |
+| **Powered?** | **yes, from USB PROG** (+5V 4.975 V; -4V2 -4.150 V; +1V1 1.104 V).  The E3646A is **not connected** to the board. |
+| **Cabled to the board** | one SMA cable J204 (DAC 1 OUT) -> J102 (ADC B IN); a U.FL pigtail from J108 (TAP B) to the scope's CH4; J302 (CLK OUT) -> J301 (CLK IN); J401 (ETHERNET) on the gigabit path; both USB-C; the Fluke on J602 (RAILS) +1V1.  The E3646A not connected. |
 | **Instruments claimed for this board** | the Fluke45 (on -4V2) and the E3646A (output off); the generators and the scope released at 09:44. |
 | **What is in the board's flash** | `bringup.bit` of 2026-11-16 (version 20261116): the board boots it by itself. |
 | **What the session is doing alone** | the FPGA holds the tutorial's `fast.bit` (the flash still bringup.bit); the tutorial's IIO bridge runs on bell; the two Icepi Zeros are back on the 5.08 XY show from their own flash (the Icepi tutorial's tests passed, 09:26). |

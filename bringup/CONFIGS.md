@@ -3,7 +3,7 @@
 Written 2026-11-16 night, after the tutorial's tests pushed every interface board A can test by itself (results in
 [`BRINGUP_LOG.md`](BRINGUP_LOG.md) from 18:12 on, and the tutorial repo's README, "How fast board A goes").  Each
 configuration below is one cabling: what it settles, exactly what goes where, the jumpers, what the PC runs, and what
-a pass looks like.  The PC switches every generator output and supply; leave them off when you connect.
+a pass looks like.  The PC switches every generator output and supply; leave them off when you connect.  **Power the board off (unplug J501 USB PROG) before fitting or removing anything on a U.FL tap** (REVB 27).
 
 The board's connectors, by name and designator (left end, top to bottom: J301 CLK IN, J302 CLK OUT, J101 ADC A IN, J102
 ADC B IN, J204 DAC 1 OUT, J205 DAC 2 OUT; right end: J401 RJ45, J501 USB PROG, J502 USB USER, J503 mini-HDMI; J504
@@ -86,7 +86,7 @@ runs 1a-1d with the table's cabling; 1e and 1f each change one thing, said there
   cabled, to see it is there; then, 60 s each: (1) the two DAC cables crossed, **J204 DAC 1 OUT -> J102 ADC B IN and
   J205 DAC 2 OUT -> J101 ADC A IN** (does it move to A?); (2) back as configuration 0, then J102 ADC B IN with a 50 ohm
   SMA terminator instead of its cable (the ADC side alone); (3) back, then **the board's power moved to J601 (5 V IN)**
-  first (the E3646A's output 1 on at 5.0 V, 1 A limit, by the session: the board switches over to it), and only then
+  first (the E3646A's output 1 leads connected to J601 (5 V IN), red to +5V, black to GND, by Jason; then its output on at 5.0 V, 1 A limit, by the session: the board switches over to it), and only then
   J501 (USB PROG) unplugged: the board stays powered and keeps its bitstream, and the bridge needs only Ethernet.
   (Unplugging USB PROG while it powers the board switches the board off.)  Received Ethernet frames were ruled out remotely (REVB 24).  The period
   (1.895-1.899 s) drifts like an RC timer's, so a warm finger on candidate parts while trng.py runs, watching whether

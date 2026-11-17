@@ -5991,4 +5991,23 @@ TAP B.
 Check that everything is ok. I may have briefly shorted a supply and something may need to be reset. Hopefully nothing
 is damaged.
 
-## Response 143 2026-11-17 14:39 - (running) Claude Opus 5.5
+## Response 143 2026-11-17 14:39 - 14:44 Claude Opus 5.5
+
+## Prompt 144 2026-11-17 14:49
+
+The E3646A is not connected to anything. I moved from J101 (ADC A IN) to J102 (ADC B IN). The the short happened from
+the U.FL connector passing near TAP B. I don't know exactly. I was snaking it under the Fluke's ground clip. If I had to
+guess, it was, unfortunately, the ADC chip itself.
+DAC 1 to B
+
+## Response 144 2026-11-17 14:49 - 2026-11-17 14:54 Claude Opus 5.5
+
+(Mid-turn: "In the future, I will power off the board before doing any U.FL work.")
+
+* Response 143's check (14:39-14:44): the board had reset (USB re-enumerated, bringup.bit from flash); \`bench.py v1b\`
+  55 pass; the new failure: DAC 1 -> ADC A's DC transfer bent at the ends (43-45 codes at +-0.75 FS, three runs).  The
+  test's usb_power step had switched the E3646A on (it is connected to nothing): off again.
+* DAC 1 -> ADC B bends the same way; the scope on TAP B (ADC B's preamp output) is straight at the same levels: the
+  compression is after the preamps, on both channels: U103 (AD9238) most likely.  REVB 27 (the taps' placement; power off
+  for U.FL work), CLAUDE_PCB.md's header rule extended, a memory note.  REVB 24: TAP B does not step with ADC B: that step
+  is after the preamp too.
