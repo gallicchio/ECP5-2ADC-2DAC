@@ -6004,10 +6004,20 @@ DAC 1 to B
 
 (Mid-turn: "In the future, I will power off the board before doing any U.FL work.")
 
-* Response 143's check (14:39-14:44): the board had reset (USB re-enumerated, bringup.bit from flash); \`bench.py v1b\`
+* Response 143's check (14:39-14:44): the board had reset (USB re-enumerated, bringup.bit from flash); `bench.py v1b`
   55 pass; the new failure: DAC 1 -> ADC A's DC transfer bent at the ends (43-45 codes at +-0.75 FS, three runs).  The
   test's usb_power step had switched the E3646A on (it is connected to nothing): off again.
 * DAC 1 -> ADC B bends the same way; the scope on TAP B (ADC B's preamp output) is straight at the same levels: the
   compression is after the preamps, on both channels: U103 (AD9238) most likely.  REVB 27 (the taps' placement; power off
   for U.FL work), CLAUDE_PCB.md's header rule extended, a memory note.  REVB 24: TAP B does not step with ADC B: that step
   is after the preamp too.
+
+## Prompt 145 2026-11-17 14:54
+
+What are all of the little square blips that I see on the green channel 4 trace on the scope?
+
+## Response 145 2026-11-17 14:54 - 2026-11-17 14:58 Claude Opus 5.5
+
+* The blips on CH4 (TAP B): bursts of 1 us spikes up to 1.5 mV, each burst about 180 us, every 22.15 ms with ddc_awg
+  and 66.2 ms with fast.bit: the rate follows the FPGA's design, so it is on the board, most likely a switching
+  regulator pulse-skipping at light load.  (A first analysis with too low a threshold had given 2.5 ms: wrong.)
