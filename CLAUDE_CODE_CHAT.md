@@ -5537,7 +5537,7 @@ amd the clocks as fast as they can go. Test for the fastest reliable settings. I
 worth implementing and testing? If so, do that too. You've got all night. In the morning, give me a list of hardware
 configurations with explicit mappings between scope and function generator channels and connections on the board.
 
-## Response 119 2026-11-16 19:16 - (running) Claude Opus 5.5
+## Response 119 2026-11-16 19:16 - 2026-11-17 01:41 Claude Opus 5.5
 
 * **The Icepi decisions** (committed there, 0e3b86a): prices (two boards about $240 of hardware); 0.00's card 8 GB;
   3.03's paste time measured (35.1 s through an FT2232H, 23.8 s into a pseudo-terminal); `cdma.py --per-bit {33,93}`
@@ -5583,7 +5583,7 @@ using this iio path.  (Then:) If you need me to sudo apt install any of those, l
 and if I decide it's good, I'll run it. / I don't need to review things that you install in your own directory or
 even in ~/.local. I was asking to review sudo apt install commands for things like libiio.
 
-## Response 121 2026-11-16 20:37 - (running) Claude Opus 5.5
+## Response 121 2026-11-16 20:37 - 2026-11-17 01:41 Claude Opus 5.5
 
 * **USB USER is a device port** by its connector (CC1/CC2 5.1 k Rd; VBUS only to U504 and 100 k: the board never
   sources 5 V): nothing to plug in tomorrow; a keyboard, mouse or Wi-Fi dongle would get no power.  No over-current
@@ -5691,7 +5691,7 @@ gigabit ethernet speeds. That will hopefully get sorted out tomorrow.
 Keep going all night with whatever you can accomplish with the current cabling. Install whatever compilers and
 emulators and synthesis tools and other tools you need into the local directory.
 
-## Response 125 2026-11-16 23:07 - (running) Claude Opus 5.5
+## Response 125 2026-11-16 23:07 - 2026-11-17 01:41 Claude Opus 5.5
 
 * **The DACs as a stream** (8b97204, c79fe27 here): 'P' packets into a 16384-pair ring on the board, paced by the
   board's own reports of its fill; the board answers ARP (`arp_tx.sv`), so the stream is unicast.  A sender in C
@@ -5741,3 +5741,7 @@ Moved to `/home/jason/tmp/ecp5-2adc-2dac-tutorial/` (the SSD): the tutorial's `t
 output, the toolchain, QEMU) and `src/linux/build/`, each symlinked back so every path still works (tools linked
 23:53); a `.trackerignore` there (23:57); the repo's `.gitignore` follows the links (4c93d84).  New large builds go
 on /home/jason/tmp.
+* **Hand-off (2026-11-17 01:41):** everything committed (tutorial repo to 26447ed and df700df; OpticsPCBs to this commit); the
+  board holds udp_awg.bit, the Si5351's outputs off, the IIO bridge stopped, no instrument claimed or switched on.
+  STATUS.md and CONFIGS.md rewritten for the morning: CONFIGS 1 (the generators and scope, with 1e's tee and 1f's REVB 24
+  tests), 2 (the Fluke on USB USER), 3 (the microSD), 4 (gigabit to the PC), 5 (HDMI), 6 (board B).
