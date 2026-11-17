@@ -122,7 +122,17 @@ iio_attr -u ip:127.0.0.1 -d ecp5-adc sampling_frequency 25000000
 python3 gr_iio_rate.py --rate 25e6 --seconds 10
 ```
 
-**Pass:** GNU Radio reports 25 MS/s a channel. The bridge's last line, when the stream stops, says **0 missing from
+And the other way, both DACs as a stream (non-cyclic) through GNU Radio's stock IIO sink, sent to the board alone
+now that it answers ARP:
+
+```
+python3 gr_iio_tx_rate.py --rate 6250000 --seconds 10 --buffer 262144
+```
+
+Pass for the stream: the bridge's line "the board's ring ran dry 0 times while it played" (at 25 MS/s a PC stall
+over 0.5 ms empties the board's ring: a few dry spells are expected there, see the tutorial's E.09).
+
+**Pass for the ADCs:** GNU Radio reports 25 MS/s a channel. The bridge's last line, when the stream stops, says **0 missing from
 the numbering**, 0 dropped by a full ring, and 0 overruns. (If some go missing, `sudo sysctl -w
 net.core.rmem_max=67108864` is the paste-block for you. It is 50 MB now, which held 10 s at full rate on bell.)
 
