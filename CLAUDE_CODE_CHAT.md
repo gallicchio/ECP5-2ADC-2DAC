@@ -5984,3 +5984,11 @@ Fluke on 3V3A
   or two, but measured in the same record as ADC B's flips (a scratch build sending the Ethernet receive clock's count
   in each packet) the steps don't line up (r = 0.085): not the source.  Next suggested: the scope on TAP B (ADC B's
   preamp output, a U.FL) to see whether the step is there before the ADC.
+
+## Prompt 143 2026-11-17 14:39
+
+TAP B.
+Check that everything is ok. I may have briefly shorted a supply and something may need to be reset. Hopefully nothing
+is damaged.
+
+## Response 143 2026-11-17 14:39 - (running) Claude Opus 5.5
