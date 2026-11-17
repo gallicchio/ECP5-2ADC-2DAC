@@ -5969,3 +5969,18 @@ Fluke on 3V3A
 
 * +5VA: no step (flip by flip, 13 flips, -0.035 +- 0.042 mV; the plain -0.2 mV was one stray reading and drift).
   Next: +1V1, the FPGA's core (the steps come only with the ddc_awg bitstreams).
+
+## Prompt 142 2026-11-17 14:18
+
++1V1
+
+## Response 142 2026-11-17 14:18 - 2026-11-17 14:29 Claude Opus 5.5
+
+* +1V1 (the FPGA's core): no step (-0.008 +- 0.011 mV over 24 flips).  Four rails steady: the step is inside ADC B's
+  chain.  Next, no hands: a scratch ddc_awg with the AD9238's duty-cycle stabiliser off (adc_dcs = 0).
+
+* No hands: the AD9238's duty-cycle stabiliser off (scratch build): ADC B still two levels, the second now +0.2 codes
+  instead of -0.35.  The TCXO (FT5HN, "digital temperature compensation") does step, 0.1-0.15 ppm a few times a minute
+  or two, but measured in the same record as ADC B's flips (a scratch build sending the Ethernet receive clock's count
+  in each packet) the steps don't line up (r = 0.085): not the source.  Next suggested: the scope on TAP B (ADC B's
+  preamp output, a U.FL) to see whether the step is there before the ADC.
