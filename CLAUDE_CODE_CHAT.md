@@ -5806,3 +5806,18 @@ lab-instrument-control whenever you need to.
 * lab-instrument-control (27d571f): fluke_45.py's default adapter is A95AME9U, where the meter answers; siglent.md: check
   the scope's probe setting (10x had been left on).
 * Next for Jason: configuration 0's cabling, then 1f (REVB 24) and REVB 22's cable test there (CONFIGS 1f).
+
+## Prompt 130 2026-11-17 09:45
+
+I have gone back to configuration 0. I have also plugged the ECP5's ethernet into the same fast switch as this
+computer, bell.
+
+## Response 130 2026-11-17 09:45 - 2026-11-17 09:49 Claude Opus 5.5
+
+(Mid-turn, 2026-11-17 09:49: "No ethernet lights are on. If you see nothing from the Ethernet, stop and let me try to fix that.")
+
+* The generators' and the scope's claims released (their cables off the board); the Fluke (on -4V2) and the E3646A
+  (off) still held.
+* The gigabit test (udp_awg.bit, the bridge, gr_iio_rate.py at 25 MS/s) got no packet from the board at all since the
+  move to the fast switch ("0 packets taken"; bell's neighbour entry for 192.168.8.177 STALE): no link.  Stopped for
+  Jason to fix the link.
