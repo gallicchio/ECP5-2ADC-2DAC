@@ -93,18 +93,38 @@ So it is the card's contact, power or clock:
 Then `python3 bringup/bench.py v1b --only sd` (it doesn't write the card).  Pass: the card answers CMD0/CMD8, its CID
 reads back with a right CRC.  The tutorial's Linux (below) would like the card next: it is free to be overwritten.
 
-## 4. Gigabit all the way to the PC (when convenient)
+## 4. Gigabit all the way to the PC (Jason, 2026-11-17)
 
-Last night the board sent at line rate (1000 Mbit/s, 20 Gbit with 0 errors through the PHY's loopback), but the lab
-network delivers only 99 Mbit/s from the board to the PC: one link between them runs at 100 Mbit/s.
+**What is known (2026-11-16 night):**
+- **bell is not the problem.** Its 192.168.8.207 is the ConnectX-5 at 100 Gbit/s, and the route to the board goes out
+  of it. iperf3 between bell and szilard (192.168.8.180) gives 21.2 Gbit/s, and bell's card drops nothing
+  (`rx_discards_phy` and `rx_out_of_buffer` 0).
+- **The board is not the problem.**
+  - Board A's PHY links at 1000 full, and the port it is plugged into advertises 1000BASE-T.
+  - With `udp_awg.bit` at D = 0 the packet numbers advanced at the full 97,656 a second, and the board's own overrun
+    count stayed 0 at every D (23:12).
+  - The PC side takes every packet at 25 MS/s a channel: the tutorial's `iiod_bridge.py` with `fake_udp_awg.c`, 250 M
+    pairs, none missing; GNU Radio both channels at 25.05 MS/s.
+- **So the cap is on board A's branch.** About 10,900 packets a second (96 Mbit/s) arrive at bell whatever the board
+  sends. One link or port between the box board A's cable plugs into and the fast switches runs at 100 Mbit/s, or a
+  router's ports are in the path. The DHCP router at 192.168.8.1 is a GL.iNet (by its MAC's maker).
 
 | from | to | cable |
 |---|---|---|
-| J401 **RJ45** | a gigabit port on the **same switch as the PC's 192.168.8.207 link** (enp1s0f0np0), or the PC's own gigabit RJ45 port if it has a free one | Ethernet |
+| J401 **RJ45** | a gigabit port that reaches the fast switches without a 100 Mbit/s link | Ethernet (cat 5e or better) |
 
-Then `python3 src/verilog/udp_stream.py -d 0 --seconds 2` in the tutorial repo: pass is 25 MS/s on both channels with
-no packets lost (858 Mbit/s on the wire).  (If the PC's receive buffer drops some, `sudo sysctl -w
-net.core.rmem_max=67108864` is the paste-block for you.)
+Then, in the tutorial repo's `src/verilog`:
+
+```
+make load-udp_awg
+python3 iiod_bridge.py &
+iio_attr -u ip:127.0.0.1 -d ecp5-adc sampling_frequency 25000000
+python3 gr_iio_rate.py --rate 25e6 --seconds 10
+```
+
+**Pass:** GNU Radio reports 25 MS/s a channel. The bridge's last line, when the stream stops, says **0 missing from
+the numbering**, 0 dropped by a full ring, and 0 overruns. (If some go missing, `sudo sysctl -w
+net.core.rmem_max=67108864` is the paste-block for you. It is 50 MB now, which held 10 s at full rate on bell.)
 
 ## 5. A monitor on mini-HDMI (stage 7's hdmi, 5 minutes)
 
