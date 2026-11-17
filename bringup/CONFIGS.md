@@ -68,10 +68,10 @@ for REVB 21 and 22 (new tonight), the session loads the tutorial's `fast.bit` (D
 * **1f. ADC B's 1.9 s steps (REVB 24)**, no generator.  In the tutorial's `src/verilog`: `make load-ddc_awg` (the steps
   come with ddc_awg.bit, not udp_awg.bit), the bridge (`python3 iiod_bridge.py &`), then `python3 trng.py --seconds 60`:
   it prints each channel's "10 ms means wander"; with the steps, B's is 0.13-0.16 codes and A's 0.02-0.03.  First as
-  cabled, to see it is there; then, each 60 s: (1) watch the board's Ethernet activity LED with the stream stopped
-  (`Ctrl-C` trng.py): does it blink every ~1.9 s?  (2) the two DAC -> ADC cables crossed (DAC 2 -> ADC A); (3) ADC B
-  IN with a 50 ohm SMA terminator and nothing else; (4) USB PROG unplugged (the bitstream stays loaded).  If (1) shows a
-  blink, the same with the Ethernet cable moved to another switch port, or a port of a different switch.
+  cabled, to see it is there; then, each 60 s: (1) the two DAC -> ADC cables crossed (DAC 2 -> ADC A); (2) ADC B IN with a 50 ohm SMA
+  terminator and nothing else; (3) USB PROG unplugged (the bitstream stays loaded).  (Received Ethernet frames were
+  ruled out remotely: REVB 24.)  The period (1.895-1.899 s) drifts like an RC timer's, so a warm finger on candidate
+  parts while trng.py runs, watching whether the flips speed up, may find it.
 
 The generators off and the three SMA-SMA cables back afterwards (configuration 0).
 
