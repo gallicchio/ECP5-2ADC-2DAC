@@ -5890,3 +5890,16 @@ advertising empty, sfp-module-present: no.]
 * `sfp-module-present: no` for all four modules: the switch sees no module in sfp28-1 at all, so the speed settings
   never got a chance.  First find which port the module is really in (RouterOS's log names the port on every insert;
   the CRS510's two rows of cages may number top row odd, bottom even), then set that port.
+
+## Prompt 136 2026-11-17 11:00
+
+[RouterOS output pasted: the log (only link up/down lines: qsfp28-1-1 100G, sfp28-5 25G; the bridge holds ether1 too),
+and `/interface ethernet monitor [find where name~"sfp28"] once` for all sixteen ports.]
+
+## Response 136 2026-11-17 11:00 Claude Opus 5.5
+
+* Read from the table: modules are present in qsfp28-1-1..4 (an FS Q28-PC03 3 m QSFP28 cable: bell, 100G link), in
+  **sfp28-2: the ADVA module** (its EEPROM: SFP, 1000BASE-T, 1.2 Gb/s; no link, auto-negotiation failed, sfp-tx-fault
+  yes) and in sfp28-5 (an FS S28-PC02 2 m SFP28 cable, 25G link).  sfp28-1 is empty: the settings went to the wrong
+  port.  Next: set sfp28-2.  Also: the bridge includes ether1; if that is the CRS510's 100 Mbit/s management port and
+  the Netgear's path ran through it, that alone explains last night's 96 Mbit/s cap (check its rate).
