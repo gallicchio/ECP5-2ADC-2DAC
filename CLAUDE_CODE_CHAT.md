@@ -5928,3 +5928,16 @@ status link-ok, rate 1Gbps, the ADVA module] See if the faster ethernet now work
 * bell since 11:05: enp22s0f1np1 got 192.168.8.237 by DHCP (the warnings stopped), so bell now has two interfaces and
   two default routes on 192.168.8.0/24; traffic leaves by the 100G port (metric 100).  Suggested: unplug that cable, or
   `nmcli connection modify "Wired connection 4" connection.autoconnect no` and disconnect it.
+
+## Prompt 138 2026-11-17 13:56
+
+crossed.  Also, I unplugged the 2nd cable now that the Netgear router talks to the Microtik swich.
+
+## Response 138 2026-11-17 13:56 - 2026-11-17 13:58 Claude Opus 5.5
+
+(Mid-turn: "DAC 2 goes into ADC A. DAC 1 goes into ADC B.")
+
+* bell back to one path (enp22s0f1np1 unplugged: one default route on 192.168.8.x, by the 100G port).
+* Crossed: REVB 24's steps stay on ADC B (fed by DAC 1 now; ADC A clean): not DAC 2's side.  REVB 22: the 2-11 MHz
+  cross-talk follows DAC 1 as the aggressor (-52.3 dBc at 3.2 MHz crossed, -52.6 as cabled), the 30 MHz rise follows
+  ADC A as the victim.  Next: one cable only, J204 DAC 1 OUT -> J101 ADC A IN, ADC B left open (JP201 terminates it).
