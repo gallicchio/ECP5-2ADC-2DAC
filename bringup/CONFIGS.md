@@ -28,7 +28,8 @@ replug J501 USB PROG (the board boots `bringup.bit` from flash), or
 
 Jumpers as BRINGUP.md's table (TERM in on A and B, SRC on SMA, GAIN x1, JP3001 as it was).  Power from USB PROG; the
 E3646A off (its claim released at 20:14).  In this configuration the tutorial's `dev/tools/boardtest/all.py` passes
-everything it checks (11 of 13; the two LED lessons need eyes).
+everything it checks (11 of 13; the two LED lessons need eyes; re-run 2026-11-17 01:38-01:40 after the night's changes).
+Stop the tutorial's IIO bridge first: it holds UDP port 50011, which the Ethernet lessons bind.
 
 ## 1. Generators and scope: visit 2, plus tonight's questions (about 40 minutes)
 

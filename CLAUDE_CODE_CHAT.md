@@ -5705,8 +5705,19 @@ emulators and synthesis tools and other tools you need into the local directory.
 * **A time-to-digital converter** (be97a83, a9ec537): a 256-bit carry chain sampled at 125 MHz, edges from CLK IN:
   21.4 ps a code on average, 3.9 ps rms from a straight line once calibrated by a code-density test (the Si5351's CLK0,
   its own crystal, out of CLK OUT), one edge 32-42 ps rms through CLK OUT, the cable and the comparator.
-* Tutorial pages 1.16 (an SDR receiver), 1.17 (the phasemeter), 1.18 (the TDC), E.09 (the DAC stream): 29 pages, 0
-  errors.
+* **The AM's +-24.4 kHz lines** (1.16's open question, 00:41-00:46): at full amplitude they climb from -84.5 dBc at 1
+  MHz to -42 at 10 MHz, a non-linearity that grows with frequency (REVB 21's slewing front end); not simply cubic.
+* **A true random number generator** (00:48-00:58, 1.19): the ADCs' noise, about 1 bit of min-entropy a sample,
+  SHA-256 at 2:1, 1.54 Mbit/s; NIST tests pass on the output, fail on the raw lowest bits, and pass on a hashed counter
+  too (the page's point).  Its health tests found **REVB 24**: ADC B's offset steps 0.1-0.4 codes between two levels
+  on a ~1.9 s grid, only with the ddc_awg bitstreams (alternated: udp_awg never); not the received frames (counted on
+  the board), not the bridge, the LEDs, the NCO's tuning or a poller on bell; a timer drifting 0.2 % an hour.  CONFIGS
+  1f has the hands-on tests.
+* **The IIO bridge survives a bitstream load** (it lost a DAC upload sent while the PHY relinked); the tutorial's whole
+  board test re-run: 11 PASS, 0 FAIL (with the bridge stopped: it shares UDP port 50011 with the Ethernet lessons).
+* Tutorial pages 1.16 (an SDR receiver), 1.17 (the phasemeter, and how its small-signal shortfall was found: the test
+  tone showed the ADC only 16 phases), 1.18 (the TDC), 1.19 (the TRNG), E.09 (the DAC stream), E.08's "after a
+  bitstream load": 30 pages, 0 errors, 0 warnings.
 
 ## Prompt 126 2026-11-16 23:09 (and 23:11, 23:12)
 
