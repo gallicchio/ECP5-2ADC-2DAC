@@ -148,7 +148,7 @@ measures and answers.  In this order (each line is one `bench.py step`):
 | `tap`, `tap_b`, `tap_tia`, `tap_n4v2` | the pigtail on J107, then J108, J109, J603 | each tap on scope CH4 |
 | `poweron` | pull both USB-C; scope probes (hooks on jumper wires) on RAILS pins +3V3 and +1V1 | the power-on order (review R8), ten cycles; USB back |
 | `dac_clock` | hold a probe on the 33 ohm by U201 pin 18 (the one held probe) | the DAC clock's edge (review R2-11) |
-| `hdmi`, `pmod` | plug a monitor; eight wires Pmod A to Pmod B, pin for pin (optional) | the test picture and the monitor's EDID; every Pmod pin both ways |
+| `hdmi`, `pmod` | first, unpowered: an HDMI cable in J503 and the Fluke on its far (type A) end, pin 18 about 0 ohm to F501's board side and pin 17 about 0 ohm to GND (J503's pinout by function; the maker's drawing could not be fetched, connector check 2026-11-16); then plug a monitor; eight wires Pmod A to Pmod B, pin for pin (optional; no third-party Pmod: REVB 14) | the test picture and the monitor's EDID; every Pmod pin both ways |
 
 Two of the reviews' questions are not commands yet and are taken by hand in this session with `bench.py scope shot`:
 +1V0_PHY's rise against +3V3 (R2-12: a third probe on the RAILS header's 1V0 pin during `poweron`), and +5V's ring
@@ -476,7 +476,9 @@ second; the running statistics (min, max, mean over 65536 samples) read in milli
     link up and the negotiated speed, and RXC counts **125,000,000** (gigabit) on `bench.py board clocks`.  *Pass:* the
     ID, the link, 125 MHz.  Traffic through the RGMII (ping) is LiteX's liteeth job, after the bring-up.
 
-7.3 **The Pmods**: `bench.py board` with `pmod(mode_a=2, mode_b=2)` (from Python: counters on every pin, 12.5 MHz
+7.3 **The Pmods** (**never plug a Digilent or other third-party Pmod into J303/J304 the usual way**: rev A's sockets
+    are mirrored against the Pmod spec and the board is marked non-standard, REVB row 14; they mate only with the AMOD/RF-MOD
+    rev A plugs, which are mirrored the same way; the male-male jumpers pin for pin are fine): `bench.py board` with `pmod(mode_a=2, mode_b=2)` (from Python: counters on every pin, 12.5 MHz
     down to 98 kHz): the scope on each of the 16 pins (a probe, Jason, or a Pmod breakout).  `pmod(mode_a=1, a=0x55)`:
     static levels.  *Pass:* every pin toggles.
 

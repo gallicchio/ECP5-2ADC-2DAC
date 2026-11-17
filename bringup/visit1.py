@@ -396,8 +396,10 @@ def verify_v1b(b):
 
     # (4) USB USER on a host
     usb = bd.usb_attach("fs", seconds=1.5)
-    f.usb_host = bool(usb["host_reset_seen"])
-    if f.usb_host:
+    # D+ must go high first: with D+ low the port reads SE0 the whole time whether or not a host is there, so a "bus
+    # reset" counted without it means nothing (board A, 2026-11-16: this passed while the pull-up never lifted D+).
+    f.usb_host = bool(usb["host_reset_seen"])       # the usb test still runs: its low-speed half does not need the pull-up
+    if f.usb_host and usb["line_went_high"]:
         rows.append(row("verify", "USB USER", "a host: it reset the bus (%d ms with both lines low)" % usb["after"]["se0_ms"], "a host's bus reset", "pass"))
     elif not usb["line_went_high"]:
         rows.append(row("verify", "USB USER", "D+ did not go high with the board's pull-up on", "a host's bus reset", "FAIL",
@@ -693,12 +695,17 @@ def test_clkloop(b):
     return rows
 
 
+SDRAM_POL = 1        # the SDRAM clock inverted: its rising edge mid-cycle.  Board A (2026-11-16): with 0 (as first designed)
+                     # the edge meets the command lines as they change, and the whole array failed part way through, every
+                     # word after one slip reading the word before; with 1, 0 errors at every latency 3-6 (REVB 19).
+
+
 def test_sdram(b):
     """the SDRAM: the read-latency scan, the whole array with three patterns, both clock polarities"""
     bd = b.bd
     rows = []
     words = b.size("sdram_scan")
-    scan = bd.sdram_scan(words)
+    scan = bd.sdram_scan(words, pol=SDRAM_POL)
     good = [lat for lat, errors in scan.items() if errors == 0]
     rows.append(row("sdram", "read-latency scan, %d words" % words, "errors at latency 1..7: " + " ".join(str(scan[lat]) for lat in sorted(scan)),
                     "0 errors at one latency at least (3 in simulation; 3 or 4 on the board)", "pass" if good else "FAIL",
@@ -710,20 +717,16 @@ def test_sdram(b):
     words = b.size("sdram_full")
     whole = "the whole array (16 M words)" if not b.sim else "%d words (the whole array is not simulated)" % words
     for pattern in (0, 1, 6):
-        r = bd.sdram_test(words, pattern=pattern, rdlat=latency, timeout=120.0)
+        r = bd.sdram_test(words, pattern=pattern, rdlat=latency, pol=SDRAM_POL, timeout=120.0)
         value = "%d errors in %d words written and read back" % (r["errors"], r["words"])
         if r["errors"]:
             value += "; first at word 0x%06x: wrote %04x, read %04x" % (r["first_addr"], r["first_expected"], r["first_got"])
-        rows.append(row("sdram", "pattern %d at latency %d, %s" % (pattern, latency, whole), value, "0 errors", "pass" if r["errors"] == 0 else "FAIL",
+        rows.append(row("sdram", "pattern %d at latency %d, clock polarity %d, %s" % (pattern, latency, SDRAM_POL, whole), value, "0 errors", "pass" if r["errors"] == 0 else "FAIL",
                         "" if r["errors"] == 0 else "the bits that differ between 'wrote' and 'read' name the DQ line; an address pattern names an address line"))
-    words = b.size("sdram_pol")
-    for pol in (0, 1):
-        r = bd.sdram_test(words, pattern=0, rdlat=latency, pol=pol)
-        if pol == 0:
-            rows.append(row("sdram", "clock polarity 0 (as designed), %d words" % words, "%d errors" % r["errors"], "0 errors", "pass" if r["errors"] == 0 else "FAIL"))
-        else:
-            rows.append(row("sdram", "clock polarity 1 (inverted), %d words" % words, "%d errors" % r["errors"], "", "info",
-                            "the margin: 0 errors both ways means the SDRAM clock's phase is not critical"))
+    other = 1 - SDRAM_POL                     # the margin: the other polarity over the whole array, reported, not judged
+    r = bd.sdram_test(b.size("sdram_full"), pattern=0, rdlat=latency, pol=other, timeout=120.0)
+    rows.append(row("sdram", "clock polarity %d (the other one), %s" % (other, whole), "%d errors" % r["errors"], "", "info",
+                    "0 errors both ways would mean the SDRAM clock's phase is not critical; board A: polarity 0 fails part way through"))
     return rows
 
 
@@ -995,7 +998,7 @@ def test_phase(b):
     for rate, phases in ((25e6, range(8)), (50e6, [0])):      # at 50 MS/s the gateware latches every cycle: the phase does nothing (rtl/adc_capture.v)
         for negedge in (False, True):
             for phase in phases:
-                bd.adc_config(rate=rate, phase=phase, negedge=negedge, stats_log2=bench.STATS_LOG2)
+                bd.adc_config(rate=rate, phase=phase, negedge=negedge, stats_log2=b.size("stats_log2"))
                 bd.wait(0.01)
                 _, ca, cb, _ = bd.capture(n)
                 worst[(rate, negedge, phase)] = max(float(abs(analysis.sine_fit(pick(ch, ca, cb), rate, freq[ch])[2]).max()) for _, ch in b.found.paths)

@@ -4959,3 +4959,681 @@ Committed on master; not pushed (the session has no GitHub key).  The commit hol
 It also holds `CLAUDE.md`, and all of `CLAUDE_PCB.md`: sections 30 and 32, and three earlier hunks, were written by
 the AMOD/RF-MOD and op-amp bring-up sessions and were uncommitted in the same file.  The board photos (31 MB) stay on
 the PC: `bringup/board_photos/` is now in `.gitignore`, beside `bringup/data/` and `bench_config.json`.
+
+## Prompt 103
+
+Is J601 meant to be the primary way to get power into this board? Or is this only during bringup? It's incredibly poorly labeled. If this is meant to be the way to get power into the board in normal operation, it needs to be DC barrel jack. If we'll switch to USB power for the rest of this boad's life, that's probably fine. I'll go in now and try to hook things up as you suggested.
+
+## Response 103 2026-11-16 11:35 Claude Opus 5.5
+
+J601 is the bench input, for bring-up and bench work.  The board's working power is USB PROG (the upper USB-C):
+* the README says "Power the board from a USB-C or USB 3 port, or from the 5 V IN header";
+* the enclosure's end plates (`mfg/end_panels.py`) have cutouts for both USB-Cs and none for J601;
+* Q602 hands the board to USB when J601 is unplugged.
+
+The bring-up uses J601 because the PC can switch the E3646A, limit its current and read it; USB gives none of that.
+In the enclosure, the board runs from USB PROG, so by Jason's rule a header is acceptable.  REVB row 11 now says so,
+together with: a barrel jack if a 5 V input is ever meant for normal use, labels that cannot be misread, and an ideal
+diode instead of the Schottky.  Then the visit 1A finish, reprinted.
+
+## Prompt 104
+
+i put better leads from E3646A output 1 to J601, but they might not be that much better. They are banana to clips, and both of them together measure 0.10 ohms on the Fluke (so half of that each). The Fluke should be measuring the +5V pinn of the header. The two USBs should be plugged in. The 3 SMA cables should be on. The Ethernet should be plugged into the lab switch.
+
+*Sent while the session worked:*
+
+All 8 red LEDs are on.
+
+I flipped it 180.
+
+The green LED next to the ethernet is occasionally blinking.
+
+## Response 104 2026-11-16 12:25 - 12:45 Claude Opus 5.5
+
+Visit 1B is blocked: **USB PROG cannot attach to the PC, because of two design bugs in the FT2232H's circuit.**
+The rest of the board looks alive:
+* the eight LEDs are lit, with the board running from USB PROG's 5 V (+5V read 5.047 V on the Fluke);
+* the Ethernet PHY has linked to the switch, with the FPGA still blank.
+
+* **The symptom.**  The PC logged no USB attach at all in 90 minutes: not even a failed one, on any port, either way
+  round.  No hub port is disabled.  A device whose pull-up is up but whose lines are swapped would still log a failed
+  attach, so nothing at all meant something more.
+* **REVB 12 (accepted).**  `gen/sheet_usb.py` feeds VPHY (pin 4) and VPLL (pin 9) from VREGOUT's 1.8 V through
+  FB6241.  The data sheet wants 3.0-3.6 V on both.  The USB PHY and its PLL cannot start, which explains the silence.
+* **REVB 13 (accepted).**  The generator took the FT2232HL's pin 8 as DM; pin 7 is DM.  The USB-C's D+ goes through
+  U501's I/O2 (pins 3-4) to DM.  USB USER is wired correctly.
+* **The rework** is in `figs/rework_ftdi.png`, drawn by the new `bringup/make_rework_fig.py` from the board file's pads:
+  1. FB6241 off, and a wire from its VPHY pad to R6222's +3V3 end;
+  2. U501 off, and two crossed wires on its pads.
+
+  First, a 10 s confirmation: VPHY at C6241's left end should read 1.8 V.
+* **Lessons** in `CLAUDE_PCB.md` section 33, all to be done by script:
+  * check every IC power pin's voltage against the data sheet's pin table;
+  * trace USB D+ and D- by pin function through the ESD part;
+  * read the kernel log while a cable goes in.
+* `BRINGUP_LOG.md`, `STATUS.md` and REVB rows 12-13 are written.  The E3646A stays off, with its claim held.
+
+## Prompt 105
+
+How was this missed in all of the design reviews!? Make sure that this check is explicitly spelled out in CLAUDE_PCB.md so that it never happens again. Also, make sure that this fix is near the top of REVB.md or wherever we're keeping notes about that. This is going to take a long time to rework and potentially cause other damage.
+
+## Response 105 2026-11-16 12:50 - 13:05 Claude Opus 5.5
+
+**How it was missed.**  Every layer checked the wrong thing or trusted the layer before it:
+* **The generator** (written by Claude) encoded a wrong belief and printed it as a note on the schematic: "VREGOUT:
+  internal 1.8 V, feeds VCORE x3, VPLL, VPHY".  It also named pin 8 `dmp`.
+* **The author's pin audit** compared pin numbers and names with the data sheet, not the voltage each supply pin
+  needs, so VPHY was on the right pin with the wrong rail.  Its USB part listed "the FT2232H's channel A/B pin
+  numbers", not DP/DM.
+* **Both review briefs** listed the FT2232H under "verified, but important enough to re-check".  None of the five
+  reviewers re-derived the supply voltages or the D+/D- order from the data sheet.  Gemini round 1 restated the
+  note as checked: "1.8V VREGOUT filtering to VCORE and VPHY/VPLL".
+* **No script checked either one.**
+
+**What changed.**
+* **`CLAUDE_PCB.md`:**
+  * a block at the very top, "Two checks no board ships without", covering the power-pin voltage audit and the
+    pair-polarity trace, both as scripts that fail the build;
+  * section 10's gate 2, now 2a-2c;
+  * the review-brief rules: every reviewer redoes both checks from the data sheets, and "verified" in a brief must
+    name its script and output;
+  * section 33 points to all of these.
+* **`bringup/REVB.md`:** opens with "FIRST: USB PROG is dead on rev A".  Rows 12 and 13 head the board table.
+* **A gentler rework**, redrawn in `figs/rework_ftdi.png`:
+  * job 1 lifts only FB6241's +1V8 end and wires it to R6222's +3V3 end, so the bead stays;
+  * job 2 needs no board work: a USB-A-to-C cable with D+ and D- swapped.  U501 comes off only if that cannot be
+    used.
+
+## Prompt 106
+
+The left side of C6241 is reading 1.78V. I will try to do the rework later today or tomorrow (the cable version), but I'm annoyed that this wasn't caught.
+
+## Response 106 2026-11-16 13:05 Claude Opus 5.5
+
+VPHY read 1.78 V, which confirms REVB 12 on the board; it is in `BRINGUP_LOG.md` and `STATUS.md`.  **The swapped
+cable fixes only the D+/D- swap (REVB 13).**  VPHY and VPLL still need the one board job: FB6241's +1V8 end lifted and
+wired to R6222's +3V3 end.  The FT2232H cannot attach without both.
+
+Jason's annoyance is fair: the fault was the author's, and the checks that should have caught it did not exist.  A
+background session is now running both checks as scripts over the whole board:
+* `tools/check_power_pins.py`: every IC's supply pins against its data sheet's pin table;
+* `tools/check_pairs.py`: every pair's polarity, from connector to chip;
+* a level-compatibility pass on the nets between ICs.
+
+It writes `bringup/PIN_AUDIT.md`, plus any new REVB rows, so other faults of this kind turn up at the desk and not in
+the lab.
+
+## Prompt 107
+
+Run all of those checking scripts over the whole board now. Do it for the other boards in OpticsPCBs and also in ~/pcbs/ too. Record any red flags in appropriate places. I give you permission to read any file in ~/OpticsPCBs/ and ~/pcbs/ and to write a file with the red flags in the appropriate places.
+
+## Response 107 2026-11-16 13:10 - 14:00 Claude Opus 5.5
+
+* **A shared engine:** `~/OpticsPCBs/tools/pin_audit/pin_audit.py`.  It reads KiCad netlists, versions D and E, and
+  runs two checks:
+  * every IC's supply, reference and ground pins against its transcribed data sheet table.  Rails behind a bead,
+    an inductor or a small resistor are inherited and named.  A supply pin without a table entry fails, and so does
+    an IC without a table;
+  * every pair walked from its connector to its chip, through series parts and ESD pass-through pins.
+
+  Run on the ECP5's FT2232H, it flags both faults: VPHY and VPLL "3.0..3.6 V on a 1.75..1.85 V rail" (via FB6241),
+  and the USB-C's D+ reaching U502.7 (DM).
+* **The brief:** `~/OpticsPCBs/tools/pin_audit/BRIEF.md`.  What to run, where configs and reports go, severities,
+  and the rules: read anything; write only configs, outputs, `PIN_AUDIT.md` per project, and a one-line pointer in
+  a project's own rev-B list for a BLOCKER or HIGH; change no design file; commit nothing.
+* **Eight audits running in parallel:**
+  * ECP5-2ADC-2DAC;
+  * CostasLink-PYNQ-Z2;
+  * GPSDO-PYNQ-Z2 and SyzygyRadioDrivers;
+  * IcepiZeroADCDAC;
+  * AMOD-and-RFMOD;
+  * GPiBridge, gps-gh-adapters and OWLternatingCurrent;
+  * ai_unleashes_chaos, earth-nmr-pcb, motor-pid and op-amp-pcb;
+  * the older OpticsPCBs boards (Hex Inverter Buffer, Nucleo medium, Photodiode amplifiers, PMOD_direct_to_SMA,
+    STM32, VerifierPCB, heater).
+
+  The results are summarised in `~/OpticsPCBs/tools/pin_audit/SUMMARY.md` when they are in.
+
+**Results** (`~/OpticsPCBs/tools/pin_audit/SUMMARY.md`, and a `PIN_AUDIT.md` in each project).  All 20 projects and
+about 50 boards were audited.
+* **ECP5-2ADC-2DAC:** nothing beyond REVB 12 and 13 by script.  The IcepiZero adapter's audit found that this board's
+  Pmod sockets J303/J304 are mirrored end to end against the Pmod spec's figure 5; that is now **REVB 14**, with
+  warnings in `BRINGUP.md` and `STATUS.md`.  The netlist is right and the placement wrong, which is a third kind of
+  check.  It is now item 3 of `CLAUDE_PCB.md`'s top block and gate 2d.
+* **Other boards' BLOCKER and HIGH findings:**
+  * IcepiZero jlcbuild: an undersized buck inductor and PCA9306 EN on +5V, both uncertain;
+  * GPSDO: the BAV99 clamps drawn backwards (latent: not fitted);
+  * AMOD-A, AMOD-M, PhMOD and AMOD-C: five HIGH, none ordered;
+  * the 2020 photodiode amplifier v1: a 5.5 V op-amp across +-12 V, a dead bootstrap, a 10 V capacitor across 30 V;
+  * photodiode v2: an MPSA06 pinout, uncertain;
+  * STM32 F3: no D+ pull-up;
+  * the never-built PMOD level-shift board: a "+5V" with no source.
+
+  CostasLink and OWL had only their known HIGHs.  The op-amp, Lorenz, motor-pid, Earth-NMR and GPS adapter boards
+  are clean but for LOW findings.
+
+
+## Prompt 108 2026-11-16 14:05
+
+I have not manufactured the IcepiZero adapter board with Pmod sockets, so good catch. Start a sub-agent to fix this
+with kicad. Go through all of the boards and look for that "third kind of error" about connector orientations.
+
+I'm confused about "IcepiZero's other HIGH, a PCA9306 level shifter with EN tied to +5V instead of VREF2, doesn't
+apply to board A, whose PCA9306 is wired correctly." Are you referring to the IcepiZero that I cloned from its author?
+Or the one that we made ourselves and had fabbed by JLCPCB a month or two ago?
+
+Add your findings into the AMOD/RF-MOD's bringup documentation. Another running agent was going to help me with this.
+Once you write this information out or tell me which file I should point the other agent to, I'll do that. Or if you
+can, pass that onto the other agent yourself.
+
+The checker script should not completely ignore do-not-fit parts, but instead should check the situation in cases
+where they are and are not fitted.
+
+(Mid-turn) Which boards are the PMOD connectors connected incorrectly?
+
+## Response 108 2026-11-16 14:05 - 16:30 Claude Opus 5.5
+
+* **Which Pmods look mirrored end to end** (all *uncertain* until a bought Pmod is buzzed):
+  * ECP5-2ADC-2DAC rev A J303/J304: built, REVB 14;
+  * the IcepiZero 2x12 Pmod adapter's J3, and its copy in `~/pcbs/AMOD-and-RFMOD/icepi_adapter/`: not built;
+  * the AMOD/RF-MOD plugs, drawn in the same in-house layout, so they mate with the two above.
+
+  PMOD_direct_to_SMA (direct) and VerifierPCB may have their two rows swapped (LOW: labels only).
+
+  I re-read the Pmod spec's figures 2 and 5 myself. A host socket on an east edge, seen from the top, has pin 1 at
+  the north and VCC/GND at the south, and the module figure agrees. So the mirroring holds on paper.
+* **Five agents** (brief: `~/OpticsPCBs/tools/pin_audit/BRIEF_CONNECTORS.md`):
+  * one to fix the adapter in its generator (`IcepiZeroADCDAC/adapters/make_boards.py`, board `adda12p`) with KiCad
+    10, verified against figure 5;
+  * four sweeping every board's connectors against their standards' drawings, and against the boards they mate with:
+    * the Pmod family: ECP5, AMOD, PMOD_direct_to_SMA, Verifier;
+    * Icepi, the PYNQ-Z2 shields and Syzygy;
+    * `~/pcbs`;
+    * the older OpticsPCBs boards.
+* **The PCA9306 is in the author's design.** Every version of the author's Icepi Zero (v1.0, v1.1, v1.2, v1.3,
+  v1.4; netlists exported from `reference/icepi-zero/hardware/`) ties the PCA9306's EN (pin 8) to +5V.
+  * So it applies to the Icepi Zeros bought from the author, and to our JLCPCB rebuild (`IcepiZeroADCDAC/jlcbuild`, a
+    copy of v1.3 ordered 2026-09).
+  * "Board A" in my sentence was ECP5-2ADC-2DAC board A. Its own PCA9306 is wired right: EN and VREF2 are tied
+    through R6441.
+* **AMOD.**
+  * Rows 1.4-1.15 were added to `~/pcbs/AMOD-and-RFMOD/bringup/REVB.md`: the five HIGH, six MEDIUM, and the Pmod plug
+    layout.
+  * Told the live AMOD session (amod-and-rfmod-00) directly. It checked three rows against its data sheets and moved
+    1.5's DRV8251As to m3/m4.
+  * It says Jason's Prompt 24 there reported the AMOD/RF-MOD boards "came in". If so, their plugs are built in the
+    house layout. The adapter agent was told to make the layout a switch (spec or house), so Jason can choose.
+* **Parts not fitted (DNP):** `pin_audit.py` now checks every board as built (DNP parts off) and with each DNP part
+  fitted on its own, plus named combinations. Two new checks: rails of different voltage joined through a bead, an
+  inductor or a resistor of 10 ohm or less, and diodes conducting from one rail to another, from the data sheet's
+  pinning, failing a symbol whose A/K pins disagree. All 47 configs were rerun.
+  * GPSDO's 13 BAV99 clamps are now caught by code in their fitted variants.
+  * New, latent: SyzygyRadioBoard's L1 (DNI) would short /PLL/VP to ground through L2.
+  * New, LOW: ECP5 D101/D102 carry the same wrong BAV99 symbol, but are wired right for the real part (REVB 15).
+  * CLAUDE_PCB.md's top block, BRIEF.md and SUMMARY.md say so.
+
+## Prompt 109 2026-11-16 14:50
+
+Add another note in CLAUDE_PCB.md about being careful with dual-row headers. There have been several problems with
+these, especially where they are supposed to be 90 degree headers. Suggest ways of checking this and reasoning through
+the geometry to make sure these are correct for their intended application.
+
+## Response 109 2026-11-16 14:50 - 15:05 Claude Opus 5.5
+
+`CLAUDE_PCB.md` section 7 has a new item, "Dual-row headers, and right-angle ones above all, are worked out from
+geometry, never from pad numbers". The top block's third check points to it.
+* **The record so far:**
+  * the ECP5's J303/J304, copied from the Icepi adapter, mirrored end to end;
+  * the AMOD plugs' first layout, which used KiCad's pad numbering on JLCPCB's footprint, so pin k met pin 13 - k;
+  * OWL's tree-perch joint, pin n to 17 - n;
+  * the GPS adapters' side-entry headers, which meet in reverse;
+  * PMOD_direct_to_SMA and Verifier, with the row unknown;
+  * the Pmod sockets a quarter turn round in JLCPCB's preview.
+* **The ten steps:**
+  1. name the four ways a 2 x N part fits its outline, and what each does to power;
+  2. know each side's numbering: zigzag (KiCad, IDC), row by row (Pmod), or a vendor footprint numbered from the
+     other end;
+  3. read the footprint's pads and body from the board file. KiCad's horizontal 2xN socket at rotation 0 has pad 1
+     north, odd pads at x = 0 (the upper row), even pads at -2.54, and the opening at -x. Read from ECP5 J303 for
+     this note: turned 180 degrees at an east edge, pad 1 is south, opposite to the Pmod spec;
+  4. write down the standard figure's viewpoint and compare in its frame;
+  5. mate the halves in one frame: edge to edge, stacked, or through a ribbon. VCC to VCC first;
+  6. two halves that agree prove nothing: check one against the standard independently;
+  7. re-derive a copied connector;
+  8. put the orientation on the silkscreen, at the ends;
+  9. a 1:1 print with the real parts, and a GND-to-GND buzz with a bought module before power;
+  10. the connector check as a build gate (2d).
+
+## Prompt 110 2026-11-16 15:10
+
+Some of the AMOD and RF-MOD boards were ordered and came in. I haven't tested them. The relevant information should be
+updated. I will probe them and use them only where appropriate, but the ECP5 and PMOD boards need to be fixed in their
+REVB's to match the standard. I will mark the existing boards as special and wrong and not to be used with standard
+PMODs.
+
+Tell the Syzygy agent to add the L1 issue to the REPLY.md and to commit its change.
+
+## Response 110 2026-11-16 15:10 - 15:25 Claude Opus 5.5
+
+* **REVB 14 accepted.**
+  * Rev B's J303/J304 follow the spec's figure 5. With the same footprint turned 180 degrees, that is Pmod pin k on
+    pad 13 - 2k and pin k + 6 on pad 14 - 2k.
+  * Rev A boards are marked non-standard and mate only with the AMOD/RF-MOD rev A plugs.
+  * `BRINGUP.md` 7.3 and `STATUS.md` say so.
+* **SUMMARY.md:**
+  * the AMOD rows now say some rev A boards came in, untested;
+  * the Pmod rows are accepted;
+  * the adapter is being redrawn to the spec.
+* **The AMOD session** got Jason's answer and decision, and is asked to update:
+  * its README ("not yet ordered");
+  * REVB 1.4-1.14, as rework or rev B;
+  * 1.15: rev B plugs and its `icepi_adapter/` copy to the spec, rev A marked non-standard;
+  * its handbooks and cards: "Pmod port" means ECP5 rev A only for rev A boards.
+* **The connector agent** will correct the "not yet ordered" sentence in the AMOD `PIN_AUDIT.md`.
+* **The adapter agent** keeps the spec layout. The house switch stays only to reproduce rev A, with a README line: an
+  AMOD rev A plug fits only upside down, with the pmod IO1-4 and IO5-8 swapped.
+* **The Syzygy session** (`opticspcbs-b6`, which committed REPLY.md §6 at 14:37) got the L1 finding, with the netlist
+  facts and the engine output. It is asked to:
+  * check L1's intent;
+  * say whether any board was built with it;
+  * add it to REPLY.md;
+  * commit only that file, not the tree's other uncommitted work. Its PIN_AUDIT.md is still being appended by the
+    connector agent.
+
+(15:35) **The Syzygy session's answer:** L1 is in `SyzygyRadioDrivers/SyzygyRadioBoardDesignReview6/REPLY.md` §7,
+committed as 677b57e (REPLY.md only; not pushed).
+* L1 copies ADI's EV-ADF4355SD1Z (UG-805 fig. 7), which has a 4.7 nH DNI to GND on each RF output, with no stated
+  purpose. Fitting one would short VRF1 there too.
+* U13 limits at 1.0-1.6 A, against L2's 750 mA rating.
+* No SyzygyRadioBoard is built, and L1 is in no BOM or CPL.
+* Recommendation: relabel it "DNI: shunt C only, never L" now, and delete it in rev B. Review 6's synthesizer
+  reviewer had the same point (F9.1), but it never reached review 6's README.
+
+(15:45) **The Icepi Pmod adapter is fixed** (agent report, checked here). Nothing is committed.
+* **Step 1:** the fault was real. Re-derived from the committed board (08305ee) and the spec's figures 2 and 5: a
+  figure-2 module met +3V3 on IO1/IO5 and GND on IO2/IO6.
+* **`make_boards.py`** has `PMOD_LAYOUT = "spec"` (the default) or `"house"`, the latter only to reproduce rev A.
+  * Spec puts Pmod pin k on pad 13-2k and pin k+6 on pad 14-2k.
+  * Routes, nets, legends, pin-1 marks, the schematic, the pin map and the `.lpf` all follow from it.
+  * The `.lpf` names are unchanged; the balls behind them moved (`pmod[0]` is now header 40 / F2).
+* **`out/` is rebuilt in spec:** board, schematic, PDF, renders, pin map, `.lpf`, gerbers. DRC is 0/0 in both
+  layouts, and the house build reproduces the committed board.
+  * Placed J3, re-read here: the upper row (odd pads, far from the opening) runs IO1, IO2, IO3, IO4, GND, 3V3 from
+    north to south, which is figure 5.
+* **`tools/pin_audit/connectors/IcepiZero_pmod_adapter.py`:** ALL PASS, 83 checks, rerun here. Negative runs fail as
+  they should.
+* **The AMOD session got the rev B plug numbering:** in its JLCPCB footprint numbering, pin k on pad 2k and pin k+6 on
+  pad 2k-1. Also what a rev A plug does in a spec socket: it shorts `pmod[0]` to `pmod[4]` on 7 boards, and on AMOD-N
+  it reaches PMOD_VCC.
+* **Found along the way (not fixed):**
+  * A full `make_boards.py` run builds all three panels 80 mm wide instead of 65, because `build()` leaves the global
+    `BOARD_W` at 80 after `adda12p`. HEAD has the same bug; the committed panels are fine.
+  * `kicad-python.sh` and `gerbers.sh` expect `~/.local/kicad10/AppDir`, which does not exist.
+
+(15:55) **Connector check, the Icepi, PYNQ-Z2 and SYZYGY agent:**
+* **Two IcepiZero adapters have a J2 that is the mirror image of their module's connector.** Both are *uncertain*,
+  resting on photographs.
+  * **AN108 2x17 (BLOCKER if built):** the README's "plug it in the right way up" feeds the module -5 V.
+  * **AD9226 2x10 (HIGH):** each signal lands on its row partner, so there is no ADC clock. Workaround: swap seven
+    pairs in the `.lpf`.
+  * Both are in `IcepiZeroADCDAC/PIN_AUDIT.md` C1/C2. A warning was added under the module table in
+    `adapters/README.md`.
+* **Passed:**
+  * jlcbuild: Pi Zero header to within 0.007 mm; HDMI, USB-C and microSD to their drawings; nothing moved from the
+    author's v1.3;
+  * the 2x12 and 2x20 adapters;
+  * the PYNQ-Z2 shields' headers (CostasLink, GPSDO A/B): pad n on pin n at 0.000 mm;
+  * all 78 SyzygyRadioDrivers connectors, including the SYZYGY pod connector.
+* `tools/pin_audit/SUMMARY.md` has a new "Check 3" section.
+
+(16:05) **Connector check, the Pmod family agent:**
+* **ECP5 rev A:** REVB 14 re-derived from the pads and confirmed. A spec module plugged in upright meets 8 faults;
+  turned over it meets none. Its rev B rule (pin k on pad 13-2k) checks out as the spec.
+* **The AMOD/RF-MOD rev A plugs, all eight:** mirrored end to end against figure 2. They mate pin for pin with ECP5
+  rev A and the old Icepi adapter, and only turned over on a spec host. Rev B: pin k on pad 2k (the AMOD session's
+  REVB 1.15 agrees).
+* **VerifierPCB (not built), MEDIUM:** the pad names are a row off. Pads "0".."3" are the lower row, Pmod pins 7-10.
+  J3's grounded pads therefore ground host IO1-4.
+* **PMOD_direct_to_SMA:** spec in direction. The SMA labelled "Pin X" carries pmod[(X+4) mod 8] (LOW).
+* **BRINGUP visit 3** now starts with an unpowered buzz of an HDMI cable in J503: pin 18 to F501, pin 17 to GND.
+  The maker's drawing of the mini-HDMI could not be fetched.
+
+(16:15) **Connector check, the `~/pcbs` agent:** 233 checks over seven projects, no new BLOCKER, HIGH or MEDIUM.
+* **OWL REVB 1.9 confirmed:** pin n meets pin 17-n, and 12 of 16 pins land on the wrong function.
+* **Its suggested "turn J102 on the tree" cannot work:** a right-angle header turned in place points into its own
+  board. Turn J201, or renumber. This is in OWL's `PIN_AUDIT.md` (public repo) and the CLAUDE_PCB.md record.
+* **Settled:** GPiBridge's IEEE-488 plug is the right way round, and the GPS adapters' GH headers put pin 1 where JST
+  does.
+* **Brief corrections:** GPiBridge has no 40-pin HAT header (its "Pi" connectors are the two 3-pin debug sockets),
+  and the GPS adapters carry no GPS module.
+
+(15:50) **Connector check, the older-boards agent.** This was the last of the five; all are done, and so is the
+adapter fix.
+* **STM32 F3 (built), HIGH:** J6 is the AMT22 encoder header with its "+5 V" pin 1 on +3V3 (it needs 3.8-5.5 V).
+  Fix: pin 1 from VCC.
+* **heater (never routed), HIGH:** the OLED and encoder sockets are 1.27 mm pitch, but the modules are 2.54 mm.
+* **MEDIUMs:**
+  * the heater's Nano fits either way round, unmarked;
+  * the STM32's micro-USB face is 3.65 mm inside the edge;
+  * the STM32's BN-880 GPS is on 3.3 V against 3.6-5.5 V.
+* **Photodiode amplifiers:** the M8 ±12 V input matches TE's land and the genders mate. Thorlabs' +12 V contact is
+  still unknown; the safe test is in its TODO.txt.
+* `tools/pin_audit/SUMMARY.md`'s Check 3 section now has every project.
+
+## Prompt 111 2026-11-16 15:55
+
+Don't call it "house". This is just wrong. Call it something else. If I were to solder the PMOD 90 degree header on
+the bottom side rather than the top side, would that work with standard PMODs? Or would that just cause a mess? Is
+there a way to solder these on the bottom of both the ECP5 board and the PMOD boards? Or to solder some Frankenstein
+chain of long double-row pins and double-row sockets to turn the as-built PMOD PCBs and as-built ECP5 board into a
+standard PMOD configuration? If this won't work, let me know and make a note about it not working. You can move the
+unpacked kicad to where other scripts expect it.
+
+## Response 111 2026-11-16 15:55 - 16:15 Claude Opus 5.5
+
+* **"house" is now "mirrored"** in `IcepiZeroADCDAC/adapters/make_boards.py` (`PMOD_LAYOUT = "spec" | "mirrored"`,
+  `--pmod=mirrored`), the adapter README and the connector check. "house style", which names a text style, is left
+  alone.
+  * Rechecked: the check script passes on the spec board in `out/`, on the old board at git 08305ee as "mirrored", and
+    on a fresh `--pmod=mirrored` build in scratch. `out/` is unchanged.
+  * The AMOD session was asked to rename it in its own files.
+  * Earlier responses in this log keep the word as it was said then.
+* **Re-soldering and stacking do not work.** `~/OpticsPCBs/tools/pin_audit/connectors/pmod_rework_options.py` (and
+  its `.out`) models every case from J303's placed pads. Moving a through-hole right-angle part to the bottom keeps
+  each contact's place and net and mirrors it through the board.
+  * **ECP5 sockets moved to the bottom:**
+    * a standard module fits pin for pin only turned over, components down;
+    * upright it is wrong in 12 of 12 contacts (3.3 V on IO1);
+    * the as-built socket already takes a turned-over module with the `.lpf` swap, so the move gains only the swap.
+  * **Both the ECP5 sockets and the AMOD plugs moved:** they still mate each other, and each still meets standard
+    parts only turned over. That is today's situation in mirror image.
+  * **Any chain of straight-through parts:** as is, or turned over (power right, IO1-4 on IO5-8). Never the standard.
+    The fault reverses the order along the row and keeps the rows; rigid straight parts cannot do that without a row
+    swap, so it needs wires that cross.
+  * **What works:**
+    * a turned-over module with pmod[0..3] and pmod[4..7] swapped in the `.lpf`;
+    * a **crossed adapter**: a 2x6 right-angle plug on one edge and a socket on the other, positions reversed, rows
+      kept. One design serves both directions: a bought module on ECP5 rev A, and an AMOD rev A plug on any standard
+      host;
+    * a crossed 12-wire jumper harness.
+  * **Where it is recorded:** CLAUDE_PCB.md section 7 ("A mirrored 2-row connector cannot be undone by re-soldering or
+    by stacking straight parts"), ECP5 REVB 14, SUMMARY.md, and the AMOD session for its REVB 1.15.
+* **KiCad:** the extracted 10.0.7 AppImage moved from scratch to `~/.local/kicad10/AppDir`, where `kicad-python.sh`
+  and `gerbers.sh` look. `KICAD=10 ./kicad-python.sh` runs pcbnew 10.0.7.
+
+## Prompt 112 2026-11-16 16:21
+
+I desoldered FB6241 and lost it. I connected a wire from R6222 to both of the pads of what used to be FB6241. I also
+made a cable with green and white flipped. I just plugged it in. Do what you can. Ethernet, the other USB, and the
+SMAs are connected again.
+
+## Response 112 2026-11-16 16:21 Claude Opus 5.5
+
+* **The wire on both pads ties +1V8_FTDI to +3V3.**
+  * FB6241's pad 1 is +1V8_FTDI: VREGOUT (pin 49) and VCORE (pins 12, 37, 64), plus C6251-C6254. Pad 2 is VPHY/VPLL
+    (pins 4, 9) with C6241.
+  * The FT2232H's VCORE absolute maximum is 2.0 V (DS_FT2232H.txt:3194, "VCORE Supply Voltage -0.3 to +2.0 V"), so
+    3.3 V there is over it.
+* **No FT2232H attached:** the kernel has logged no USB event since 15:01. Only the bench's three FT232R adapters
+  (0403:6001) are listed.
+* **Asked Jason to unplug at once** and move the wire to pad 2 only, the VPHY end next to C6241.
+
+## Prompt 113 2026-11-16 16:23
+
+Isn't FB a ferrite bead that should have the same DC voltage on both sides and is only there for noise?
+
+## Response 113 2026-11-16 16:23 Claude Opus 5.5
+
+* **Yes, it is a bead, and that was the bug.** A bead is about 0 ohm at DC, so with FB6241 fitted VPHY/VPLL (pad 2)
+  sat at whatever pad 1 carries.
+* **Pad 1 is +1V8_FTDI,** the FT2232H's own 1.8 V regulator output (VREGOUT, pin 49), which also feeds VCORE (pins 12,
+  37, 64). That is why VPHY measured 1.78 V.
+* **The rework changes VPHY's source, not the bead:**
+  * pad 2 must leave the 1.8 V net and go to +3V3;
+  * pad 1 must stay on 1.8 V only.
+* **A wire on both pads puts +3V3 on the 1.8 V net,** over VCORE's 2.0 V absolute maximum.
+* **With the bead gone,** VCORE is still fed by VREGOUT directly, because the bead was only VPHY's branch. Pad 1 is
+  left bare.
+
+## Prompt 114 2026-11-16 16:40
+
+Try not to tell me to lift something off of one pad. When I use a hot air gun and tweezers, the whole thing comes off.
+
+## Response 114 2026-11-16 16:40 Claude Opus 5.5
+
+* **Rework is now written as "remove the whole part, wire to one named pad, keep the other bare".** Updated in:
+  * `bringup/make_rework_fig.py` and `figs/rework_ftdi.png`:
+    * "REMOVE FB6241 (all of it); wire R6222's right end -> FB6241's LEFT pad ONLY (blue: VPHY); RIGHT pad (red X:
+      +1.8 V core) stays BARE: Kapton";
+    * the meter checks before power;
+  * REVB 12's rework column;
+  * `STATUS.md` (rewritten for now: board unplugged, wire to the left pad only, then the swapped cable and the kernel
+    log);
+  * `BRINGUP_LOG.md` (two rows: the wire on both pads, and the minutes powered with no USB event);
+  * CLAUDE_PCB.md section 33 (the lesson);
+  * a feedback memory.
+* **For board A now:** take the wire off both pads (both come off together, which is fine) and clean them. Solder the
+  wire from R6222's right end to the LEFT pad only, with the iron. Kapton over the right pad. Then the two Fluke
+  checks.
+
+## Prompt 115 2026-11-16 16:58
+
+Try again. It should be fixed and wired as you suggested. C6241's left side read 3.3V. Everything else should be
+plugged in. Let me know in **bold** when you determine that things are wired correctly. I'll need to step out in a
+minute.
+
+## Response 115 2026-11-16 16:59 - 17:03 Claude Opus 5.5
+
+**Everything is wired correctly: USB PROG enumerates, and JTAG reaches the ECP5.**
+* **The FT2232H survived the minutes at 3.3 V on its core.** The kernel attached it at 16:57:13 as 0403:6010 "Dual
+  RS232-HS" on ttyUSB3 and ttyUSB4 (`/dev/serial/by-id/usb-FTDI_Dual_RS232-HS-if0[01]-port0`).
+* **JTAG:** `openFPGALoader --cable ft2232 --detect` reads idcode 0x41111043, Lattice ECP5 LFE5U-25: the board's part.
+* **Visit 1B:** first against the simulated bench (it has never run on hardware), then on board A without the
+  supply's tests (current, usb_power, soak), so the shared E3646A stays off.
+
+## Prompt 116 2026-11-16 17:03
+
+No HDMI monitor and no PMOD stuff is connected. See how far you can get with the DAC, ADC, CLK, and Ethernet. You've
+got all night.
+
+## Response 116 2026-11-16 17:03 - 17:45 Claude Opus 5.5
+
+(17:00) **Visit 1B run 1:** 5 pass, 3 FAIL, 17 skipped.
+* Passed: JTAG, and blink.bit, whose greeting arrives at 115200 (FPGA -> PC).
+* Failed: bringup.bit loads, but the board never answers on its register bus, so every test that needs the board was
+  skipped.
+
+(17:03-17:16) **Debugged and fixed (REVB 16, a gateware fault, not the board):**
+* **The link is fine.** An echo bitstream returns every byte at 115200, 1M and 3 Mbaud, so channel B and the board's
+  UART wiring work both ways.
+* **The bus logic is fine.** A minimal UART + register bus answers; with the PLL added, it also locks.
+* **The full design's TCXO domain is dead.** A 0x55 stream clocked by clk_tcxo sends nothing; clocked by the PLL, it
+  sends garbage.
+* **Bisection:** removing HDMI alone fixes it. Removing a single clock counter instead also fixes it. Nine global
+  clocks fail; eight or fewer work.
+* **Fix:** `(* noglobal *)` on clk_ext and clk_si0-2, which feed only counters (gateware/bringup/rtl/top.v). Five
+  globals now. The rebuilt bringup.bit answers with the PLL locked.
+* The lesson is in CLAUDE_PCB.md section 33.
+
+(17:17) **Visit 1B run 2:** load_bringup passes. The flash now holds the fixed bringup.bit; the board boots it and
+answers (version 20261116). The run continues.
+
+(17:36-17:45) **Visit 1B run 3: 66 pass, 5 FAIL, 24 info, 1 skipped.**
+* The FAILs: no microSD card; the SDRAM's whole array (polarity 0, REVB 19); USB USER full speed (REVB 20).
+* Figures: `bringup/figs/board_A/2026-11-16/`, made by the new `bringup/plot_v1b.py`.
+* The SDRAM passes its whole array with the clock inverted (polarity 1, now the default).
+* The plug-in check no longer passes USB USER on SE0 alone.
+
+## Prompt 117 2026-11-16 17:45 (mid-turn)
+
+Keep going. Remember, the goal is to make a version of `~/mudd/133electronics/icepi-zero-dac-adc/` for this board,
+with additional features that take advantage of this board's extra stuff, like Ethernet and dual channels. You can
+start a new git repo in `~/mudd/133electronics/`, which I'll eventually make public on github once this board works
+(probably revB).
+
+## Response 117 2026-11-16 17:45 - 18:47 Claude Opus 5.5
+
+* **New repository:** `~/mudd/133electronics/ecp5-2adc-2dac-tutorial` (git, branch main, two commits so far; Jason
+  pushes). Its own log is `dev/CLAUDE_CODE_CHAT.md`.
+* **The board files:**
+  * `board/ecp5_2adc_2dac.lpf`, made from this board's generated LPF by `board/make_lpf.py` (LEDs as a bus, the
+    bring-up's pulls);
+  * `board/README.md`: the parts a design touches, and rev A's quirks (REVB 12-20).
+* **Tested on board A:**
+  * `capture.sv`: both channels, 16384 samples at 25 MS/s;
+  * `udp_stream.sv`: both channels over gigabit Ethernet as UDP. At 1.5625 MS/s a channel nothing was lost. At
+    higher rates the lab network delivers 99 Mbit/s: a 100 Mbit/s link somewhere between the board's gigabit port and
+    the PC.
+* (18:15) The full simulated bench suite (test_bench.py, 206 checks): 205 ok, 1 FAIL, `v2_sdg_swapped`.  That case
+  forbids the text "adc_abs", which visit 2's own hint prints ("after: `bench.py v2 --only adc_abs,...`") when the
+  generator's cables are swapped.  visit2.py has not changed since this morning's commit, so this is the tool's own
+  test against its own message, not today's fixes; left for the next bring-up session.
+* (18:55) **The tutorial so far** (`~/mudd/133electronics/ecp5-2adc-2dac-tutorial`, 13 commits; every design tested
+  on board A, figures in `tutorial/img/`, numbers in its README table):
+  * chapter 1: counter, sawtooth, sine (sin/cos DDS), adc_leds, capture, lockin2 (two-channel lock-in, H = B/A), and
+    **fast.sv**: DACs at 125 MS/s and ADCs at 62.5 MS/s, with a sweep of the analog chain to 30 MHz;
+  * C.01 **clocks.sv**: a four-channel frequency counter and an I2C master that programs the Si5351; 10 kHz-150 MHz
+    all at -25.8 ppm, and CLK IN agrees through CLK OUT and the cable up to 150 MHz;
+  * E.01-E.06 Ethernet: udp_stream, a live scope, commands over Ethernet (udp_control), an arbitrary waveform
+    generator (udp_awg), **deep.sv** (the whole 32 MB SDRAM filled at the full 25 MS/s and fetched, its own SDRAM
+    controller simulated first against the bring-up's model), and **ping.sv** (the board answers ARP and ping);
+  * 14 pages written by a subagent from the tested files and reviewed (2 more coming), checked by the repo's
+    sync_md.py and check_tutorial.py.
+* **For the bring-up** (BRINGUP_LOG rows 18:12-18:42): the SDRAM passes the whole 32 MB at 62.5 MHz under the
+  tutorial's controller; CLK IN works to 150 MHz; the DACs run at 125 MS/s and the ADCs at 62.5 MS/s without a
+  glitch.  **REVB 21 (new, candidate):** the analog chain is clean to about 2 MHz but large signals distort above a
+  few MHz (-45 dBc at 6 MHz, -26 dBc at 11 MHz at 1 V pk-pk), most likely the ADC front end's OPA1612 (27 V/us); a
+  generator into ADC A at visit 2 will say which stage.
+* The Icepi tutorial's Makefile had the same hole as this one's (a failed place and route left a .config that `make
+  load-...` then loaded): fixed and committed there (8241348), logged in its dev/CLAUDE_CODE_CHAT.md.
+* (18:43-18:58) `fast.py --xtalk`: cross-talk to 30 MHz (REVB 22, new); `ping.sv` fixed for a request that comes
+  during a reply; pages 1.10 and E.06; `dev/tools/boardtest/all.py` re-tests every lesson on board A (11 PASS, the two
+  LED lessons to look at).  Times in this response's earlier notes and in BRINGUP_LOG/REVB were corrected from `date`.
+
+## Prompt 118 2026-11-16 18:47 (mid-turn)
+
+Feel free to fix the bugs in the icepi zero tutorial. You can commit there too.
+
+## Response 118 2026-11-16 18:47 - 19:14 Claude Opus 5.5
+
+* Icepi tutorial: `capture.py` and `spectrum.py` timed out at d >= 12 (a fixed 2 s for a recording that takes
+  longer): fixed and committed there (26accdb), after the Makefile fix (8241348).  The signed-shift, first-result and
+  frequency-counter bugs found tonight do not occur there (checked).
+* The open list from that tutorial's review of 2026-11-10 (its Response 31, about 60 possible errors in 30 pages) is
+  being worked through by two agents, chapter 6 and the rest: fix what the pages' own data, code or arithmetic
+  settles, leave the rest for Jason with a reason.
+* (19:14) Icepi tutorial, committed there (8cc2552, f7832b6, c5a4eaf): of its review's ~86 open items (2026-11-10),
+  70 fixed from the pages' own data, code and arithmetic (two from the web: Voyager 1's distance, Hamming's date; one
+  rule: no voice on the 30 m band), 13 found not to be errors, and left for Jason: the prices (7.00 and 7.03's "two
+  $40 boards" against about $112 a set elsewhere), 0.00's "1 GB or more" card (the installer needs 8 GB), 3.03's
+  "about 30 s" paste (23.6 s of pauses, never measured), 6.11's 64 lost bytes (needs the old design re-simulated).
+  Also `qam.py`'s papr() for complex samples, and 6.05's full echo.py output.  `make check`: 0 errors.
+
+## Prompt 119 2026-11-16 19:16
+
+Fix all of the things in "Decisions". Do what you need to do to make these work. Test whatever you can with the
+current hardware configuration. Push the other USB port, the Ethernet, the FTDI serial connections, the DAC, the ADC,
+amd the clocks as fast as they can go. Test for the fastest reliable settings. Is there any Linux stuff thst would be
+worth implementing and testing? If so, do that too. You've got all night. In the morning, give me a list of hardware
+configurations with explicit mappings between scope and function generator channels and connections on the board.
+
+## Response 119 2026-11-16 19:16 - (running) Claude Opus 5.5
+
+* **The Icepi decisions** (committed there, 0e3b86a): prices (two boards about $240 of hardware); 0.00's card 8 GB;
+  3.03's paste time measured (35.1 s through an FT2232H, 23.8 s into a pseudo-terminal); `cdma.py --per-bit {33,93}`
+  (at -20 dB, 93 chips a bit find the code that 33 lose).  6.11's 64 lost bytes: an agent re-simulating the old design.
+* **As fast as they go, on board A** (tutorial repo, each committed with its test; BRINGUP_LOG 19:46-20:12):
+  * serial (FT2232H channel B): 1-12 Mbaud all clean; 12 Mbaud 1199 kB/s each way, 419 Mbit with 0 errors;
+  * clocks: the Si5351 to 225 MHz (divide-by-4 mode; 6 mA of drive above 150 MHz); CLK OUT -> CLK IN exact to
+    300 MHz from the FPGA's PLL, nothing at 400; a stopped clock now reads 0 (it used to repeat its last count);
+  * converters: DACs clean at 187.5 MS/s; ADCs clean to 87.5 MS/s, failing at 93.75 whatever the capture point;
+  * Ethernet: line rate through the PHY's loopback, 60-2000-byte frames, 20 Gbit with 0 errors; the receive eye at
+    least 2.7 ns of the 4 ns bit;
+  * USB USER: no device possible on rev A; the FPGA-side probe shows D501 is not backwards (REVB 20 narrowed).
+* **Linux on the board:** an agent is building a LiteX SoC (VexRiscv, SDRAM, Ethernet) to boot the Icepi's prebuilt
+  kernel and root file system; I run it on board A when it is ready.
+* **The morning list:** `bringup/CONFIGS.md` (configurations 0-6 with every cable named); STATUS.md points to it.
+* Claims: E3646A:1 and Fluke45 released at 20:14 (unused since 10:34).
+
+## Prompt 120 2026-11-16 20:32 (mid-turn)
+
+There is a microSD in the socket, which you can overwrite. It was a new card when I put it in this morning.
+
+## Response 120 2026-11-16 20:32 Claude Opus 5.5
+
+The card answers nothing.  bringup.bit's SPI check: no answer to CMD0.  A pin-level probe (scratch design: the PC sets
+the socket's pins one state at a time through the FPGA, about 50 kHz) tried native SD mode (CMD0, CMD8, CMD55 on CMD)
+and SPI mode (CMD0, CMD8 on DAT0): CMD and DAT0 never left their pull-ups, while the FPGA's own pins read back what
+they drive.  So it is the card's contact, power or clock: `bringup/CONFIGS.md` section 3 is now a 5-minute check
+(seat it until it clicks; 3.3 V at J504 pin 4; the socket's CMD and DAT0 joints by their pull-ups; another card).
+BRINGUP_LOG has the row.  Linux will boot over the serial port or Ethernet until the card works.
+
+## Prompt 121 2026-11-16 20:37 (and five mid-turn additions, 20:40-20:47)
+
+While you are waiting, think of 20 more interesting things that could be done with this board, perhaps inspired by
+what people do with a Red Pitaya FPGA and what a physics lab might use this board for. [...] Push linux as far as you
+can without a working microSD card and no way to test the HDMI or other USB port. Looking at the schematic and PCB,
+what could possibly be wrong with the microSD and the other USB port? Is the other USB port only supposed to be used as
+a host port, not a device port? Should I plug something into it tomorrow like a USB keyboard, mouse, or WiFi card?
+(Then:) For revB, could this USB device be wried to be either a host or a device, or must the resistor configurations
+pick one or the other?  (Then:) For the linux build, what is the best linux-friendly or linux-standard way to get data
+in and out of the DAC and ADC quickly? Use libiio? [...] It would be nice if the board could show up as an iio device
+over ethernet like the ADALM and PlutoSDR do. It would be fun if it could be incorporated into a GNUradio flowgraph
+using this iio path.  (Then:) If you need me to sudo apt install any of those, let me know. / Give me the command line,
+and if I decide it's good, I'll run it. / I don't need to review things that you install in your own directory or
+even in ~/.local. I was asking to review sudo apt install commands for things like libiio.
+
+## Response 121 2026-11-16 20:37 - (running) Claude Opus 5.5
+
+* **USB USER is a device port** by its connector (CC1/CC2 5.1 k Rd; VBUS only to U504 and 100 k: the board never
+  sources 5 V): nothing to plug in tomorrow; a keyboard, mouse or Wi-Fi dongle would get no power.  No over-current
+  in the PC's log (VBUS is not shorted); D501 is not backwards (tested); the meter checks are CONFIGS 2.
+* **Rev B: dual-role is possible** (REVB 23): each resistor to its own FPGA pin (1.5 k pull-ups, 15 k pull-downs,
+  switched by tri-stating), CC by a TUSB320-class controller or switched Rd/Rp, VBUS through a current-limited switch
+  with reverse blocking; LiteX's Linux has a full-speed OHCI host.
+* **The microSD**: the netlist, pin plan, footprint (TF-01A, pads 1-8 in order) and bank 3's supply all check; the
+  socket is mid-board on the back, slot toward the Pmods, silkscreen "contacts toward the board": CONFIGS 3 now
+  starts with the card's orientation, then VDD, the joints, another card.
+* **Twenty ideas** in the tutorial's `dev/IDEAS.md`; tested tonight on board A: an MCA (a synthetic Cs-137 spectrum
+  from DAC 1: 248 lines within 1.9 codes of a straight line), the Allan deviation of the Si5351 crystal against the
+  TCXO (2e-8 at 1 s), the two channels' cross-spectrum (independent but for the TCXO's 25.0 MHz), and **the board as an
+  IIO device**: `iiod_bridge.py` serves libiio's network protocol (port 30431) over udp_awg.sv; `iio_info`,
+  `iio_readdev`, pylibiio and a GNU Radio flowgraph of gr-iio blocks (sin/cos out, both ADCs back, 90.1 degrees).
+* **Linux**: the agent's SoC builds and boots to a login in simulation; on board A next.
+* apt: nothing needed; optional `libevent-dev libjson-c-dev` (LiteX's simulator), already-raised rmem_max (50 MB).
+* (Response 121, continued) Since 20:51:
+  * **Tested on board A** (the tutorial repo, all committed): an MCA (248 lines within 1.9 codes of a straight line);
+    the Allan deviation of the Si5351's crystal against the TCXO (1.9e-8 at 1 s); the cross-spectrum (the channels'
+    noise independent); **the board as an IIO device** (`iiod_bridge.py` on the PC: `iio_info`, `iio_readdev`, GNU
+    Radio's IIO blocks, a GNU Radio Companion scope); **a lock box** (`pid.sv`: the loop's delay 14.2 samples from
+    its oscillation; rejection within 0.1 dB of the model, 10 kHz-10 MHz); **equivalent-time sampling** (`ets.sv`: the
+    PLL's 0.25 ns phase steps, 4 GS/s effective; the ADC front end slews above 150 mV, 33 V/us at 1 V: REVB 21).
+  * **Linux runs on board A** (21:19-21:38, a helper): LiteEth's 32-bit preamble check dropped frames; an 8-bit check
+    fixed it; network boot to a login, ping both ways, all 32 MB.  TCP 133 kB/s (the 50 MHz CPU).  Since 21:50 the
+    helper has the board, making it serve IIO from its own Linux (a freestanding static server), until 01:30 at most.
+  * Tutorial pages 1.12-1.15, C.02, E.08 (24 pages); the Icepi tutorial's 6.11 settled (Response 39 there, 9f81baa).
+  * CLAUDE_PCB.md: §14a's slew-rate rule, §33's "a board can measure its own analog chain".
+
+## Prompt 122 2026-11-16 22:06 (and two more, 22:06 and 22:07)
+
+Should I apt install a Linux cross-compiler?  (Then:) Or should you, in a local directory?  (Then:) Install "right
+toolchain" and take your time getting it right.
+
+## Response 122 2026-11-16 22:06 - 22:40 Claude Opus 5.5
+
+* No apt: Ubuntu has only `gcc-riscv64-linux-gnu`, whose C library is 64-bit; prebuilt rv32 toolchains assume an FPU
+  this CPU lacks.  The right one is Buildroot's, built without root: **Buildroot 2026.02.3** (the Icepi's version),
+  `tools/buildroot` and `tools/buildroot-ecp5` in the tutorial repo, external tree `src/linux/buildroot/`
+  (`ecp5_adda_defconfig`): the Icepi's configuration (rv32ima, ilp32, GCC 13, Linux 6.12, OpenSBI 1.3.1) with musl,
+  the kernel's IIO subsystem and Unix sockets, libiio 0.26 (the PC's) with iiod and its tools, and MicroPython.
+* Started 22:08:22; stopped and restarted at 22:09:37 with a clean PATH: the PC's PATH puts Vitis 2022.1's cmake 3.3.2
+  (which cannot start: no libidn.so.11) and fifteen Xilinx directories with their own cross-compilers ahead of the
+  system's.  libiio 0.26 needs CMake 3.10, which the system's CMake 4.2.3 accepts.
+* Built in 14 min (22:09-22:23): GCC 13.4.0 for musl, rv32ima ilp32 soft-float, no C extension; Linux 6.12 with IIO,
+  Unix sockets and pseudo-terminals; libiio 0.26's iiod; MicroPython; QEMU user mode.  Under QEMU on a CPU cut to
+  rv32ima everything runs (a planted compressed instruction traps).  On board A (22:30-22:40): boots; `ip` works; C
+  runs static and dynamic; MicroPython reads the converter block's ID; /dev/pts mounts; the board's IIO server is
+  built into the image by `post-build.sh`, and GNU Radio reaches it with nothing typed on the board (90.0 degrees).
+  Two traps on the way: the BIOS runs boot.json's last file (it must be OpenSBI), and the device tree's initrd-end
+  must match the root file system (`br_images.py` rewrites it and checks the reserved regions).  Tutorial pages E.08
+  and L.01; commits 0336cff, 7a56b04.

@@ -69,7 +69,16 @@
 `default_nettype none
 
 module top #(parameter BUILD_ID = 32'h20261115, UART_DIV = 25, GATE_CYCLES = 25_000_000, MS_CYCLES = 25_000) (
-    input  wire        clk_tcxo, clk_ext, clk_si0, clk_si1, clk_si2,
+    input  wire        clk_tcxo,
+    // The four inputs below only feed frequency counters, so they stay on local routing (noglobal).  On board A
+    // (2026-11-16) the design with all nine clocks promoted to global nets built clean, met timing and loaded, yet
+    // everything clocked by clk_tcxo was dead: no answer on the UART, the PLL never locked.  Any build with eight
+    // globals or fewer worked, whichever block was left out (nextpnr-0.11.1-83).  Five globals now: clk_tcxo,
+    // clk_s, clk125, clk_pix, eth_rxc.
+    (* noglobal *) input wire clk_ext,
+    (* noglobal *) input wire clk_si0,
+    (* noglobal *) input wire clk_si1,
+    (* noglobal *) input wire clk_si2,
     output wire        clk_out,
     input  wire        btn0, btn1,
     output wire        led0, led1, led2, led3, led4, led5, led6, led7,

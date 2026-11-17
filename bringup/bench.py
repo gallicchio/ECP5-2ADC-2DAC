@@ -109,7 +109,7 @@ SDG_VLIMIT = {1: 2.5, 2: 3.5}
 HP_PEAK_INTO_50 = 1.25           # the 33220A has no limit of its own: this tool refuses more than +-1.25 V across the ADC input's 50 ohm
 SDG_MAX_HZ = 30e6                # the SDG1032X's highest sine
 HP_MAX_HZ = 20e6                 # the 33220A's
-STATS_LOG2 = 12                  # the ADC statistics window used here: 2^12 = 4096 samples (164 us at 25 MS/s), mean noise 1/64 code
+STATS_LOG2 = 12                  # the simulated ADC statistics window (2^12 = 4096 samples); the bench uses SIZES["stats_log2"]: 2^16
 
 # How big each measurement is on the bench, and in simulation (where 1 ms of board time costs 4 s): (bench, --sim)
 SIZES = {
@@ -122,6 +122,8 @@ SIZES = {
     "sdram_soak":  (4096, 256),          # words per soak sample
     "eth_min":     (1000, 20),           # minimum-size frames through the PHY's loopback
     "eth_max":     (1000, 5),            # maximum-size frames
+    "stats_log2":  (16, 12),             # the ADC statistics window: 2^16 = 2.6 ms at 25 MS/s on the bench (the eight reads of one
+                                         # snapshot take ~0.3 ms of board time: board A, 2026-11-16); 2^12 simulated (time is dear)
 }
 
 
@@ -560,16 +562,18 @@ class Bench:
     def analog_setup(self):
         """The converters as every analog test starts: the DAC awake at 50 MS/s, both ports at mid-scale (0 V),
         the ADC at 25 MS/s."""
-        self.bd.gpio(dac_sleep=0)
+        self.bd.gpio(dac_sleep=0, pdwn_a=0, pdwn_b=0)      # both ADCs awake, whatever an earlier command left
         self.bd.dac_config(rate=50e6)
         for port in (1, 2):
             self.bd.dac(port, "dc", code=8192)
         self.adc_setup(25e6)
 
-    def adc_setup(self, rate, decim=0, stats_log2=STATS_LOG2):
+    def adc_setup(self, rate, decim=0, stats_log2=None):
         """The ADC's sample rate, with the capture phase and edge this board uses, and the length of the
         statistics window (2^stats_log2 samples)."""
         negedge = self.adc_negedge_50 if rate >= 50e6 else self.adc_negedge
+        if stats_log2 is None:
+            stats_log2 = self.size("stats_log2")
         return self.bd.adc_config(rate=rate, phase=self.adc_phase, negedge=negedge, decim=decim, stats_log2=stats_log2)
 
     def adc_window(self):

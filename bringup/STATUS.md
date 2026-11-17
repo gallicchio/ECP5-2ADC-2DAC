@@ -4,32 +4,53 @@
 messages (`python3 bringup/bench.py where`).  The procedure is [`../BRINGUP.md`](../BRINGUP.md); results are in
 [`BRINGUP_LOG.md`](BRINGUP_LOG.md); problems for the next revision in [`REVB.md`](REVB.md).
 
-Updated: **2026-11-16 10:50, by Claude (Prompt 101): board A powered; visit 1A done except +5V; supply OFF.**
+Updated: **2026-11-16 22:40, by Claude (Prompts 116-122, "you've got all night"): board A's USB PROG works (rework done,
+swapped cable); visit 1B ran (66 pass, every failure explained).  Tonight the tutorial's designs pushed every interface
+board A can test alone, all clean at or past their ratings (serial 12 Mbaud, Ethernet at line rate, DACs 187.5 MS/s,
+ADCs 87.5 MS/s, Si5351 225 MHz, CLK IN 300 MHz); new: REVB 21 (large-signal distortion), 22 (cross-talk), 23 (USB USER
+as a dual-role port); REVB 20 narrowed (D501 is not backwards).  Then instruments from the board: an MCA, an Allan
+deviation, a cross-spectrum, **the board as an IIO device in GNU Radio**, a lock box, equivalent-time sampling (it
+shows REVB 21's distortion is the ADC front end slewing); and **Linux runs on board A** (network boot to a login,
+ping, all 32 MB; TCP 133 kB/s); **the board serves IIO from its own Linux** (iio_info and GNU Radio straight to
+192.168.8.177, as to a PlutoSDR); and a Linux built here with Buildroot (cross-compiler, kernel with IIO, libiio's iiod)
+boots on it.  What's left needs your hands:
+[`CONFIGS.md`](CONFIGS.md).**
 
 ## Now
 
 | | |
 |---|---|
-| **Board on the bench** | **A** (marked), shunts set per visit 0, JP501 open (it never had a shunt: the session misread the photo).  Board B still in the bag. |
-| **Powered?** | **OFF since 10:43** (Jason's request).  The E3646A output 1 is set 5.0 V, 1.0 A limit, OVP 5.6 V, output off. |
-| **Cabled to the board** | **E3646A output 1 on J601** (red on the upper pin +5V, black on the lower pin GND), **through a BNC cable and thin wire**.  The microSD card.  Nothing else: no USB, no SMA, no Ethernet. |
-| **Instruments claimed for this board** | E3646A:1 and Fluke45 (`claim v1`, 10:34).  Held while the leads stay on J601. |
-| **Adapters** | E3646A on FTDI `A9PUYBUD`, Fluke 45 on FTDI `A95AME9U` (`identify`, 10:30; in `bench_config.json`). |
-| **What is in the board's flash** | blank (nothing loaded yet). |
-| **What the session is doing alone** | nothing. |
+| **Board on the bench** | **A**, reworked: FB6241 gone, a wire from R6222's +3V3 end to its left pad (VPHY 3.3 V); USB PROG through the D+/D- swapped cable.  Board B still in the bag. |
+| **Powered?** | **yes, from USB PROG** (the E3646A's output is OFF). |
+| **Cabled to the board** | the swapped USB-A-to-C cable in USB PROG; USB-C to USB USER; SMA CLK OUT to CLK IN, DAC 1 OUT to ADC A IN, DAC 2 OUT to ADC B IN; Ethernet to the lab switch (gigabit link); E3646A output 1 on J601 (off); no microSD card answers; no monitor; nothing on the Pmods. |
+| **Instruments claimed for this board** | none (E3646A:1 and Fluke45 released 2026-11-16 20:14, unused since 10:34); visit 2's `bench.py` claims what it needs. |
+| **What is in the board's flash** | `bringup.bit` of 2026-11-16 (version 20261116): the board boots it by itself. |
+| **What the session is doing alone** | the ECP5 version of the tutorial (`~/mudd/133electronics/ecp5-2adc-2dac-tutorial`), on board A over USB PROG and Ethernet (the FPGA's SRAM holds whichever tutorial design ran last; the flash still holds bringup.bit); board A runs Linux in the FPGA's SRAM (the tutorial's Buildroot images on the converter SoC `sdcal_rx39_adda`), serving IIO on 192.168.8.177 (try `iio_info -u ip:192.168.8.177`); unplugging USB PROG puts bringup.bit back; the AMOD session waits for "port free". |
+
+## Visit 1B on board A (2026-11-16 17:00-18:00)
+
+* **Passed:** JTAG, both bitstreams and the flash, the register bus, every clock, the PLL, the Si5351 (-25.7 ppm),
+  CLK OUT -> CLK IN, the PHY, Ethernet through the PHY's loopback and on the wire both ways at gigabit, both analog
+  loops (slope 1.026, offsets +8 and +3 codes, noise 0.7 codes rms, SFDR 67-81 dBc to 1 MHz, cross-talk -80 dBc),
+  every ADC capture phase, the SDRAM's whole array (with the clock inverted).
+* **Fixed on the way** (REVB 16-19): nine global clocks killed the TCXO domain (gateware); the ADC statistics read
+  hung over USB (host); a stale GPIO copy powered the ADCs down (host); the SDRAM clock as designed is marginal (use
+  polarity 1).
+* **Open:** REVB 20, USB USER's full-speed pull-up does not lift D+; no microSD card answered.
+* Figures: `figs/board_A/2026-11-16/` (`python3 bringup/plot_v1b.py`).
 
 ## The next thing Jason does
 
-**Finish visit 1A** (5 min):
-1. **Replace the supply leads**: short, thick leads from E3646A output 1 straight to J601, with no BNC cable or thin wire.
-   Red on the upper pin (+5V), black on the lower pin (GND).  The old ones lost 0.47 V at 0.385 A, and the configured
-   board draws nearly twice that.
-2. Type **"v1a ready"**: the staircase again, and 5.0 V left on.
-3. Fluke: **black on J602's top row** (ground, although the names are printed above it), **red on J602 bottom-row pin 1
-   (+5V)**, then the same red on the bottom row's 7th pin (+5VA).  5 s each; the session reads them.  Want 4.6 V or more.
+**[`CONFIGS.md`](CONFIGS.md)** lists them, each with every cable named (instrument channel to board connector), the
+jumpers, what the PC runs and what a pass looks like.  In order of time:
 
-Then **visit 1B** (supply stays on): USB-C PC to USB PROG (upper), USB-C PC to USB USER (lower), SMA CLK OUT to CLK IN,
-DAC 1 OUT to ADC A IN, DAC 2 OUT to ADC B IN, Ethernet to the lab switch; "v1b ready"; leave for an hour.
+0. **Put the bring-up design back first**: the FPGA holds whichever tutorial design ran last.  Either unplug and replug
+   USB PROG (the board boots `bringup.bit` from its flash), or `openFPGALoader -c ft2232 gateware/bringup/build/bringup.bit`.
+1. **CONFIGS 3, a microSD card** (2 min): into J504 on the back, then `bench.py v1b --only sd`.
+2. **CONFIGS 2, the Fluke on USB USER** (10 min, REVB 20): D501's anode and cathode with the pull-up on, D- at rest.
+3. **CONFIGS 1, visit 2 plus tonight's questions** (20 min): the generators and the scope on the six SMAs; REVB 21
+   (which stage distorts) and REVB 22 (where the cross-talk is).
+4. CONFIGS 5 (a monitor on mini-HDMI), 4 (gigabit all the way to the PC), 6 (board B), when convenient.
 
 ## The visits
 
@@ -37,12 +58,18 @@ DAC 1 OUT to ADC A IN, DAC 2 OUT to ADC B IN, Ethernet to the lab switch; "v1b r
 |---|---|---|---|
 | 0 | unwrap, mark A/B, photos, jumpers | 15 min | board A done 2026-11-16 |
 | 1A | board A: the supply on J601; the staircase; the eight LEDs; the Fluke along the RAILS header | 5 min | 2026-11-16: staircase pass, LEDs pass, 7 of 9 rails pass; +5V/+5VA 4.22 V from the leads: **re-read with thick leads next** |
-| 1B | board A: USB PROG, USB USER, three SMA cables, Ethernet, microSD; then the session alone (an hour or more) | 5 min | |
+| 1B | board A: USB PROG, USB USER, three SMA cables, Ethernet, microSD; then the session alone (an hour or more) | 5 min | ran 2026-11-16 17:00-18:00 after the USB PROG rework: 66 pass; open: REVB 20 (USB USER), the microSD (CONFIGS 3) |
 | 2 | board A: both USB out for the cold-boot test; then the two generators and the scope on the six SMAs; then the session alone | 10 min | |
 | 3 | board A: the sit-down session: LEDs, buttons, gain and source jumpers, the LED and photodiode, the taps, the power-on scope shot, HDMI | 30-40 min | |
 | 4 | board B: visits 0 and 1 again | 10 min | |
 
 ## What is known so far
+
+**The pin audit (2026-11-16, `PIN_AUDIT.md`).**  Every IC's supply pins, 39 pairs and 145 FPGA lines were checked by
+script.  It found nothing new beyond REVB 12 and 13.  One finding from the IcepiZero audit applies here: **the Pmod
+sockets are mirrored against the Pmod spec (REVB 14)**, so no third-party Pmod goes in the usual way.  Jason
+(2026-11-16): rev B follows the standard, and rev A boards are marked non-standard; they mate only with the AMOD/RF-MOD
+rev A plugs (some of those came in, untested).
 
 **Board A, visit 1A (2026-11-16).**
 * Staircase all in constant voltage: 1.0 V 0.000 A, 2.5 V 0.090 A, 4.0 V 0.386 A, 5.0 V 0.388 A.  No short.

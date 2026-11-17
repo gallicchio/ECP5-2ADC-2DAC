@@ -13,7 +13,7 @@
         b.phy_id()                           # the RTL8211F's ID over MDIO: (0x001C, 0xC916)
         b.sdram_test(words=1 << 16)          # the memory tester; {'errors': 0, ...}
 
-    python3 ecp5bu.py [/dev/...] ident | leds 0x55 | clocks | dac 1 sine 1e6 | capture 1024 | stats | sdram 65536 | phy | si 0 10e6
+    python3 ecp5bu.py [/dev/...] ident | leds 0x55 | clocks | dac 1 sine 1e6 | capture 1024 | stats | sdram 65536 | phy | si 0 10e6 | gpio usb_pullup=1
 
 The protocol (rtl/regbus.v): one command byte, bit 7 = write, bits 6:0 = the register; a write carries
 4 data bytes least-significant first and gets no answer; a read is answered with 4 bytes; a read of 0x7F
@@ -95,6 +95,10 @@ class SerialTransport(Transport):
         self.s = serial.Serial(port, baud, timeout=timeout, write_timeout=1.0)
         self.s.setDTR(False)                      # DTR/RTS are FPGA inputs (STATUS bits); leave them idle high
         self.s.setRTS(False)
+        try:                                      # the FTDI's latency timer to 1 ms instead of 16 (no root needed)
+            self.s.set_low_latency_mode(True)
+        except Exception:
+            pass
         time.sleep(0.05)
         self.flush()
 
@@ -145,6 +149,14 @@ class Board:
         self.t.write(_pack_r(REGS[reg] if isinstance(reg, str) else reg))
         return struct.unpack('<I', self.t.read(4))[0]
 
+    def rd_many(self, regs):
+        """Several registers in one round trip: every read command goes out in one write (the bus queues up to 64
+        bytes), then all the replies come back together.  The board answers them back to back, 40 us apart at 1 Mbaud."""
+        codes = [REGS[r] if isinstance(r, str) else r for r in regs]
+        self.t.write(bytes(c & 0x7F for c in codes))
+        raw = self.t.read(4 * len(codes))
+        return list(struct.unpack('<%dI' % len(codes), raw))
+
     def resync(self):
         """Five 0x00 bytes complete any half-sent write and read the ID up to five times; drop the replies."""
         self.t.write(b'\x00' * 5)
@@ -186,6 +198,9 @@ class Board:
     def gpio(self, **bits):
         """Set GPIO bits by name: eth_rst_n, mdc, mdio_o, mdio_oe, scl, sda, pdwn_a, pdwn_b, dcs, dfs, dac_mode, dac_sleep, usb_pullup."""
         names = ['eth_rst_n', 'mdc', 'mdio_o', 'mdio_oe', 'scl', 'sda', 'pdwn_a', 'pdwn_b', 'dcs', 'dfs', 'dac_mode', 'dac_sleep', 'usb_pullup']
+        # Read-modify-write from the register itself, not from a copy: on board A (2026-11-16) a stale copy wrote
+        # 0x03d2, which powered both ADCs down and held the PHY in reset (the register reads back what was written).
+        self._gpio = self.rd('GPIO') & 0x1FFF
         g = self._gpio
         for k, v in bits.items():
             i = names.index(k)
@@ -276,13 +291,16 @@ class Board:
 
     def adc_stats(self):
         """min, max, mean (codes) and out-of-range count of each channel over the last statistics window."""
-        while True:
-            s1 = self.rd('STATSEQ')
-            am, asum, bm, bsum, otr = (self.rd(r) for r in ('A_MINMAX', 'A_SUM', 'B_MINMAX', 'B_SUM', 'OTR_N'))
-            s2 = self.rd('STATSEQ')
+        # One window, all from the same one: the sequence number before and after must agree.  The reads go out in one
+        # write (rd_many), because one USB round trip per register (1-16 ms) is far longer than a short window; on
+        # board A (2026-11-16) the old one-read-at-a-time loop never saw two equal numbers with a 164 us window and hung.
+        for _ in range(200):
+            s1, am, asum, bm, bsum, otr, s2, ctl = self.rd_many(('STATSEQ', 'A_MINMAX', 'A_SUM', 'B_MINMAX', 'B_SUM', 'OTR_N', 'STATSEQ', 'ADC_CTRL'))
             if s1 == s2:
                 break
-        n = 1 << ((self.rd('ADC_CTRL') >> 16) & 31)
+        else:
+            raise IOError('adc_stats: the statistics window changed during every read: make the window longer (stats_log2)')
+        n = 1 << ((ctl >> 16) & 31)
         return {'a': {'min': am & 0xFFF, 'max': am >> 16, 'mean': asum / n, 'otr': otr & 0xFFFF},
                 'b': {'min': bm & 0xFFF, 'max': bm >> 16, 'mean': bsum / n, 'otr': otr >> 16}, 'n': n, 'seq': s1}
 
@@ -452,7 +470,7 @@ class Board:
         return self.mdio_read(phy, 0)
 
     # -- the SDRAM ----------------------------------------------------------------------------------------
-    def sdram_test(self, words=1 << 16, pattern=0, rdlat=3, pol=0, timeout=60.0):
+    def sdram_test(self, words=1 << 16, pattern=0, rdlat=3, pol=1, timeout=60.0):
         """Write `words` 16-bit words (<= 2^24 = all 32 MB), read them back, count the mismatches.
         rdlat is the read latency in 50 MHz cycles (3 in simulation; sdram_scan finds the board's); the whole array takes about 5 s."""
         if not self.rd('SDRAM_STAT') & 1:
@@ -476,9 +494,11 @@ class Board:
             r.update(first_addr=self.rd('SDRAM_ERR_ADDR'), first_expected=d >> 16, first_got=d & 0xFFFF)
         return r
 
-    def sdram_scan(self, words=4096):
-        """Every read latency 1..7: the one(s) with 0 errors are the data-valid window."""
-        return {lat: self.sdram_test(words, rdlat=lat)['errors'] for lat in range(1, 8)}
+    def sdram_scan(self, words=4096, pol=1):
+        """Every read latency 1..7: the one(s) with 0 errors are the data-valid window.
+        pol=1 (the SDRAM clock inverted) is board A's setting: with pol=0 its rising edge meets the command lines as
+        they change, and whole-array tests failed part way through (2026-11-16, ECP5 REVB 19)."""
+        return {lat: self.sdram_test(words, rdlat=lat, pol=pol)['errors'] for lat in range(1, 8)}
 
 
     # -- 2026-11-15: USB USER, microSD, HDMI, the RGMII data path, the Pmod loop, the buttons ------------------
@@ -816,6 +836,8 @@ def main(argv):
             print(['0x%02x' % a for a in b.i2c_scan()])
         elif cmd == 'clkout':
             b.clkout(args[0])
+        elif cmd == 'gpio':                      # gpio usb_pullup=1 pdwn_a=0 ...: set bits, print them all (they stay set)
+            print(b.gpio(**{k: int(v, 0) for k, v in (a.split('=') for a in args)}))
         else:
             print(__doc__); return 2
     return 0
