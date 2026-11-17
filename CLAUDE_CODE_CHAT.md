@@ -5960,3 +5960,12 @@ Fluke on 3V3A
 
 * 3V3A (the ADC's 3.3 V) the same in both of ADC B's states (3.28992 V, -0.010 mV apart): not that rail either.
   Next: +5VA.
+
+## Prompt 141 2026-11-17 14:14
+
++5VA
+
+## Response 141 2026-11-17 14:14 - (running) Claude Opus 5.5
+
+* +5VA: no step (flip by flip, 13 flips, -0.035 +- 0.042 mV; the plain -0.2 mV was one stray reading and drift).
+  Next: +1V1, the FPGA's core (the steps come only with the ddc_awg bitstreams).
