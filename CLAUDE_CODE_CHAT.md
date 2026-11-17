@@ -5780,5 +5780,11 @@ router was gigabit. If it's only 100 Mbps, I'll reconfigure the ethernet switch 
   loops, probably.  CLK IN: exact at 1-30 MHz from 0.3 Vpp, at 10-30 MHz from 0.03 Vpp; a 1 MHz sine below 0.3 Vpp
   double-counts (REVB 26).  The scope's channels were at 10x probe (now 1x on CH1, CH2); the 33220A is on USB today
   (bench_config.json says so now).
-* **The Icepi Zeros:** an agent is testing the Icepi tutorial's unrun changes on the cross-connected pair (their own
-  FT231X ports, SRAM only, never the flash).
+* **The Icepi Zeros** (DK0GFLAW and DP051TLX, 08:56-09:26, an agent; the Icepi tutorial's Response 40, commits 20b9ffd
+  to 6a6ba0e there): the cabling checked first (each board's DAC OUT into the other's ADC IN); every unrun change ran:
+  qpsk_modem with the full-flag fix 2,000,000 bytes each way, 0 bit errors (its test's error count was quadratic: 18
+  minutes for two million, now 21 s); chapter 6 on the two boards, 0 bit errors everywhere but OFDM QAM-64 (99 and 6 of
+  366,120), with lora.py (frame found a symbol off in 8 of 9) and equalize.py (records averaged before alignment: 3644
+  of 7560 wrong, now 0) fixed; cdma.py --per-bit 33 loses and 93 finds the code, six runs each; capture.py and
+  spectrum.py at d = 12 and 14 without timeouts.  Both boards back on the 5.08 XY show from their own flash
+  (openFPGALoader -r), neither flash written.
