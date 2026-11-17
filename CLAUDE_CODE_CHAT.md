@@ -5917,3 +5917,14 @@ paths to the 192.168.8.* set of switches? Is there a network configuration probl
   to a segment without the router (the Netgear, presumably).  Proposed: a fixed address on its own subnet, no gateway
   (10.77.0.1/24, the board 10.77.0.177 by the bridge's --board-ip): the warnings stop and the board gets a gigabit path
   with no routing ambiguity.  bell's other interfaces: enp6s0 campus (1 change since boot), enp1s0f0np0 100G (1).
+
+(Prompt 137, mid-turn: "That worked: [the MikroTik: `set sfp28-2 auto-negotiation=no speed=1Gbps`; `monitor sfp28-2`:
+status link-ok, rate 1Gbps, the ADVA module] See if the faster ethernet now works on the ECP5. Do those tests.")
+
+* **Gigabit works** (11:04-11:07, the path through the MikroTik's sfp28-2): both ADCs at 25 MS/s into GNU Radio, 976,896
+  packets, 0 missing, 0 dropped, 0 overruns; both DACs streamed at 25 MS/s never dry; full duplex at 25 MS/s each way
+  three times, 0 missing, never dry (3 packets of 2.93 million dropped by the bridge's ring on bell, in the first run
+  only); 100.7 million samples a channel checked sample by sample (no slip).  CONFIGS 4 done.
+* bell since 11:05: enp22s0f1np1 got 192.168.8.237 by DHCP (the warnings stopped), so bell now has two interfaces and
+  two default routes on 192.168.8.0/24; traffic leaves by the 100G port (metric 100).  Suggested: unplug that cable, or
+  `nmcli connection modify "Wired connection 4" connection.autoconnect no` and disconnect it.

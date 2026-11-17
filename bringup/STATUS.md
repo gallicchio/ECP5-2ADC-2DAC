@@ -4,14 +4,12 @@
 messages (`python3 bringup/bench.py where`).  The procedure is [`../BRINGUP.md`](../BRINGUP.md); results are in
 [`BRINGUP_LOG.md`](BRINGUP_LOG.md); problems for the next revision in [`REVB.md`](REVB.md).
 
-Updated: **2026-11-17 09:15, by Claude (Prompt 128): CONFIGS 1a-1d done with the generators and the scope.  The ADC front end
-makes REVB 21's distortion (a generator straight into ADC A: -28 dBc at 10 MHz, -17 dBc at 20 MHz, slew-limited at the
-OPA1612's 27 V/us; the DACs alone only a 3rd harmonic of -35 to -50 dBc).  REVB 22's cross-talk is neither the ADC side
-(-85 dB at 3 MHz) nor the DAC side (-62 dB): the cables' ground loops, probably.  CLK IN counts a sine exactly at 1-30 MHz
-from 0.3 Vpp (REVB 26: a slow small sine double-counts).  -4V2 is steady at -4.150 V under every bitstream; +5V 4.975 V.
-New: REVB 25 (the RAILS header's labels sit over its ground row).  1e done too: one sine into both ADCs through a tee puts B's path 0.1-0.28 ns the shorter (the clocking
-moves it).  Next for you: configuration 0's cabling for 1f (REVB 24) and REVB 22's cable test, in
-[`CONFIGS.md`](CONFIGS.md).**
+Updated: **2026-11-17 11:07, by Claude (Prompts 128-137): **gigabit to the PC works**: both ADCs at 25 MS/s into GNU Radio
+with no packet missing, both DACs streamed at 25 MS/s never dry, and both at once (Jason joined the Netgear to the
+MikroTik's sfp28-2 at 1 Gbit/s).  This morning's CONFIGS 1a-1e: the ADC front end makes REVB 21's distortion; REVB
+22's cross-talk is neither half alone (the cables, probably); CLK IN counts sines from 0.3 Vpp (REVB 26); B's path
+0.1-0.28 ns the shorter on the ADC side.  New: REVB 25 (the RAILS labels).  The Icepi tutorial's changes passed on
+the two Icepis.  Next: configuration 0's REVB 24 and REVB 22 tests ([`CONFIGS.md`](CONFIGS.md) 1f).**
 
 ## Now
 
@@ -19,8 +17,8 @@ moves it).  Next for you: configuration 0's cabling for 1f (REVB 24) and REVB 22
 |---|---|
 | **Board on the bench** | **A**, reworked: FB6241 gone, a wire from R6222's +3V3 end to its left pad (VPHY 3.3 V); USB PROG through the D+/D- swapped cable.  Board B still in the bag. |
 | **Powered?** | **yes, from USB PROG** (+5V 4.975 V, -4V2 -4.150 V on the Fluke; the E3646A's output is OFF). |
-| **Cabled to the board** | **CONFIGS 1**: the SDG1032X CH1 through a BNC tee -> J101 (ADC A IN) and J102 (ADC B IN), CH2 -> J301 (CLK IN); the 33220A's cable off the board; the scope CH1 -> J204 (DAC 1 OUT), CH2 -> J205 (DAC 2 OUT), CH3 -> J302 (CLK OUT), all BNC-SMA, no external terminators (the scope's inputs set to 50 ohm, probe 1x); the Fluke on J602 (RAILS), red on the bottom-row pin under -4V2, black on the top row; Ethernet; both USB-C.  Two Icepi Zeros on the bench too, each one's DAC OUT into the other's ADC IN, running the XY show. |
-| **Instruments claimed for this board** | all of `bench.py claim v2` (E3646A:1, Fluke45, SDG1032X CH1 and CH2, 33220A, SDS2104X CH1-4) since 09:07; every generator output off. |
+| **Cabled to the board** | **configuration 0**: SMA J204 (DAC 1 OUT) -> J101 (ADC A IN), J205 (DAC 2 OUT) -> J102 (ADC B IN), J302 (CLK OUT) -> J301 (CLK IN); J401 (ETHERNET) to the Netgear, which reaches bell through the MikroTik's sfp28-2 at 1 Gbit/s; both USB-C; the Fluke on J602 (RAILS) -4V2.  No generator or scope on the board. |
+| **Instruments claimed for this board** | the Fluke45 (on -4V2) and the E3646A (output off); the generators and the scope released at 09:44. |
 | **What is in the board's flash** | `bringup.bit` of 2026-11-16 (version 20261116): the board boots it by itself. |
 | **What the session is doing alone** | the FPGA holds the tutorial's `fast.bit` (the flash still bringup.bit); the tutorial's IIO bridge runs on bell; the two Icepi Zeros are back on the 5.08 XY show from their own flash (the Icepi tutorial's tests passed, 09:26). |
 

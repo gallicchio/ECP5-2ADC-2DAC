@@ -127,6 +127,11 @@ reads back with a right CRC.  The tutorial's Linux (below) would like the card n
 
 ## 4. Gigabit all the way to the PC (Jason, 2026-11-17)
 
+**Done 2026-11-17 11:04-11:07: it works at full rate both ways and both at once (BRINGUP_LOG).**  The path:
+board A -> the Netgear ProSafe -> the MikroTik CRS510's **sfp28-2** (an ADVA 1000BASE-T SFP, which the switch only
+links with `/interface ethernet set sfp28-2 auto-negotiation=no speed=1Gbps` on RouterOS) -> qsfp28-1-1 -> bell's
+100G port.  The 96 Mbit/s cap before was the old path through the router.  What follows is the plan as written.
+
 **What is known (2026-11-16 night):**
 - **bell is not the problem.** Its 192.168.8.207 is the ConnectX-5 at 100 Gbit/s, and the route to the board goes out
   of it. iperf3 between bell and szilard (192.168.8.180) gives 21.2 Gbit/s, and bell's card drops nothing
