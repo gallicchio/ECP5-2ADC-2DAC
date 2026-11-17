@@ -9,7 +9,8 @@ makes REVB 21's distortion (a generator straight into ADC A: -28 dBc at 10 MHz, 
 OPA1612's 27 V/us; the DACs alone only a 3rd harmonic of -35 to -50 dBc).  REVB 22's cross-talk is neither the ADC side
 (-85 dB at 3 MHz) nor the DAC side (-62 dB): the cables' ground loops, probably.  CLK IN counts a sine exactly at 1-30 MHz
 from 0.3 Vpp (REVB 26: a slow small sine double-counts).  -4V2 is steady at -4.150 V under every bitstream; +5V 4.975 V.
-New: REVB 25 (the RAILS header's labels sit over its ground row).  Next for you: 1e and 1f in
+New: REVB 25 (the RAILS header's labels sit over its ground row).  1e done too: one sine into both ADCs through a tee puts B's path 0.1-0.28 ns the shorter (the clocking
+moves it).  Next for you: configuration 0's cabling for 1f (REVB 24) and REVB 22's cable test, in
 [`CONFIGS.md`](CONFIGS.md).**
 
 ## Now
@@ -18,7 +19,7 @@ New: REVB 25 (the RAILS header's labels sit over its ground row).  Next for you:
 |---|---|
 | **Board on the bench** | **A**, reworked: FB6241 gone, a wire from R6222's +3V3 end to its left pad (VPHY 3.3 V); USB PROG through the D+/D- swapped cable.  Board B still in the bag. |
 | **Powered?** | **yes, from USB PROG** (+5V 4.975 V, -4V2 -4.150 V on the Fluke; the E3646A's output is OFF). |
-| **Cabled to the board** | **CONFIGS 1**: the SDG1032X CH1 -> J101 (ADC A IN), CH2 -> J301 (CLK IN); the 33220A -> J102 (ADC B IN); the scope CH1 -> J204 (DAC 1 OUT), CH2 -> J205 (DAC 2 OUT), CH3 -> J302 (CLK OUT), all BNC-SMA, no external terminators (the scope's inputs set to 50 ohm, probe 1x); the Fluke on J602 (RAILS), red on the bottom-row pin under -4V2, black on the top row; Ethernet; both USB-C.  Two Icepi Zeros on the bench too, each one's DAC OUT into the other's ADC IN, running the XY show. |
+| **Cabled to the board** | **CONFIGS 1**: the SDG1032X CH1 through a BNC tee -> J101 (ADC A IN) and J102 (ADC B IN), CH2 -> J301 (CLK IN); the 33220A's cable off the board; the scope CH1 -> J204 (DAC 1 OUT), CH2 -> J205 (DAC 2 OUT), CH3 -> J302 (CLK OUT), all BNC-SMA, no external terminators (the scope's inputs set to 50 ohm, probe 1x); the Fluke on J602 (RAILS), red on the bottom-row pin under -4V2, black on the top row; Ethernet; both USB-C.  Two Icepi Zeros on the bench too, each one's DAC OUT into the other's ADC IN, running the XY show. |
 | **Instruments claimed for this board** | all of `bench.py claim v2` (E3646A:1, Fluke45, SDG1032X CH1 and CH2, 33220A, SDS2104X CH1-4) since 09:07; every generator output off. |
 | **What is in the board's flash** | `bringup.bit` of 2026-11-16 (version 20261116): the board boots it by itself. |
 | **What the session is doing alone** | the FPGA holds the tutorial's `fast.bit` (the flash still bringup.bit); the tutorial's IIO bridge runs on bell; the two Icepi Zeros are back on the 5.08 XY show from their own flash (the Icepi tutorial's tests passed, 09:26). |

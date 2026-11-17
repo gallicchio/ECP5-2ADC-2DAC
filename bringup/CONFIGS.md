@@ -75,7 +75,8 @@ runs 1a-1d with the table's cabling; 1e and 1f each change one thing, said there
   the SDG's CH1 a 5 MHz sine, 1 Vpp, load high-Z (the two 50 ohm TERMs in parallel are its 25 ohm load).  The DACs'
   own paths drop out.  The session runs
   `capture.sv` (the TCXO's clock straight to both ADC clock pins, E4 and R2) and `fast.sv` (the ADC clocks from a
-  register) and compares B - A in each: the difference is the clock pins' skew.
+  register) and compares B - A in each: the difference is the clock pins' skew.  **Done 2026-11-17:** B's path 0.106 ns
+  the shorter with capture.bit, 0.27-0.28 ns with fast.bit (`configs1/run_1e.py`).
 
 * **1f. ADC B's 1.9 s steps (REVB 24)**, no generator: **configuration 0's cabling** (every generator and scope cable
   off, the three SMA-SMA cables back: J204 DAC 1 OUT -> J101 ADC A IN, J205 DAC 2 OUT -> J102 ADC B IN, J302 CLK OUT ->

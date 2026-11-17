@@ -5758,7 +5758,7 @@ When you tell me what to do next, like "1e: move the 33220A's cable off J102. Pu
 cables from it to J101 and J102." don't just give jumper numbers like J101 and J102. Always give the silkscreen names of
 these things in addition.
 
-## Response 128 2026-11-17 08:54 - (running) Claude Opus 5.5
+## Response 128 2026-11-17 08:54 - 09:20 Claude Opus 5.5
 
 (Prompt 128's mid-turn messages, 08:56-09:04: "The Fluke is looking at the header pin labeled +5V, but it only reads
 4.151 V. Put on bitstreams that draw more or less current and see if that makes a difference. Should I have the Fluke
@@ -5788,3 +5788,21 @@ router was gigabit. If it's only 100 Mbps, I'll reconfigure the ethernet switch 
   of 7560 wrong, now 0) fixed; cdma.py --per-bit 33 loses and 93 finds the code, six runs each; capture.py and
   spectrum.py at d = 12 and 14 without timeouts.  Both boards back on the 5.08 XY show from their own flash
   (openFPGALoader -r), neither flash written.
+
+## Prompt 129 2026-11-17 09:28 (and 09:33)
+
+The router says GL-AR750S-750. I'm working on a higher speed connection. 1e ready  (Then:) Yes, fix
+lab-instrument-control whenever you need to.
+
+## Response 129 2026-11-17 09:28 - 2026-11-17 09:35 Claude Opus 5.5
+
+* The GL-AR750S's ports are gigabit by its data sheet, so the 96 Mbit/s cap is a link negotiated at 100 Mbit/s or
+  traffic through its CPU; Jason is rewiring.
+* **CONFIGS 1e** (09:32-09:33, `bringup/configs1/run_1e.py`): one sine into both ADC inputs through a BNC tee: B's path
+  0.106 ns the shorter with capture.bit's clocking, 0.27-0.28 ns with fast.bit's; the front ends a constant 0.09-0.12
+  deg; gains matched to 0.1 %.  The ADC side is a small part of the 0.6-0.7 ns the tutorial's 1.06/1.08 found through
+  the DACs (1.15 says so now, tutorial 3856a43).
+* **The Icepi pair:** all the Icepi tutorial's changes passed (Response 128's last bullet).
+* lab-instrument-control (27d571f): fluke_45.py's default adapter is A95AME9U, where the meter answers; siglent.md: check
+  the scope's probe setting (10x had been left on).
+* Next for Jason: configuration 0's cabling, then 1f (REVB 24) and REVB 22's cable test there (CONFIGS 1f).
