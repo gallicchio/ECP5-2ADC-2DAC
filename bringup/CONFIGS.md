@@ -129,8 +129,9 @@ now that it answers ARP:
 python3 gr_iio_tx_rate.py --rate 6250000 --seconds 10 --buffer 262144
 ```
 
-Pass for the stream: the bridge's line "the board's ring ran dry 0 times while it played" (at 25 MS/s a PC stall
-over 0.5 ms empties the board's ring: a few dry spells are expected there, see the tutorial's E.09).
+Pass for the stream: the bridge's line "the board's ring ran dry 0 times while it played", at every rate up to
+25 MS/s (`--rate 25000000`): the sender in C keeps one core spinning from 6.25 MS/s up, and on bell against the fake
+board it never ran dry (the tutorial's E.09).
 
 **Pass for the ADCs:** GNU Radio reports 25 MS/s a channel. The bridge's last line, when the stream stops, says **0 missing from
 the numbering**, 0 dropped by a full ring, and 0 overruns. (If some go missing, `sudo sysctl -w
