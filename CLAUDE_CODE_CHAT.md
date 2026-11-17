@@ -5877,3 +5877,16 @@ syntax error (line 1 column 59)
 * Column 59 is the speed's value: RouterOS names speeds the old way (`1Gbps`, `10Gbps`, `25Gbps`); the link-mode
   names (`1G-baseX`, `1G-baseT-full`) came later (7.12 or so).  So `speed=1Gbps`; Tab after `speed=` lists what this
   version takes.
+
+## Prompt 135 2026-11-17 10:44
+
+I tried the auto-negotiation=no command with  of the 4 SFP modules with no luck.  [The RouterOS terminal pasted:
+`set sfp28-1 auto-negotiation=no speed=1Gbps`, then `monitor sfp28-1 once` four times: status no-link, auto-negotiation
+disabled, **sfp-module-present: no**; the same with `auto-negotiation=yes advertise=1000M-full`: auto-negotiation failed,
+advertising empty, sfp-module-present: no.]
+
+## Response 135 2026-11-17 10:44 Claude Opus 5.5
+
+* `sfp-module-present: no` for all four modules: the switch sees no module in sfp28-1 at all, so the speed settings
+  never got a chance.  First find which port the module is really in (RouterOS's log names the port on every insert;
+  the CRS510's two rows of cages may number top row odd, bottom even), then set that port.
