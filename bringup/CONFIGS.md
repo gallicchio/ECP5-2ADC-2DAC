@@ -47,23 +47,31 @@ The three SMA-SMA cables off.  Then:
 
 Jumpers: JP3001 (CLK IN TERM) **in** for the SDG.  Type **"v2 ready"**: `bench.py v2` runs visit 2 as planned.  Then,
 for REVB 21 and 22 (new tonight), the session loads the tutorial's `fast.bit` (DACs at 125 MS/s, ADCs at 62.5 MS/s) and
-runs 1a-1d with the table's cabling; 1e and 1f each change one thing, said there:
+runs 1a-1d with the table's cabling; 1e and 1f each change one thing, said there.  **1a-1d done 2026-11-17 09:08-09:14**
+(the scripts and results in `configs1/`; the scope's channels must be at probe 1x for these cables: they were at 10x):
 
 * **1a. The ADC side alone (REVB 21):** the SDG's CH1 at 5, 10 and 20 MHz, 1 Vpp, into ADC A; ADC A's 2nd and 3rd
   harmonics.  Pass for the ADC side: below -45 dBc at 10 MHz.  Last night through the DAC and cable: -45 dBc at 6 MHz,
   -26 dBc at 11 MHz.  If ADC A alone is clean, the DAC stage makes the distortion; if not, the OPA1612 front end.
+  **Done: not clean** (-28/-23 dBc at 10 MHz, -17/-25 at 20 MHz, slew-limited at about 27 V/us): the front end (REVB 21).
 * **1b. The DAC side alone (REVB 21):** `fast.py --tone 5e6` etc. on DAC 1, the scope's FFT on CH1 (50 ohm): the DAC's
-  own harmonics at 5, 10, 20 MHz.
+  own harmonics at 5, 10, 20 MHz.  **Done:** a 3rd harmonic of -49 to -53.5, -42, -35.5 dBc; the 2nd at the scope's own
+  level.  And the DAC-to-DAC cross-talk: -62 to -75 dB (REVB 22).
 * **1c. Cross-talk, the ADC side (REVB 22):** the 33220A at DC 0 V, output ON (a 50 ohm source: ADC B terminated); the
   SDG's CH1 at 3, 10 and 30 MHz into ADC A; what ADC B sees, in dBc.  Last night DAC-to-ADC: about -53 dBc at 3 MHz
-  (A into B) and -45 dBc at 30 MHz (B into A).  If ADC B sees about that, the coupling is on the ADC side.
+  (A into B) and -45 dBc at 30 MHz (B into A).  If ADC B sees about that, the coupling is on the ADC side.  **Done:**
+  -85 dBc at 3 MHz, -74.5 at 10, -49 at 30: not the ADC side below 10 MHz, nor the DAC side (-62 dB): the cables' ground
+  loops, probably (REVB 22's test is in configuration 0).
 * **1d. CLK IN's limits with a sine:** the SDG's CH2 at 1, 10 and 30 MHz, at 1 Vpp, then 0.3 Vpp.  Last night a 3.3 V
-  square wave from CLK OUT counted exactly to 300 MHz; a generator's sine is the harder case.
+  square wave from CLK OUT counted exactly to 300 MHz; a generator's sine is the harder case.  **Done: exact** at 1, 10,
+  30 MHz at 1 and 0.3 Vpp, and at 10-30 MHz down to 0.03 Vpp; a 1 MHz sine below 0.3 Vpp double-counts (REVB 26).
 
 * **1e. The two ADC channels' timing skew** (an open question of the tutorial's 1.15: equivalent-time sampling finds
   A and B 0.01-0.02 ns apart, the 25 MS/s designs 0.6-0.7 ns; nextpnr models both ADC clock pins at the same 0.25 ns
-  from the clock net, so the tools can't tell).  **Recable:** the 33220A's BNC-SMA off J102; a **BNC tee** on the SDG's
-  CH1, and from it two BNC-SMA cables to J101 **ADC A IN** and J102 **ADC B IN** (equal lengths: the bench's six are);
+  from the clock net, so the tools can't tell).  **Recable:** the 33220A's BNC-SMA off J102 (**ADC B IN**; on the board's
+  edge "ADC B / IN"); the SDG's CH1 cable off J101 (**ADC A IN**); a **BNC tee** on the SDG's CH1 output, and from the
+  tee two BNC-SMA cables of the same length to J101 (ADC A IN) and J102 (ADC B IN); JP101 and JP201 (the TERM jumpers
+  beside each input, printed "50Ω IN") stay in;
   the SDG's CH1 a 5 MHz sine, 1 Vpp, load high-Z (the two 50 ohm TERMs in parallel are its 25 ohm load).  The DACs'
   own paths drop out.  The session runs
   `capture.sv` (the TCXO's clock straight to both ADC clock pins, E4 and R2) and `fast.sv` (the ADC clocks from a

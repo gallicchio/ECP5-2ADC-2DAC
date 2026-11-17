@@ -4,26 +4,24 @@
 messages (`python3 bringup/bench.py where`).  The procedure is [`../BRINGUP.md`](../BRINGUP.md); results are in
 [`BRINGUP_LOG.md`](BRINGUP_LOG.md); problems for the next revision in [`REVB.md`](REVB.md).
 
-Updated: **2026-11-17 01:36, by Claude (Prompts 116-127, "keep going all night"): board A's USB PROG works (rework done,
-swapped cable); visit 1B ran (66 pass, every failure explained).  Overnight, with this cabling only, the tutorial's
-designs pushed every interface board A can test alone (serial 12 Mbaud, Ethernet at line rate, DACs 187.5 MS/s, ADCs
-87.5 MS/s, Si5351 225 MHz, CLK IN 300 MHz); **the board is an IIO device two ways** (gigabit UDP from the FPGA through
-`iiod_bridge.py`, and its own Linux with a kernel driver and libiio's iiod), in GNU Radio unmodified; the DACs stream
-too (never dry); an SDR receiver, a lock box, a phasemeter (1.6 urad/rtHz), a 21 ps carry-chain TDC, a TRNG.  The
-network caps board A at 96 Mbit/s somewhere on its branch (CONFIGS 4).  New problems: REVB 21 (large-signal distortion
-from the ADC front end slewing), 22 (cross-talk), 23 (USB USER dual-role), **24 (ADC B steps 0.1-0.4 codes on a ~1.9 s
-grid with the ddc_awg bitstreams: source unknown)**.  What's left needs your hands: [`CONFIGS.md`](CONFIGS.md).**
+Updated: **2026-11-17 09:15, by Claude (Prompt 128): CONFIGS 1a-1d done with the generators and the scope.  The ADC front end
+makes REVB 21's distortion (a generator straight into ADC A: -28 dBc at 10 MHz, -17 dBc at 20 MHz, slew-limited at the
+OPA1612's 27 V/us; the DACs alone only a 3rd harmonic of -35 to -50 dBc).  REVB 22's cross-talk is neither the ADC side
+(-85 dB at 3 MHz) nor the DAC side (-62 dB): the cables' ground loops, probably.  CLK IN counts a sine exactly at 1-30 MHz
+from 0.3 Vpp (REVB 26: a slow small sine double-counts).  -4V2 is steady at -4.150 V under every bitstream; +5V 4.975 V.
+New: REVB 25 (the RAILS header's labels sit over its ground row).  Next for you: 1e and 1f in
+[`CONFIGS.md`](CONFIGS.md).**
 
 ## Now
 
 | | |
 |---|---|
 | **Board on the bench** | **A**, reworked: FB6241 gone, a wire from R6222's +3V3 end to its left pad (VPHY 3.3 V); USB PROG through the D+/D- swapped cable.  Board B still in the bag. |
-| **Powered?** | **yes, from USB PROG** (the E3646A's output is OFF). |
-| **Cabled to the board** | the swapped USB-A-to-C cable in USB PROG; USB-C to USB USER; SMA CLK OUT to CLK IN, DAC 1 OUT to ADC A IN, DAC 2 OUT to ADC B IN; Ethernet to the lab switch (gigabit link); E3646A output 1 on J601 (off); no microSD card answers; no monitor; nothing on the Pmods. |
-| **Instruments claimed for this board** | none (E3646A:1 and Fluke45 released 2026-11-16 20:14, unused since 10:34); visit 2's `bench.py` claims what it needs. |
+| **Powered?** | **yes, from USB PROG** (+5V 4.975 V, -4V2 -4.150 V on the Fluke; the E3646A's output is OFF). |
+| **Cabled to the board** | **CONFIGS 1**: the SDG1032X CH1 -> J101 (ADC A IN), CH2 -> J301 (CLK IN); the 33220A -> J102 (ADC B IN); the scope CH1 -> J204 (DAC 1 OUT), CH2 -> J205 (DAC 2 OUT), CH3 -> J302 (CLK OUT), all BNC-SMA, no external terminators (the scope's inputs set to 50 ohm, probe 1x); the Fluke on J602 (RAILS), red on the bottom-row pin under -4V2, black on the top row; Ethernet; both USB-C.  Two Icepi Zeros, cross-connected, on the bench too (the Icepi tutorial's tests). |
+| **Instruments claimed for this board** | all of `bench.py claim v2` (E3646A:1, Fluke45, SDG1032X CH1 and CH2, 33220A, SDS2104X CH1-4) since 09:07; every generator output off. |
 | **What is in the board's flash** | `bringup.bit` of 2026-11-16 (version 20261116): the board boots it by itself. |
-| **What the session is doing alone** | the ECP5 version of the tutorial (`~/mudd/133electronics/ecp5-2adc-2dac-tutorial`, 30 pages), on board A over USB PROG and Ethernet.  The FPGA's SRAM holds the tutorial's `udp_awg.bit`; the flash still holds bringup.bit (unplugging USB PROG puts it back).  The tutorial's IIO bridge is stopped (start it with `python3 iiod_bridge.py &` in its `src/verilog`; stop it before `dev/tools/boardtest/all.py`, whose Ethernet lessons need its UDP port 50011).  The Si5351's outputs are off.  The session goes on with this cabling; the AMOD session waits for "port free". |
+| **What the session is doing alone** | the FPGA holds the tutorial's `fast.bit` (the flash still bringup.bit); the tutorial's IIO bridge runs on bell; an agent tests the Icepi tutorial on the two Icepi Zeros (their own USB ports, SRAM only). |
 
 ## Visit 1B on board A (2026-11-16 17:00-18:00)
 

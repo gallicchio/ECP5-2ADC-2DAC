@@ -5759,3 +5759,26 @@ cables from it to J101 and J102." don't just give jumper numbers like J101 and J
 these things in addition.
 
 ## Response 128 2026-11-17 08:54 - (running) Claude Opus 5.5
+
+(Prompt 128's mid-turn messages, 08:56-09:04: "The Fluke is looking at the header pin labeled +5V, but it only reads
+4.151 V. Put on bitstreams that draw more or less current and see if that makes a difference. Should I have the Fluke
+monitor another voltage before I need to step out in a minute or two?"  Then: "I was wrong. The +5V is 4.975 and the
+Fluke is now correctly on the -4V2 reading -4.150. The mistake where the labels are on top, but the signals are on the
+bottom (where ground should be) has caused several mistakes. That had better be changed in revB. The bottom row needs to
+be ground and the top row, where the labels are, needs to be those voltages."  "I can move the probe back to +5V if that
+would help. I'll try to do it correctly this time."  "Also, I think the switch does go through the router. I thought the
+router was gigabit. If it's only 100 Mbps, I'll reconfigure the ethernet switch connections later.")
+
+* **The rails:** +5V 4.975 V (Jason); -4V2 -4.1496 to -4.1500 V with every bitstream from the counter to fast.bit, and
+  the same in both of ADC B's REVB 24 states (to 0.01 mV): not that path.  REVB 25: J602 RAILS's labels over its ground
+  row; CLAUDE_PCB.md's header rule cites it.  The Fluke answers on A95AME9U (lab-instrument-control's fluke_45.py
+  defaults to A94TF93B).
+* **CONFIGS 1a-1d** (09:08-09:14, `bringup/configs1/`): the ADC front end makes REVB 21's distortion (a generator
+  straight into ADC A at 1 Vpp: 2nd/3rd -28.0/-22.7 dBc at 10 MHz, -16.8/-25.4 at 20 MHz, slew-limited near 27 V/us);
+  the DACs alone a 3rd harmonic of -49 to -53.5 / -42 / -35.5 dBc at 5 / 10 / 20 MHz.  REVB 22: the ADC side -85 / -74.5
+  / -49 dBc at 3 / 10 / 30 MHz, the DAC side -62 to -75 dB: neither reaches last night's -53 dB, so the cables' ground
+  loops, probably.  CLK IN: exact at 1-30 MHz from 0.3 Vpp, at 10-30 MHz from 0.03 Vpp; a 1 MHz sine below 0.3 Vpp
+  double-counts (REVB 26).  The scope's channels were at 10x probe (now 1x on CH1, CH2); the 33220A is on USB today
+  (bench_config.json says so now).
+* **The Icepi Zeros:** an agent is testing the Icepi tutorial's unrun changes on the cross-connected pair (their own
+  FT231X ports, SRAM only, never the flash).
