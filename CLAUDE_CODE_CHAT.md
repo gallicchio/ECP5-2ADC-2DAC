@@ -6021,3 +6021,16 @@ What are all of the little square blips that I see on the green channel 4 trace 
 * The blips on CH4 (TAP B): bursts of 1 us spikes up to 1.5 mV, each burst about 180 us, every 22.15 ms with ddc_awg
   and 66.2 ms with fast.bit: the rate follows the FPGA's design, so it is on the board, most likely a switching
   regulator pulse-skipping at light load.  (A first analysis with too low a threshold had given 2.5 ms: wrong.)
+
+## Prompt 146 2026-11-17 15:09
+
+Carry on with board A. What are other tests or characterization or interesting software or tests we can do? Once we
+have exhausted everything worth doing with just combinations of SMA cables, I have the amod_p and amod_a that we could
+try.
+
+## Response 146 2026-11-17 15:09 - (running) Claude Opus 5.5
+
+* ADC B's code density (DAC 1 triangle, 100.7 M samples at 25 MS/s): DNL -0.23 .. +0.51 LSB, no missing codes, flat to
+  0.3 % but the top 500 codes (0.983): the DC test's compression is slow (it shows when a level is held), not a bent
+  transfer curve.
+* The list of what's next with SMA cables (and software), sent to Jason; then the AMOD-P and AMOD-A tiles.
