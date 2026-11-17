@@ -30,7 +30,7 @@ Jumpers as BRINGUP.md's table (TERM in on A and B, SRC on SMA, GAIN x1, JP3001 a
 E3646A off (its claim released at 20:14).  In this configuration the tutorial's `dev/tools/boardtest/all.py` passes
 everything it checks (11 of 13; the two LED lessons need eyes).
 
-## 1. Generators and scope: visit 2, plus tonight's two questions (about 20 minutes)
+## 1. Generators and scope: visit 2, plus tonight's questions (about 40 minutes)
 
 The three SMA-SMA cables off.  Then:
 
@@ -45,7 +45,8 @@ The three SMA-SMA cables off.  Then:
 | SDS2104X Plus | CH4 | nothing (or a U.FL pigtail on J107 TAP A) | | |
 
 Jumpers: JP3001 (CLK IN TERM) **in** for the SDG.  Type **"v2 ready"**: `bench.py v2` runs visit 2 as planned.  Then,
-for REVB 21 and 22 (new tonight), the session loads the tutorial's `fast.bit` (DACs at 125 MS/s, ADCs at 62.5 MS/s) and:
+for REVB 21 and 22 (new tonight), the session loads the tutorial's `fast.bit` (DACs at 125 MS/s, ADCs at 62.5 MS/s) and
+runs 1a-1d with the table's cabling; 1e and 1f each change one thing, said there:
 
 * **1a. The ADC side alone (REVB 21):** the SDG's CH1 at 5, 10 and 20 MHz, 1 Vpp, into ADC A; ADC A's 2nd and 3rd
   harmonics.  Pass for the ADC side: below -45 dBc at 10 MHz.  Last night through the DAC and cable: -45 dBc at 6 MHz,
@@ -60,18 +61,24 @@ for REVB 21 and 22 (new tonight), the session loads the tutorial's `fast.bit` (D
 
 * **1e. The two ADC channels' timing skew** (an open question of the tutorial's 1.15: equivalent-time sampling finds
   A and B 0.01-0.02 ns apart, the 25 MS/s designs 0.6-0.7 ns; nextpnr models both ADC clock pins at the same 0.25 ns
-  from the clock net, so the tools can't tell).  A **BNC tee**: the SDG's CH1 (a 5 MHz sine, 1 Vpp) into both J101 ADC
-  A IN and J102 ADC B IN at once (two BNC-SMA cables from the tee), so the DACs' own paths drop out.  The session runs
+  from the clock net, so the tools can't tell).  **Recable:** the 33220A's BNC-SMA off J102; a **BNC tee** on the SDG's
+  CH1, and from it two BNC-SMA cables to J101 **ADC A IN** and J102 **ADC B IN** (equal lengths: the bench's six are);
+  the SDG's CH1 a 5 MHz sine, 1 Vpp, load high-Z (the two 50 ohm TERMs in parallel are its 25 ohm load).  The DACs'
+  own paths drop out.  The session runs
   `capture.sv` (the TCXO's clock straight to both ADC clock pins, E4 and R2) and `fast.sv` (the ADC clocks from a
   register) and compares B - A in each: the difference is the clock pins' skew.
 
-* **1f. ADC B's 1.9 s steps (REVB 24)**, no generator.  In the tutorial's `src/verilog`: `make load-ddc_awg` (the steps
-  come with ddc_awg.bit, not udp_awg.bit), the bridge (`python3 iiod_bridge.py &`), then `python3 trng.py --seconds 60`:
-  it prints each channel's "10 ms means wander"; with the steps, B's is 0.13-0.16 codes and A's 0.02-0.03.  First as
-  cabled, to see it is there; then, each 60 s: (1) the two DAC -> ADC cables crossed (DAC 2 -> ADC A); (2) ADC B IN with a 50 ohm SMA
-  terminator and nothing else; (3) USB PROG unplugged (the bitstream stays loaded).  (Received Ethernet frames were
-  ruled out remotely: REVB 24.)  The period (1.895-1.899 s) drifts like an RC timer's, so a warm finger on candidate
-  parts while trng.py runs, watching whether the flips speed up, may find it.
+* **1f. ADC B's 1.9 s steps (REVB 24)**, no generator: **configuration 0's cabling** (every generator and scope cable
+  off, the three SMA-SMA cables back: J204 DAC 1 OUT -> J101 ADC A IN, J205 DAC 2 OUT -> J102 ADC B IN, J302 CLK OUT ->
+  J301 CLK IN), so run it first or last.  In the tutorial's `src/verilog`: `make load-ddc_awg` (the steps come with
+  ddc_awg.bit, not udp_awg.bit), the bridge (`python3 iiod_bridge.py &`), then `python3 trng.py --seconds 60`: it
+  prints each channel's "10 ms means wander"; with the steps, B's is 0.13-0.16 codes and A's 0.02-0.03.  First as
+  cabled, to see it is there; then, 60 s each: (1) the two DAC cables crossed, **J204 DAC 1 OUT -> J102 ADC B IN and
+  J205 DAC 2 OUT -> J101 ADC A IN** (does it move to A?); (2) back as configuration 0, then J102 ADC B IN with a 50 ohm
+  SMA terminator instead of its cable (the ADC side alone); (3) back, and J501 USB PROG unplugged (the bitstream stays
+  loaded; the bridge needs only Ethernet).  Received Ethernet frames were ruled out remotely (REVB 24).  The period
+  (1.895-1.899 s) drifts like an RC timer's, so a warm finger on candidate parts while trng.py runs, watching whether
+  the flips come faster, may find it.
 
 The generators off and the three SMA-SMA cables back afterwards (configuration 0).
 
@@ -180,3 +187,4 @@ and GNU Radio's IIO blocks, as for a PlutoSDR).  While a configuration above is 
 | 1, with a BNC tee (the SDG's **noise** waveform into ADC A and ADC B at once) | the **cross-spectrum** of a common signal: the shared noise stands out of each ADC's own as the averages grow (idea 1; then the board's own resistors, idea 14, at visit 3) | `xspec.py` on `fast.bit` |
 | 4 (gigabit to the PC) | the IIO stream at the board's full rate (both ADCs at 25 MS/s into GNU Radio), not the 1.5625 MS/s a 100 Mbit hop allows | the same as above, with `sampling_frequency=25000000` |
 | 3 (a microSD that answers) | Linux could keep its root file system on the card instead of in RAM | (the tutorial's `src/linux`, once it boots over the network) |
+| 0 (as left) | tonight's later instruments, already run on board A, to repeat at will: a **phasemeter** (1.17, `phasemeter.py`: 1.6 urad/rtHz between the channels), a **carry-chain TDC** (1.18, `tdc.py` on `tdc.bit`: 21 ps codes, CLK OUT -> CLK IN), a **TRNG** (1.19, `trng.py`: 1.5 Mbit/s from the ADCs' noise), an **SDR receiver** (1.16, `ddc_test.py` on `ddc_awg.bit`), the DACs as a **stream** (E.09) | as each page says; the IIO ones need `make load-udp_awg` (or `ddc_awg`) and the bridge |
