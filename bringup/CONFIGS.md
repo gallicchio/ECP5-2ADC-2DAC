@@ -65,12 +65,13 @@ for REVB 21 and 22 (new tonight), the session loads the tutorial's `fast.bit` (D
   `capture.sv` (the TCXO's clock straight to both ADC clock pins, E4 and R2) and `fast.sv` (the ADC clocks from a
   register) and compares B - A in each: the difference is the clock pins' skew.
 
-* **1f. ADC B's 1.9 s steps (REVB 24)**, no generator: `make load-udp_awg`, the bridge, and `python3 trng.py --seconds
-  60` in the tutorial's `src/verilog` (it prints the health tests; the steps show as B's "10 ms means" far above A's).
-  First as cabled (configuration 0), to see it is still there; then the two DAC -> ADC cables crossed (DAC 2 -> ADC
-  A); then ADC B IN with a 50 ohm SMA terminator and nothing else; then with USB PROG unplugged (Ethernet only, the
-  bitstream already loaded).  Each run 60 s.  Meanwhile look and listen along the bench for anything switching every
-  1.9 s.
+* **1f. ADC B's 1.9 s steps (REVB 24)**, no generator.  In the tutorial's `src/verilog`: `make load-ddc_awg` (the steps
+  come with ddc_awg.bit, not udp_awg.bit), the bridge (`python3 iiod_bridge.py &`), then `python3 trng.py --seconds 60`:
+  it prints each channel's "10 ms means wander"; with the steps, B's is 0.13-0.16 codes and A's 0.02-0.03.  First as
+  cabled, to see it is there; then, each 60 s: (1) watch the board's Ethernet activity LED with the stream stopped
+  (`Ctrl-C` trng.py): does it blink every ~1.9 s?  (2) the two DAC -> ADC cables crossed (DAC 2 -> ADC A); (3) ADC B
+  IN with a 50 ohm SMA terminator and nothing else; (4) USB PROG unplugged (the bitstream stays loaded).  If (1) shows a
+  blink, the same with the Ethernet cable moved to another switch port, or a port of a different switch.
 
 The generators off and the three SMA-SMA cables back afterwards (configuration 0).
 
