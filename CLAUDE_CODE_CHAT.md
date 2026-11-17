@@ -5821,3 +5821,19 @@ computer, bell.
 * The gigabit test (udp_awg.bit, the bridge, gr_iio_rate.py at 25 MS/s) got no packet from the board at all since the
   move to the fast switch ("0 packets taken"; bell's neighbour entry for 192.168.8.177 STALE): no link.  Stopped for
   Jason to fix the link.
+
+## Prompt 131 2026-11-17 10:06
+
+I am trying to connect my Netgear ProSafe 24 port gigabit switch to my MikroTik CRS510-8XS-2XQ-IN switch. I have
+several SFP to RJ45 converters, some for gigabit, some for 10/100/1000. When I plug any of these into the MikroTik and
+run a cable to the Netgear, nothing happens (no lights). The cable has been tested to be fine. I'm pretty sure at least
+some of the SFP/SFP+ modules have worked in the past. What is the problem?
+
+## Response 131 2026-11-17 10:06 Claude Opus 5.5
+
+* Most likely the CRS510's SFP28 ports and 1G copper (RJ45) SFP modules: MikroTik documents RJ45 modules for its 10G
+  SFP+ ports with auto-negotiation on; on the CRS510 several users report 1G copper modules giving no link, forced
+  speed or not, depending on module and RouterOS version.  No light even at the Netgear means the module's copper side
+  never came up.  To try: `/interface ethernet monitor sfp28-N once` (module seen? RouterOS version), then
+  auto-negotiation off with speed 1G-baseX, then 1G-baseT-full.  Surest ways round: 1000BASE-X fiber SFPs at both ends
+  if the Netgear has SFP slots, or a 10GBASE-T module with rate adaptation (10G to the MikroTik, 1G to the Netgear).
