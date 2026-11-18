@@ -6046,3 +6046,16 @@ too. 4 takes an hour, and I'll set that up later.
   falling from 10 bits (0.1 MHz) to 2 (10 MHz); IMD3 at -10 dBFS each -76 dBc (1 MHz), -46 (3), -36 (5), -21 (10 MHz);
   the three-cornered hat: the Si5351's plain crystal the steadiest (7e-9 at 1 s), the TCXO 1.9e-8, the switch 2.8e-8.
   Saved in bringup/configs1 (chain_char.py, three_cornered_hat.py, clocks_hat.sv and the results).
+
+## Prompt 148 2026-11-17 15:32
+
+I want to marge through the AMOD-P (passive) tiles with both the Icepi Zero and the ECP5 board at the same time. I've
+configured both to have short (10 cm) SMA cables out of the DAC and into the ADC. The first test, call it p0, I'll just
+connect these together with an SMA female-to-female barrel. Do whatever high-resolution VNA-type scan you want to do with
+this "through" calibrator on both the single connected IcepiZero and the ECP5's DAC 1 to ADC A. I have not changed the 50
+ohm terminators on the ECP5 board. Record your data and make plots in a way that can go into the tutorial. Then we'll
+march through the AMOD-P's p1, p2, p3, etc. I'd like the transitions between each setup to be no longer than the time it
+takes me to swap the cables, so please write everything now and get ready to say things like "go to p1 on both boards" as
+quickly as possible in **bolt** and then to accept my "p1" reply and act on it as quickly as possible.
+
+## Response 148 2026-11-17 15:32 - (running) Claude Opus 5.5
