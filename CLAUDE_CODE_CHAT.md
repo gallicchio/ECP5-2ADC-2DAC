@@ -6270,3 +6270,16 @@ p5
 * The Icepi's p5 (unterminated) rings at 9 MHz, +3.1 dB (its model +10.3 dB at 10 MHz): its input again lossier.
 * To do: the folding into amodp.py's `expected()` for both boards (the Icepi's DAC at 50 MS/s, ADC 25), then the plots
   redrawn from the saved data.  Next tile: p6.
+
+## Prompt 163 2026-11-18 10:15
+
+p6
+
+## Response 163 2026-11-18 10:16 - 2026-11-18 10:17 Claude Opus 5.5
+
+* `amodp_both.sh p6` (10:16:01-10:16:21).  **Board A: -0.5 dB at DC, -3 dB at 115 kHz** (the handbook 118 kHz), the
+  skirt to -51 dB at 1 MHz, then the board's leakage floor (-54 dB at 3 MHz).  The DC loss is the 150 uH coil's 6.1
+  ohm; fitted (coil 6.5 ohm flat, 172 uH, C x0.94) 0.02 dB rms; the same values on the Icepi's unterminated sweep (+4.0
+  dB at 90 kHz) 0.47 dB rms without refitting.
+* A background agent (a fork, scratchpad copies only) builds the DAC-staircase folding into amodp.py's expected()
+  for both boards; it is applied between sweeps.  Next: p7.
