@@ -18,10 +18,10 @@ Several reviewers (GPT, Grok, Gemini, Claude, ...) are reading this same working
 and the author will read every report side by side.  So:
 
 1. **Make one directory for yourself at the project top, named after you, and put everything you produce
-   in it**: `design_review_<YourName>/`, for example `design_review_GPT-5.6Terra/`, `design_review_Grok4.6/`,
-   `design_review_Gemini3.8Flash/` (the convention from the GPSDO board's review).  Notes, scratch scripts,
+   in it**: `design_review/<YourName>/`, for example `design_review/GPT-5.6Terra/`, `design_review/Grok4.6/`,
+   `design_review/Gemini3.8Flash/` (the convention from the GPSDO board's review).  Notes, scratch scripts,
    extracted text, renders, DRC and ERC reports, copies of files you want to annotate, and the report itself
-   go there and nowhere else.  Name the report `design_review_<YourName>/DESIGN_REVIEW_<YourName>.md`.
+   go there and nowhere else.  Name the report `design_review/<YourName>/DESIGN_REVIEW_<YourName>.md`.
 2. **Do not modify, move, delete or create any file outside that directory.**  Not the sheets, not the
    board, not `mfg/release/`, not the Python, not the markdown, not `build/`.  Other reviewers are reading
    those files right now; a changed file would silently invalidate their work and the author's.  To try a
@@ -40,8 +40,8 @@ and the author will read every report side by side.  So:
    `--save-board`, with `-o` pointing into your directory (§9 has the commands).
 5. **If you want to run anything that writes, work on a copy inside your directory:**
    ```bash
-   rsync -a --exclude build --exclude reference --exclude '*-backups' --exclude 'design_review_*' \
-         --exclude .git ./ design_review_<YourName>/repo/
+   rsync -a --exclude build --exclude reference --exclude '*-backups' --exclude design_review \
+         --exclude .git ./ design_review/<YourName>/repo/
    ```
    About 300 MB with the datasheets.  Inside the copy `python3 build.py --no-pcb` (one minute) recreates
    `build/netlist.net` and the rest of the schematic side and is harmless there; the full build is also
@@ -316,7 +316,7 @@ run).  The repository is `OpticsPCBs`, this project is its `ECP5-2ADC-2DAC/` dir
 Read-only commands worth running, all writing into your own directory:
 
 ```bash
-D=design_review_<YourName>; mkdir -p $D
+D=design_review/<YourName>; mkdir -p $D
 KICAD=~/.local/bin/kicad-10.0.6-x86_64.AppImage        # kicad-cli is not on PATH on this machine
 $KICAD kicad-cli pcb drc --severity-all --format json -o $D/drc.json ECP5-2ADC-2DAC.kicad_pcb   # NO --save-board
 $KICAD kicad-cli sch erc --severity-all --format json -o $D/erc.json ECP5-2ADC-2DAC.kicad_sch
@@ -347,10 +347,10 @@ measured or ran.
 
 | Directory | Reviewer | Verdict in one line |
 |---|---|---|
-| `design_review_CopilotSDK/` | CopilotSDK | Do not order unchanged: C4951 is a general-purpose 2 kV MLCC, not a safety capacitor, so the 1500 V claim is unsupported; the DAC stage has no slew margin at 13 MHz; CLK IN is a squarer, not a reference input; RGMII TX delay has no gateware; USB-C current is not negotiated.  ADC bias, Master-SPI order, SDRAM/HDMI skew, ERC/DRC and the fab checks pass. |
-| `design_review_Gemini_3.8_Flash/` | Gemini 3.8 Flash | Twelve findings: THS4521 overdrive puts 2.27 V across its inputs (1 V abs max) when a preamp saturates; ADC input traces 9-10 mm mismatched with the 22 pF caps 10 mm from the pins; DAC_CLK1/WRT1 cross the In4 plane split; USB-C recessed 2.7 mm behind the end plate; no filter on -4.4 V; DAC difference amp AC-unbalanced; squarer on the digital 3.3 V; RGMII skew and RXC in bank 1; C4951 1206 gap; narrow SOIC-8 rotation; USB FPGA port cannot be a host. |
-| `design_review_Grok4.7/` | Grok 4.7 | Do not start over, do not hold the fab: the chains work; fix the claims.  -4.4 V shared 2 MHz spur under the noise lab (no ferrite); silkscreen ±1 V / ±2 V vs simulated ±0.91 / ±1.82 V; power sheet's "no order requirement" sentence is wrong; isolation gap is bench clearance, not 1500 V; RGMII TX delay missing in gateware; a ±10 V source into the high-Z input opens the 100 Ω shunt.  Disputes Gemini on the THS4521 overdrive (recoverable, under 1 V differential). |
-| `design_review_Claude-ultrareview/` | Claude Code's cloud review of PR #2 | A code review: six Python findings, two real (a clone could not build: the pinout CSV was ignored by git; the SMA feeds were routed at 0.15 mm because the first routing pass skipped the RF set), four nits.  Nothing about the circuit. |
+| `design_review/CopilotSDK/` | CopilotSDK | Do not order unchanged: C4951 is a general-purpose 2 kV MLCC, not a safety capacitor, so the 1500 V claim is unsupported; the DAC stage has no slew margin at 13 MHz; CLK IN is a squarer, not a reference input; RGMII TX delay has no gateware; USB-C current is not negotiated.  ADC bias, Master-SPI order, SDRAM/HDMI skew, ERC/DRC and the fab checks pass. |
+| `design_review/Gemini_3.8_Flash/` | Gemini 3.8 Flash | Twelve findings: THS4521 overdrive puts 2.27 V across its inputs (1 V abs max) when a preamp saturates; ADC input traces 9-10 mm mismatched with the 22 pF caps 10 mm from the pins; DAC_CLK1/WRT1 cross the In4 plane split; USB-C recessed 2.7 mm behind the end plate; no filter on -4.4 V; DAC difference amp AC-unbalanced; squarer on the digital 3.3 V; RGMII skew and RXC in bank 1; C4951 1206 gap; narrow SOIC-8 rotation; USB FPGA port cannot be a host. |
+| `design_review/Grok4.7/` | Grok 4.7 | Do not start over, do not hold the fab: the chains work; fix the claims.  -4.4 V shared 2 MHz spur under the noise lab (no ferrite); silkscreen ±1 V / ±2 V vs simulated ±0.91 / ±1.82 V; power sheet's "no order requirement" sentence is wrong; isolation gap is bench clearance, not 1500 V; RGMII TX delay missing in gateware; a ±10 V source into the high-Z input opens the 100 Ω shunt.  Disputes Gemini on the THS4521 overdrive (recoverable, under 1 V differential). |
+| `design_review/Claude-ultrareview/` | Claude Code's cloud review of PR #2 | A code review: six Python findings, two real (a clone could not build: the pinout CSV was ignored by git; the SMA feeds were routed at 0.15 mm because the first routing pass skipped the RF set), four nits.  Nothing about the circuit. |
 | `DESIGN_REVIEW_RESPONSE.md` | the author | Findings 1-11, 4b, 4c with dispositions, fixed in builds 21-25; section 5 reconciles the five reviews into builds 26-27; §4 is what only Jason can check. |
 
 Where the reviewers disagree -- the THS4521 overdrive, whether the DAC stage needs a respin or a label, whether

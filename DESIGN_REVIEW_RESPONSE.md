@@ -1,7 +1,7 @@
 # Design review response -- the author's own pass, 2026-10-04
 
 *Written while the review was done, in the order the work happened; the findings table is the summary.  The
-prompt this answers is `DESIGN_REVIEW_PROMPT.md`.  Other reviewers' reports go in `design_review_<model>/`.*
+prompt this answers is `DESIGN_REVIEW_PROMPT.md`.  Other reviewers' reports go in `design_review/<model>/`.*
 
 ## Verdict, in one paragraph
 
@@ -110,8 +110,8 @@ failure: a code is a name, and nothing else in the pipeline ever looked at what 
 
 ## 5. The five reviews reconciled, and builds 26-27 (2026-10-04, from 10:53)
 
-Four outside reviews of build 25 (`design_review_CopilotSDK/`, `design_review_Gemini_3.8_Flash/`,
-`design_review_Grok4.7/`, `design_review_Claude-ultrareview/`) and this one.  Every finding, what it costs to be
+Four outside reviews of build 25 (`design_review/CopilotSDK/`, `design_review/Gemini_3.8_Flash/`,
+`design_review/Grok4.7/`, `design_review/Claude-ultrareview/`) and this one.  Every finding, what it costs to be
 wrong, and what build 26 does about it.  "Fix" = changed in the generators and rebuilt; "label" = the
 documents, sheet notes and silkscreen now say what the circuit does; "defer" = left for the first board, with
 the measurement that decides.  Jason's own addition: U.FL monitor taps, so the first board's questions are
@@ -165,7 +165,7 @@ Builds: 26 is all of the above.  The log of the work follows.
   overlaps were fixed.
 * Simulations re-run: ADC chain -6.03 dB from the source (the 50 Ω divider) and 23.1 MHz, unchanged by the
   diodes; DAC 1.825 V unloaded / 0.913 V into 50 Ω and 13.4 MHz with the balance capacitor; TIA 6.8 MHz,
-  3.5 dB of peaking; LED driver 48 mA.  Gemini's overload deck (`design_review_Gemini_3.8_Flash/test_ovld.cir`),
+  3.5 dB of peaking; LED driver 48 mA.  Gemini's overload deck (`design_review/Gemini_3.8_Flash/test_ovld.cir`),
   re-run at -4.15 V with and without the BAV99 across the inputs: at ±5 V in the loop holds |IN+ - IN-| at
   0.45 V and the diodes carry nothing -- the 2.27 V in their report is not what their own deck computes; the
   diodes are insurance for the real part outside its common-mode range, which no behavioural model shows.
@@ -250,8 +250,8 @@ Builds: 26 is all of the above.  The log of the work follows.
 
 ## 6. Round 2 reconciled into builds 32-33 (2026-10-07, from 19:29)
 
-Two second-round reports arrived, on build 31 (`11e2f61`): `design_review_CopilotSDK2/` ("order the five boards for
-bring-up; do not hand this revision to the lab as the sheets describe it") and `design_review2_Gemini_3.8_Flash/`
+Two second-round reports arrived, on build 31 (`11e2f61`): `design_review/CopilotSDK2/` ("order the five boards for
+bring-up; do not hand this revision to the lab as the sheets describe it") and `design_review/Gemini_3.8_Flash2/`
 ("do not order build 31 unchanged", for the bench diode and CLK IN).  Grok answered in its chat window only and
 wrote no file, so its review was lost when the window closed; `DESIGN_REVIEW_PROMPT2.md` now says in bold at its top
 that only a file counts and that writing one's own directory is required (CLAUDE_PCB.md §1).  The two that arrived

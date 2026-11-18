@@ -1,7 +1,7 @@
 # Design review, round 2: ECP5-2ADC-2DAC rev A at build 31 -- the last look before it is ordered
 
 **Nothing you say in the chat will be read or kept: your review exists only as a file.  Before anything else, create
-`ECP5-2ADC-2DAC/design_review_<YourName>2/` and write `DESIGN_REVIEW_<YourName>2.md` inside it (§0.1), with your verdict
+`ECP5-2ADC-2DAC/design_review/<YourName>2/` and write `DESIGN_REVIEW_<YourName>2.md` inside it (§0.1), with your verdict
 and findings table first; then fill it in as you go.  Creating that directory and writing into it is required, and it
 is not a change to the project; everything else in the tree is read-only (§0).**  (Added 2026-10-07 after round 2: one
 reviewer answered only in its chat window, and the review was lost when the window closed.)
@@ -25,10 +25,10 @@ Several reviewers read this working tree at the same time; the author reads ever
 own KiCad may have the project open while you work.  So:
 
 1. **One directory for yourself at the project top, the "2" version of your first-round directory, and everything
-   you produce goes in it:** `design_review_<YourName>2/` -- `design_review_CopilotSDK2/`,
-   `design_review_Gemini_3.8_Flash2/`, `design_review_Grok4.7_2/` (an underscore where the name ends in a digit), a
-   new reviewer's `design_review_<YourName>2/`.  Name the report `DESIGN_REVIEW_<YourName>2.md` inside it (so
-   `design_review_Grok4.7_2/DESIGN_REVIEW_Grok4.7_2.md`).  Notes, scratch scripts, extracted text, renders, DRC and ERC
+   you produce goes in it:** `design_review/<YourName>2/` -- `design_review/CopilotSDK2/`,
+   `design_review/Gemini_3.8_Flash2/`, `design_review/Grok4.7_2/` (an underscore where the name ends in a digit), a
+   new reviewer's `design_review/<YourName>2/`.  Name the report `DESIGN_REVIEW_<YourName>2.md` inside it (so
+   `design_review/Grok4.7_2/DESIGN_REVIEW_Grok4.7_2.md`).  Notes, scratch scripts, extracted text, renders, DRC and ERC
    reports, copies of files you annotate: there and nowhere else.
 2. **Do not modify, move, delete or create any file outside that directory.**  Not the sheets, not the board, not
    `mfg/release/`, not the Python, not the markdown, not `build/`, not the first-round directories.  Other reviewers
@@ -36,8 +36,8 @@ own KiCad may have the project open while you work.  So:
 3. **To try a change, copy first, into a temporary place, and change the copy.**  The whole project, with the
    datasheets, is about 300 MB:
    ```bash
-   D=design_review_<YourName>2; mkdir -p $D
-   rsync -a --exclude build --exclude reference --exclude '*-backups' --exclude 'design_review_*' --exclude .git \
+   D=design_review/<YourName>2; mkdir -p $D
+   rsync -a --exclude build --exclude reference --exclude '*-backups' --exclude design_review --exclude .git \
          --exclude '*.lck' ./ $D/repo/
    # or, if your directory should stay small:  T=$(mktemp -d); rsync -a ... ./ $T/  -- and say in the report where it was
    ```
@@ -68,7 +68,7 @@ own KiCad may have the project open while you work.  So:
    datasheet PDFs; you have their text in `docs/datasheets/txt/` and the picture-only pages in
    `docs/datasheets/drawings/`.  You cannot run KiCad; you do not need to.  You may not have the repository's
    `CLAUDE_PCB.md` (the author's lessons file, which may be uncommitted): §4 restates every rule of it that applies
-   here, so nothing is lost.  Your report is your output; the author files it as `design_review_<YourName>2/`.
+   here, so nothing is lost.  Your report is your output; the author files it as `design_review/<YourName>2/`.
 
 ---
 
@@ -492,7 +492,7 @@ directory.  `KICAD` is the AppImage (`~/.local/bin/kicad-10.0.6-x86_64.AppImage`
 subcommand and is not on `PATH`; `KICAD_APPIMAGE` overrides the path for the scripts that need it).
 
 ```bash
-D=design_review_<YourName>2; mkdir -p $D
+D=design_review/<YourName>2; mkdir -p $D
 KICAD=~/.local/bin/kicad-10.0.6-x86_64.AppImage
 # KiCad's own checks and pictures (read the shipped file; NO --save-board, NO --refill-zones: the copper the Gerbers came from)
 $KICAD kicad-cli pcb drc --severity-all --format json -o $D/drc.json ECP5-2ADC-2DAC.kicad_pcb
@@ -578,12 +578,12 @@ Round 1 (build 25, 2026-10-04), one line each; the directories hold the reports 
 
 | Directory | Reviewer | Verdict in one line |
 |---|---|---|
-| `design_review_CopilotSDK/` | CopilotSDK | Do not order unchanged: C4951 is a general-purpose 2 kV MLCC, not a safety capacitor; the DAC stage has no slew margin at 13 MHz; CLK IN is a squarer, not a reference input; RGMII TX delay has no gateware; USB-C current is not negotiated.  ADC bias, Master-SPI order, SDRAM/HDMI skew, ERC/DRC and the fab checks pass. |
-| `design_review_Gemini_3.8_Flash/` | Gemini 3.8 Flash | Twelve findings: THS4521 overdrive 2.27 V across its inputs when a preamp saturates; ADC input traces mismatched; DAC_CLK1/WRT1 cross the In4 split; USB-C recessed behind the end plate; no filter on -4.4 V; DAC difference amp AC-unbalanced; squarer on the digital 3.3 V; RGMII skew; C4951 1206 gap; narrow SOIC-8 rotation; the USB port cannot be a host. |
-| `design_review_Grok4.7/` | Grok 4.7 | Do not start over, do not hold the fab: the chains work; fix the claims.  -4.4 V shared 2 MHz spur under the noise lab; silkscreen ±1 V / ±2 V vs simulated ±0.91 / ±1.82 V; the power sheet's "no order requirement" sentence wrong; isolation gap is bench clearance, not 1500 V; RGMII TX delay missing in gateware; a ±10 V source into the high-Z input opens the 100 Ω shunt.  Disputes Gemini on the THS4521 overdrive. |
-| `design_review_Claude-ultrareview/` | Claude Code's cloud review of PR #2 | A code review: six Python findings, two real (a clone could not build; the SMA feeds routed at 0.15 mm), four nits. |
+| `design_review/CopilotSDK/` | CopilotSDK | Do not order unchanged: C4951 is a general-purpose 2 kV MLCC, not a safety capacitor; the DAC stage has no slew margin at 13 MHz; CLK IN is a squarer, not a reference input; RGMII TX delay has no gateware; USB-C current is not negotiated.  ADC bias, Master-SPI order, SDRAM/HDMI skew, ERC/DRC and the fab checks pass. |
+| `design_review/Gemini_3.8_Flash/` | Gemini 3.8 Flash | Twelve findings: THS4521 overdrive 2.27 V across its inputs when a preamp saturates; ADC input traces mismatched; DAC_CLK1/WRT1 cross the In4 split; USB-C recessed behind the end plate; no filter on -4.4 V; DAC difference amp AC-unbalanced; squarer on the digital 3.3 V; RGMII skew; C4951 1206 gap; narrow SOIC-8 rotation; the USB port cannot be a host. |
+| `design_review/Grok4.7/` | Grok 4.7 | Do not start over, do not hold the fab: the chains work; fix the claims.  -4.4 V shared 2 MHz spur under the noise lab; silkscreen ±1 V / ±2 V vs simulated ±0.91 / ±1.82 V; the power sheet's "no order requirement" sentence wrong; isolation gap is bench clearance, not 1500 V; RGMII TX delay missing in gateware; a ±10 V source into the high-Z input opens the 100 Ω shunt.  Disputes Gemini on the THS4521 overdrive. |
+| `design_review/Claude-ultrareview/` | Claude Code's cloud review of PR #2 | A code review: six Python findings, two real (a clone could not build; the SMA feeds routed at 0.15 mm), four nits. |
 | `DESIGN_REVIEW_RESPONSE.md` | the author | Findings 1-11, 4b, 4c with dispositions, fixed in builds 21-25; §5 reconciles the five reviews into builds 26-27; §4 is what only Jason can check; the build 28 log. |
 
-Round 2 goes into `design_review_CopilotSDK2/`, `design_review_Gemini_3.8_Flash2/`, `design_review_Grok4.7_2/` and
-`design_review_<NewReviewer>2/`; a cloud review's report is filed by the author as `design_review_Claude-ultrareview2/`.
+Round 2 goes into `design_review/CopilotSDK2/`, `design_review/Gemini_3.8_Flash2/`, `design_review/Grok4.7_2/` and
+`design_review/<NewReviewer>2/`; a cloud review's report is filed by the author as `design_review/Claude-ultrareview2/`.
 Where reviewers disagree, the useful answer is the one with the datasheet numbers in it.
