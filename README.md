@@ -3,7 +3,7 @@
 **Completely Open: Schematic, PCB, FPGA, Verilog, RISC-V processor, Linux, Ethernet, 2 ADCs, 2 DACs**
 
 > [!WARNING]
-> ## Rev A needs soldering work. Wait for rev B.
+> ## Rev A mostly works, but only after soldering work. Wait for rev B.
 > **Do not order this board yet.** Rev A's programming port is dead until two things are changed with a
 > soldering iron and a cut cable, and it has other faults listed below. Rev B will fix them.
 
