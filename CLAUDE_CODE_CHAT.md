@@ -6498,3 +6498,32 @@ SMA cables off and JP101 TERM back in. rgb
   (1 s each); the chaser back after.  Needs Jason's eyes: asked what he saw.
 * The tutorial pages for p12 (the fork): ecp5-2adc-2dac-tutorial 14d5df8 (1.21, 32 pages, 0 errors; 1.04's LED order
   fixed), icepi-zero-dac-adc f8f1096 (1.11, 0 errors).
+
+## Prompts 177-180 2026-11-18 14:30-14:32 (while the LED test ran)
+
+177: I don't see the sequence of 8 and then r, g, b. I see the green LED in the RGB led blinking on and off at about 1 Hz
+while the white LEDs go one at a time.  178: I also never see "All eight together".  179: Oh, you may have put the board
+back.  180: Don't do that. Run the rgb demo and have it loop over and over.
+
+## Response 177-180 2026-11-18 14:30 - 2026-11-18 14:32 Claude Opus 5.5
+
+* The sequence had run once at 14:28:39, before Jason looked.  What he saw is the flash design's idle (top.v): green
+  blinks with the PLL locked, red only when unlocked, blue on bus activity; the "red, green, blue cycle" quoted from
+  BRINGUP.md is blink.v's, a different bitstream (corrected in the chat).
+* A scratch loop of the sequence (`led_loop.py`, ecp5bu's `leds()`), first for 180 s, then, as asked, endless.  The
+  first loop's PID was the backgrounded `cd ... && python3 ...` subshell's, so the check refused to kill it and two
+  loops ran together 14:31:20-14:31:46; the python child found with `ps --ppid`, killed by its PID; the endless loop's
+  python PID kept.
+
+## Prompt 181 2026-11-18 14:32
+
+Ok, that is working as intended. My only comment is that the blue LED is too dim, especially compared to green. I
+suppose we could try to make white of various color temperatures, but maybe that's not worth it. Just note in ECP revB
+that green is too bright, red is about right, and blue is too dim.
+
+## Response 181 2026-11-18 14:32 - 2026-11-18 14:33 Claude Opus 5.5
+
+* Visit 3 `leds` passes (BRINGUP_LOG).  REVB 30: D309's three 330 ohm from +3V3 give red ~4 mA but green and blue ~1.5
+  mA with little headroom, and green is rated 350-800 mcd against red's 100-180 and blue's 120-180: rev B blue ~100 ohm,
+  green ~1 k, red 330; for part-to-part evenness the anode on +5V with an N-FET per cathode.
+* The LED loop still runs (stopped before test 2's bitstream).
