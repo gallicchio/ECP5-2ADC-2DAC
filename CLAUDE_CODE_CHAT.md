@@ -6645,3 +6645,18 @@ the board back in, and will go looking for LEDs to use on the external header.
 * Board A back on its flash design after the power cycle (ID read 15:38:19); **DAC 1 set to code 0: the LED driver off**
   before an external LED goes on J210 (the driver gives up to 48 mA at full scale).  `light_curve.py` takes a maximum
   current, 20 mA by default.
+
+## Prompts 203-207 2026-11-18 (after 15:38; test 3)
+
+203: ext.  204: It is not lit. I have the red probe of the fluke on the external header's +5V (with the long wire of the
+LED) and the black probe of the fluke the adjacent external LED header pin.  205 (while running): shunt is on the EXT
+side.  206: Using the flashlight now.  207: done.
+
+## Response 203-207 2026-11-18 15:43 - 2026-11-18 15:53 Claude Opus 5.5
+
+* 203: an LED on J210, 5 mA asked for: the photodiode saw nothing (2108.0 +- 0.2 codes, 0-20 mA).  204: across the LED
+  0.946 V; then 0.91-0.96 V at codes 0, 1707, 4096, 8192 (15:47:54-15:48:11): **the LED driver does not sink current**
+  (REVB 34, open).  DAC 1 back at code 0.
+* 206-207: a phone's flashlight on D103 (`light/pd_log.py`, 0.67 s windows, the board's LEDs dark): ADC B 2114 -> 2267
+  codes (+152, 7.4 uA in the 10 k), three pulses: **the photodiode receiver passes**.  The light path's two faults are the
+  LED (backwards) and its driver.
