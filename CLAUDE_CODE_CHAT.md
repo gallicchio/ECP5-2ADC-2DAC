@@ -6615,3 +6615,15 @@ am now measuring its right-most pin (of 3) on the Fluke with respect to the same
   pad 2 (45.14) Q201's collector; pad 3 (47.68) J210 pin 2, under "EXT".  Jason's right-most pin read 0.0688 V
   (15:26:50): the EXT pin, connected to nothing.  Sent `bringup/figs/visit3_places.png`.  REVB 32: the assembly
   drawings' yellow silk text on white (accepted, documents).
+
+## Prompts 200-201 2026-11-18 15:27-15:29
+
+200: Sorry, I meant left-most pin. It's on the pin above the silkscreen LED now.  201: pad
+
+## Response 200-201 2026-11-18 15:27 - 2026-11-18 15:30 Claude Opus 5.5
+
+* JP2009's LED pin (D201's cathode alone, shunt off): **0.0629 V** (15:27:52), the same as the unconnected EXT pin: no
+  forward current through D201 (a right-way-round red LED would put about 3.5 V there through the Fluke's 10 Mohm).
+* D201's far pad (its anode pad): **4.966 V** (15:29:50): +5V reaches it.  So **D201 is backwards or open**; backwards most
+  likely (JLCPCB's viewer drew this part a half turn off its footprint, DESIGN.md).  Next, unpowered: the Fluke's diode
+  test from JP2009's LED pin (red) to +5V (black): about 1.6-2 V means backwards, OL open.
