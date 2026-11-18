@@ -6418,3 +6418,19 @@ number on the white LEDs so users can see where we the ramp is at.
   only.  The Icepi reaches +3.88 V: all four.
 * Asked Jason to read, on each board and each way, the LEDs' number where the colour first glows; the pages (ECP5
   1.21, Icepi 1.11) are written with those readings.  The two ledramp.sv files stay uncommitted until then.
+
+## Prompt 171 2026-11-18 14:02
+
+On the ECP5 board, with all switches on, I can only see red, a bit of yellow, and maybe a hint of green at the very top
+of the range. You will need to program the Icepi Zero with this slow ramp.
+
+## Response 171 2026-11-18 14:02 - 2026-11-18 14:03 Claude Opus 5.5
+
+* The Icepi DK0GFLAW (the only Icepi on bell's USB; its serial port not re-enumerated since the 13:08:51 load, so no
+  power cycle) loaded again with `ledramp.bit`, verbose: done 14:02:34, the status register's Done flag set.  Nothing
+  on the Icepi can read the ramp back (no ADC on p12): Jason to confirm its five LEDs count.
+* Board A, all four DIP ways on at once: the LEDs are in parallel, so the red (the lowest voltage) takes the current
+  and holds the node near its own ~1.8 V; the yellow gets a little and the green almost nothing: what Jason saw, and the
+  "two at once" point of the page.  The thresholds need one way at a time.  The green (KT-0805G, 513-528 nm InGaN,
+  2.6-3.1 V at its rated current, AMOD-and-RFMOD parts.py) alone sees up to 2.0 V: any glow there is below its 2.36 eV
+  photon.
