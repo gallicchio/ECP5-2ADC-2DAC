@@ -1,0 +1,8 @@
+Total points in In1.Cu plane: 29029
+Is valid: False
+Valid area: 17183.93280651111
+In1.Cu (GND plane) coverage by quadrant:
+  NW (Top-Left)   :  94.3%
+  NE (Top-Right)  :  84.3%
+  SW (Bot-Left)   :  92.4%
+  SE (Bot-Right)  :  94.5%

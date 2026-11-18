@@ -1,0 +1,7 @@
+Total valid In4.Cu polygons: 354
+In4.Cu total copper area: 16871.11596947847
+In4.Cu (Power plane) coverage by quadrant:
+  NW (Top-Left)   :  92.6%
+  NE (Top-Right)  :  83.0%
+  SW (Bot-Left)   :  90.0%
+  SE (Bot-Right)  :  93.2%

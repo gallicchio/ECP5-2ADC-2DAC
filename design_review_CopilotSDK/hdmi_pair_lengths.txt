@@ -1,0 +1,16 @@
+TMDS clock
+  GPDI_CK_P C6407 FPGA  71.065 mm/7 segment(s), HDMI   3.140 mm/5 segment(s), total  74.205 mm
+  GPDI_CK_N C6408 FPGA  70.014 mm/8 segment(s), HDMI   7.523 mm/8 segment(s), total  77.537 mm
+  pair skew: 3.331 mm
+TMDS data 0
+  GPDI_D0_P C6405 FPGA  70.900 mm/7 segment(s), HDMI   3.140 mm/5 segment(s), total  74.040 mm
+  GPDI_D0_N C6406 FPGA  69.848 mm/8 segment(s), HDMI   7.523 mm/8 segment(s), total  77.371 mm
+  pair skew: 3.331 mm
+TMDS data 1
+  GPDI_D1_P C6403 FPGA  72.003 mm/10 segment(s), HDMI   3.140 mm/5 segment(s), total  75.143 mm
+  GPDI_D1_N C6404 FPGA  69.820 mm/10 segment(s), HDMI   7.523 mm/8 segment(s), total  77.343 mm
+  pair skew: 2.200 mm
+TMDS data 2
+  GPDI_D2_P C6401 FPGA  72.637 mm/10 segment(s), HDMI   3.140 mm/5 segment(s), total  75.777 mm
+  GPDI_D2_N C6402 FPGA  71.254 mm/10 segment(s), HDMI   7.523 mm/8 segment(s), total  78.777 mm
+  pair skew: 3.000 mm

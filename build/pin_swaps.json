@@ -1,0 +1,463 @@
+{
+ "report": {
+  "buses": {
+   "J303": {
+    "adapter_height": 56.07500000000001,
+    "chip": "J303",
+    "clearance_problems": 0,
+    "corridors": {},
+    "face": "E",
+    "free_exits": {
+     "B.Cu": [
+      "K12",
+      "K13",
+      "M12"
+     ],
+     "F.Cu": [],
+     "In2.Cu": [],
+     "In3.Cu": [
+      "N13"
+     ]
+    },
+    "ground_stubs": 0,
+    "lanes": 16,
+    "layout": "pmod",
+    "max_adapter_shift": 0.0,
+    "moved": 0,
+    "per_layer": {
+     "B.Cu": 0,
+     "F.Cu": 9,
+     "In2.Cu": 4,
+     "In3.Cu": 3
+    },
+    "rot": 0,
+    "to_extra_face": 0,
+    "vias": 16
+   },
+   "J503": {
+    "adapter_height": 60.300000000000004,
+    "chip": "J503",
+    "clearance_problems": 0,
+    "corridors": {},
+    "face": "E",
+    "free_exits": {
+     "B.Cu": [],
+     "F.Cu": [],
+     "In2.Cu": [],
+     "In3.Cu": []
+    },
+    "ground_stubs": 8,
+    "lanes": 8,
+    "layout": "hdmi",
+    "max_adapter_shift": 0.0,
+    "moved": 0,
+    "per_layer": {
+     "B.Cu": 0,
+     "F.Cu": 4,
+     "In2.Cu": 2,
+     "In3.Cu": 2
+    },
+    "rot": 0,
+    "to_extra_face": 0,
+    "vias": 4
+   },
+   "U103": {
+    "adapter_height": 8.175000000000004,
+    "chip": "U103",
+    "clearance_problems": 0,
+    "corridors": {
+     "F.Cu": [
+      [
+       58.913000000000004,
+       59.487
+      ],
+      [
+       59.313,
+       59.887
+      ]
+     ]
+    },
+    "face": "W",
+    "free_exits": {
+     "B.Cu": [
+      "F5"
+     ],
+     "F.Cu": [
+      "H5",
+      "J1",
+      "J2"
+     ],
+     "In2.Cu": [],
+     "In3.Cu": []
+    },
+    "ground_stubs": 4,
+    "lanes": 26,
+    "layout": "chip",
+    "max_adapter_shift": 2.769999999999996,
+    "moved": 0,
+    "per_layer": {
+     "B.Cu": 1,
+     "F.Cu": 12,
+     "In2.Cu": 9,
+     "In3.Cu": 4
+    },
+    "rot": 0,
+    "to_extra_face": 0,
+    "vias": 14
+   },
+   "U201": {
+    "adapter_height": 7.900000000000006,
+    "chip": "U201",
+    "clearance_problems": 2,
+    "corridors": {
+     "F.Cu": [
+      [
+       58.913000000000004,
+       59.487
+      ],
+      [
+       59.313,
+       59.887
+      ]
+     ]
+    },
+    "face": "W",
+    "free_exits": {
+     "B.Cu": [],
+     "F.Cu": [
+      "R2"
+     ],
+     "In2.Cu": [],
+     "In3.Cu": []
+    },
+    "ground_stubs": 6,
+    "lanes": 32,
+    "layout": "dac",
+    "max_adapter_shift": 0.0,
+    "moved": 0,
+    "per_layer": {
+     "B.Cu": 4,
+     "F.Cu": 12,
+     "In2.Cu": 10,
+     "In3.Cu": 6
+    },
+    "rot": 0,
+    "to_extra_face": 13,
+    "vias": 20
+   },
+   "U305": {
+    "adapter_height": 1.5999999999999943,
+    "chip": "U305",
+    "clearance_problems": 0,
+    "corridors": {
+     "B.Cu": [
+      [
+       70.113,
+       70.68700000000001
+      ],
+      [
+       70.913,
+       71.48700000000001
+      ]
+     ],
+     "In2.Cu": [
+      [
+       70.113,
+       70.68700000000001
+      ]
+     ],
+     "In3.Cu": [
+      [
+       70.113,
+       70.68700000000001
+      ]
+     ]
+    },
+    "face": "N",
+    "free_exits": {
+     "B.Cu": [
+      "E5",
+      "E6",
+      "E10",
+      "E11",
+      "E12"
+     ],
+     "F.Cu": [
+      "A2",
+      "B3",
+      "A3",
+      "A14",
+      "B14",
+      "A15"
+     ],
+     "In2.Cu": [],
+     "In3.Cu": []
+    },
+    "lanes": 39,
+    "layout": "river",
+    "max_adapter_shift": 0.0,
+    "moved": 0,
+    "per_layer": {
+     "B.Cu": 0,
+     "F.Cu": 21,
+     "In2.Cu": 9,
+     "In3.Cu": 9
+    },
+    "rot": 0,
+    "slots": {
+     "B.Cu": 5,
+     "F.Cu": 21,
+     "In2.Cu": 9,
+     "In3.Cu": 9
+    },
+    "vias": 18
+   },
+   "U401": {
+    "adapter_height": 6.875000000000007,
+    "chip": "U401",
+    "clearance_problems": 0,
+    "corridors": {},
+    "face": "E",
+    "free_exits": {
+     "B.Cu": [
+      "F12",
+      "G12"
+     ],
+     "F.Cu": [
+      "E16",
+      "F15",
+      "F16",
+      "G15",
+      "G16",
+      "H15",
+      "H12"
+     ],
+     "In2.Cu": [
+      "G14",
+      "H14"
+     ],
+     "In3.Cu": [
+      "G13",
+      "H13"
+     ]
+    },
+    "ground_stubs": 11,
+    "lanes": 11,
+    "layout": "phy",
+    "max_adapter_shift": 0.0,
+    "moved": 0,
+    "per_layer": {
+     "B.Cu": 0,
+     "F.Cu": 6,
+     "In2.Cu": 4,
+     "In3.Cu": 1
+    },
+    "rot": 180,
+    "to_extra_face": 0,
+    "vias": 5
+   }
+  },
+  "pools": {
+   "north": {
+    "balls": 25,
+    "length_after_mm": 1106.4,
+    "length_before_mm": 1106.4,
+    "moved": 0,
+    "signals": 24
+   },
+   "south": {
+    "balls": 23,
+    "length_after_mm": 822.0,
+    "length_before_mm": 822.0,
+    "moved": 0,
+    "signals": 19
+   },
+   "west": {
+    "balls": 6,
+    "length_after_mm": 35.1,
+    "length_before_mm": 35.1,
+    "moved": 0,
+    "signals": 2
+   }
+  }
+ },
+ "swaps": {
+  "ADC_A_CLK": "E4",
+  "ADC_A_D0": "D1",
+  "ADC_A_D1": "C1",
+  "ADC_A_D10": "H3",
+  "ADC_A_D11": "J5",
+  "ADC_A_D2": "C2",
+  "ADC_A_D3": "B1",
+  "ADC_A_D4": "B2",
+  "ADC_A_D5": "C3",
+  "ADC_A_D6": "D3",
+  "ADC_A_D7": "E3",
+  "ADC_A_D8": "F3",
+  "ADC_A_D9": "G3",
+  "ADC_A_OTR": "J3",
+  "ADC_B_CLK": "R2",
+  "ADC_B_D0": "G5",
+  "ADC_B_D1": "F4",
+  "ADC_B_D10": "F2",
+  "ADC_B_D11": "E1",
+  "ADC_B_D2": "G4",
+  "ADC_B_D3": "H4",
+  "ADC_B_D4": "J4",
+  "ADC_B_D5": "K3",
+  "ADC_B_D6": "H2",
+  "ADC_B_D7": "G1",
+  "ADC_B_D8": "G2",
+  "ADC_B_D9": "F1",
+  "ADC_B_OTR": "E2",
+  "ADC_DCS": "T6",
+  "ADC_DFS": "R6",
+  "ADC_PDWN_A": "R7",
+  "ADC_PDWN_B": "T4",
+  "BTN0": "A3",
+  "BTN1": "B3",
+  "CLK_OUT": "A2",
+  "DAC_CLK1": "N6",
+  "DAC_CLK2": "M9",
+  "DAC_MODE": "R8",
+  "DAC_P1_D0": "L5",
+  "DAC_P1_D1": "K5",
+  "DAC_P1_D10": "P3",
+  "DAC_P1_D11": "N3",
+  "DAC_P1_D12": "M3",
+  "DAC_P1_D13": "L3",
+  "DAC_P1_D2": "N4",
+  "DAC_P1_D3": "M4",
+  "DAC_P1_D4": "L4",
+  "DAC_P1_D5": "K4",
+  "DAC_P1_D6": "P7",
+  "DAC_P1_D7": "P6",
+  "DAC_P1_D8": "P5",
+  "DAC_P1_D9": "P4",
+  "DAC_P2_D0": "L1",
+  "DAC_P2_D1": "L2",
+  "DAC_P2_D10": "T3",
+  "DAC_P2_D11": "R4",
+  "DAC_P2_D12": "M6",
+  "DAC_P2_D13": "M5",
+  "DAC_P2_D2": "M1",
+  "DAC_P2_D3": "M2",
+  "DAC_P2_D4": "N1",
+  "DAC_P2_D5": "P1",
+  "DAC_P2_D6": "P2",
+  "DAC_P2_D7": "R1",
+  "DAC_P2_D8": "T2",
+  "DAC_P2_D9": "R3",
+  "DAC_SLEEP": "R5",
+  "DAC_WRT1": "N5",
+  "DAC_WRT2": "P8",
+  "ETH_INT_N": "F12",
+  "ETH_MDC": "F15",
+  "ETH_MDIO": "F16",
+  "ETH_RST_N": "E16",
+  "ETH_RXD0": "F14",
+  "ETH_RXD1": "E14",
+  "ETH_RXD2": "D14",
+  "ETH_RXD3": "C14",
+  "ETH_RX_CTL": "F13",
+  "ETH_TXC": "E15",
+  "ETH_TXD0": "C16",
+  "ETH_TXD1": "C15",
+  "ETH_TXD2": "B16",
+  "ETH_TXD3": "B15",
+  "ETH_TX_CTL": "D16",
+  "FTDI_DTR": "G15",
+  "FTDI_RTS": "G16",
+  "GPDI_CEC": "K12",
+  "GPDI_CK_N": "K15",
+  "GPDI_CK_P": "K16",
+  "GPDI_D0_N": "J15",
+  "GPDI_D0_P": "J16",
+  "GPDI_D1_N": "K14",
+  "GPDI_D1_P": "J14",
+  "GPDI_D2_N": "J12",
+  "GPDI_D2_P": "J13",
+  "GPDI_HPD": "K13",
+  "GPDI_SCL": "M12",
+  "GPDI_SDA": "N13",
+  "I2C_SCL": "A15",
+  "I2C_SDA": "E13",
+  "LED0": "E6",
+  "LED1": "E5",
+  "LED2": "E10",
+  "LED3": "E11",
+  "LED4": "G12",
+  "LED5": "E12",
+  "LED6": "A14",
+  "LED7": "B14",
+  "LED_B": "R12",
+  "LED_G": "R13",
+  "LED_R": "R14",
+  "PMODA_0": "R15",
+  "PMODA_1": "P15",
+  "PMODA_2": "N16",
+  "PMODA_3": "M16",
+  "PMODA_4": "R16",
+  "PMODA_5": "P16",
+  "PMODA_6": "M15",
+  "PMODA_7": "L15",
+  "PMODB_0": "L16",
+  "PMODB_1": "N14",
+  "PMODB_2": "M14",
+  "PMODB_3": "L14",
+  "PMODB_4": "P14",
+  "PMODB_5": "M13",
+  "PMODB_6": "L13",
+  "PMODB_7": "L12",
+  "SDRAM_A0": "A5",
+  "SDRAM_A1": "B5",
+  "SDRAM_A10": "B6",
+  "SDRAM_A11": "B10",
+  "SDRAM_A12": "C13",
+  "SDRAM_A2": "A4",
+  "SDRAM_A3": "B4",
+  "SDRAM_A4": "B13",
+  "SDRAM_A5": "A13",
+  "SDRAM_A6": "B12",
+  "SDRAM_A7": "A12",
+  "SDRAM_A8": "B11",
+  "SDRAM_A9": "A11",
+  "SDRAM_BA0": "B7",
+  "SDRAM_BA1": "A6",
+  "SDRAM_CAS_N": "A8",
+  "SDRAM_CKE": "C12",
+  "SDRAM_CLK": "C11",
+  "SDRAM_CS_N": "A7",
+  "SDRAM_DQ0": "D6",
+  "SDRAM_DQ1": "D5",
+  "SDRAM_DQ10": "D13",
+  "SDRAM_DQ11": "D12",
+  "SDRAM_DQ12": "D11",
+  "SDRAM_DQ13": "D10",
+  "SDRAM_DQ14": "D9",
+  "SDRAM_DQ15": "D8",
+  "SDRAM_DQ2": "D4",
+  "SDRAM_DQ3": "C6",
+  "SDRAM_DQ4": "C5",
+  "SDRAM_DQ5": "C4",
+  "SDRAM_DQ6": "A10",
+  "SDRAM_DQ7": "B9",
+  "SDRAM_DQ8": "C9",
+  "SDRAM_DQ9": "C8",
+  "SDRAM_DQMH": "C10",
+  "SDRAM_DQML": "A9",
+  "SDRAM_RAS_N": "B8",
+  "SDRAM_WE_N": "E9",
+  "SD_CLK": "T15",
+  "SD_CMD": "P12",
+  "SD_D0": "T14",
+  "SD_D1": "T13",
+  "SD_D2": "P13",
+  "SD_D3": "N12",
+  "UART_RX": "H15",
+  "UART_TX": "H14",
+  "USB_DN": "G13",
+  "USB_DP": "G14",
+  "USB_PULLUP": "H13"
+ }
+}

@@ -1,0 +1,21 @@
+Track copper density by layer and quadrant:
+Layer F.Cu:
+  NW  : 4.36%
+  NE  : 6.15%
+  SW  : 5.77%
+  SE  : 5.91%
+Layer In2.Cu:
+  NW  : 1.49%
+  NE  : 1.48%
+  SW  : 1.98%
+  SE  : 2.18%
+Layer In3.Cu:
+  NW  : 1.09%
+  NE  : 1.19%
+  SW  : 1.37%
+  SE  : 1.17%
+Layer B.Cu:
+  NW  : 1.62%
+  NE  : 3.10%
+  SW  : 4.31%
+  SE  : 2.87%

@@ -1,0 +1,221 @@
+FAIL   pair  USB PROG D+ -> FT2232H DP                      reaches J501.B6(D+), U502.7(DM)                    FORBIDDEN ['U502.7(DM)']; expected U502 ^DP not reached; path Net-(J501-D+-PadA6) -> Net-(U502-DM)
+FAIL   pair  USB PROG D- -> FT2232H DM                      reaches J501.B7(D-), U502.8(DP)                    FORBIDDEN ['U502.8(DP)']; expected U502 ^DM not reached; path Net-(J501-D--PadA7) -> Net-(U502-DP)
+FAIL   pair  USB PROG D+ (B6) -> FT2232H DP                 reaches J501.A6(D+), U502.7(DM)                    FORBIDDEN ['U502.7(DM)']; expected U502 ^DP not reached; path Net-(J501-D+-PadA6) -> Net-(U502-DM)
+FAIL   pair  USB PROG D- (B7) -> FT2232H DM                 reaches J501.A7(D-), U502.8(DP)                    FORBIDDEN ['U502.8(DP)']; expected U502 ^DM not reached; path Net-(J501-D--PadA7) -> Net-(U502-DP)
+pass   pair  USB USER D+ -> FPGA G14 (LPF usb_dp)           reaches J502.B6(D+), U1.G14(G14)                   path Net-(J502-D+-PadA6) -> Net-(R6311-Pad1) -> /FPGA, memory, clocks, configuration/USB_DP
+pass   pair  USB USER D- -> FPGA G13 (LPF usb_dn)           reaches J502.B7(D-), U1.G13(G13)                   path Net-(J502-D--PadA7) -> Net-(R6321-Pad1) -> /FPGA, memory, clocks, configuration/USB_DN
+pass   pair  HDMI D0+ -> FPGA J16 (LPF gpdi_d0_p)           reaches U1.J16(J16)                                path Net-(J503-D0+) -> /FPGA, memory, clocks, configuration/GPDI_D0_P
+pass   pair  HDMI D0- -> FPGA J15 (LPF gpdi_d0_n)           reaches U1.J15(J15)                                path Net-(J503-D0-) -> /FPGA, memory, clocks, configuration/GPDI_D0_N
+pass   pair  HDMI D1+ -> FPGA J14 (LPF gpdi_d1_p)           reaches U1.J14(J14)                                path Net-(J503-D1+) -> /FPGA, memory, clocks, configuration/GPDI_D1_P
+pass   pair  HDMI D1- -> FPGA K14 (LPF gpdi_d1_n)           reaches U1.K14(K14)                                path Net-(J503-D1-) -> /FPGA, memory, clocks, configuration/GPDI_D1_N
+pass   pair  HDMI D2+ -> FPGA J13 (LPF gpdi_d2_p)           reaches U1.J13(J13)                                path Net-(J503-D2+) -> /FPGA, memory, clocks, configuration/GPDI_D2_P
+pass   pair  HDMI D2- -> FPGA J12 (LPF gpdi_d2_n)           reaches U1.J12(J12)                                path Net-(J503-D2-) -> /FPGA, memory, clocks, configuration/GPDI_D2_N
+pass   pair  HDMI CK+ -> FPGA K16 (LPF gpdi_ck_p)           reaches U1.K16(K16)                                path Net-(J503-CK+) -> /FPGA, memory, clocks, configuration/GPDI_CK_P
+pass   pair  HDMI CK- -> FPGA K15 (LPF gpdi_ck_n)           reaches U1.K15(K15)                                path Net-(J503-CK-) -> /FPGA, memory, clocks, configuration/GPDI_CK_N
+pass   pair  ADC A VIN+ <- THS4521 U111 VOUT+ (pin 4)       reaches U111.4(), U111.1(-)                        path Net-(U103A-VIN+_A) -> Net-(R1110-Pad2) -> Net-(U111--)
+pass   pair  ADC A VIN- <- THS4521 U111 VOUT- (pin 5)       reaches U111.5(), U111.8(+), U101.7(), J107.1(), U101.6(-) path Net-(U103A-VIN-_A) -> Net-(R1109-Pad2) -> Net-(U111-+) -> Net-(JP104-B) -> Net-(J107-Pad1) -> Net-(JP104-A)
+pass   pair  ADC B VIN+ <- THS4521 U112 VOUT+ (pin 4)       reaches U112.4(), U112.1(-)                        path Net-(U103B-VIN+_B) -> Net-(R1210-Pad2) -> Net-(U112--)
+pass   pair  ADC B VIN- <- THS4521 U112 VOUT- (pin 5)       reaches U112.5(), U112.8(+), U102.7(), J108.1(), U102.6(-) path Net-(U103B-VIN-_B) -> Net-(R1209-Pad2) -> Net-(U112-+) -> Net-(JP204-B) -> Net-(J108-Pad1) -> Net-(JP204-A)
+pass   pair  DAC IOUTA1 -> OPA2810 U202A +IN                reaches U202.5(+), U202.3(+)                       path /DAC/VA1 -> Net-(U202A-+)
+pass   pair  DAC IOUTB1 -> OPA2810 U202A -IN                reaches U202.2(-), U202.1(), J204.1()              path Net-(U201A-IOUTB1) -> Net-(U202A--) -> Net-(C2401-Pad2) -> Net-(J204-Pad1)
+pass   pair  DAC IOUTA2 -> OPA2810 U203A +IN                reaches U203.3(+)                                  path /DAC/VA2 -> Net-(U203A-+)
+pass   pair  DAC IOUTB2 -> OPA2810 U203A -IN                reaches U203.2(-), U203.1(), J205.1()              path Net-(U201B-IOUTB2) -> Net-(U203A--) -> Net-(C2501-Pad2) -> Net-(J205-Pad1)
+pass   pair  CLK IN SMA -> TLV3501 +IN                      reaches U302.3(+), U302.1(-)                       path Net-(C5421-Pad1) -> Net-(JP3001-B) -> Net-(C5421-Pad2) -> Net-(U302A-+) -> Net-(U302A--)
+pass   pair  Ethernet MDI0 P (U401.1) -> T401 TD1-          reaches T401.3(TD1-)                               path /Gigabit Ethernet/ETH_MDI0_P
+pass   pair  Ethernet MDI0 N (U401.2) -> T401 TD1+          reaches T401.2(TD1+)                               path /Gigabit Ethernet/ETH_MDI0_N
+pass   pair  Ethernet RJ45 1 (+) -> T401 MX1-               reaches T401.22(MX1-)                              path /Gigabit Ethernet/ETH_LAN0_P
+pass   pair  Ethernet RJ45 2 (-) -> T401 MX1+               reaches T401.23(MX1+)                              path /Gigabit Ethernet/ETH_LAN0_N
+pass   pair  Ethernet MDI1 P (U401.4) -> T401 TD2-          reaches T401.6(TD2-)                               path /Gigabit Ethernet/ETH_MDI1_P
+pass   pair  Ethernet MDI1 N (U401.5) -> T401 TD2+          reaches T401.5(TD2+)                               path /Gigabit Ethernet/ETH_MDI1_N
+pass   pair  Ethernet RJ45 3 (+) -> T401 MX2-               reaches T401.19(MX2-)                              path /Gigabit Ethernet/ETH_LAN1_P
+pass   pair  Ethernet RJ45 6 (-) -> T401 MX2+               reaches T401.20(MX2+)                              path /Gigabit Ethernet/ETH_LAN1_N
+pass   pair  Ethernet MDI2 P (U401.6) -> T401 TD3-          reaches T401.9(TD3-)                               path /Gigabit Ethernet/ETH_MDI2_P
+pass   pair  Ethernet MDI2 N (U401.7) -> T401 TD3+          reaches T401.8(TD3+)                               path /Gigabit Ethernet/ETH_MDI2_N
+pass   pair  Ethernet RJ45 4 (+) -> T401 MX3-               reaches T401.16(MX3-)                              path /Gigabit Ethernet/ETH_LAN2_P
+pass   pair  Ethernet RJ45 5 (-) -> T401 MX3+               reaches T401.17(MX3+)                              path /Gigabit Ethernet/ETH_LAN2_N
+pass   pair  Ethernet MDI3 P (U401.9) -> T401 TD4-          reaches T401.12(TD4-)                              path /Gigabit Ethernet/ETH_MDI3_P
+pass   pair  Ethernet MDI3 N (U401.10) -> T401 TD4+         reaches T401.11(TD4+)                              path /Gigabit Ethernet/ETH_MDI3_N
+pass   pair  Ethernet RJ45 7 (+) -> T401 MX4-               reaches T401.13(MX4-)                              path /Gigabit Ethernet/ETH_LAN3_P
+pass   pair  Ethernet RJ45 8 (-) -> T401 MX4+               reaches T401.14(MX4+)                              path /Gigabit Ethernet/ETH_LAN3_N
+pass   lpf   U103.18 CLK_B                                  FPGA R2 = adc_b_clk                                want adc_b_clk
+pass   lpf   U103.19 DCS                                    FPGA T6 = adc_dcs                                  want adc_dcs
+pass   lpf   U103.20 DFS                                    FPGA R6 = adc_dfs                                  want adc_dfs
+pass   lpf   U103.21 PDWN_B                                 FPGA T4 = adc_pdwn_b                               want adc_pdwn_b
+pass   lpf   U103.25 D0_B                                   FPGA G5 = adc_b_d[0]                               want adc_b_d[0]
+pass   lpf   U103.26 D1_B                                   FPGA F4 = adc_b_d[1]                               want adc_b_d[1]
+pass   lpf   U103.27 D2_B                                   FPGA G4 = adc_b_d[2]                               want adc_b_d[2]
+pass   lpf   U103.30 D3_B                                   FPGA H4 = adc_b_d[3]                               want adc_b_d[3]
+pass   lpf   U103.31 D4_B                                   FPGA J4 = adc_b_d[4]                               want adc_b_d[4]
+pass   lpf   U103.32 D5_B                                   FPGA K3 = adc_b_d[5]                               want adc_b_d[5]
+pass   lpf   U103.33 D6_B                                   FPGA H2 = adc_b_d[6]                               want adc_b_d[6]
+pass   lpf   U103.34 D7_B                                   FPGA G1 = adc_b_d[7]                               want adc_b_d[7]
+pass   lpf   U103.35 D8_B                                   FPGA G2 = adc_b_d[8]                               want adc_b_d[8]
+pass   lpf   U103.36 D9_B                                   FPGA F1 = adc_b_d[9]                               want adc_b_d[9]
+pass   lpf   U103.37 D10_B                                  FPGA F2 = adc_b_d[10]                              want adc_b_d[10]
+pass   lpf   U103.38 D11_B                                  FPGA E1 = adc_b_d[11]                              want adc_b_d[11]
+pass   lpf   U103.39 OTR_B                                  FPGA E2 = adc_b_otr                                want adc_b_otr
+pass   lpf   U103.44 D0_A                                   FPGA D1 = adc_a_d[0]                               want adc_a_d[0]
+pass   lpf   U103.45 D1_A                                   FPGA C1 = adc_a_d[1]                               want adc_a_d[1]
+pass   lpf   U103.46 D2_A                                   FPGA C2 = adc_a_d[2]                               want adc_a_d[2]
+pass   lpf   U103.47 D3_A                                   FPGA B1 = adc_a_d[3]                               want adc_a_d[3]
+pass   lpf   U103.48 D4_A                                   FPGA B2 = adc_a_d[4]                               want adc_a_d[4]
+pass   lpf   U103.49 D5_A                                   FPGA C3 = adc_a_d[5]                               want adc_a_d[5]
+pass   lpf   U103.50 D6_A                                   FPGA D3 = adc_a_d[6]                               want adc_a_d[6]
+pass   lpf   U103.51 D7_A                                   FPGA E3 = adc_a_d[7]                               want adc_a_d[7]
+pass   lpf   U103.54 D8_A                                   FPGA F3 = adc_a_d[8]                               want adc_a_d[8]
+pass   lpf   U103.55 D9_A                                   FPGA G3 = adc_a_d[9]                               want adc_a_d[9]
+pass   lpf   U103.56 D10_A                                  FPGA H3 = adc_a_d[10]                              want adc_a_d[10]
+pass   lpf   U103.57 D11_A                                  FPGA J5 = adc_a_d[11]                              want adc_a_d[11]
+pass   lpf   U103.58 OTR_A                                  FPGA J3 = adc_a_otr                                want adc_a_otr
+pass   lpf   U103.60 PDWN_A                                 FPGA R7 = adc_pdwn_a                               want adc_pdwn_a
+pass   lpf   U103.63 CLK_A                                  FPGA E4 = adc_a_clk                                want adc_a_clk
+pass   lpf   U201.1 DB13P1                                  FPGA L3 = dac_p1_d[13]                             want dac_p1_d[13]
+pass   lpf   U201.2 DB12P1                                  FPGA M3 = dac_p1_d[12]                             want dac_p1_d[12]
+pass   lpf   U201.3 DB11P1                                  FPGA N3 = dac_p1_d[11]                             want dac_p1_d[11]
+pass   lpf   U201.4 DB10P1                                  FPGA P3 = dac_p1_d[10]                             want dac_p1_d[10]
+pass   lpf   U201.5 DB9P1                                   FPGA P4 = dac_p1_d[9]                              want dac_p1_d[9]
+pass   lpf   U201.6 DB8P1                                   FPGA P5 = dac_p1_d[8]                              want dac_p1_d[8]
+pass   lpf   U201.7 DB7P1                                   FPGA P6 = dac_p1_d[7]                              want dac_p1_d[7]
+pass   lpf   U201.8 DB6P1                                   FPGA P7 = dac_p1_d[6]                              want dac_p1_d[6]
+pass   lpf   U201.9 DB5P1                                   FPGA K4 = dac_p1_d[5]                              want dac_p1_d[5]
+pass   lpf   U201.10 DB4P1                                  FPGA L4 = dac_p1_d[4]                              want dac_p1_d[4]
+pass   lpf   U201.11 DB3P1                                  FPGA M4 = dac_p1_d[3]                              want dac_p1_d[3]
+pass   lpf   U201.12 DB2P1                                  FPGA N4 = dac_p1_d[2]                              want dac_p1_d[2]
+pass   lpf   U201.13 DB1P1                                  FPGA K5 = dac_p1_d[1]                              want dac_p1_d[1]
+pass   lpf   U201.14 DB0P1                                  FPGA L5 = dac_p1_d[0]                              want dac_p1_d[0]
+pass   lpf   U201.17 WRT1/IQWRT                             FPGA N5 = dac_wrt1                                 want dac_wrt1
+pass   lpf   U201.18 CLK1/IQCLK                             FPGA N6 = dac_clk1                                 want dac_clk1
+pass   lpf   U201.19 CLK2/IQRESET                           FPGA M9 = dac_clk2                                 want dac_clk2
+pass   lpf   U201.20 WRT2/IQSEL                             FPGA P8 = dac_wrt2                                 want dac_wrt2
+pass   lpf   U201.23 DB13P2                                 FPGA M5 = dac_p2_d[13]                             want dac_p2_d[13]
+pass   lpf   U201.24 DB12P2                                 FPGA M6 = dac_p2_d[12]                             want dac_p2_d[12]
+pass   lpf   U201.25 DB11P2                                 FPGA R4 = dac_p2_d[11]                             want dac_p2_d[11]
+pass   lpf   U201.26 DB10P2                                 FPGA T3 = dac_p2_d[10]                             want dac_p2_d[10]
+pass   lpf   U201.27 DB9P2                                  FPGA R3 = dac_p2_d[9]                              want dac_p2_d[9]
+pass   lpf   U201.28 DB8P2                                  FPGA T2 = dac_p2_d[8]                              want dac_p2_d[8]
+pass   lpf   U201.29 DB7P2                                  FPGA R1 = dac_p2_d[7]                              want dac_p2_d[7]
+pass   lpf   U201.30 DB6P2                                  FPGA P2 = dac_p2_d[6]                              want dac_p2_d[6]
+pass   lpf   U201.31 DB5P2                                  FPGA P1 = dac_p2_d[5]                              want dac_p2_d[5]
+pass   lpf   U201.32 DB4P2                                  FPGA N1 = dac_p2_d[4]                              want dac_p2_d[4]
+pass   lpf   U201.33 DB3P2                                  FPGA M2 = dac_p2_d[3]                              want dac_p2_d[3]
+pass   lpf   U201.34 DB2P2                                  FPGA M1 = dac_p2_d[2]                              want dac_p2_d[2]
+pass   lpf   U201.35 DB1P2                                  FPGA L2 = dac_p2_d[1]                              want dac_p2_d[1]
+pass   lpf   U201.36 DB0P2                                  FPGA L1 = dac_p2_d[0]                              want dac_p2_d[0]
+pass   lpf   U201.37 SLEEP                                  FPGA R5 = dac_sleep                                want dac_sleep
+pass   lpf   U201.48 MODE                                   FPGA R8 = dac_mode                                 want dac_mode
+pass   lpf   U301.4 SCL                                     FPGA A15 = i2c_scl                                 want i2c_scl
+pass   lpf   U301.5 SDA                                     FPGA E13 = i2c_sda                                 want i2c_sda
+pass   lpf   U301.6 CLK2                                    FPGA K1 = clk_si2                                  want clk_si2
+pass   lpf   U301.9 CLK1                                    FPGA E7 = clk_si1                                  want clk_si1
+pass   lpf   U301.10 CLK0                                   FPGA D7 = clk_si0                                  want clk_si0
+pass   lpf   U302.5 pin:5                                   FPGA K2 = clk_ext                                  want clk_ext
+pass   lpf   U304.2 pin:2                                   FPGA A2 = clk_out                                  want clk_out
+pass   lpf   U305.2 DQ0                                     FPGA D6 = sdram_dq[0]                              want sdram_dq[0]
+pass   lpf   U305.4 DQ1                                     FPGA D5 = sdram_dq[1]                              want sdram_dq[1]
+pass   lpf   U305.5 DQ2                                     FPGA D4 = sdram_dq[2]                              want sdram_dq[2]
+pass   lpf   U305.7 DQ3                                     FPGA C6 = sdram_dq[3]                              want sdram_dq[3]
+pass   lpf   U305.8 DQ4                                     FPGA C5 = sdram_dq[4]                              want sdram_dq[4]
+pass   lpf   U305.10 DQ5                                    FPGA C4 = sdram_dq[5]                              want sdram_dq[5]
+pass   lpf   U305.11 DQ6                                    FPGA A10 = sdram_dq[6]                             want sdram_dq[6]
+pass   lpf   U305.13 DQ7                                    FPGA B9 = sdram_dq[7]                              want sdram_dq[7]
+pass   lpf   U305.15 DQML                                   FPGA A9 = sdram_dqml                               want sdram_dqml
+pass   lpf   U305.16 ~{WE}                                  FPGA E9 = sdram_we_n                               want sdram_we_n
+pass   lpf   U305.17 ~{CAS}                                 FPGA A8 = sdram_cas_n                              want sdram_cas_n
+pass   lpf   U305.18 ~{RAS}                                 FPGA B8 = sdram_ras_n                              want sdram_ras_n
+pass   lpf   U305.19 ~{CS}                                  FPGA A7 = sdram_cs_n                               want sdram_cs_n
+pass   lpf   U305.20 BA0                                    FPGA B7 = sdram_ba[0]                              want sdram_ba[0]
+pass   lpf   U305.21 BA1                                    FPGA A6 = sdram_ba[1]                              want sdram_ba[1]
+pass   lpf   U305.22 A10                                    FPGA B6 = sdram_a[10]                              want sdram_a[10]
+pass   lpf   U305.23 A0                                     FPGA A5 = sdram_a[0]                               want sdram_a[0]
+pass   lpf   U305.24 A1                                     FPGA B5 = sdram_a[1]                               want sdram_a[1]
+pass   lpf   U305.25 A2                                     FPGA A4 = sdram_a[2]                               want sdram_a[2]
+pass   lpf   U305.26 A3                                     FPGA B4 = sdram_a[3]                               want sdram_a[3]
+pass   lpf   U305.29 A4                                     FPGA B13 = sdram_a[4]                              want sdram_a[4]
+pass   lpf   U305.30 A5                                     FPGA A13 = sdram_a[5]                              want sdram_a[5]
+pass   lpf   U305.31 A6                                     FPGA B12 = sdram_a[6]                              want sdram_a[6]
+pass   lpf   U305.32 A7                                     FPGA A12 = sdram_a[7]                              want sdram_a[7]
+pass   lpf   U305.33 A8                                     FPGA B11 = sdram_a[8]                              want sdram_a[8]
+pass   lpf   U305.34 A9                                     FPGA A11 = sdram_a[9]                              want sdram_a[9]
+pass   lpf   U305.35 A11                                    FPGA B10 = sdram_a[11]                             want sdram_a[11]
+pass   lpf   U305.36 A12                                    FPGA C13 = sdram_a[12]                             want sdram_a[12]
+pass   lpf   U305.37 CKE                                    FPGA C12 = sdram_cke                               want sdram_cke
+pass   lpf   U305.38 CLK                                    FPGA C11 = sdram_clk                               want sdram_clk
+pass   lpf   U305.39 DQMH                                   FPGA C10 = sdram_dqmh                              want sdram_dqmh
+pass   lpf   U305.42 DQ8                                    FPGA C9 = sdram_dq[8]                              want sdram_dq[8]
+pass   lpf   U305.44 DQ9                                    FPGA C8 = sdram_dq[9]                              want sdram_dq[9]
+pass   lpf   U305.45 DQ10                                   FPGA D13 = sdram_dq[10]                            want sdram_dq[10]
+pass   lpf   U305.47 DQ11                                   FPGA D12 = sdram_dq[11]                            want sdram_dq[11]
+pass   lpf   U305.48 DQ12                                   FPGA D11 = sdram_dq[12]                            want sdram_dq[12]
+pass   lpf   U305.50 DQ13                                   FPGA D10 = sdram_dq[13]                            want sdram_dq[13]
+pass   lpf   U305.51 DQ14                                   FPGA D9 = sdram_dq[14]                             want sdram_dq[14]
+pass   lpf   U305.53 DQ15                                   FPGA D8 = sdram_dq[15]                             want sdram_dq[15]
+pass   lpf   U306.1 ~{CS}                                   FPGA N8 = flash_cs_n                               want flash_cs_n
+pass   lpf   U306.2 DO/IO1                                  FPGA T7 = flash_io[1]                              want flash_io[1]
+pass   lpf   U306.3 ~{WP}/IO2                               FPGA M7 = flash_io[2]                              want flash_io[2]
+pass   lpf   U306.5 DI/IO0                                  FPGA T8 = flash_io[0]                              want flash_io[0]
+pass   lpf   U306.6 CLK                                     FPGA N9 = flash_sck                                want flash_sck
+pass   lpf   U306.7 ~{HOLD}/IO3                             FPGA N7 = flash_io[3]                              want flash_io[3]
+pass   lpf   U401.12 PHYRSTB                                FPGA E16 = eth_rst_n                               want eth_rst_n
+pass   lpf   U401.13 MDC                                    FPGA F15 = eth_mdc                                 want eth_mdc
+pass   lpf   U401.14 MDIO                                   FPGA F16 = eth_mdio                                want eth_mdio
+pass   lpf   U401.15 TXD3                                   FPGA B15 = eth_txd[3]                              want eth_txd[3]
+pass   lpf   U401.16 TXD2                                   FPGA B16 = eth_txd[2]                              want eth_txd[2]
+pass   lpf   U401.17 TXD1                                   FPGA C15 = eth_txd[1]                              want eth_txd[1]
+pass   lpf   U401.18 TXD0                                   FPGA C16 = eth_txd[0]                              want eth_txd[0]
+pass   lpf   U401.19 TXCTL                                  FPGA D16 = eth_tx_ctl                              want eth_tx_ctl
+pass   lpf   U401.20 TXC                                    FPGA E15 = eth_txc                                 want eth_txc
+pass   lpf   U401.22 RXD3/PHYAD0                            FPGA C14 = eth_rxd[3]                              want eth_rxd[3]
+pass   lpf   U401.23 RXD2/PLLOFF                            FPGA D14 = eth_rxd[2]                              want eth_rxd[2]
+pass   lpf   U401.24 RXD1/TXDLY                             FPGA E14 = eth_rxd[1]                              want eth_rxd[1]
+pass   lpf   U401.25 RXD0/RXDLY                             FPGA F14 = eth_rxd[0]                              want eth_rxd[0]
+pass   lpf   U401.26 RXCTL/PHYAD2                           FPGA F13 = eth_rx_ctl                              want eth_rx_ctl
+pass   lpf   U401.27 RXC/PHYAD1                             FPGA E8 = eth_rxc                                  want eth_rxc
+pass   lpf   U401.31 INTB/PMEB                              FPGA F12 = eth_int_n                               want eth_int_n
+pass   lpf   U502.16 ADBUS0                                 FPGA T10 = jtag_tck                                want jtag_tck
+pass   lpf   U502.17 ADBUS1                                 FPGA R11 = jtag_tdi                                want jtag_tdi
+pass   lpf   U502.18 ADBUS2                                 FPGA M10 = jtag_tdo                                want jtag_tdo
+pass   lpf   U502.19 ADBUS3                                 FPGA T11 = jtag_tms                                want jtag_tms
+pass   lpf   U502.38 BDBUS0                                 FPGA H15 = uart_rx                                 want uart_rx
+pass   lpf   U502.39 BDBUS1                                 FPGA H14 = uart_tx                                 want uart_tx
+pass   lpf   U502.40 BDBUS2                                 FPGA G16 = ftdi_rts                                want ftdi_rts
+pass   lpf   U502.43 BDBUS4                                 FPGA G15 = ftdi_dtr                                want ftdi_dtr
+pass   lpf   U505.3 SCL1                                    FPGA M12 = gpdi_scl                                want gpdi_scl
+pass   lpf   U505.4 SDA1                                    FPGA N13 = gpdi_sda                                want gpdi_sda
+pass   lpf   X301.3 OUT                                     FPGA C7 = clk_tcxo                                 want clk_tcxo
+pass   csv   jtag_tck at T10                                Lattice: TCK / - (bank 40)                         want TCK
+pass   csv   jtag_tdi at R11                                Lattice: TDI / - (bank 40)                         want TDI
+pass   csv   jtag_tdo at M10                                Lattice: TDO / - (bank 40)                         want TDO
+pass   csv   jtag_tms at T11                                Lattice: TMS / - (bank 40)                         want TMS
+pass   csv   flash_sck at N9                                Lattice: CCLK / MCLK/SCK (bank 8)                  want CCLK|SCK
+pass   csv   flash_io[0] at T8                              Lattice: PB11B / D0/MOSI/IO0 (bank 8)              want MOSI
+pass   csv   flash_io[1] at T7                              Lattice: PB11A / D1/MISO/IO1 (bank 8)              want MISO
+pass   csv   flash_io[2] at M7                              Lattice: PB9B / D2/IO2 (bank 8)                    want IO2
+pass   csv   flash_io[3] at N7                              Lattice: PB9A / D3/IO3 (bank 8)                    want IO3
+pass   csv   flash_cs_n at N8                               Lattice: PB15A / HOLDN/DI/BUSY/CSSPIN/CEN (bank 8) want CSSPIN
+pass   csv   done at P9                                     Lattice: DONE / - (bank 8)                         want DONE
+pass   csv   initn at T9                                    Lattice: INITN / - (bank 8)                        want INITN
+pass   csv   programn at R9                                 Lattice: PROGRAMN / - (bank 8)                     want PROGRAMN
+pass   csv   cfg0 at N10                                    Lattice: CFG_0 / - (bank 8)                        want CFG_0
+pass   csv   cfg1 at P10                                    Lattice: CFG_1 / - (bank 8)                        want CFG_1
+pass   csv   cfg2 at R10                                    Lattice: CFG_2 / - (bank 8)                        want CFG_2
+pass   sign  ADC A: SMA J101 to AD9238                      sign +, VOUT+ - VOUT- = +(Rf/Rg) x V(U101 OUTB): a positive input raises VIN+_A (THS4521IDGKR_C170157.txt:240-244) SMA J101 reaches JP102 pin 3 (B) through <= 200 ohm; the SRC jumper's SMA position joins B (3) to C (2), which is U101 +INA (pin 3); U101 stage A non-inverting: R1103 from OUTA to -INA, R1104 to GND (gain 1 + 9100/1000); U101 OUTA drives +INB (pin 5) directly; U101 stage B non-inverting: R1105 OUTB to -INB, R1106 to GND; U101 OUTB -> R1107 -> U111 VIN+ (pin 8); U111 feedback R1109 from VOUT- (pin 5) to VIN+ (pin 8); U111 feedback R1110 from VOUT+ (pin 4) to VIN- (pin 1); R1108 from VIN- to GND; FDA balanced: Rg R1107 = R1108, Rf R1109 = R1110; U111 VOUT+ -> R1112 -> AD9238 VIN+_A; VOUT- -> R1111 -> VIN-_A
+pass   sign  ADC B: SMA J102 to AD9238                      sign +, VOUT+ - VOUT- = +(Rf/Rg) x V(U102 OUTB): a positive input raises VIN+_B (THS4521IDGKR_C170157.txt:240-244) SMA J102 reaches JP202 pin 3 (B) through <= 200 ohm; the SRC jumper's SMA position joins B (3) to C (2), which is U102 +INA (pin 3); U102 stage A non-inverting: R1203 from OUTA to -INA, R1204 to GND (gain 1 + 9100/1000); U102 OUTA drives +INB (pin 5) directly; U102 stage B non-inverting: R1205 OUTB to -INB, R1206 to GND; U102 OUTB -> R1207 -> U112 VIN+ (pin 8); U112 feedback R1209 from VOUT- (pin 5) to VIN+ (pin 8); U112 feedback R1210 from VOUT+ (pin 4) to VIN- (pin 1); R1208 from VIN- to GND; FDA balanced: Rg R1207 = R1208, Rf R1209 = R1210; U112 VOUT+ -> R1212 -> AD9238 VIN+_B; VOUT- -> R1211 -> VIN-_B
+pass   sign  DAC 1: AD9767 to SMA J204                      sign +, Vout = (R2406/R2404)(V(IOUTA) - V(IOUTB)); IOUTA rises with the code (AD9763_9765_9767.txt, IOUTA = code/16384 x IOUTFS) IOUTA1 -> R2403 -> U202 +INA, R2405 to GND; IOUTB1 -> R2404 -> U202 -INA, R2406 from OUTA; difference amplifier balanced: R2405/R2403 = R2406/R2404; U202 OUTA -> R2407 -> SMA J204
+pass   sign  DAC 2: AD9767 to SMA J205                      sign +, Vout = (R2506/R2504)(V(IOUTA) - V(IOUTB)); IOUTA rises with the code (AD9763_9765_9767.txt, IOUTA = code/16384 x IOUTFS) IOUTA2 -> R2503 -> U203 +INA, R2505 to GND; IOUTB2 -> R2504 -> U203 -INA, R2506 from OUTA; difference amplifier balanced: R2505/R2503 = R2506/R2504; U203 OUTA -> R2507 -> SMA J205
+pass   sign  CLK IN: SMA J301 to TLV3501 to the FPGA        sign +, non-inverting comparator                   J301 -> C5421 -> R5427 -> TLV3501 +IN (pin 3); -IN (pin 1) is the divider R5424/R5425 from +3V3_ADC (1.65 V); R5426 10k biases +IN to it; OUT (pin 5) -> R5423 -> the FPGA ball the LPF calls clk_ext
+pass   level U103 AD9238 I/O rail +3V3_DRV                  3.298..3.364 V against FPGA LVCMOS33 3.298..3.364 V DRVDD drives the data (ad9238.txt:186); its inputs (CLK, DFS, DCS, PDWN) take up to AVDD + 0.3 V (:359)
+pass   level U201 AD9767 I/O rail +3V3_DAC_D                3.298..3.364 V against FPGA LVCMOS33 3.298..3.364 V DVDD1 (AD9763_9765_9767.txt:255); logic 1 >= 2.1 V at 3.3 V (:348); inputs up to DVDD + 0.3 V (:406)
+pass   level U301 Si5351A-B-GTR I/O rail +3V3               3.298..3.364 V against FPGA LVCMOS33 3.298..3.364 V VDDO for the clocks, VDD for I2C (SI5351A-B-GTR_C504891.txt:392, :400)
+pass   level U302 TLV3501AIDBVR I/O rail +3V3_ADC           3.263..3.329 V against FPGA LVCMOS33 3.298..3.364 V V+ (rail-to-rail output)
+pass   level U304 SN74LVC1G17DBVR I/O rail +3V3             3.298..3.364 V against FPGA LVCMOS33 3.298..3.364 V VCC; inputs 5.5 V tolerant (SN74LVC1G17DBVR_C7836.txt:223)
+pass   level U305 W9825G6KH-6 I/O rail +3V3                 3.298..3.364 V against FPGA LVCMOS33 3.298..3.364 V VDDQ (W9825G6KH-6_C62246.txt:648)
+pass   level U306 W25Q128JVSIQ I/O rail +3V3                3.298..3.364 V against FPGA LVCMOS33 3.298..3.364 V VCC (W25Q128JVSIQ_C97521.txt:3061)
+pass   level U401 RTL8211F-CG I/O rail +3V3_ETH             3.298..3.364 V against FPGA LVCMOS33 3.298..3.364 V DVDD_RG, external 3.3 V I/O (RTL8211F-CG-Datasheet.txt:618, the CFG straps)
+pass   level U502 FT2232HL I/O rail +3V3                    3.298..3.364 V against FPGA LVCMOS33 3.298..3.364 V VCCIO (DS_FT2232H.txt:3213; its I/O are 5 V tolerant)
+pass   level U505 PCA9306DC1Z I/O rail +3V3                 3.298..3.364 V against FPGA LVCMOS33 3.298..3.364 V VREF1 side (MEMORY)
+pass   level X301 FT5HNBPK25.0-T1 I/O rail +3V3             3.298..3.364 V against FPGA LVCMOS33 3.298..3.364 V VDD; VOH >= 80 % VDD (FT5HNBPK25.0-T1_C5742665.txt:25)
+pass   level FPGA K12 (gpdi_cec) <- J503.14 CEC             up to 3.63 V at the ball (470 ohm series)          HDMI CEC: 3.3 V bus, max 3.63 V (MEMORY: HDMI 1.4a supplement 1)
+pass   level FPGA K13 (gpdi_hpd) <- J503.19 HPD             up to 3.38 V at the ball (4700 ohm series)         HDMI HPD from the sink: high 2.4-5.3 V through about 1 kohm in the sink, from our own +5V pin (MEMORY: HDMI 1.4a 4.2.9); divider 4700 ohm series + 1k in the sink, 10000 ohm down: 3.38 V at the ball
+
+39 pair lines, 145 chip-to-FPGA lines, 5 sign chains, 13 level rows; 4 FAIL, 0 other flags
+RESULT: FAIL

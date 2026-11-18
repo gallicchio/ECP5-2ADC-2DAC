@@ -1,0 +1,8 @@
+chip   part                rot 0     rot 90    rot 180    rot 270   now
+U305   W9825G6KH-6           525        561        606        573   0  (best)
+U103   AD9238                426        546        645        550   0  (best)
+U201   AD9767                934        953        983        976   0  (best)
+U401   RTL8211F-CG           617        568        481        542   180  (best)
+U502   FT2232HL              324        240        105        241   180  (best)
+T401   G2406S                371        485        419        288   270  (best)
+U306   W25Q128JVSIQ           81         79         81         79   0  <- best is 90

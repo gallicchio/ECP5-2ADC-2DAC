@@ -1,0 +1,5 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "ours")(type "KiCad")(uri "${KIPRJMOD}/library/ours.kicad_sym")(options "")(descr "generated symbols"))
+  (lib (name "easyeda")(type "KiCad")(uri "${KIPRJMOD}/library/easyeda/easyeda.kicad_sym")(options "")(descr "LCSC parts via easyeda2kicad"))
+)

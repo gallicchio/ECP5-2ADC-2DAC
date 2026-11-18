@@ -1,0 +1,17 @@
+
+.include ../sim/opamps.lib
+.model SS8050 NPN(IS=1e-14 BF=250 CJC=15p CJE=35p TF=0.5n TR=10n)
+Vva va 0 PULSE(0.1 0.4 10n 5n 5n 100n 200n)
+X1 va fb vp5 vm5 out OPA2810
+Rb out b 100
+Q1 col b em SS8050
+Re em 0 10
+Rfb em fb 0
+Vp5 vp5 0 5
+Vm5 vm5 0 -4.4
+Vled vp5 col 2.0
+.control
+tran 1n 100n
+print v(em)[20] v(em)[21] v(em)[22] v(em)[23] v(em)[24] v(em)[25] v(em)[30] v(em)[40]
+.endc
+.end

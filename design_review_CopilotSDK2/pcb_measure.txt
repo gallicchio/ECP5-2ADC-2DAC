@@ -1,0 +1,179 @@
+In1.Cu segments: 0
+via drills: {0.25: 565, 0.15: 570}
+via sizes: {0.45: 565, 0.3: 570}
+
+## track width histogram for nets containing SMA/CLK/MDI/USB/HDMI/J1
+nets with 0.30 or 0.35 mm copper (mm):
+  129.5 mm  GND
+  47.0 mm  +3V3
+  20.6 mm  +3V3_ADC
+  10.8 mm  +1V8_FTDI
+  10.8 mm  Net-(J205-Pad1)
+  10.8 mm  Net-(J204-Pad1)
+  10.1 mm  +5V
+  9.7 mm  Net-(C5421-Pad1)
+  8.2 mm  Net-(J102-Pad1)
+  8.2 mm  Net-(J101-Pad1)
+  7.9 mm  +3V3_ETH
+  6.7 mm  +3V3_DAC_D
+  5.2 mm  Net-(J302-Pad1)
+  3.8 mm  -4V2
+  2.0 mm  +5VA
+  0.3 mm  +1V1
+
+## copper fraction from filled zone polygons (tracks extra, small)
+  F.Cu: 0 mm2  0.0% of board
+  In1.Cu: 17184 mm2  91.4% of board
+  In2.Cu: 20 mm2  0.1% of board
+  In3.Cu: 23 mm2  0.1% of board
+  In4.Cu: 16871 mm2  89.7% of board
+  B.Cu: 0 mm2  0.0% of board
+by quadrant (zone copper only):
+  F.Cu: NW 0%, NE 0%, SW 0%, SE 0%
+  In1.Cu: NW 0%, NE 0%, SW 366%, SE 0%
+  In2.Cu: NW 0%, NE 0%, SW 0%, SE 0%
+  In3.Cu: NW 0%, NE 0%, SW 0%, SE 0%
+  In4.Cu: NW 7%, NE 200%, SW 111%, SE 40%
+  B.Cu: NW 0%, NE 0%, SW 0%, SE 0%
+In4 zone areas mm2:
+  +1V1: 323.7
+  +3V3: 9400.0
+  +3V3_ADC: 324.6
+  +3V3_DAC: 287.8
+  +5V: 1876.2
+  +5VA: 904.9
+  -4V2: 1381.7
+  GND: 2372.1
+
+## In2/In3/B.Cu signal segments whose ends sit on different In4 fills
+nets crossing a seam: 41  segments: 49
+    49.0 mm    2 segs  /DAC/DAC_CLK1  ['In3.Cu:+1V1->+3V3', 'In3.Cu:+3V3->+1V1']
+    46.6 mm    2 segs  /DAC/DAC_WRT1  ['In3.Cu:+1V1->+3V3', 'In3.Cu:+3V3->+1V1']
+    43.1 mm    2 segs  /DAC/DAC_P2_D12  ['B.Cu:+1V1->+3V3', 'B.Cu:+3V3->+1V1']
+    35.5 mm    2 segs  /DAC/DAC_P1_D7  ['In2.Cu:+1V1->+3V3', 'In2.Cu:+3V3_DAC->+1V1']
+    34.2 mm    2 segs  /DAC/DAC_P1_D8  ['In2.Cu:+1V1->+3V3', 'In2.Cu:+3V3_DAC->+1V1']
+    32.8 mm    2 segs  /DAC/DAC_P1_D9  ['In2.Cu:+1V1->+3V3', 'In2.Cu:+3V3_DAC->+1V1']
+    26.0 mm    1 segs  /ADC/ADC_PDWN_A  ['B.Cu:+3V3_ADC->+3V3_DAC']
+    22.8 mm    1 segs  /ADC/ADC_DCS  ['B.Cu:+3V3_ADC->+3V3_DAC']
+    16.1 mm    1 segs  /DAC/DAC_CLK2  ['In2.Cu:+3V3->+1V1']
+    16.1 mm    2 segs  /DAC/DAC_MODE  ['B.Cu:+3V3->+1V1', 'In2.Cu:+1V1->+3V3']
+    15.3 mm    1 segs  /DAC/DAC_WRT2  ['In2.Cu:+3V3->+1V1']
+    14.5 mm    1 segs  /DAC/DAC_P1_D6  ['In2.Cu:+3V3_DAC->+1V1']
+    11.4 mm    1 segs  /ADC/ADC_DFS  ['B.Cu:+3V3->+3V3_DAC']
+     9.4 mm    2 segs  Net-(JP1203-A)  ['B.Cu:+5VA->-4V2', 'B.Cu:GND->+5V']
+     8.0 mm    1 segs  /ADC/ADC_B_D2  ['In3.Cu:+3V3_ADC->+3V3']
+     8.0 mm    1 segs  /ADC/ADC_B_D1  ['In3.Cu:+3V3_ADC->+3V3']
+     7.7 mm    1 segs  /ADC/ADC_B_D3  ['In3.Cu:+3V3_ADC->+3V3']
+     7.4 mm    1 segs  /ADC/ADC_B_D0  ['B.Cu:+3V3_ADC->+3V3']
+     6.8 mm    1 segs  /ADC/ADC_A_D5  ['In2.Cu:+3V3_ADC->+3V3']
+     6.5 mm    1 segs  /ADC/ADC_B_D4  ['In3.Cu:+3V3_ADC->+3V3']
+     6.5 mm    1 segs  /ADC/ADC_A_D6  ['In2.Cu:+3V3_ADC->+3V3']
+     6.4 mm    1 segs  /ADC/ADC_A_D10  ['In2.Cu:+3V3_ADC->+3V3']
+     5.1 mm    1 segs  Net-(U306-~{WP}{slash}IO2)  ['B.Cu:+3V3->+1V1']
+     5.0 mm    1 segs  Net-(U1G-P9_DONE)  ['In2.Cu:+3V3->+1V1']
+     5.0 mm    1 segs  Net-(U1G-N9_CCLK{slash}MCLK)  ['In3.Cu:+3V3->+1V1']
+     4.5 mm    1 segs  Net-(U306-~{CS})  ['In3.Cu:+3V3->+1V1']
+     4.5 mm    1 segs  Net-(U306-~{HOLD}{slash}IO3)  ['In3.Cu:+3V3->+1V1']
+     3.9 mm    1 segs  /ADC/ADC_A_D9  ['In2.Cu:+3V3_ADC->+3V3']
+     3.5 mm    1 segs  /ADC/ADC_A_OTR  ['In2.Cu:+3V3_ADC->+3V3']
+     3.4 mm    1 segs  /ADC/ADC_B_D5  ['In2.Cu:+3V3_ADC->+3V3']
+     3.4 mm    1 segs  /ADC/ADC_A_D8  ['In2.Cu:+3V3_ADC->+3V3']
+     3.0 mm    1 segs  /ADC/ADC_A_D11  ['In2.Cu:+3V3_ADC->+3V3']
+     2.9 mm    1 segs  /ADC/ADC_A_D7  ['In2.Cu:+3V3_ADC->+3V3']
+     2.8 mm    1 segs  /DAC/DAC_SLEEP  ['In2.Cu:+3V3->+3V3_DAC']
+     2.8 mm    1 segs  /DAC/DAC_P1_D2  ['In3.Cu:+3V3_DAC->+3V3']
+     2.8 mm    1 segs  /DAC/DAC_P1_D10  ['In2.Cu:+3V3_DAC->+3V3']
+     2.2 mm    1 segs  /DAC/DAC_P1_D3  ['In3.Cu:+3V3_DAC->+3V3']
+     2.2 mm    1 segs  /DAC/DAC_P1_D11  ['In2.Cu:+3V3_DAC->+3V3']
+     1.8 mm    1 segs  /DAC/DAC_P1_D4  ['In3.Cu:+3V3_DAC->+3V3']
+     1.8 mm    1 segs  /DAC/DAC_P1_D12  ['In2.Cu:+3V3_DAC->+3V3']
+     1.1 mm    1 segs  /FPGA, memory, clocks, configuration/SD_D1  ['B.Cu:+5V->+3V3']
+
+## nearest GND via to the midpoint of the longest seam-crossing segment of selected nets
+  /DAC/DAC_CLK1 In3.Cu +1V1->+3V3 mid (69.6,84.2) nearest GND via 5.95 mm  example w=0.127
+  /DAC/DAC_WRT1 In3.Cu +1V1->+3V3 mid (68.8,83.4) nearest GND via 5.33 mm  example w=0.127
+  /DAC/DAC_P2_D12 B.Cu +1V1->+3V3 mid (69.6,81.3) nearest GND via 5.24 mm  example w=0.127
+  /ADC/ADC_PDWN_A B.Cu +3V3_ADC->+3V3_DAC mid (45.0,72.0) nearest GND via 1.84 mm  example w=0.127
+  /ADC/ADC_DCS B.Cu +3V3_ADC->+3V3_DAC mid (45.4,72.0) nearest GND via 2.16 mm  example w=0.127
+  /DAC/DAC_P1_D7 In2.Cu +1V1->+3V3 mid (69.6,77.4) nearest GND via 3.03 mm  example w=0.127
+  /DAC/DAC_P1_D8 In2.Cu +1V1->+3V3 mid (68.8,77.2) nearest GND via 3.81 mm  example w=0.127
+  /DAC/DAC_P1_D9 In2.Cu +1V1->+3V3 mid (68.0,76.9) nearest GND via 4.60 mm  example w=0.127
+  /DAC/DAC_CLK2 In2.Cu +3V3->+1V1 mid (63.5,101.8) nearest GND via 3.81 mm  example w=0.127
+  /DAC/DAC_WRT2 In2.Cu +3V3->+1V1 mid (63.1,100.2) nearest GND via 2.29 mm  example w=0.127
+  /DAC/DAC_P1_D6 In2.Cu +3V3_DAC->+1V1 mid (62.8,89.2) nearest GND via 2.62 mm  example w=0.127
+  /DAC/DAC_CLK1 In3.Cu +3V3->+1V1 mid (62.4,102.3) nearest GND via 3.68 mm  example w=0.127
+  /DAC/DAC_P2_D12 B.Cu +3V3->+1V1 mid (62.4,96.4) nearest GND via 2.16 mm  example w=0.127
+  /DAC/DAC_P1_D7 In2.Cu +3V3_DAC->+1V1 mid (62.4,88.8) nearest GND via 2.48 mm  example w=0.127
+  /DAC/DAC_WRT1 In3.Cu +3V3->+1V1 mid (62.0,100.7) nearest GND via 2.04 mm  example w=0.127
+  /DAC/DAC_P1_D8 In2.Cu +3V3_DAC->+1V1 mid (62.0,88.2) nearest GND via 1.77 mm  example w=0.127
+  /DAC/DAC_P1_D9 In2.Cu +3V3_DAC->+1V1 mid (61.5,87.8) nearest GND via 1.25 mm  example w=0.127
+  /ADC/ADC_DFS B.Cu +3V3->+3V3_DAC mid (54.6,85.9) nearest GND via 2.50 mm  example w=0.127
+  /DAC/DAC_MODE In2.Cu +1V1->+3V3 mid (64.9,91.2) nearest GND via 1.25 mm  example w=0.127
+  /ADC/ADC_B_D2 In3.Cu +3V3_ADC->+3V3 mid (59.4,56.4) nearest GND via 4.82 mm  example w=0.127
+  /ADC/ADC_B_D1 In3.Cu +3V3_ADC->+3V3 mid (59.4,55.6) nearest GND via 5.37 mm  example w=0.127
+  /ADC/ADC_B_D3 In3.Cu +3V3_ADC->+3V3 mid (59.5,57.2) nearest GND via 4.45 mm  example w=0.127
+  /ADC/ADC_B_D0 B.Cu +3V3_ADC->+3V3 mid (59.7,56.4) nearest GND via 5.04 mm  example w=0.127
+  /DAC/DAC_MODE B.Cu +3V3->+1V1 mid (72.5,86.5) nearest GND via 4.93 mm  example w=0.127
+  /ADC/ADC_A_D5 In2.Cu +3V3_ADC->+3V3 mid (60.0,53.2) nearest GND via 3.00 mm  example w=0.127
+  /ADC/ADC_B_D4 In3.Cu +3V3_ADC->+3V3 mid (60.1,58.8) nearest GND via 4.42 mm  example w=0.127
+  /ADC/ADC_A_D6 In2.Cu +3V3_ADC->+3V3 mid (60.1,54.0) nearest GND via 3.60 mm  example w=0.127
+  /ADC/ADC_A_D10 In2.Cu +3V3_ADC->+3V3 mid (60.2,57.2) nearest GND via 5.01 mm  example w=0.127
+  Net-(U1G-N9_CCLK{slash}MCLK) In3.Cu +3V3->+1V1 mid (72.8,68.5) nearest GND via 4.92 mm  example w=0.127
+  /ADC/ADC_A_D9 In2.Cu +3V3_ADC->+3V3 mid (56.6,55.0) nearest GND via 3.85 mm  example w=0.127
+  /ADC/ADC_A_OTR In2.Cu +3V3_ADC->+3V3 mid (56.5,57.5) nearest GND via 2.15 mm  example w=0.127
+  /ADC/ADC_B_D5 In2.Cu +3V3_ADC->+3V3 mid (56.5,58.4) nearest GND via 1.36 mm  example w=0.127
+  /ADC/ADC_A_D8 In2.Cu +3V3_ADC->+3V3 mid (56.4,54.4) nearest GND via 3.22 mm  example w=0.127
+  /ADC/ADC_A_D11 In2.Cu +3V3_ADC->+3V3 mid (56.2,57.0) nearest GND via 2.69 mm  example w=0.127
+  /ADC/ADC_A_D7 In2.Cu +3V3_ADC->+3V3 mid (56.2,53.8) nearest GND via 2.56 mm  example w=0.127
+  /DAC/DAC_SLEEP In2.Cu +3V3->+3V3_DAC mid (57.4,90.8) nearest GND via 3.22 mm  example w=0.127
+  /DAC/DAC_P1_D2 In3.Cu +3V3_DAC->+3V3 mid (56.9,91.2) nearest GND via 2.55 mm  example w=0.127
+  /DAC/DAC_P1_D10 In2.Cu +3V3_DAC->+3V3 mid (56.9,87.2) nearest GND via 4.39 mm  example w=0.127
+  /DAC/DAC_P1_D3 In3.Cu +3V3_DAC->+3V3 mid (56.6,90.8) nearest GND via 2.60 mm  example w=0.127
+  /DAC/DAC_P1_D11 In2.Cu +3V3_DAC->+3V3 mid (56.6,86.8) nearest GND via 4.55 mm  example w=0.127
+  /DAC/DAC_P1_D4 In3.Cu +3V3_DAC->+3V3 mid (56.4,90.2) nearest GND via 2.81 mm  example w=0.127
+
+## regulator placements
+  U604: [{'ref': 'U604', 'value': 'TPS7A2033PDBVR', 'x': 30.0, 'y': 55.5, 'rot': 0.0, 'layer': 'B.Cu', 'fp': 'SOT-23-5'}]
+  U605: [{'ref': 'U605', 'value': 'TPS7A2033PDBVR', 'x': 30.0, 'y': 89.5, 'rot': 0.0, 'layer': 'B.Cu', 'fp': 'SOT-23-5'}]
+  U606: [{'ref': 'U606', 'value': 'LM27761DSGR', 'x': 53.5, 'y': 105.30000000000001, 'rot': 0.0, 'layer': 'F.Cu', 'fp': 'DFN-8-1EP_2x2mm_P0.5mm_EP0.9x1.6mm'}]
+  U601: [{'ref': 'U601', 'value': 'TLV62569DBVR', 'x': 102.0, 'y': 100.0, 'rot': 0.0, 'layer': 'F.Cu', 'fp': 'SOT-23-5'}]
+  U602: [{'ref': 'U602', 'value': 'TLV62569DBVR', 'x': 84.0, 'y': 100.0, 'rot': 0.0, 'layer': 'F.Cu', 'fp': 'SOT-23-5'}]
+  D601: [{'ref': 'D601', 'value': 'B5819W', 'x': 111.80000000000001, 'y': 101.0, 'rot': -90.0, 'layer': 'F.Cu', 'fp': 'D_SOD-123'}]
+  F601: [{'ref': 'F601', 'value': 'MF-MSMF200-2', 'x': 137.5, 'y': 30.6, 'rot': 180.0, 'layer': 'F.Cu', 'fp': 'Fuse_1812_4532Metric'}]
+  F602: [{'ref': 'F602', 'value': 'MF-MSMF200-2', 'x': 118.5, 'y': 98.4, 'rot': 90.0, 'layer': 'F.Cu', 'fp': 'Fuse_1812_4532Metric'}]
+  L617: [{'ref': 'L617', 'value': '2.2uH', 'x': 96.0, 'y': 100.65, 'rot': 180.0, 'layer': 'F.Cu', 'fp': 'IND-SMD_L4.0-W4.0'}]
+  L618: [{'ref': 'L618', 'value': '2.2uH', 'x': 78.0, 'y': 100.65, 'rot': 180.0, 'layer': 'F.Cu', 'fp': 'IND-SMD_L4.0-W4.0'}]
+  L401: [{'ref': 'L401', 'value': '2.2uH', 'x': 104.0, 'y': 28.5, 'rot': 0.0, 'layer': 'B.Cu', 'fp': 'IND-SMD_L4.0-W4.0'}]
+
++5V vias: 15 drills Counter({0.25: 11, 0.15: 4})
++3V3 vias: 111
++1V1 vias: 14
++3V3_ADC vias: 15
++5VA vias: 14
+-4V2 vias: 17
+
+## texts containing JLC / fiducial-ish / layer digits near y<5
+  F.Cu (70.0,1.9) '1'
+  B.Cu (82.5,1.9) '6'
+  In1.Cu (72.5,1.9) '2'
+  F.SilkS (59.2,6.6) '25 MHz'
+  F.SilkS (16.6,7.0) '50Ω IN'
+  F.SilkS (18.0,7.0) 'hiZ OUT'
+  F.SilkS (21.6,4.9) 'CLK IN'
+  F.SilkS (53.4,5.3) 'LEDS'
+  F.SilkS (75.5,5.3) 'CLOCK GEN'
+  In2.Cu (75.0,1.9) '3'
+  B.SilkS (95.0,1.9) 'JLCJLCJLCJLC'
+  In3.Cu (77.5,1.9) '4'
+  In4.Cu (80.0,1.9) '5'
+
+## ground-pad via sharing for U103 U201 U401 U1 decoupling (pads within 0.35 mm of same GND via)
+GND pads considered: 47; vias within 0.6 mm shared by >=2 of those pads: 0
+
+## U604 pins and nearby GND vias
+U604 at (30.00,55.50) rot 0.0 layer B.Cu
+  pad 1 +5V (28.86,54.55) nearest GND via 1.70 mm
+  pad 2 GND (28.86,55.50) nearest GND via 1.34 mm
+  pad 3 +5V (28.86,56.45) nearest GND via 1.58 mm
+  pad 4  (31.14,56.45) nearest GND via 0.89 mm
+  pad 5 +3V3_ADC (31.14,54.55) nearest GND via 1.08 mm

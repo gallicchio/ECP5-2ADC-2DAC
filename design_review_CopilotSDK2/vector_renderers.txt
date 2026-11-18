@@ -1,0 +1,2 @@
+/usr/bin/convert
+/usr/bin/inkscape

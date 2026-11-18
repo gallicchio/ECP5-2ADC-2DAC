@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="145.02mm" height="81.13mm" viewBox="-72.51 -45.56 145.02 81.13">
+<g transform="scale(1,-1)" fill="none" stroke="black" stroke-width="0.2">
+<rect x="-62.51" y="-25.57" width="125.02" height="51.13" rx="3" />
+<circle cx="-57.76" cy="-21.75" r="2.10" />
+<circle cx="-57.76" cy="21.75" r="2.10" />
+<circle cx="57.76" cy="-21.75" r="2.10" />
+<circle cx="57.76" cy="21.75" r="2.10" />
+<rect x="-48.80" y="-15.77" width="16.60" height="14.40" rx="0.8" />
+<g transform="translate(-40.50,0.63) scale(1,-1)"><text x="0" y="0" font-size="2" text-anchor="middle" fill="black" stroke="none">ETHERNET (RJ45)</text></g>
+<rect x="-31.10" y="-17.19" width="12.20" height="6.50" rx="0.8" />
+<g transform="translate(-25.00,-5.69) scale(1,-1)"><text x="0" y="0" font-size="2" text-anchor="middle" fill="black" stroke="none">USB PROG (USB-C)</text></g>
+<rect x="-17.60" y="-17.19" width="12.20" height="6.50" rx="0.8" />
+<g transform="translate(-11.50,-8.69) scale(1,-1)"><text x="0" y="0" font-size="2" text-anchor="middle" fill="black" stroke="none">USB USER (USB-C)</text></g>
+<rect x="-4.00" y="-17.57" width="13.00" height="7.50" rx="0.8" />
+<g transform="translate(2.50,-5.07) scale(1,-1)"><text x="0" y="0" font-size="2" text-anchor="middle" fill="black" stroke="none">HDMI (mini)</text></g>
+<rect x="10.52" y="-14.97" width="17.50" height="8.00" rx="0.8" />
+<g transform="translate(19.27,-4.97) scale(1,-1)"><text x="0" y="0" font-size="2" text-anchor="middle" fill="black" stroke="none">PMOD B (2x6 socket)</text></g>
+<rect x="33.38" y="-14.97" width="17.50" height="8.00" rx="0.8" />
+<g transform="translate(42.12,-1.97) scale(1,-1)"><text x="0" y="0" font-size="2" text-anchor="middle" fill="black" stroke="none">PMOD A (2x6 socket)</text></g>
+</g>
+<g transform="scale(1,-1)"><g transform="translate(-62.51,-33.56) scale(1,-1)"><text font-size="2.5" fill="black">RIGHT END PLATE, viewed from OUTSIDE, 1:1 mm. Board top 8.0 mm above the inside floor (slot: measure).</text></g></g>
+</svg>

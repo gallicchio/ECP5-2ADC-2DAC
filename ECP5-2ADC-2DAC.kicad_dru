@@ -1,0 +1,27 @@
+(version 1)
+# Written by gen/rules.py.  Edit that, not this.
+# Inside the BGA ball field JLCPCB accepts 3.5 mil, and the escape needs it.
+(rule "BGA fanout"
+    (constraint track_width (min 0.1mm))
+    (constraint clearance (min 0.1mm))
+    (condition "A.insideArea('BGA_FANOUT')"))
+(rule "via-in-pad under the BGA"
+    (constraint hole_size (min 0.15mm))
+    (condition "A.Type == 'Via' && A.insideArea('BGA_FANOUT')"))
+(rule "Ethernet intra-pair skew"
+    (constraint skew (max 5.0mm))
+    (condition "A.NetClass == 'MDI' && B.NetClass == 'MDI'"))
+(rule "Ethernet line-side intra-pair skew"
+    (constraint skew (max 20.0mm))
+    (condition "A.NetClass == 'LAN' && B.NetClass == 'LAN'"))
+(rule "USB intra-pair skew"
+    (constraint skew (max 1.0mm))
+    (condition "A.NetClass == 'USB' && B.NetClass == 'USB'"))
+(rule "keep every other net 1.5 mm from the Ethernet line side (the LAN nets, inside the island)"
+    (constraint physical_clearance (min 1.5mm))
+    (condition "A.NetClass != 'LAN' && B.NetClass == 'LAN' && B.insideArea('LAN_ISLAND') && !A.memberOfFootprint('C4951') && !B.memberOfFootprint('C4951') && !A.memberOfFootprint('J401') && !A.memberOfFootprint('T401')"))
+# (no silk_clearance rule: KiCad applies one to Fab and courtyard items too and reports every
+#  designator as a silkscreen overlap; its built-in silk-to-silk and silk-over-pad checks stay on)
+(rule "a USB-C receptacle's locating pegs sit 0.19 mm from its own pads (GCT's land pattern)"
+    (constraint hole_clearance (min 0.15mm))
+    (condition "A.memberOfFootprint('J501') || A.memberOfFootprint('J502') || B.memberOfFootprint('J501') || B.memberOfFootprint('J502')"))

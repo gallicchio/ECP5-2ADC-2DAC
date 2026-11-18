@@ -1,0 +1,11 @@
+footprints checked: 452, pads: 1722, worst disagreement 0.0000 mm
+rotations seen (ours, our layer, KiCad layer): count
+  (0, 'B.Cu', 'B.Cu'): 63
+  (0, 'F.Cu', 'F.Cu'): 129
+  (90, 'B.Cu', 'B.Cu'): 31
+  (90, 'F.Cu', 'F.Cu'): 68
+  (180, 'B.Cu', 'B.Cu'): 13
+  (180, 'F.Cu', 'F.Cu'): 78
+  (270, 'B.Cu', 'B.Cu'): 10
+  (270, 'F.Cu', 'F.Cu'): 60
+every pad is where KiCad puts it: the rotation and back-side conventions in pcb/fplib.py agree with KiCad

@@ -1,0 +1,51 @@
+# Pin settings for the bring-up design only, appended to the generated ../ecp5_2adc_2dac.lpf by build.sh (a later
+# IOBUF line for a port replaces the earlier one's settings).  The generated file is the board's; these are choices
+# of this one design.
+# USB USER: no pull inside the FPGA.  The generated file pulls D+ and D- up, which against a host's 15 k to ground
+# would hold both lines near mid-rail; the only pull-up a device port wants is the board's 1.5 k on usb_pullup.
+IOBUF PORT "usb_dp" IO_TYPE=LVCMOS33 PULLMODE=NONE;
+IOBUF PORT "usb_dn" IO_TYPE=LVCMOS33 PULLMODE=NONE;
+# microSD: the data lines pulled up, so an empty socket reads all ones and a card's open-drain start is clean.
+IOBUF PORT "sd_d[0]" IO_TYPE=LVCMOS33 PULLMODE=UP;
+IOBUF PORT "sd_d[1]" IO_TYPE=LVCMOS33 PULLMODE=UP;
+IOBUF PORT "sd_d[2]" IO_TYPE=LVCMOS33 PULLMODE=UP;
+# HDMI: hot-plug detect reads 0 with no monitor; the DDC lines idle high.
+IOBUF PORT "gpdi_hpd" IO_TYPE=LVCMOS33 PULLMODE=DOWN;
+IOBUF PORT "gpdi_scl" IO_TYPE=LVCMOS33 PULLMODE=UP;
+IOBUF PORT "gpdi_sda" IO_TYPE=LVCMOS33 PULLMODE=UP;
+# Pmods: pulled down, so an unplugged pin reads 0 and the loop test's "nothing wired" is a definite answer.
+IOBUF PORT "pmoda[0]" IO_TYPE=LVCMOS33 PULLMODE=DOWN;
+IOBUF PORT "pmoda[1]" IO_TYPE=LVCMOS33 PULLMODE=DOWN;
+IOBUF PORT "pmoda[2]" IO_TYPE=LVCMOS33 PULLMODE=DOWN;
+IOBUF PORT "pmoda[3]" IO_TYPE=LVCMOS33 PULLMODE=DOWN;
+IOBUF PORT "pmoda[4]" IO_TYPE=LVCMOS33 PULLMODE=DOWN;
+IOBUF PORT "pmoda[5]" IO_TYPE=LVCMOS33 PULLMODE=DOWN;
+IOBUF PORT "pmoda[6]" IO_TYPE=LVCMOS33 PULLMODE=DOWN;
+IOBUF PORT "pmoda[7]" IO_TYPE=LVCMOS33 PULLMODE=DOWN;
+IOBUF PORT "pmodb[0]" IO_TYPE=LVCMOS33 PULLMODE=DOWN;
+IOBUF PORT "pmodb[1]" IO_TYPE=LVCMOS33 PULLMODE=DOWN;
+IOBUF PORT "pmodb[2]" IO_TYPE=LVCMOS33 PULLMODE=DOWN;
+IOBUF PORT "pmodb[3]" IO_TYPE=LVCMOS33 PULLMODE=DOWN;
+IOBUF PORT "pmodb[4]" IO_TYPE=LVCMOS33 PULLMODE=DOWN;
+IOBUF PORT "pmodb[5]" IO_TYPE=LVCMOS33 PULLMODE=DOWN;
+IOBUF PORT "pmodb[6]" IO_TYPE=LVCMOS33 PULLMODE=DOWN;
+IOBUF PORT "pmodb[7]" IO_TYPE=LVCMOS33 PULLMODE=DOWN;
+# HDMI data and clock pins: 4 mA, as the board's LiteX platform file and the demo design set them (the generated LPF
+# gives no DRIVE, and the tools' default is 8 mA).  Each pair is two single-ended pins driven in antiphase through 22 nF.
+IOBUF PORT "gpdi_d0_p" IO_TYPE=LVCMOS33 DRIVE=4;
+IOBUF PORT "gpdi_d0_n" IO_TYPE=LVCMOS33 DRIVE=4;
+IOBUF PORT "gpdi_d1_p" IO_TYPE=LVCMOS33 DRIVE=4;
+IOBUF PORT "gpdi_d1_n" IO_TYPE=LVCMOS33 DRIVE=4;
+IOBUF PORT "gpdi_d2_p" IO_TYPE=LVCMOS33 DRIVE=4;
+IOBUF PORT "gpdi_d2_n" IO_TYPE=LVCMOS33 DRIVE=4;
+IOBUF PORT "gpdi_ck_p" IO_TYPE=LVCMOS33 DRIVE=4;
+IOBUF PORT "gpdi_ck_n" IO_TYPE=LVCMOS33 DRIVE=4;
+# RGMII transmit pins: fast edges.  The generated LPF and the LiteX platform file give them no SLEWRATE (the tools'
+# default is SLOW); at gigabit a bit is 4 ns.  This is a bring-up choice to be judged by the loopback's error count
+# (bench.py v1b, eth_loop): if frames come back bad, build once with these six lines removed and compare.
+IOBUF PORT "eth_txc" IO_TYPE=LVCMOS33 SLEWRATE=FAST;
+IOBUF PORT "eth_tx_ctl" IO_TYPE=LVCMOS33 SLEWRATE=FAST;
+IOBUF PORT "eth_txd[0]" IO_TYPE=LVCMOS33 SLEWRATE=FAST;
+IOBUF PORT "eth_txd[1]" IO_TYPE=LVCMOS33 SLEWRATE=FAST;
+IOBUF PORT "eth_txd[2]" IO_TYPE=LVCMOS33 SLEWRATE=FAST;
+IOBUF PORT "eth_txd[3]" IO_TYPE=LVCMOS33 SLEWRATE=FAST;

@@ -1,0 +1,120 @@
+ECP5-2ADC-2DAC rev A -- FABRICATION NOTES (written 2026-10-09)
+
+JLCPCB ORDER FORM -- set it top to bottom; the fields are in the form's own order (as of 2026-10-09).
+A line marked >> is NOT JLCPCB's default: change it, and do not leave the default named on its right.
+12 fields differ from JLCPCB's defaults.
+
+  PCB
+      Base Material .............................  FR-4                           
+  >>  Layers ....................................  6 (High Precision PCB)         NOT the default 2.  (High Precision PCB row)
+      Dimensions ................................  158 x 119 mm                   (the board outline)
+      PCB Qty ...................................  5                              (JLCPCB's minimum; 2 of them assembled)
+      Product Type ..............................  Industrial/Consumer electronics (the only true one of the three (Aerospace, Medical); duty is 35% whatever is chosen)
+  PCB Specifications
+      Different Design ..........................  1                              
+      Delivery Format ...........................  Single PCB                     (JLCPCB adds and removes the assembly rails (see Depanel below))
+      PCB Thickness .............................  1.6mm                          (the form's 1.6mm; the stack-up chosen below really builds 1.5544 mm, and its reminder asks you to accept that: Yes)
+      PCB Color .................................  Green                          
+      Silkscreen ................................  White                          
+  >>  Material Type .............................  FR4 TG155                      NOT the default FR4 TG135.  (a 0.8 mm BGA reflowed twice (both sides) plus through-hole.  The 0.15 mm vias below make JLCPCB select it by itself anyway ($3.81))
+  >>  Surface Finish ............................  ENIG                           NOT the default OSP.  (not OSP: flat for the 0.8 mm BGA and 0.4 mm QFP/QFN, survives the second side's reflow and the through-hole soldering, keeps for rework and probing)
+      Gold Thickness ............................  1 U"                           (appears under ENIG; 2 U" is for gold fingers and wearing contacts, and the board has none)
+  High-spec Options
+      Outer Copper Weight .......................  1 oz                           (the stack-up's)
+      Inner Copper Weight .......................  0.5 oz                         (the stack-up's)
+      Specify Layer Sequence ....................  No                             (the Gerber names and the job file give the order)
+  >>  Specify Stackup ...........................  Yes: JLC06161H-7628            NOT the default No.  (the 50 ohm SMA feeds (0.35 mm) and the 100 ohm MDI pairs are drawn for its 0.2104 mm of 7628 under each outer layer; if it is not offered, STOP and ask.  It is a 'special stackup': Standard PCBA only, as ordered)
+        then its Reminder dialog ................  Yes                            (it says 'The actual thickness of this stackup is 1.5544mm (tolerance +-10%), not 1.6mm ... Do you still want to select this stackup?'  YES: nothing clamps the board's edge (every connector is through-hole or top-mount), the extrusion's slots take a thinner board, and the impedances depend on the 0.2104 mm under the outer layers, not on the total.  Then Confirm)
+      Impedance Control .........................  No requirement                 (appears once a stack-up is chosen.  +-10% obliges an impedance table in the zip, or the order waits on an engineering question; without it JLCPCB still holds line width and spacing to +-20%, and the dielectric is the stack-up's.  The lines drawn to an impedance are short against their edges (each SMA feed 8 mm, each Ethernet MDI line about 20 mm), and the 70 mm HDMI pairs (0.1-0.127 mm) were not drawn to one)
+      Via Covering ..............................  Epoxy Filled & Capped          (via-in-pad under the BGA and the back-side decoupling on ball vias)
+  >>  Min via hole size/diameter ................  0.15mm/(0.25/0.3mm)            NOT the default 0.3mm/(0.4/0.45mm).  (the board's smallest via is 0.3 mm across, 0.15 mm drill.  The form then says it selects '4-Wire Kelvin Test' and 'FR4 Tg155' itself: leave both ($38.14 for the vias, $17.89 for the test))
+      Board Outline Tolerance ...................  +-0.2mm (Regular)              (the extrusion's slots take it)
+  >>  Confirm Production file ...................  Yes                            NOT the default No.  (about $1: JLCPCB's production Gerbers come back to check before they make it)
+      Mark on PCB ...............................  Remove Mark                    (no order number printed (the back silk's JLCJLCJLCJLC, in the slot band, then prints as plain text))
+      Electrical Test ...........................  Flying Probe Fully Test        (plus the 4-Wire Kelvin Test the 0.15 mm vias switched on)
+      Gold Fingers ..............................  No                             
+      Castellated Holes .........................  No                             
+      Press-Fit Hole ............................  No                             
+      Edge Plating ..............................  No                             
+      Blind Slots ...............................  No                             
+      UL Marking ................................  No                             
+      Backdrill .................................  No                             
+      Humidity Indicator Card ...................  No                             
+
+  PCB Assembly
+  >>  PCB Assembly ..............................  On                             NOT the default Off.  
+  >>  PCBA Type .................................  Standard                       NOT the default Economic.  (Economic cannot assemble both sides)
+  >>  Assembly Side .............................  Both Sides                     NOT the default Top Side.  (parts on both sides (the BGA's decoupling, the regulators, the magnetics and the microSD on the back))
+  >>  PCBA Qty ..................................  2                              NOT the default 5.  
+      Edge Rails/Fiducials ......................  Added by JLCPCB                (two 5 mm rails make it 158 x 129 mm for the line; Depanel below takes them off)
+  >>  Confirm Parts Placement ...................  Yes                            NOT the default No.  (free: the placement preview, read against PLACEMENT_CHECKS.txt -- BOTH sides)
+      Stencil Storage ...........................  No                             
+      Fixture Storage ...........................  No                             
+      Parts Selection ...........................  By Customer (Self-Service)     (the BOM carries every LCSC code)
+  Advanced Options
+      Bake Components ...........................  No                             
+      Photo Confirmation ........................  No                             
+      Board Cleaning ............................  No                             
+      Conformal Coating .........................  No                             
+      Special stencil ...........................  No                             
+      Packaging .................................  Antistatic bubble film         (the default)
+  >>  Depanel boards & edge rail before delivery .. Yes                            NOT the default No.  (about $2: the boards come without JLCPCB's rails)
+      Solder Paste ..............................  High temp.                     (the default, lead-free)
+      Flying Probe Test .........................  No                             (the bare boards are already flying-probe tested)
+      Nitrogen reflow soldering .................  No                             (air reflow with SAC paste on ENIG wets a 0.8 mm BGA)
+      Function test .............................  No                             
+      Assembly remark ...........................  No                             
+  Stencil
+      Stencil ...................................  Off                            (the assembly makes its own)
+  Files
+      BOM .......................................  ECP5-2ADC-2DAC_bom.csv         
+      CPL .......................................  ECP5-2ADC-2DAC_cpl_jlcpcb_upload.csv (not the _kicad_native one)
+
+NOTES
+Board: 158 x 119 mm, 6 layers, 1.6 mm on the form; JLCPCB stackup JLC06161H-7628 (1 oz outer, 0.5 oz inner, 7628 prepreg) builds 1.5544 mm.
+Surface finish: ENIG (there is a 0.8 mm pitch BGA).  Solder mask green, silkscreen white.
+Via-in-pad under the BGA: all 0.3 mm / 0.15 mm vias must be epoxy filled and capped (JLCPCB's default for 6+ layers; tick it).
+The FPGA's 100 nF decoupling sits on the BACK directly under the BGA, each 0402 on two adjacent ball vias (0.8 mm pitch): those vias must be capped on the back too (the filled-and-capped option covers both sides).
+Enclosure: Hammond 1455Q (125 x 51.5 mm extrusion, 160 or 220 mm long); the board's long edges slide into its PCB slots, so nothing sits within 3.5 mm of them.  SMAs through the left end plate, all other connectors through the right one.
+Photodiode D103 uses ours:VBPW34S_K1_A2 (LCSC's footprint with pads renumbered so pad 1 is the cathode); its orientation on the board is the same as JLCPCB's library part, pad 1 of theirs (the anode) on the -5 V side.  Check it in the placement preview.
+The mini-HDMI jack is wired with type C pin numbering (shield first in each pair, DDC ground 13, CEC 14); its four shell tabs (pads 20-23) are grounded.
+Minimum track/space on the board: 0.100 mm (inside the BGA fan-out; 0.127 mm elsewhere).  Via sizes: 0.3/0.15, 0.45/0.25.  Smallest drill 0.15 mm.
+Fiducials: three 1 mm copper dots in 2 mm mask openings, front and back, at (25.5, 12.5), (120.0, 7.5), (146.5, 113.0) mm from the board's top-left corner (x right, y down); JLCPCB adds its own on the panel rails as well.
+Layer markers: the copper layer numbers 1-6, each in copper on its own layer, in a row at the top edge (x 70-82, y 1.9 mm, inside the extrusion's slot band): hold the bare board against the light to check the layer order.
+Order number: none.  Mark on PCB is 'Remove Mark' (JLCPCB's default since May 2026).  The back silkscreen's JLCJLCJLCJLC at the top edge (x 95, y 1.9 mm, in the slot band the extrusion hides) is left from when the form placed the number there; it prints as plain text.
+Impedance: the order specifies the stack-up, not +-10% impedance control (see the form).  Drawn for JLC06161H-7628: the SMA feeds 0.35 mm, 50 ohm over In1, 8 mm each; the Ethernet MDI pairs 0.25 mm (0.2 mm in the PHY's fan-out), about 20 mm each.  The HDMI pairs, 70 mm at 0.1-0.127 mm, are not drawn to an impedance.
+The shipped board file holds 361 filled zone polygons; DRC 0 errors / 0 unconnected (build/drc.json).
+
+Assembly (JLCPCB Standard, SMT both sides + through-hole on top): 446 SMT placements and 28 through-hole parts on 95 BOM lines, 49 of them Extended parts (each carries a one-off loading fee).
+Through-hole, fitted by JLCPCB (Jason, 2026-10-06): the six SMA jacks, the RJ45, the DIP switch, the 2.54 mm headers (ordered as 1x40 / 2x40 strips the assembler snaps to length, as on the GPSDO board) and the two Pmod sockets.  146 through-hole joints incl. the USB-C shells.
+Upload: ECP5-2ADC-2DAC_bom.csv and ECP5-2ADC-2DAC_cpl_jlcpcb_upload.csv (JLCPCB's conventions: the bottom-side mirror, rotations read in previews or predicted from their drawings, the USB-C moved to their origin); ECP5-2ADC-2DAC_cpl_kicad_native.csv is KiCad's own numbers for reference.
+THEN READ THE PLACEMENT PREVIEW against PLACEMENT_CHECKS.txt: 81 placements of 35 part numbers have a predicted or unverified rotation; the bottom side's 7 polarized parts hardest of all (this board stores its back-side pads mirrored left-right, checked on C_0402_1005Metric).
+Hand solder (hand_solder_bom.csv): nothing -- every part is assembled by JLCPCB; the file is its header alone.
+Coordinates: the board's corner is at (25, 25) mm on KiCad's page (pcb/place.py OX, OY); the gerbers, the drill file and the CPL all use that frame, so they agree.
+End plates: end_panel_left/right.svg and .dxf (1:1, viewed from outside) with every connector's cutout; end_panels.txt lists them.  MEASURE which slot the board rides in and set PCB_TOP_ABOVE_FLOOR in mfg/end_panels.py before milling.
+
+COST ESTIMATE: 5 PCBs, 2 assembled, itemised as JLCPCB's cart is (fees calibrated against this board's real order on 2026-10-08 and 2026-10-09; parts from their live API on 2026-10-09):
+  PCB    engineering fee                                                $   33.00
+  PCB    board (5 PCBs)                                                 $   13.20
+  PCB    confirm production file                                        $    1.05
+  PCB    surface finish, ENIG (5 PCBs)                                  $   19.00
+  PCB    stackup fee, JLC06161H-7628 (5 PCBs)                           $   33.08
+  PCB    material type, FR4 TG155 (5 PCBs)                              $    3.81
+  PCB    min via hole 0.15 mm (5 PCBs)                                  $   38.14
+  PCB    4-wire Kelvin test (5 PCBs)                                    $   17.89
+  PCBA   setup fee                                                      $   51.50
+  PCBA   stencil                                                        $   16.54
+  PCBA   components (95 lines, with JLCPCB's attrition, x 1.0066)       $  328.84
+  PCBA   feeders loading fee (49 Extended codes x $2.7006)              $  132.33
+  PCBA   SMT assembly (1631 pads x $0.0017 + $1.4873, x 2)              $    8.52
+  PCBA   hand-soldering labour fee                                      $    3.61
+  PCBA   manual assembly (146 through-hole joints x $0.0157 x 2)        $    4.59
+  PCBA   PCB assembly fixture                                           $   16.54
+  PCBA   X-ray inspection (2 x $1.65)                                   $    3.30
+  PCBA   packaging fee                                                  $    0.51
+  PCBA   special components fee                                         $    0.12
+  option depanel boards and edge rail                                   $    2.32
+  TOTAL  before shipping and duty                                       $  727.89  ($364 per assembled board)
+  US duty, DDP, about 35% of that: ~$255 more.  Shipping: $31.23, DHL Express (DDP), 2-4 business days, 0.47 kg: JLCPCB's estimate, 2026-10-09.
+  (The order of 2026-10-08, 5 PCBs and 2 assembled with OSP, came to $616.06 in JLCPCB's cart; this model gives $615.97 for it.)
+  (The cart of 2026-10-09, 5 PCBs and 2 assembled with every option above set, came to $727.90: PCB $159.17, PCBA $566.41, depanel $2.32; this model gives $727.89 for it, the PCB lines $159.17.)

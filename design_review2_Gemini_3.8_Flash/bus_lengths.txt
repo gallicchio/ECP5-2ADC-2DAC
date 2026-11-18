@@ -1,0 +1,5 @@
+SDRAM nets count: 39
+SDRAM trace lengths: min=8.1 mm, max=30.9 mm, avg=17.8 mm
+SDRAM_CLK length: [16.74556961930741]
+ADC data trace lengths (count 24): min=12.0 mm, max=27.7 mm, avg=18.1 mm
+DAC data trace lengths (count 28): min=37.4 mm, max=57.7 mm, avg=45.8 mm

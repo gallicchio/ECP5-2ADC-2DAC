@@ -1,0 +1,130 @@
+=== adc_frontend.cir
+Circuit: adc front end, one channel: sma -> 50r term -> 100r -> clamp node -> x1/x10 -> x1/x10 -> ths4521 (gain 1) -> 33r/22pf -> ad9238
+Doing analysis at TEMP = 27.000000 and TNOM = 27.000000
+Using SPARSE 1.3 as Direct Linear Solver
+No. of Data Rows : 1
+v(node) = 1.064647e-10
+v(o1) = 1.064638e-10
+v(o2) = 1.637954e-07
+v(adp) = 1.633631e+00
+v(adn) = 1.633631e+00
+Doing analysis at TEMP = 27.000000 and TNOM = 27.000000
+Using SPARSE 1.3 as Direct Linear Solver
+No. of Data Rows : 101
+g1k                 =  -6.031231e+00
+f3db                =  2.307633e+07
+g1k = -6.03123e+00
+f3db = 2.307633e+07
+Doing analysis at TEMP = 27.000000 and TNOM = 27.000000
+Using SPARSE 1.3 as Direct Linear Solver
+No. of Data Rows : 61
+vlo                 =  -4.993882e-01
+vhi                 =  4.993886e-01
+vlo = -4.99388e-01
+vhi = 4.993886e-01
+Doing analysis at TEMP = 27.000000 and TNOM = 27.000000
+Using SPARSE 1.3 as Direct Linear Solver
+No. of Data Rows : 21
+nmin                =  -4.777935e+00 at=  -1.000000e+01
+nmax                =  4.994841e+00 at=  1.000000e+01
+nmin = -4.77794e+00
+nmax = 4.994841e+00
+=== dac_stage.cir
+Circuit: dac output stage: iouta/ioutb 0..19.2 ma into 24.9 r -> opa2810 difference amp gain 4.4 (2.2 k, 2026-10-07: a round +-2 v / +-1 v) -> 49.9 r -> 50 r load
+Reset re-loads circuit dac output stage: iouta/ioutb 0..19.2 ma into 24.9 r -> opa2810 difference amp gain 4.4 (2.2 k, 2026-10-07: a round +-2 v / +-1 v) -> 49.9 r -> 50 r load
+Circuit: dac output stage: iouta/ioutb 0..19.2 ma into 24.9 r -> opa2810 difference amp gain 4.4 (2.2 k, 2026-10-07: a round +-2 v / +-1 v) -> 49.9 r -> 50 r load
+Doing analysis at TEMP = 27.000000 and TNOM = 27.000000
+Using SPARSE 1.3 as Direct Linear Solver
+No. of Data Rows : 1
+v(va) = 4.459680e-10
+v(vb) = 4.553588e-01
+v(out) = -2.00747e+00
+v(sma) = -1.00474e+00
+Reset re-loads circuit dac output stage: iouta/ioutb 0..19.2 ma into 24.9 r -> opa2810 difference amp gain 4.4 (2.2 k, 2026-10-07: a round +-2 v / +-1 v) -> 49.9 r -> 50 r load
+Circuit: dac output stage: iouta/ioutb 0..19.2 ma into 24.9 r -> opa2810 difference amp gain 4.4 (2.2 k, 2026-10-07: a round +-2 v / +-1 v) -> 49.9 r -> 50 r load
+Doing analysis at TEMP = 27.000000 and TNOM = 27.000000
+Using SPARSE 1.3 as Direct Linear Solver
+No. of Data Rows : 1
+v(va) = 1.184274e-01
+v(vb) = 3.461068e-01
+v(out) = -1.00374e+00
+v(sma) = -5.02371e-01
+Reset re-loads circuit dac output stage: iouta/ioutb 0..19.2 ma into 24.9 r -> opa2810 difference amp gain 4.4 (2.2 k, 2026-10-07: a round +-2 v / +-1 v) -> 49.9 r -> 50 r load
+Circuit: dac output stage: iouta/ioutb 0..19.2 ma into 24.9 r -> opa2810 difference amp gain 4.4 (2.2 k, 2026-10-07: a round +-2 v / +-1 v) -> 49.9 r -> 50 r load
+Doing analysis at TEMP = 27.000000 and TNOM = 27.000000
+Using SPARSE 1.3 as Direct Linear Solver
+No. of Data Rows : 1
+v(va) = 2.368549e-01
+v(vb) = 2.368549e-01
+v(out) = 4.566027e-08
+v(sma) = 2.285299e-08
+Reset re-loads circuit dac output stage: iouta/ioutb 0..19.2 ma into 24.9 r -> opa2810 difference amp gain 4.4 (2.2 k, 2026-10-07: a round +-2 v / +-1 v) -> 49.9 r -> 50 r load
+Circuit: dac output stage: iouta/ioutb 0..19.2 ma into 24.9 r -> opa2810 difference amp gain 4.4 (2.2 k, 2026-10-07: a round +-2 v / +-1 v) -> 49.9 r -> 50 r load
+Doing analysis at TEMP = 27.000000 and TNOM = 27.000000
+Using SPARSE 1.3 as Direct Linear Solver
+No. of Data Rows : 1
+v(va) = 3.552823e-01
+v(vb) = 1.276029e-01
+v(out) = 1.003737e+00
+v(sma) = 5.023709e-01
+Reset re-loads circuit dac output stage: iouta/ioutb 0..19.2 ma into 24.9 r -> opa2810 difference amp gain 4.4 (2.2 k, 2026-10-07: a round +-2 v / +-1 v) -> 49.9 r -> 50 r load
+Circuit: dac output stage: iouta/ioutb 0..19.2 ma into 24.9 r -> opa2810 difference amp gain 4.4 (2.2 k, 2026-10-07: a round +-2 v / +-1 v) -> 49.9 r -> 50 r load
+Doing analysis at TEMP = 27.000000 and TNOM = 27.000000
+Using SPARSE 1.3 as Direct Linear Solver
+No. of Data Rows : 1
+v(va) = 4.737097e-01
+v(vb) = 1.835093e-02
+v(out) = 2.007474e+00
+v(sma) = 1.004742e+00
+Reset re-loads circuit dac output stage: iouta/ioutb 0..19.2 ma into 24.9 r -> opa2810 difference amp gain 4.4 (2.2 k, 2026-10-07: a round +-2 v / +-1 v) -> 49.9 r -> 50 r load
+Circuit: dac output stage: iouta/ioutb 0..19.2 ma into 24.9 r -> opa2810 difference amp gain 4.4 (2.2 k, 2026-10-07: a round +-2 v / +-1 v) -> 49.9 r -> 50 r load
+Doing analysis at TEMP = 27.000000 and TNOM = 27.000000
+Using SPARSE 1.3 as Direct Linear Solver
+No. of Data Rows : 90
+g10k                =  -1.961303e+01
+f3db                =  1.226982e+07
+g10k = -1.96130e+01
+f3db = 1.226982e+07
+=== tia.cir
+Circuit: photodiode transimpedance amplifier: 10 k || 2.2 pf, opa2810, diode capacitance 70 pf reverse biased
+Doing analysis at TEMP = 27.000000 and TNOM = 27.000000
+Using SPARSE 1.3 as Direct Linear Solver
+No. of Data Rows : 101
+g1k                 =  -4.000009e+01
+f3db                =  6.799465e+06
+gmax                =  -3.648542e+01 at=  3.981072e+06
+g1k = -4.00001e+01
+f3db = 6.799465e+06
+gmax = -3.64854e+01
+=== led_driver.cir
+Circuit: led driver: va2 (0..0.48 v) -> opa2810 -> 100 r -> ss8050 -> led to +5 v, 10 r emitter sense: i_led = va2 / 10 r
+Doing analysis at TEMP = 27.000000 and TNOM = 27.000000
+Using SPARSE 1.3 as Direct Linear Solver
+No. of Data Rows : 7
+led driver: va2 (0..0.48 v) -> opa2810 -> 100 r -> ss8050 -> led to +5 v, 10 r emitter sense: i_led = va2 / 10 r
+DC transfer characteristic  Wed Oct  7 18:57:53  2026
+--------------------------------------------------------------------------------
+Index   v-sweep         i(vp5)          v(col)          v(sense)        
+--------------------------------------------------------------------------------
+0	0.000000e+00	-8.72458e-12	4.260000e+00	1.042584e-12	
+1	8.000000e-02	-7.96045e-03	3.283415e+00	7.999266e-02	
+2	1.600000e-01	-1.59214e-02	3.238629e+00	1.599916e-01	
+3	2.400000e-01	-2.38823e-02	3.208383e+00	2.399907e-01	
+4	3.200000e-01	-3.18431e-02	3.182839e+00	3.199897e-01	
+5	4.000000e-01	-3.98039e-02	3.160638e+00	3.999888e-01	
+6	4.800000e-01	-4.77645e-02	3.140296e+00	4.799879e-01	
+=== pdn_bead.cir
+Circuit: ferrite bead between a regulator's output and a load: impedance seen by the load vs frequency
+Doing analysis at TEMP = 27.000000 and TNOM = 27.000000
+Using SPARSE 1.3 as Direct Linear Solver
+No. of Data Rows : 220
+zpeak               =  6.863698e-01 at=  4.738588e+04
+meas ac fpeak when z=6.863698e-01 failed!
+z_2meg              =  5.007129e-03
+z_100k              =  1.946075e-01
+z_20meg             =  9.298808e-03
+Doing analysis at TEMP = 27.000000 and TNOM = 27.000000
+Using SPARSE 1.3 as Direct Linear Solver
+No. of Data Rows : 220
+zpeak2              =  9.555200e-01 at=  2.824550e+05
+meas ac fpeak2 when z=9.555200e-01 failed!

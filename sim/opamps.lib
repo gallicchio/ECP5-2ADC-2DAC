@@ -1,0 +1,39 @@
+* Behavioural op-amp models: single dominant pole at the gain-bandwidth product,
+* output limited to the rails, 1 MOhm differential input, 10 Ohm output.
+* These are what the front-end design depends on (gain, bandwidth, swing),
+* not what a vendor model adds (noise, distortion, slew).  Vendor models for
+* the OPA1612, THS4521 and OPA2810 exist on ti.com and can be dropped in here.
+*
+* OPA1612: 40 MHz GBW, 100 dB Aol
+.subckt OPA1612 inp inn vcc vee out
+Rin inp inn 1e6
+Ein 1 0 inp inn 1
+R1 1 2 1k
+C1 2 0 {1/(2*3.14159*1k*40e6/1e5)}
+Eol 3 0 2 0 1e5
+Blim 4 0 V = max(min(V(3), V(vcc)-1.2), V(vee)+1.2)
+Rout 4 out 10
+.ends
+* THS4521: fully differential, 145 MHz GBW, VOCM input, 3.3 V single supply
+.subckt THS4521 inp inn vocm vcc vee outn outp
+Rin inp inn 1e6
+Ein 1 0 inp inn 1
+R1 1 2 1k
+C1 2 0 {1/(2*3.14159*1k*145e6/1e4)}
+Eol 3 0 2 0 1e4
+* differential output about vocm; each side limited to the rails
+Bop 5 0 V = max(min(V(vocm) + V(3)/2, V(vcc)-0.2), V(vee)+0.2)
+Bon 6 0 V = max(min(V(vocm) - V(3)/2, V(vcc)-0.2), V(vee)+0.2)
+Routp 5 outp 10
+Routn 6 outn 10
+.ends
+* OPA2810: 105 MHz GBW, 100 dB
+.subckt OPA2810 inp inn vcc vee out
+Rin inp inn 1e6
+Ein 1 0 inp inn 1
+R1 1 2 1k
+C1 2 0 {1/(2*3.14159*1k*105e6/1e5)}
+Eol 3 0 2 0 1e5
+Blim 4 0 V = max(min(V(3), V(vcc)-0.5), V(vee)+0.5)
+Rout 4 out 10
+.ends

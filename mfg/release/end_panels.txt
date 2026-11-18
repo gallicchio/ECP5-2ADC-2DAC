@@ -1,0 +1,15 @@
+End plates for the Hammond 1455Q1601 (plate 125.02 x 51.13 mm, holes 4.2 mm on 115.52 x 43.51).  Viewed from outside; u right, v up, from the plate's centre.
+Board 158 x 119 mm, top surface 8.0 mm above the inside floor (PCB_TOP_ABOVE_FLOOR: measure the slot before milling).
+
+J301  CLK IN (SMA)           left   u  +47.50  v  -12.57  circle 6.5 x 6.5
+J302  CLK OUT (SMA)          left   u  +30.50  v  -12.57  circle 6.5 x 6.5
+J101  ADC A IN (SMA)         left   u  +13.50  v  -12.57  circle 6.5 x 6.5
+J102  ADC B IN (SMA)         left   u   -3.50  v  -12.57  circle 6.5 x 6.5
+J205  DAC 2 OUT (SMA)        left   u  -37.50  v  -12.57  circle 6.5 x 6.5
+J204  DAC 1 OUT (SMA)        left   u  -20.50  v  -12.57  circle 6.5 x 6.5
+J401  ETHERNET (RJ45)        right  u  -40.50  v   -8.57  rect 16.6 x 14.4
+J501  USB PROG (USB-C)       right  u  -25.00  v  -13.94  rect 12.2 x 6.5
+J502  USB USER (USB-C)       right  u  -11.50  v  -13.94  rect 12.2 x 6.5
+J503  HDMI (mini)            right  u   +2.50  v  -13.82  rect 13.0 x 7.5
+J304  PMOD B (2x6 socket)    right  u  +19.27  v  -10.97  rect 17.5 x 8.0
+J303  PMOD A (2x6 socket)    right  u  +42.12  v  -10.97  rect 17.5 x 8.0

@@ -1,0 +1,4 @@
+-- USBLC 5.25 V evidence --
+-- vector render libraries --
+cairosvg=unavailable: ModuleNotFoundError
+PIL=available
