@@ -4,10 +4,10 @@
 messages (`python3 bringup/bench.py where`).  The procedure is [`../BRINGUP.md`](../BRINGUP.md); results are in
 [`BRINGUP_LOG.md`](BRINGUP_LOG.md); problems for the next revision in [`REVB.md`](REVB.md).
 
-Updated: **2026-11-18 11:40, by Claude (Prompt 167).  The project lives in its own repository,
+Updated: **2026-11-18 11:45, by Claude (Prompt 168).  The project lives in its own repository,
 `~/pcbs/ECP5-2ADC-2DAC` (github.com/gallicchio/ECP5-2ADC-2DAC); everything is recorded here.**
 
-**Where we are: the AMOD-P march: every tile a frequency sweep can measure is done (p0-p9, p11, both boards); p10, p12 and p13 wait for their own setups.**  Board A and the Icepi Zero DK0GFLAW each sweep the same
+**Where we are: the AMOD-P march: p0-p9 and p11 done on both boards; p10 (the clipper) done on the Icepi (its 4.04 measured), next on board A with JP101 TERM out; p12 and p13 wait (no loopstick yet).**  Board A and the Icepi Zero DK0GFLAW each sweep the same
 AMOD-P tile on their own AMOD-P board at the same time (`amodp/README.md`).  p0 (the through, the calibration), p1-p3
 and **p4 with both switches off** are measured on both and make sense (BRINGUP_LOG).  Board A's p4 (2026-11-18 08:39,
 after a fresh load of lockin2; yesterday's failure was the lock-in bitstream, not the cables): peak -1.8 dB at 1.075
@@ -30,10 +30,10 @@ three-cornered hat are in the log (15:17-15:24).
 |---|---|
 | **Board on the bench** | **A**, reworked: FB6241 gone, a wire from R6222's +3V3 end to its left pad (VPHY 3.3 V); USB PROG through the D+/D- swapped cable.  Board B still in the bag. |
 | **Powered?** | **yes, from USB PROG** (+5V 4.975 V; -4V2 -4.150 V; +1V1 1.108 V at 16:02).  The E3646A is **not connected** to the board. |
-| **Cabled to the board** | J204 (DAC 1 OUT) -> 10 cm SMA -> its AMOD-P board -> 10 cm SMA -> J101 (ADC A IN), TERM in.  On 2026-11-18 on p4 (IN, top left; OUT, bottom right); on p11 since 11:19 (IN, top left; OUT, bottom of the left cell); board A taped to the table.  J205 (DAC 2 OUT) and J102 (ADC B IN): nothing, as far as the session knows.  A U.FL pigtail from J108 (TAP B) to the scope's CH4; J401 (ETHERNET) on the gigabit path; both USB-C; the Fluke on J602 (RAILS) +1V1. |
+| **Cabled to the board** | J204 (DAC 1 OUT) -> 10 cm SMA -> its AMOD-P board -> 10 cm SMA -> J101 (ADC A IN), TERM in.  On 2026-11-18 on p4 (IN, top left; OUT, bottom right); on p10 since about 11:25 (IN, top left; OUT, bottom right), JP101 TERM still in (to come out for p10); board A taped to the table.  J205 (DAC 2 OUT) and J102 (ADC B IN): nothing, as far as the session knows.  A U.FL pigtail from J108 (TAP B) to the scope's CH4; J401 (ETHERNET) on the gigabit path; both USB-C; the Fluke on J602 (RAILS) +1V1. |
 | **Instruments claimed for this board** | the Fluke45 (on +1V1) and the scope's CH4 (TAP B), both only reading.  The E3646A released (2026-11-17 22:56:51, the claims log). |
 | **What is in the board's flash** | `bringup.bit` of 2026-11-16 (version 20261116): the board boots it by itself. |
-| **What the session left running** | nothing.  Board A's FPGA holds the tutorial's `lockin2.bit` (loaded 2026-11-18 11:19); the IIO bridge on bell is stopped (22:56:49, its output file).  The Icepi DK0GFLAW holds `lockin_half.bit` in SRAM (its flash still the 5.08 XY show), cabled DAC OUT -> its AMOD-P's p4 -> ADC IN. |
+| **What the session left running** | nothing.  Board A's FPGA holds the tutorial's `lockin2.bit` (loaded 2026-11-18 11:19); the IIO bridge on bell is stopped (22:56:49, its output file).  The Icepi DK0GFLAW holds Chapter 2's SoC (`src/riscv/build/icepi_zero`) and its firmware in SRAM (since 11:35) (its flash still the 5.08 XY show), cabled DAC OUT -> its AMOD-P's p4 -> ADC IN. |
 
 ## Visit 1B on board A (2026-11-16 17:00-18:00)
 

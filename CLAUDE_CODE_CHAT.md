@@ -6356,3 +6356,22 @@ p11
   checks 0 errors).  Run on the saved sweeps it flags the Icepi's p4 (4 points, 3.2-4.0 MHz) and p8 (60, at f_s).
 * Every tile a frequency sweep can measure is done.  p10 (clipper: an amplitude sweep, board A's TERM out), p12 (LEDs: a
   DC ramp) and p13 (loopstick: a coil and AMOD-A) need their own setups: asked Jason which.
+
+## Prompt 168 2026-11-18 11:25
+
+I have no AM loopstick. What do I search for on Amazon or eBay? p10 is connected on both. Write what you need to write
+to test this and demonstrate clipping in the written tutorials.
+
+## Response 168 2026-11-18 11:25 - 2026-11-18 11:39 Claude Opus 5.5
+
+* The loopstick: search terms and the coil to look for given in the chat (a medium-wave ferrite rod antenna coil,
+  about 200-350 uH, a 10 mm rod 60-80 mm long; AMOD-and-RFMOD's KIT.md names Atomic-29's 240 uH).
+* **The Icepi's p10, measured** (11:36-11:37): Chapter 2's SoC and firmware booted into SRAM with the tutorial's
+  `dev/tools/serialboot.py --load` (the LiteX in the ECP5 tutorial's venv); the new `src/riscv/clipper.py` steps the
+  function generator 0.06-3.9 V at 99,945 Hz and fits seven harmonics to each capture.  At 3.9 V: 3f -11.2, 5f -17.1,
+  7f -21.2 dBc, within 0.5 dB of the diode equation with no fitting; even harmonics at the loop's -45 dBc.  4.04 now
+  shows it (two figures, a measured table; C_how_it_was_tested updated): icepi-zero-dac-adc 27ea6b7, make check 0
+  errors.
+* Board A: fast.sv tops out at half scale (+-1 V behind 50 ohm), too little to clip hard through 1 k; a background agent
+  is adding a fine gain command up to full scale, building it and writing clipper.py and a new page (1.20).  Board A's
+  ADC must see the tile at high impedance: asked Jason to take JP101 TERM out.
