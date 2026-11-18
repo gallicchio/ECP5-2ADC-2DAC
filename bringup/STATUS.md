@@ -4,24 +4,33 @@
 messages (`python3 bringup/bench.py where`).  The procedure is [`../BRINGUP.md`](../BRINGUP.md); results are in
 [`BRINGUP_LOG.md`](BRINGUP_LOG.md); problems for the next revision in [`REVB.md`](REVB.md).
 
-Updated: **2026-11-17 14:54, by Claude (Prompts 128-145).  **Board A's ADC stage was hurt at about 14:35**: a U.FL pigtail fitted to
-J108 (TAP B) on the powered board shorted something near the ADC; the board reset, and since then both ADC channels
-compress their largest swings (1.5-3 % at +-0.75 of full scale; small signals, noise and distortion unchanged; the
-preamp output still straight, so U103 the AD9238 most likely: REVB 27).  Everything else passes (`bench.py v1b`: 55
-pass).  Rule from now on: the board powered off for any U.FL work.  Earlier today: gigabit works both ways; CONFIGS
-1a-1e done; REVB 22's 3 MHz cross-talk is on the board, from DAC 1 driving a load; REVB 24's steps are inside ADC B's
-chain after its preamp (no rail moves, not the TCXO).  Next: your choice (below).**
+Updated: **2026-11-17 22:58, by Claude (Prompts 146-156).  The project now lives in its own repository,
+`~/pcbs/ECP5-2ADC-2DAC` (github.com/gallicchio/ECP5-2ADC-2DAC); everything is recorded here from now on.**
+
+**Where we are: the AMOD-P march, at p4.**  Board A and the Icepi Zero DK0GFLAW each sweep the same AMOD-P tile on
+their own AMOD-P board at the same time (`amodp/README.md`).  p0 (the through, the calibration), p1, p2 and p3 are
+measured on both and agree with the handbook's circuits (BRINGUP_LOG).  p4 (switches off) is measured on the Icepi;
+**on board A it must be measured again**, and **the cables are probably not the problem**: board A's lock-in bitstream
+(lockin2) went wrong between p3 and p4 and read even the barrel as -6 dB with a false roll-off; fast.bit read the same
+barrel normally, and a fresh load of lockin2 read it 0.0 dB, 0 degrees.  Every sweep now loads the lock-in first.
+
+Earlier on 2026-11-17: gigabit works both ways; CONFIGS 1a-1e done; REVB 22's 3 MHz cross-talk is on the board, from
+DAC 1 driving a load; REVB 24's steps are inside ADC B's chain after its preamp.  **Board A's ADC stage was hurt at
+about 14:35** (a U.FL pigtail fitted to J108 TAP B on the powered board): both ADC channels compress held levels at
+the ends of their range (1.5-3 % at +-0.75 of full scale; DNL, noise and distortion unchanged; U103 the AD9238 most
+likely: REVB 27).  Rule: the board powered off for any U.FL work.  The chain's ENOB and IMD and the clocks'
+three-cornered hat are in the log (15:17-15:24).
 
 ## Now
 
 | | |
 |---|---|
 | **Board on the bench** | **A**, reworked: FB6241 gone, a wire from R6222's +3V3 end to its left pad (VPHY 3.3 V); USB PROG through the D+/D- swapped cable.  Board B still in the bag. |
-| **Powered?** | **yes, from USB PROG** (+5V 4.975 V; -4V2 -4.150 V; +1V1 1.104 V).  The E3646A is **not connected** to the board. |
-| **Cabled to the board** | one SMA cable J204 (DAC 1 OUT) -> J102 (ADC B IN); a U.FL pigtail from J108 (TAP B) to the scope's CH4; J302 (CLK OUT) -> J301 (CLK IN); J401 (ETHERNET) on the gigabit path; both USB-C; the Fluke on J602 (RAILS) +1V1.  The E3646A not connected. |
-| **Instruments claimed for this board** | the Fluke45 (on -4V2) and the E3646A (output off); the generators and the scope released at 09:44. |
+| **Powered?** | **yes, from USB PROG** (+5V 4.975 V; -4V2 -4.150 V; +1V1 1.108 V at 16:02).  The E3646A is **not connected** to the board. |
+| **Cabled to the board** | J204 (DAC 1 OUT) -> 10 cm SMA -> its AMOD-P board -> 10 cm SMA -> J101 (ADC A IN), TERM in.  At 16:04 the two cables were joined by the barrel, and Jason was asked to put them back on p4 (IN, top left; OUT, bottom right): which of the two, look.  J205 (DAC 2 OUT) and J102 (ADC B IN): nothing, as far as the session knows.  A U.FL pigtail from J108 (TAP B) to the scope's CH4; J401 (ETHERNET) on the gigabit path; both USB-C; the Fluke on J602 (RAILS) +1V1. |
+| **Instruments claimed for this board** | the Fluke45 (on +1V1) and the scope's CH4 (TAP B), both only reading.  The E3646A released (2026-11-17 22:56:51, the claims log). |
 | **What is in the board's flash** | `bringup.bit` of 2026-11-16 (version 20261116): the board boots it by itself. |
-| **What the session is doing alone** | the FPGA holds the tutorial's `fast.bit` (the flash still bringup.bit); the tutorial's IIO bridge runs on bell; the two Icepi Zeros are back on the 5.08 XY show from their own flash (the Icepi tutorial's tests passed, 09:26). |
+| **What the session left running** | nothing.  Board A's FPGA holds the tutorial's `lockin2.bit` (loaded 16:03); the IIO bridge on bell is stopped (22:56:49, its output file).  The Icepi DK0GFLAW holds `lockin_half.bit` in SRAM (its flash still the 5.08 XY show), cabled DAC OUT -> its AMOD-P's p4 -> ADC IN. |
 
 ## Visit 1B on board A (2026-11-16 17:00-18:00)
 
@@ -37,17 +46,23 @@ chain after its preamp (no rail moves, not the TCXO).  Next: your choice (below)
 
 ## The next thing Jason does
 
-**[`CONFIGS.md`](CONFIGS.md)** lists them, each with every cable named (instrument channel to board connector), the
-jumpers, what the PC runs and what a pass looks like.  In order of time:
+**The AMOD-P march, from p4.**  Board A's two cables on its AMOD-P's p4 (J204 DAC 1 OUT -> IN, top left; OUT, bottom
+right -> J101 ADC A IN), both DIP switches OFF; the Icepi's are already on its p4.  The session runs
+`bringup/amodp/amodp_both.sh p4` (about 20 s; both lock-ins loaded first) and shows the plot of both.  A good board A
+peaks near 0 dB at 1.07 MHz, Q about 6 (the dashed line).
 
-0. **Put the bring-up design back first**: the FPGA holds whichever tutorial design ran last.  Either unplug and replug
-   USB PROG (the board boots `bringup.bit` from its flash), or `openFPGALoader -c ft2232 gateware/bringup/build/bringup.bit`.
-1. **CONFIGS 3, a microSD card** (2 min): into J504 on the back, then `bench.py v1b --only sd`.
-2. **CONFIGS 2, the Fluke on USB USER** (10 min, REVB 20): D501's anode and cathode with the pull-up on, D- at rest.
-3. **CONFIGS 1, visit 2 plus tonight's questions** (30 min): the generators and the scope on the six SMAs; REVB 21
-   (which stage distorts), REVB 22 (where the cross-talk is), 1e (the ADC channels' skew, a tee), **1f (REVB 24: ADC B's
-   1.9 s steps, with ddc_awg.bit: cables crossed, B terminated, USB PROG unplugged, a warm finger)**.
-4. CONFIGS 5 (a monitor on mini-HDMI), 4 (gigabit all the way to the PC), 6 (board B), when convenient.
+* If board A is right: p4-1 (switch 1 ON), p4-12 (both ON), p4-2 (switch 2 only), then p5 ... p13, one reply per
+  setup ("p5"); the session answers each with the next "**go to pN on both boards**".
+* If board A is still wrong after the fresh load: the cables.  The barrel again (`ONLY=ecp5 amodp_both.sh p0chk`, it
+  should read 0 dB), then the AMOD-P boards swapped between board A and the Icepi.
+* The Icepi's ADC is high impedance: a tile made for 50 ohm (p4-p9, p11) shows its handbook curve only with p1 after
+  it (tile OUT -> a third short cable -> p1 IN, p1 OUT -> the Icepi's ADC IN).  amodp.py spots that and divides p1 out.
+  Without it the Icepi's curves are the unterminated ones (also worth having, and computed in its dashed line).
+* The crystal (p8) takes about a minute and a half (a search in 50 Hz steps, then 5 Hz steps); p10 (the clipper) and
+  p12 (LEDs) want amplitude sweeps rather than frequency sweeps: to be written when we get there; p13 the loopstick.
+
+Then, still open: test 4 (the hour-long soak, Jason sets it up); CONFIGS 3 (a microSD card), 2 (the Fluke on USB USER,
+REVB 20), 5 (a monitor on mini-HDMI), 6 (board B); the cable tests 5-7 of Response 146's list; the AMOD-A board.
 
 ## The visits
 

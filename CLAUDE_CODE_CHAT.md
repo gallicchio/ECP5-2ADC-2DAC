@@ -5956,7 +5956,7 @@ one cable
 
 Fluke on 3V3A
 
-## Response 140 2026-11-17 14:11 - (running) Claude Opus 5.5
+## Response 140 2026-11-17 14:11 - 2026-11-17 14:13 Claude Opus 5.5
 
 * 3V3A (the ADC's 3.3 V) the same in both of ADC B's states (3.28992 V, -0.010 mV apart): not that rail either.
   Next: +5VA.
@@ -5965,7 +5965,7 @@ Fluke on 3V3A
 
 +5VA
 
-## Response 141 2026-11-17 14:14 - (running) Claude Opus 5.5
+## Response 141 2026-11-17 14:14 - 2026-11-17 14:16 Claude Opus 5.5
 
 * +5VA: no step (flip by flip, 13 flips, -0.035 +- 0.042 mV; the plain -0.2 mV was one stray reading and drift).
   Next: +1V1, the FPGA's core (the steps come only with the ddc_awg bitstreams).
@@ -6028,7 +6028,7 @@ Carry on with board A. What are other tests or characterization or interesting s
 have exhausted everything worth doing with just combinations of SMA cables, I have the amod_p and amod_a that we could
 try.
 
-## Response 146 2026-11-17 15:09 - (running) Claude Opus 5.5
+## Response 146 2026-11-17 15:09 - 2026-11-17 15:11 Claude Opus 5.5
 
 * ADC B's code density (DAC 1 triangle, 100.7 M samples at 25 MS/s): DNL -0.23 .. +0.51 LSB, no missing codes, flat to
   0.3 % but the top 500 codes (0.983): the DC test's compression is slow (it shows when a level is held), not a bent
@@ -6058,4 +6058,118 @@ march through the AMOD-P's p1, p2, p3, etc. I'd like the transitions between eac
 takes me to swap the cables, so please write everything now and get ready to say things like "go to p1 on both boards" as
 quickly as possible in **bolt** and then to accept my "p1" reply and act on it as quickly as possible.
 
-## Response 148 2026-11-17 15:32 - (running) Claude Opus 5.5
+## Response 148 2026-11-17 15:32 - 2026-11-17 15:36 Claude Opus 5.5
+
+(Mid-turn: "By data and plots, I mean in a way that can to into each of the relevant tutorials."  And: "The Icepi Zero
+does not have shunt terminators on the ADC end, if I recall, and the voltage ranges of its DAC and ADC are probably
+different.")
+
+* `amodp.py`, one file in both tutorials' `src/verilog/` (the board decides which lock-in it uses): a lock-in swept
+  from 1 kHz to 12 MHz, 121 log steps, is the network analyzer.  The ECP5 uses its `lockin2.bit` (DAC 1 -> ADC A); the
+  Icepi DK0GFLAW a new `lockin_half.sv` (1.08's lock-in at half scale, +-1.95 V, inside the tiles' +-4 V and the pi
+  pad's +-3 V).  Each board's data and plots go into its own tutorial, `dev/data/amodp/<board>_<tile>.npz/.png`.
+* p0, the through (a barrel between the two 10 cm cables): flat within 0.7 dB (ECP5) and 0.9 dB (Icepi) to 12 MHz; the
+  chains' delays 480 and 214 ns.  Every tile is divided by it.  Both sweeps run at once, 11 s.
+
+(Times below: the sweep files' and the commits' times.)
+
+## Prompt 149 2026-11-17 15:40
+
+p1
+
+## Response 149 2026-11-17 15:40 - 2026-11-17 15:41 Claude Opus 5.5
+
+* p1 (the pi pad): -19.9 dB (ECP5), -20.0 dB (Icepi), flat, the phase within 1.5 degrees to 12 MHz.  The runner now
+  commits each tile's data in both tutorial repos.
+
+## Prompt 150 2026-11-17 15:44
+
+p2
+
+## Response 150 2026-11-17 15:44 Claude Opus 5.5
+
+* p2 (RC low-pass, 1 k and 1 nF): the Icepi the textbook curve, -3 dB at 162 kHz, -33 degrees at 100 kHz and -80 at
+  1 MHz; the ECP5's 50 ohm termination makes it a 100/1100 divider (-20.8 dB) with the corner moved to 3.4 MHz.
+
+## Prompt 151 2026-11-17 15:44 - 15:46
+
+Show me a plot each time like you did with the "thru". Normalized by the tru would be good.
+
+## Response 151 2026-11-17 15:44 - 15:46 Claude Opus 5.5
+
+* The plots were already over the through; the side-by-side plot (both boards, gain and phase) now comes after every
+  tile, and p1 and p2 were shown.
+
+## Prompt 152 2026-11-17 15:46
+
+p3. Also, check that these make sense and that I didn't accidentlly plug the SMA cable into the wrong SMA jack.
+Finally, p4 has two switches, so we might need to go through those in sequence. The switches start both OFF (at least
+according to the label on the switches).
+
+## Response 152 2026-11-17 15:46 - 2026-11-17 15:51 Claude Opus 5.5
+
+* The handbook's circuits as dashed "expected" curves, each board with its own source and load: the ECP5 50 ohm and
+  50 ohm (p2's -20.8 dB says so); the Icepi's DAC a 51 ohm source (p1 is -20.0 dB, not the -14 dB of a 0 ohm source)
+  and its ADC 20.6 k (p2's -0.4 dB at 1 kHz).  Below 3 MHz p1 and p2 agree within 0.1 dB (ECP5) and 0.4 dB (Icepi);
+  p3 on the ECP5 0.5-1 dB low (the 1 nF about 10 % low); the Icepi's p3 meets its 8-bit floor near -40 dB.
+* The jacks: the ECP5 cannot tell IN from OUT (a passive tile between two 50 ohm ports is the same both ways); the
+  Icepi can, and its corners (162 and 150 kHz, not 3 MHz and 8 kHz) say both tiles were the right way round.
+* amodp.py: finer steps on the resonators, the crystal's search then 5 Hz steps, p4's switch states (p4, p4-1, p4-2,
+  p4-12), p1 after a tile as the Icepi's 50 ohm load (found by itself and divided out).
+
+## Prompt 153 2026-11-17 15:54
+
+p4 off off
+
+## Response 153 2026-11-17 15:54 - 2026-11-17 15:55 Claude Opus 5.5
+
+* The Icepi (no p1 after it): 0 dB with a 35 kHz high-pass and a +10.5 dB peak at 3.7 MHz, the 100 uH ringing with
+  18.4 pF of cable and ADC input (now in its expected curve).  The ECP5: no peak at 1.07 MHz, never above -33 dB, noise
+  below 10 kHz: asked Jason to check its two cables.
+
+## Prompt 154 2026-11-17 15:58
+
+Oh no. The ECP5's SMAs were correctly wired. I don't know if they are still good cables, but I reseated them. Try
+again. p4
+
+## Response 154 2026-11-17 15:58 - 2026-11-17 16:00 Claude Opus 5.5
+
+* The same.  ADC A and ADC B (nothing on it) read the same 22 codes at 2.2 MHz within 1 degree: what ADC A saw was the
+  board's own leakage from DAC 1, nothing through J101.  Asked for the barrel back on the ECP5 (a check of the cables
+  and the board) and whether the boards share one AMOD-P board.
+
+## Prompt 155 2026-11-17 16:02
+
+When you're done, I'd like to go back to the thru on ECP5. Then use the other AMOD-P board. Ok, I see you had the same
+idea while I was typing. The cables are stressed differently, so if this works, we should swap the AMOD-P boards
+between the ECP5 and IcePi Zero. Ok: barrel.
+
+## Response 155 2026-11-17 16:02 - 2026-11-17 16:04 Claude Opus 5.5
+
+(Mid-turn: "They each have their own AMOD-P board. How could they possibly share one and have you do the measurements at
+the same time?"  Right: the question was a needless one.)
+
+* The barrel through lockin2: -6.3 dB flat to 300 kHz, -13 dB at 1 MHz, -61 dB at 10 MHz.  The Fluke on +1V1 1.108 V.
+  fast.bit through the same barrel: 1052, 1041, 1014 codes at 0.1, 1, 3 MHz, no clipping, as every day: **the hardware
+  is fine**.  lockin2 loaded again: the barrel 0.0 dB and 0 degrees from 1 kHz to 12 MHz.  **lockin2 had gone wrong
+  between p3 and p4** (nothing else on bell touched the board); most likely upset while the cables were moved.  Every
+  sweep now loads both lock-ins first (3 s).  Asked Jason to put the ECP5's cables back on its p4.
+
+## Prompt 156 2026-11-17 22:55
+
+I extracted this PCB and our work into a public repo, which now lives at `~/pcbs/ECP5-2ADC-2DAC`. You should change
+directories there and record everything there. I'll be in tomorrow to debug the cabling issue and continue with the
+AMOD-P measurements.
+
+## Response 156 2026-11-17 22:55 - 2026-11-17 22:59 Claude Opus 5.5
+
+* Recorded here: this log (Prompts 149-156; Responses 140, 141, 146 and 148 closed), BRINGUP_LOG's AMOD-P rows,
+  STATUS.md rewritten for tomorrow, `bringup/amodp/` (the two-board runner, out of the scratch directory, and the
+  side-by-side plots), `bringup/scratch_2026-11-17/` (the day's scratch tools and results, the scratch builds as
+  patches against the tutorial).
+* The tutorials (ecp5-2adc-2dac-tutorial 868c239, icepi-zero-dac-adc 7eb83fe): amodp.py says to load the lock-in every
+  sweep; board A's upset p4 kept as `ecp5_p4_lockin_upset`.
+* The IIO bridge stopped; the E3646A (connected to nothing) released; the Fluke and the scope's CH4 kept (wired to
+  board A, reading only).
+* Tomorrow's "cabling issue" is probably not one: board A's lock-in bitstream had gone wrong, and the barrel reads 0 dB
+  after a fresh load.  First thing: board A's cables back on p4, `bringup/amodp/amodp_both.sh p4`.

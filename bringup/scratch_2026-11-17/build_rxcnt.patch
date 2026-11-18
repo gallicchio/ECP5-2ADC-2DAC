@@ -1,0 +1,41 @@
+--- tutorial/src/verilog/ddc_awg.sv
++++ rxcnt/ddc_awg.sv
+@@ -36,7 +36,9 @@
+     logic        w_en;  logic w_ch;  logic [13:0] w_addr;  logic [13:0] w_data;
+     logic [14:0] s_wp;  logic [14:0] rp_gray = 0;
+     logic [47:0] arp_mac;  logic [31:0] arp_ip;  logic arp_req;
+-    udp_rx_awg rx (.eth_rxc(eth_rxc), .eth_rx_ctl(eth_rx_ctl), .eth_rxd(eth_rxd),
++    logic [15:0] rg;  logic [15:0] rg1 = 0, rg2 = 0;
++    always_ff @(posedge clk125) begin rg1 <= rg; rg2 <= rg1; end
++    udp_rx_awg rx (.rxc_gray(rg), .eth_rxc(eth_rxc), .eth_rx_ctl(eth_rx_ctl), .eth_rxd(eth_rxd),
+                    .cmd(c_cmd), .arg(c_arg), .src_mac(c_mac), .src_ip(c_ip), .src_port(c_port), .my_ip(c_myip),
+                    .toggle(c_toggle), .w_en(w_en), .w_ch(w_ch), .w_addr(w_addr), .w_data(w_data),
+                    .s_wp(s_wp), .s_rp_gray(rp_gray),
+@@ -169,7 +171,7 @@
+     logic sample;  logic signed [15:0] di, dq;  logic dvalid;
+     ddc rxddc (.clk(clk125), .en(sample), .x(adc_a_d), .tw(ftw), .D(ddc_d), .i_out(di), .q_out(dq), .valid(dvalid));
+     udp_tx_core core (.clk(clk125), .adc_a_d(adc_a_d), .adc_b_d(adc_b_d), .adc_clk(adc_clk_r),
+-                      .sx_en(xmode), .sx_valid(dvalid), .sx_a(di), .sx_b(dq), .hdr6(fill[14:7]), .hdr7(under), .sample(sample),
++                      .sx_en(xmode), .sx_valid(dvalid), .sx_a(di), .sx_b(dq), .hdr6(rg2[15:8]), .hdr7(rg2[7:0]), .sample(sample),
+                       .dac_p1_d(dac_p1_d), .dac_p2_d(dac_p2_d), .dac_clk(dac_clk_r),
+                       .t_we(t_we), .t_idx(t_idx), .t_byte(t_byte),
+                       .go(go), .go_d(go_d), .stop(stop), .tw_load(tw_load), .tw_in(k_arg),
+--- tutorial/src/verilog/udp_awg.sv
++++ rxcnt/udp_awg.sv
+@@ -241,6 +241,7 @@
+     output logic [14:0] s_wp = 0,
+     input  logic [14:0] s_rp_gray,
+     // ARP: a request for the board's IP address (learned from 'G' or 'I'): the asker's addresses, and a toggle
++    output logic [15:0] rxc_gray = 0,          // SCRATCH: eth_rxc cycles, Gray-coded (the switch's clock against ours)
+     output logic [47:0] arp_mac = 0,
+     output logic [31:0] arp_ip = 0,
+     output logic        arp_toggle = 0
+@@ -277,6 +278,8 @@
+     logic [31:0] ip_me = 0;                     // the board's IP address, once the laptop has said it
+     logic [15:0] a_oper = 0;  logic [47:0] a_sha = 0;  logic [31:0] a_spa = 0, a_tpa = 0;     // an ARP packet's fields
+     logic        fend = 0, crc_ok = 0, ip_ok = 0, arp_ok = 0;
++    logic [15:0] rxcnt = 0;
++    always_ff @(posedge eth_rxc) begin rxcnt <= rxcnt + 1; rxc_gray <= (rxcnt + 16'd1) ^ ((rxcnt + 16'd1) >> 1); end
+     logic [1:0]  pk = 0;                        // which of a pair's four bytes this is
+     logic [14:0] rp_g1 = 0, rp_g2 = 0, rp = 0;  // the player's read pointer, here
+     always_ff @(posedge eth_rxc) begin

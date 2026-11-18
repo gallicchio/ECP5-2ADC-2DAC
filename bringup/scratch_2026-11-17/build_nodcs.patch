@@ -1,0 +1,11 @@
+--- tutorial/src/verilog/ddc_awg.sv
++++ nodcs/ddc_awg.sv
+@@ -27,7 +27,7 @@
+ );
+     logic clk125, locked;
+     pll125 pll (.clkin(clk_tcxo), .clk125(clk125), .locked(locked));
+-    assign adc_pdwn_a = 0;  assign adc_pdwn_b = 0;  assign adc_dcs = 1;  assign adc_dfs = 0;
++    assign adc_pdwn_a = 0;  assign adc_pdwn_b = 0;  assign adc_dcs = 0;  assign adc_dfs = 0;
+     assign dac_mode = 1;    assign dac_sleep = 0;   assign eth_rst_n = 1;
+ 
+     // ---- receive (eth_rxc): commands, and waveform samples straight into the memories ------------------------------

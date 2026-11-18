@@ -1,0 +1,11 @@
+--- tutorial/src/verilog/ddc_awg.sv
++++ frozen/ddc_awg.sv
+@@ -167,7 +167,7 @@
+     // ##  its I and Q into the stream in place of the two ADCs
+     // ######################################################################
+     logic sample;  logic signed [15:0] di, dq;  logic dvalid;
+-    ddc rxddc (.clk(clk125), .en(sample), .x(adc_a_d), .tw(ftw), .D(ddc_d), .i_out(di), .q_out(dq), .valid(dvalid));
++    ddc rxddc (.clk(clk125), .en(1'b0), .x(12'd0), .tw(ftw), .D(ddc_d), .i_out(di), .q_out(dq), .valid(dvalid));
+     udp_tx_core core (.clk(clk125), .adc_a_d(adc_a_d), .adc_b_d(adc_b_d), .adc_clk(adc_clk_r),
+                       .sx_en(xmode), .sx_valid(dvalid), .sx_a(di), .sx_b(dq), .hdr6(fill[14:7]), .hdr7(under), .sample(sample),
+                       .dac_p1_d(dac_p1_d), .dac_p2_d(dac_p2_d), .dac_clk(dac_clk_r),
