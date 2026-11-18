@@ -6575,3 +6575,20 @@ Write up the analysis in the tutorial.
   plateau being measured where the current noise rises.  The page and the log row say so.
 * Meanwhile test 3 prepared: `bench.py --sim step light` passes; `bringup/light/light_curve.py` (17 LED currents, ADC
   B's mean and noise, then off) written for the no-card / card / dark runs.
+
+## Prompts 191-193 2026-11-18 (after 15:16; test 3, the light path)
+
+191: light.  192 (while it ran): The ethernet green LED is also blinking.  193: D403 is green Ethernet.
+
+## Response 191-193 2026-11-18 15:20 - 2026-11-18 15:22 Claude Opus 5.5
+
+* Board A refreshed from its flash (15:20:14); visit 3 `light` (15:20:14-15:20:18): **FAIL as specified, ADC B +1 then
+  +1 codes** at 24 and 36 mA: with no card, D201's light does not reach D103 (32 mm apart, both facing up).  The
+  receiver is alive: ADC B 65 codes over 0 V with the LED off (room light, about 3 uA) and the room's 120 Hz in it.
+* `bringup/light/light_curve.py`, no card: first a +-26 code beat unrelated to the LED: the bring-up design's RGB green
+  blinking once a second, seen by the photodiode.  The script now darkens the board's LEDs during a run and averages each
+  point over a 0.67 s statistics window (2^20 samples at 1.5625 MS/s, which the 32-bit sum still holds): 0-33 mA flat at
+  2114.2 +- 0.2 codes; a 34-code drop at 15:21:38 that stayed after the LED went off (the room light at the photodiode:
+  a shadow).  DAC 1 then held at code 8192 (about 24 mA) from 15:22:01 for Jason to see D201 lit; the white card next.
+* 192-193: D403 (top right, 10 cm from D103) is the RTL8211F's LED2, the schematic's "1000M link": lit with a gigabit
+  link, and its blinking most likely the traffic on board A's gigabit path.  Not the FPGA's; the 0.67 s average covers it.
