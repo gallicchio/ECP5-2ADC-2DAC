@@ -6328,3 +6328,16 @@ p8
   reads +-5 V; a flat-topped sine's fundamental is 4/pi x 5 V = 6.37 V, +10.5 dB over the 1.9 V through).  The same
   ceiling made the Icepi's p4 peaks: Responses 158 and 162's "lossy input" withdrawn.  p9 and p11 stay under 2.4 V.
 * To do: amodp.py to warn when the Icepi's ADC passes 5 V.  Next: p9.
+
+## Prompt 166 2026-11-18 11:14
+
+p9
+
+## Response 166 2026-11-18 11:14 - 2026-11-18 11:16 Claude Opus 5.5
+
+* `amodp_both.sh p9` (11:14:35-11:15:25).  **Board A: series resonance 437.6 kHz at -0.8 dB (Q_L 129), notch at 464
+  kHz; the Icepi: +2.7 dB at 456.4 kHz, notch at 459.2 kHz** (2.6 V at its ADC: no clipping).  Fitted, the two boards'
+  resonators agree within 0.2 %: C_m 27 pF, L_m 4.9 mH, f_s 437 kHz, C_0 255-258 pF, f_p 459-460 kHz, R_m 7-11 ohm, Q
+  1200-1900.  The handbook's model (C_m 7 pF, Q 400, a -7 dB peak at 455 kHz) is off: a "455 kHz" resonator runs in
+  series near 437 and in parallel near 460 kHz.
+* Next p11 (OUT is at the bottom of the left cell); p10, p12 and p13 need their own setups (STATUS).
