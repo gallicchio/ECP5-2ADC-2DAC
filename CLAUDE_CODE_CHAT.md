@@ -6210,3 +6210,17 @@ and the Icepi Zero boards and both switches are off on both boards. Test this an
 * Recorded: BRINGUP_LOG (the old p4 row closed, today's added), STATUS (next: p4-1), `amodp/README.md`, the plots
   `amodp/compare/amodp_both_p4.png` and `amodp_fit_p4.png`; the tutorials' data committed by the runner
   (ecp5-2adc-2dac-tutorial 9f8657e, icepi-zero-dac-adc b459c75).
+
+## Prompt 159 2026-11-18 08:51
+
+p4-1
+
+## Response 159 2026-11-18 08:51 - 2026-11-18 08:52 Claude Opus 5.5
+
+* `amodp_both.sh p4-1` (08:51:33-08:51:55).  **Board A: peak -1.7 dB at 0.975 MHz** (the handbook 0.98 MHz), Q 4.9;
+  the coil fit (`amodp_fit_p4.py p4-1`): C 261 pF, so switch 1 added 48 pF to the 213; the coil as for p4 (25 ohm at
+  1.07 MHz, 102 uH, SRF 13.4 MHz); misfit 0.13 dB, 0.7 degrees rms.
+* **The Icepi:** its peak is the coil with its own 18.4 pF input and stays at 3.71 MHz; switch 1 shows on its
+  low-frequency side instead, 1.6-1.7 dB up from 3 to 30 kHz against the handbook circuit's +1.7.  Both switches set
+  right.
+* Next: p4-12 (SW401 both ON).
