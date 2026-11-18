@@ -6341,3 +6341,18 @@ p9
   1200-1900.  The handbook's model (C_m 7 pF, Q 400, a -7 dB peak at 455 kHz) is off: a "455 kHz" resonator runs in
   series near 437 and in parallel near 460 kHz.
 * Next p11 (OUT is at the bottom of the left cell); p10, p12 and p13 need their own setups (STATUS).
+
+## Prompt 167 2026-11-18 11:19
+
+p11
+
+## Response 167 2026-11-18 11:19 - 2026-11-18 11:21 Claude Opus 5.5
+
+* `amodp_both.sh p11` (11:19:55-11:20:21).  **Board A: 421 ns (designed 396), -0.5 dB at DC, -3 dB at 6.2 MHz; the
+  Icepi: 442 ns, -3 dB at 3.9 MHz.**  Fitted: the line 6-8 % slow on both (LC 13-17 % above nominal; the 1 uH coils
+  are +-10 % parts), the cut-off 15 MHz, the coils' loss (Q 47 at 4 MHz on A's tile, 17 on the Icepi's); 0.14 dB on A,
+  0.29 dB on the Icepi.
+* amodp.py now says when the ADC clipped (ADC_FULL; ecp5-2adc-2dac-tutorial 6b9233c, icepi-zero-dac-adc 03a4ee5;
+  checks 0 errors).  Run on the saved sweeps it flags the Icepi's p4 (4 points, 3.2-4.0 MHz) and p8 (60, at f_s).
+* Every tile a frequency sweep can measure is done.  p10 (clipper: an amplitude sweep, board A's TERM out), p12 (LEDs: a
+  DC ramp) and p13 (loopstick: a coil and AMOD-A) need their own setups: asked Jason which.
