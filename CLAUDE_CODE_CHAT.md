@@ -6283,3 +6283,17 @@ p6
   dB at 90 kHz) 0.47 dB rms without refitting.
 * A background agent (a fork, scratchpad copies only) builds the DAC-staircase folding into amodp.py's expected()
   for both boards; it is applied between sweeps.  Next: p7.
+
+## Response 163, continued (2026-11-18 10:26)
+
+* The background agent's folded model (scratch copies only) is in both tutorials' amodp.py (ecp5-2adc-2dac-tutorial
+  6c1309d, icepi-zero-dac-adc 3720c9c; sync_md, check_tutorial 0 errors; the Icepi's 1 old warning): SAMPLING per board
+  (board A: 25 MS/s DAC and ADC, delta 2.35 ns, the chain one 20.6 MHz section with Q 0.5), the dashed curve as the
+  lock-in sees it, the plain circuit dotted, `--replot`; p6's coil 6.1 ohm in its circuit.  Every figure redrawn.
+  Board A with the handbook's values, rms dB plain -> folded: p2 0.98 -> 0.18, p3 0.69 -> 0.32, p4 1.40 -> 0.44,
+  p5 2.83 -> 0.67 (the coils' extra loss is the rest).
+* **A second correction to Response 158**: the folded handbook circuit already follows p4's tail above 3 MHz and its
+  phase turning back towards 0, so the coil's "1.4 pF, self-resonant at 13-14 MHz" was the staircase too.  What stands
+  for L401: 21-23 ohm at 1 MHz (the peak 1 dB low, Q 5.4).
+* The Icepi stays plain: no delta or chain fits it (its raw through would rise 3 dB at 12 MHz where it rises 0.9), and
+  a lossy input (19.4 pF behind 258 ohm) fits p4 but moves its peak to 3.43 MHz and leaves p5 at 1.7 dB.  Open.

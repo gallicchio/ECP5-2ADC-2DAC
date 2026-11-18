@@ -15,13 +15,16 @@ kept).
 
     python3 amodp_fit_p4.py p4 compare  # fit the real coil to board A's p4, then check it on the Icepi's sweep
 
-p4's coil (L401, NLV32T-101J) is not the handbook's 100 uH + 10 ohm: at 1 MHz it is 21-23 ohm with 1.4 pF across it
-(self-resonant at 14 MHz), which puts board A's peak 1 dB under the dashed line (`compare/amodp_fit_p4.png`).
+p4's coil (L401, NLV32T-101J) is not the handbook's 100 uH + 10 ohm: at 1 MHz it is 21-23 ohm, which puts board A's
+peak 1 dB under the dashed line (`compare/amodp_fit_p4.png`).  Its tail above 3 MHz and the phase turning back towards
+0 are the staircase (below), not the coil's own capacitance as first thought.
 
 **Board A's lock-in sees the DAC's staircase** (found on p5, 2026-11-18): the DAC and the ADC run on one 25 MHz clock,
 so the through reads flat (the ADC samples the held value back), but a tile that cuts the DAC's images leaves the
 hold's sinc droop (-2.4 dB at 10 MHz) and its half-sample delay in the ratio.  `sampled_model_scratch.py` folds a
 tile's response at 25 MS/s; with the ADC sampling 2.35 ns after the DAC's update and two 20.6 MHz poles in the chain,
-board A fits p2-p5 within 0.2-0.3 dB rms on the handbook's values.  (amodp_fit_p4.py predates this: its f^2 loss and
-its Icepi prediction are the staircase's, not the coil's.)  The Icepi's DAC runs at 50 MS/s and its ADC at 25: a
-smaller effect there.
+board A fits p2-p5 within 0.2-0.4 dB rms on the handbook's values.  **amodp.py's dashed line is now this** (its
+SAMPLING table; the plain circuit dotted; `python3 amodp.py all --replot` redraws the saved figures).  amodp_fit_p4.py
+predates it: its f^2 loss, its 1.4 pF and its Icepi prediction are the staircase's, not the coil's.  The Icepi (DAC
+50 MS/s, ADC 25) fits no better folded, so its curve stays the plain one; its own input is lossier at MHz than its
+model (p4's peak, p5's ring), not yet explained.
