@@ -6557,3 +6557,21 @@ is the SMA out always "active"?  184: Let me know when I should move to "100".  
   measured.  The 0 ohm floor is 75 % shared between the channels, with lines at 2 and 4 MHz (the -4V2 charge pump's 2 MHz)
   and humps near 0.12 and 0.5 MHz: REVB 31 (candidate).  A first band analysis was swamped by the 120 kHz pair (bands of
   one or two FFT bins); fixed by 12 bands a decade from 0.18 MHz.
+
+## Prompt 190 2026-11-18 (after 15:09)
+
+Write up the analysis in the tutorial.
+
+## Response 190 2026-11-18 15:10 - 2026-11-18 15:16 Claude Opus 5.5
+
+* Handed to a background fork (no hardware): the ECP5 tutorial's new page **1.22 Johnson noise: the board's own
+  resistors in both channels at once** (ecp5-2adc-2dac-tutorial 2a51f91; 33 pages, sync_md, check_tutorial 0 errors):
+  `src/verilog/johnson.py` (`--record`, `--continuous`, `--split`, `--analyze`), the reduced spectra in
+  `dev/data/johnson/board_a_2026-11-18/`, the figure; 1.13's "Next" paragraph and IDEAS idea 14 updated.  Its
+  `--analyze` reproduces the bring-up numbers exactly (2.01, 6.64, 57.7 nV/rtHz; 5.3 and 5.6 pA/rtHz; 22 pF; T 681 +-
+  197 K).  Bring-up repo cdce558.
+* **Correction to Response 182-189 and the chat:** the x100 gain that would make 100 ohm and 1 k fit 300 K is about
+  **1.5x** nominal (2.27x in power; 1.3-1.65x within the error), not 1.4x; and even then 10 k would sit above, its
+  plateau being measured where the current noise rises.  The page and the log row say so.
+* Meanwhile test 3 prepared: `bench.py --sim step light` passes; `bringup/light/light_curve.py` (17 LED currents, ADC
+  B's mean and noise, then off) written for the no-card / card / dark runs.
