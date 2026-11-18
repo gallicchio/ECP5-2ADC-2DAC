@@ -6313,3 +6313,18 @@ p7
 * p8's drive on board A: +-0.5 V into 50 ohm (+-1 V behind 50 ohm), which meets the handbook's "+-1 V"; at the series
   resonance that is about 1 mW in the crystal (R_m about 50 ohm), for the 2-3 s the sweep spends inside the 230 Hz
   peak.  The Icepi's high-impedance ADC passes about 0.2 uW.  Next: p8.
+
+## Prompt 165 2026-11-18 10:52
+
+p8
+
+## Response 165 2026-11-18 10:53 - 2026-11-18 10:57 Claude Opus 5.5
+
+* `amodp_both.sh p8` (10:53:08-10:54:35).  **Board A: f_s 3,999,585 Hz, -4.0 dB, 65 Hz wide** (loaded Q 61,500;
+  R_m about 52 ohm, C_m about 4.3 fF, unloaded Q about 180,000: narrower than the handbook's 15 fF model).  **No notch**:
+  the folded model with the handbook's C_0 (4 pF) reproduces the smooth fall to -60 dB within about 1 dB; C_0's path is
+  a differentiator and the ADC samples between the spikes it makes of the DAC's steps.
+* **The Icepi: f_s 4,000,035 Hz, the notch 4.6 kHz above.  Its +10.5 dB peak is its ADC clipping** (6.2 V where the ADC
+  reads +-5 V; a flat-topped sine's fundamental is 4/pi x 5 V = 6.37 V, +10.5 dB over the 1.9 V through).  The same
+  ceiling made the Icepi's p4 peaks: Responses 158 and 162's "lossy input" withdrawn.  p9 and p11 stay under 2.4 V.
+* To do: amodp.py to warn when the Icepi's ADC passes 5 V.  Next: p9.
