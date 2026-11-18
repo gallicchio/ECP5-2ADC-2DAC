@@ -4,10 +4,10 @@
 messages (`python3 bringup/bench.py where`).  The procedure is [`../BRINGUP.md`](../BRINGUP.md); results are in
 [`BRINGUP_LOG.md`](BRINGUP_LOG.md); problems for the next revision in [`REVB.md`](REVB.md).
 
-Updated: **2026-11-18 11:58, by Claude (Prompt 169).  The project lives in its own repository,
+Updated: **2026-11-18 13:10, by Claude (Prompt 170).  The project lives in its own repository,
 `~/pcbs/ECP5-2ADC-2DAC` (github.com/gallicchio/ECP5-2ADC-2DAC); everything is recorded here.**
 
-**Where we are: the AMOD-P march: p0-p11 done on both boards (p10, the clipper, is now page 1.20 of the ECP5 tutorial and 4.04 of the Icepi's, measured).  p12 (LEDs) and p13 (a loopstick, to be bought) remain.  Board A's JP101 TERM is OUT: put it back before any 50 ohm tile.**  Board A and the Icepi Zero DK0GFLAW each sweep the same
+**Where we are: the AMOD-P march: p0-p11 done on both boards (p10, the clipper, is now page 1.20 of the ECP5 tutorial and 4.04 of the Icepi's, measured).  p12 (LEDs) is cabled on both and both run the new `ledramp.bit` (13:08): a 43 s DC ramp on the DAC, its top bits on the white LEDs; Jason reads where each colour first glows, then the pages (ECP5 1.21, Icepi 1.11) are written.  p13 (a loopstick, to be bought) remains.  Board A's JP101 TERM is OUT: put it back before any 50 ohm tile.**  Board A and the Icepi Zero DK0GFLAW each sweep the same
 AMOD-P tile on their own AMOD-P board at the same time (`amodp/README.md`).  p0 (the through, the calibration), p1-p3
 and **p4 with both switches off** are measured on both and make sense (BRINGUP_LOG).  Board A's p4 (2026-11-18 08:39,
 after a fresh load of lockin2; yesterday's failure was the lock-in bitstream, not the cables): peak -1.8 dB at 1.075
@@ -30,10 +30,10 @@ three-cornered hat are in the log (15:17-15:24).
 |---|---|
 | **Board on the bench** | **A**, reworked: FB6241 gone, a wire from R6222's +3V3 end to its left pad (VPHY 3.3 V); USB PROG through the D+/D- swapped cable.  Board B still in the bag. |
 | **Powered?** | **yes, from USB PROG** (+5V 4.975 V; -4V2 -4.150 V; +1V1 1.108 V at 16:02).  The E3646A is **not connected** to the board. |
-| **Cabled to the board** | J204 (DAC 1 OUT) -> 10 cm SMA -> its AMOD-P board -> 10 cm SMA -> J101 (ADC A IN).  On 2026-11-18 on p4 (IN, top left; OUT, bottom right); on p10 since about 11:25 (IN, top left; OUT, bottom right); **JP101 TERM out since 11:45** (for p10); board A taped to the table.  J205 (DAC 2 OUT) and J102 (ADC B IN): nothing, as far as the session knows.  A U.FL pigtail from J108 (TAP B) to the scope's CH4; J401 (ETHERNET) on the gigabit path; both USB-C; the Fluke on J602 (RAILS) +1V1. |
+| **Cabled to the board** | J204 (DAC 1 OUT) -> 10 cm SMA -> its AMOD-P board -> 10 cm SMA -> J101 (ADC A IN).  On 2026-11-18 on p4 (IN, top left; OUT, bottom right); on p10 from about 11:25; **on p12 (IN only: four LEDs behind 100 ohm, one DIP way at a time) by Prompt 170**; **JP101 TERM out since 11:45** (for p10; ADC A is not used on p12); board A taped to the table.  J205 (DAC 2 OUT) and J102 (ADC B IN): nothing, as far as the session knows.  A U.FL pigtail from J108 (TAP B) to the scope's CH4; J401 (ETHERNET) on the gigabit path; both USB-C; the Fluke on J602 (RAILS) +1V1. |
 | **Instruments claimed for this board** | the Fluke45 (on +1V1) and the scope's CH4 (TAP B), both only reading.  The E3646A released (2026-11-17 22:56:51, the claims log). |
 | **What is in the board's flash** | `bringup.bit` of 2026-11-16 (version 20261116): the board boots it by itself. |
-| **What the session left running** | nothing.  Board A's FPGA holds the tutorial's `fast.bit` with its new gain command (loaded 2026-11-18 11:46; both DACs left at its default, half scale, 106.8 kHz: into the clipper and an open J205, harmless); the IIO bridge on bell is stopped (22:56:49, its output file).  The Icepi DK0GFLAW holds Chapter 2's SoC (`src/riscv/build/icepi_zero`) and its firmware in SRAM (since 11:35) (its flash still the 5.08 XY show), cabled DAC OUT -> its AMOD-P's p10 -> ADC IN; the firmware's function generator left at 0. |
+| **What the session left running** | nothing on bell.  Board A's FPGA holds the tutorial's new `ledramp.bit` (loaded 2026-11-18 13:08:48; uncommitted until its page): DAC 1 ramps 0 to +2 V open circuit in 43 s and repeats, DAC 2 at 0 V, LED7..LED0 the ramp's top eight bits (LED7 = 1 V); SW302 USER pauses/resumes, SW301 RESET held runs it down.  The IIO bridge on bell is stopped (2026-11-17 22:56:49).  The Icepi DK0GFLAW holds the Icepi tutorial's new `ledramp.bit` in SRAM (13:08:51; its flash still the 5.08 XY show): DAC OUT ramps 0 to +3.88 V in 43 s into its AMOD-P's p12, the five LEDs the top five bits (leftmost 1.97 V); the button nearest the USB pauses/resumes. |
 
 ## Visit 1B on board A (2026-11-16 17:00-18:00)
 

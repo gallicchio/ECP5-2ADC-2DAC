@@ -6393,3 +6393,28 @@ and 360uH. I'm not very familiar with these, but can they just be unwound until 
 * The loopstick: the 360 uH one; unwinding works (L goes as the turns squared: 4 % of the turns takes 360 to 330 uH),
   or slide the winding toward the rod's end, which lowers L with no soldering (answered in the chat).
 * Board A: **JP101 TERM out** (STATUS says to put it back before any 50 ohm tile); fast.bit loaded.
+
+## Prompt 170 2026-11-18 13:00
+
+I have plugged both into p12. Write the DC-ramp with the switches in mind. Put the highest bits of the ramp as a binary
+number on the white LEDs so users can see where we the ramp is at.
+
+## Response 170 2026-11-18 13:00 - 2026-11-18 13:11 Claude Opus 5.5
+
+* p12 has only IN (100 ohm, then the four LEDs; DIP ways 1-4 red 630, yellow 596, green 525, blue 469 nm), so nothing
+  on the boards reads the LED: the ramp is for the eye.  New `src/verilog/ledramp.sv` in both tutorials, a standalone
+  design in Chapter 1's style:
+  * board A: DAC 1 rises 0 to +2 V (open circuit, what the LED sees at its first glow) in 0.244 mV steps over 43 s,
+    then back to 0 V; DAC 2 at 0 V.  LED7..LED0 are the ramp's top eight bits: LED7 = 1 V, LED6 0.5 V ... LED0 7.8 mV
+    (the number shown / 128 = volts).  SW302 USER: press to pause, again to go on (looked at every 21 ms, so its
+    bounce does nothing); SW301 RESET held: the ramp runs back down (stops at 0 V).
+  * the Icepi: the DAC rises 0 to +3.88 V in 30.7 mV steps over 43 s; the five LEDs the top five bits (leftmost
+    1.97 V, then 0.98, 0.49, 0.25, 0.12 V); the button nearest the USB pauses and resumes.
+  * "The switches": pause at a voltage and flip the DIP ways to compare the colours there; one way at a time (two on,
+    the lower-voltage LED clamps the node and the other stays dark).
+* Simulated in Icarus (the wrap at the top, RESET stopping at 0 V, the debounced toggle), built (196 and 224 MHz
+  against 25 and 50 MHz), loaded into SRAM: board A 13:08:48, the Icepi DK0GFLAW 13:08:51.
+* Board A's DAC stops at +2 V, less than a green (2.36 eV) or blue (2.64 eV) photon: expected to light red and yellow
+  only.  The Icepi reaches +3.88 V: all four.
+* Asked Jason to read, on each board and each way, the LEDs' number where the colour first glows; the pages (ECP5
+  1.21, Icepi 1.11) are written with those readings.  The two ledramp.sv files stay uncommitted until then.
