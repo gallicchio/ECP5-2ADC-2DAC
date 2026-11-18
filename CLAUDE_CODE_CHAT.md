@@ -6173,3 +6173,16 @@ AMOD-P measurements.
   board A, reading only).
 * Tomorrow's "cabling issue" is probably not one: board A's lock-in bitstream had gone wrong, and the barrel reads 0 dB
   after a fresh load.  First thing: board A's cables back on p4, `bringup/amodp/amodp_both.sh p4`.
+
+## Prompt 157 2026-11-17 22:59 - 23:01
+
+Add it and put it in the public tree as long as there are no privacy issues.
+
+## Response 157 2026-11-17 22:59 - 2026-11-17 23:01 Claude Opus 5.5
+
+* `CLAUDE.md` (f4ac2ef): the bring-up's rules for coding agents, gathered from OpticsPCBs' CLAUDE.md and the session's
+  notes: start from STATUS.md and open with its "where we are"; designators with silkscreen names; the board off for
+  U.FL work; times from `date`; commit, Jason pushes; the shared bench's claims and instrument cautions; finding and
+  stopping your own processes; the tutorial, the Icepi tutorial and the AMOD boards next door; build.py and the design
+  reviews.  No email or network addresses or other personal details (checked); the repository already names Jason as
+  its author.
