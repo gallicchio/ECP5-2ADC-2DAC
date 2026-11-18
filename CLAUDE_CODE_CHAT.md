@@ -6527,3 +6527,33 @@ that green is too bright, red is about right, and blue is too dim.
   mA with little headroom, and green is rated 350-800 mcd against red's 100-180 and blue's 120-180: rev B blue ~100 ohm,
   green ~1 k, red 330; for part-to-part evenness the anode on +5V with an N-FET per cathode.
 * The LED loop still runs (stopped before test 2's bitstream).
+
+## Prompts 182-189 2026-11-18 14:35-15:00 (test 2, the noise source)
+
+182: I turned switch 0 on, and the jumpers are NOISE ALT NOISE. All 4 gain shunts pulled. Start the noise recording. If
+you are slow, I may have to leave before we get through all of "100", "1k" and "10k" in turn. So just tell me to move
+and analyze after I need to leave.  183: In the DAC 1 OUT box, there is a jumper that selects between LED and EXT.
+Persumably EXT is the external header for an external LED. How do I select between either of those and the SMA out? Or
+is the SMA out always "active"?  184: Let me know when I should move to "100".  185: 100 on then 0 off. Waiting 2 min.
+186: ok 1k.  187: I bumped the fluke probe. Make sure everything is ok.  188: Fluke on 1V1 now. resistor on 10k.
+189: Analyze the noise data. I'll do the LED to photodiode test in 10 or 30 minutes.
+
+## Response 182-189 2026-11-18 14:35 - 2026-11-18 15:09 Claude Opus 5.5
+
+* The LED loop stopped (its python PID), fast.bit loaded (14:36:33); 0 ohm recorded (400 captures 14:36:34-14:38:46),
+  then a continuous recorder in 13 s segments to 14:51:38 so Jason could move SW101 without waiting on the chat (make
+  before break: the new switch on, then the old off).  The moves are in the record: 100 ohm 14:40:32, 1 k 14:42:59, 10 k
+  14:45:25.
+* 183: J204 DAC 1 OUT is always driven (U202A through R2407); the LED driver is a second path from the AD9767's other
+  output (U202B and Q201), and JP2009 only steers its current: LED (D201 from +5V), EXT (J210: +5V on pin 1, the LED's
+  cathode on pin 2), or open (none).
+* 187-188: the bump put the Fluke's probe on a 5 V pin (4.951 V at 14:44:10); the FPGA recorded through it (one noisier
+  segment, left out); probe back on +1V1: 1.1046 V (14:45:42), as before.
+* 189, the analysis (`bringup/noise/johnson.py`, its spectra and figure kept, the 42 MB of raw records not): the node's
+  noise reaches both channels coherently and grows with R (beyond 0 ohm, nominal gain: 100 ohm 2.0, 1 k 6.6, 10 k 58
+  nV/rtHz against 4kTR's 1.29, 4.07, 12.9); 10 k rolls off at 0.73 MHz: 22 pF on the node; the excess grows as R^2, the
+  preamps' input current noise (5.3 pA/rtHz for the two from 1 k, 5.6 from 10 k).  k_B not yet: 100 ohm gives T = 680 +-
+  200 K on the nominal gain, but a x100 gain about 1.4x nominal would make all of it fit 300 K: the x100 gain must be
+  measured.  The 0 ohm floor is 75 % shared between the channels, with lines at 2 and 4 MHz (the -4V2 charge pump's 2 MHz)
+  and humps near 0.12 and 0.5 MHz: REVB 31 (candidate).  A first band analysis was swamped by the 120 kHz pair (bands of
+  one or two FFT bins); fixed by 12 bands a decade from 0.18 MHz.
