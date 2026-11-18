@@ -6434,3 +6434,54 @@ of the range. You will need to program the Icepi Zero with this slow ramp.
   "two at once" point of the page.  The thresholds need one way at a time.  The green (KT-0805G, 513-528 nm InGaN,
   2.6-3.1 V at its rated current, AMOD-and-RFMOD parts.py) alone sees up to 2.0 V: any glow there is below its 2.36 eV
   photon.
+
+## Prompt 172 2026-11-18 (after 14:03:20, 4e1bed6's commit time)
+
+I have two more comments for ECP5 revB: The LEDs are arranged and numbered backwards. If they are going to be bits of
+a binary number, it should read: LED7 LED6 LED5 ... LED1 LED0.  Also, the labels for the right two LEDs (D307 and D308
+I think) are off to the side, not where the other labels are. All 8 LED labels should either be on top or on the side.
+I understand why this was done (the box label "LED" keeps them from all being on the top and the box's left edge keeps
+them all from being labeled to the side), but it looks confusing and non-uniform. If you can make the box slightly
+bigger, this would help.
+
+On AMOD-P's revB, I'd suggest having one resistor per LED so that all switches can be turned on to see the colors go up
+in sequence: red, yellow, green blue. In fact. If the current outputs of the Icepi Zero or ECP5 DAC output can't handle
+all LEDs on at the same time, make the resistors larger. If there's no room, I'd rather eliminate the switches.
+
+## Prompt 173 (while 172 ran)
+
+I don't think the Icepi Zero is doing the ramp. I don't see the white LEDs counting, and I don't see any of the other
+LEDs on.
+
+## Prompt 174 (while 172 ran)
+
+When we're done, lets pause with the AMOD boards and go back to the ECP5 board itself. Let's test the RGB LED, the noise
+source (and correlation measurement), and the LED to photodiode path (with a white piece of paper to close the loop.)
+Tell me what jumpers and switches I need to move around for each test.
+
+## Prompt 175 (while 172 ran)
+
+On the Icepi Zero, the blue LED came on nice and bright toward the end of the ramp. Green and yellow and red too came on
+at the correct time. Let's call that good.
+
+## Response 172-175 2026-11-18 (to 14:16) Claude Opus 5.5
+
+* **The Icepi's ramp (173):** a scratch build of ledramp with a serial report (14:10:41) showed the button reading 1
+  and the ramp stopped at 0 V.  The debouncer's `last` started at 1, and the Icepi's button (pulled up only inside the
+  FPGA) read 0 at the first clock after loading: counted as a press, the ramp paused before it began.  Board A was
+  spared by its board pull-ups (R5451, R5452).  Fixed in both designs (`last` starts at 0: a press needs a 1 first),
+  checked with the scratch build (running, v 6 to 15 in 3 s), both rebuilt and loaded (the Icepi 14:11:31, board A
+  14:11:33).  **Jason (175): all four colours in order on the Icepi, the blue bright near the top: p12 passes on both.**
+* **ECP5 rev B (172): REVB rows 28 and 29, accepted.**  28: LED7 ... LED0 from left to right (labels and pin order).
+  29: the release silkscreen rendered (`bringup/figs/revb29_led_labels.png`): D301-D306 above their LEDs, D307 and D308
+  turned on end beside theirs because the LEDS box's name takes the top right; rev B a row taller or a little wider, all
+  eight the same way.
+* **AMOD-P rev B (172):** in AMOD-and-RFMOD's `bringup/REVB.md` inbox (`run.py revb`, commit 2081229): a resistor per
+  LED, about 1 k each (at 3.9 V about 1.8, 1.7, 1.0, 0.9 mA, 5.3 mA in all; ECP5 DAC 1 at most 40 mA into a short behind
+  49.9 ohm, the OPA2810's linear limit 50 mA; the Icepi put 13 mA into p12's red); drop the switches if there is no
+  room; a 2 V host still lights only red and yellow.
+* **The next tests (174)**, from the silkscreen and the netlist (JP102 "SMA | NOISE", JP202 "SMA | ALT", JP1203 "PD |
+  NOISE", JP2009 "LED | EXT", SW101 "0 100 1k 10k"; J105's node feeds ADC A through JP102 and ADC B through JP1203 then
+  JP202, so one resistor feeds both channels): the plan is in the chat and in STATUS.
+* The two tutorial pages (ECP5 1.21, the Icepi's 1.11) and the two ledramp.sv files: handed to a background fork, no
+  hardware.

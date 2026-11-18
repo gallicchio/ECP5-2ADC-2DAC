@@ -4,10 +4,10 @@
 messages (`python3 bringup/bench.py where`).  The procedure is [`../BRINGUP.md`](../BRINGUP.md); results are in
 [`BRINGUP_LOG.md`](BRINGUP_LOG.md); problems for the next revision in [`REVB.md`](REVB.md).
 
-Updated: **2026-11-18 13:10, by Claude (Prompt 170).  The project lives in its own repository,
+Updated: **2026-11-18 14:16, by Claude (Prompts 172-175).  The project lives in its own repository,
 `~/pcbs/ECP5-2ADC-2DAC` (github.com/gallicchio/ECP5-2ADC-2DAC); everything is recorded here.**
 
-**Where we are: the AMOD-P march: p0-p11 done on both boards (p10, the clipper, is now page 1.20 of the ECP5 tutorial and 4.04 of the Icepi's, measured).  p12 (LEDs) is cabled on both and both run the new `ledramp.bit` (13:08): a 43 s DC ramp on the DAC, its top bits on the white LEDs; Jason reads where each colour first glows, then the pages (ECP5 1.21, Icepi 1.11) are written.  p13 (a loopstick, to be bought) remains.  Board A's JP101 TERM is OUT: put it back before any 50 ohm tile.**  Board A and the Icepi Zero DK0GFLAW each sweep the same
+**Where we are: the AMOD-P march is paused after p12 (p0-p12 done on both boards; p13 waits for a loopstick).  Next, board A alone (Jason, Prompt 174): (1) the RGB LED, (2) the noise source and the two channels' correlation, (3) the LED to the photodiode with a white card.  First: both SMA cables off board A and JP101 TERM back in.  Jumpers for each test: below.**  Board A and the Icepi Zero DK0GFLAW each sweep the same
 AMOD-P tile on their own AMOD-P board at the same time (`amodp/README.md`).  p0 (the through, the calibration), p1-p3
 and **p4 with both switches off** are measured on both and make sense (BRINGUP_LOG).  Board A's p4 (2026-11-18 08:39,
 after a fresh load of lockin2; yesterday's failure was the lock-in bitstream, not the cables): peak -1.8 dB at 1.075
@@ -34,6 +34,18 @@ three-cornered hat are in the log (15:17-15:24).
 | **Instruments claimed for this board** | the Fluke45 (on +1V1) and the scope's CH4 (TAP B), both only reading.  The E3646A released (2026-11-17 22:56:51, the claims log). |
 | **What is in the board's flash** | `bringup.bit` of 2026-11-16 (version 20261116): the board boots it by itself. |
 | **What the session left running** | nothing on bell.  Board A's FPGA holds the tutorial's new `ledramp.bit` (loaded 2026-11-18 13:08:48; uncommitted until its page): DAC 1 ramps 0 to +2 V open circuit in 43 s and repeats, DAC 2 at 0 V, LED7..LED0 the ramp's top eight bits (LED7 = 1 V); SW302 USER pauses/resumes, SW301 RESET held runs it down.  The IIO bridge on bell is stopped (2026-11-17 22:56:49).  The Icepi DK0GFLAW holds the Icepi tutorial's new `ledramp.bit` in SRAM (13:08:51, loaded again 14:02:34 after Jason saw no ramp on it; its flash still the 5.08 XY show): DAC OUT ramps 0 to +3.88 V in 43 s into its AMOD-P's p12, the five LEDs the top five bits (leftmost 1.97 V); the button nearest the USB pauses/resumes. |
+
+## The next three tests on board A (Prompt 174), what Jason moves
+
+Start: both SMA cables off (J204 DAC 1 OUT, J101 ADC A IN); JP101 TERM in ("50 ohm IN").  Check the bring-up positions:
+JP102 and JP202 on SMA, JP1203 on PD, the four GAIN shunts in (JP103, JP104, JP203, JP204: x1), JP2009 open, SW101 all off.
+
+| test | move | the session runs |
+|---|---|---|
+| 1. RGB LED (D309, "RGB LED" by PMOD A) | nothing | the flash's bring-up design (a JTAG refresh), `bench.py step leds`: the white LEDs one at a time, then the RGB LED red, green, blue |
+| 2. noise and correlation | SW101 switch "0" on first (one switch on at a time, never none while a SRC is on its noise side: the preamp inputs would float); JP102 to NOISE; JP202 to ALT and JP1203 to NOISE (B on the same resistor); all four GAIN shunts out (x100 both).  Then "100", "1k", "10k" in turn | fast.bit and `xspec.py`: each channel's spectrum and the cross-spectrum per resistor; the shared part is 4kTR (plus the preamps' current noise through R, visible at 10 k): Boltzmann's constant |
+| 3. LED to photodiode | JP102 back to SMA, then SW101 all off; JP1203 to PD (JP202 stays ALT); JP2009 to LED (DAC 1 drives D201 through Q201, up to 48 mA at full scale); GAIN shunts back in (B at x1 to start).  A white card a few mm over D201 (the red LED, "LED" box in the DAC 1 OUT strip) and D103 (the photodiode, "NOISE + PHOTODIODE" box), 32 mm apart | `bench.py step light` (DAC 1 codes, ADC B's mean): no card, card, dark; then a lock-in sweep of the loop |
+| after | JP2009 open, JP202 SMA, JP1203 PD, GAIN all in | |
 
 ## Visit 1B on board A (2026-11-16 17:00-18:00)
 
