@@ -4,10 +4,10 @@
 messages (`python3 bringup/bench.py where`).  The procedure is [`../BRINGUP.md`](../BRINGUP.md); results are in
 [`BRINGUP_LOG.md`](BRINGUP_LOG.md); problems for the next revision in [`REVB.md`](REVB.md).
 
-Updated: **2026-11-18 14:16, by Claude (Prompts 172-175).  The project lives in its own repository,
+Updated: **2026-11-18 15:38, by Claude (Prompt 202).  The project lives in its own repository,
 `~/pcbs/ECP5-2ADC-2DAC` (github.com/gallicchio/ECP5-2ADC-2DAC); everything is recorded here.**
 
-**Where we are: the AMOD-P march is paused after p12 (p0-p12 done on both boards; p13 waits for a loopstick).  Next, board A alone (Jason, Prompt 174): (1) the RGB LED, (2) the noise source and the two channels' correlation, (3) the LED to the photodiode with a white card.  First: both SMA cables off board A and JP101 TERM back in.  Jumpers for each test: below.**  Board A and the Icepi Zero DK0GFLAW each sweep the same
+**Where we are: board A alone, visit 3 (Prompt 174's three tests).  (1) LEDs and the RGB LED: pass (REVB 30: blue dim, green bright).  (2) The noise source: both channels see SW101's resistors coherently; k_B waits on a measured x100 gain (the tutorial's 1.22; REVB 31).  (3) The light path: D201 is mounted backwards (REVB 33, rework later); JP2009 now on EXT, DAC 1 at code 0 (the driver off): Jason is finding an LED for J210 LED EXT (anode pin 1 +5V, cathode pin 2).  Jumpers: JP101 TERM in, JP102 SMA, SW101 all off, JP1203 PD, JP202 ALT, GAIN shunts in.  No SMA cables on board A.**  Board A and the Icepi Zero DK0GFLAW each sweep the same
 AMOD-P tile on their own AMOD-P board at the same time (`amodp/README.md`).  p0 (the through, the calibration), p1-p3
 and **p4 with both switches off** are measured on both and make sense (BRINGUP_LOG).  Board A's p4 (2026-11-18 08:39,
 after a fresh load of lockin2; yesterday's failure was the lock-in bitstream, not the cables): peak -1.8 dB at 1.075

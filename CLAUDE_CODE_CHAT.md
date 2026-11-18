@@ -6627,3 +6627,21 @@ am now measuring its right-most pin (of 3) on the Fluke with respect to the same
 * D201's far pad (its anode pad): **4.966 V** (15:29:50): +5V reaches it.  So **D201 is backwards or open**; backwards most
   likely (JLCPCB's viewer drew this part a half turn off its footprint, DESIGN.md).  Next, unpowered: the Fluke's diode
   test from JP2009's LED pin (red) to +5V (black): about 1.6-2 V means backwards, OL open.
+
+## Prompt 202 2026-11-18 (after 15:30)
+
+With the Fluke in diode tester mode, when I put the red on the LED pin and the black on *ground*, I see the LED light a
+dim red. When I move the black to +5V, the LED lights more. Either way, the fluke reads O.L. Maybe it can only do Ge or
+Si diodes? When I use a multimeter, LED header to +5V header reads 1.722V. I'll try to rework it later. the notes for
+revB should include an item to pick a bright red LED with a more visible difference between cathode and anode sides.
+And/or have the ability to drive it push pull, either positive or negative voltage. I moved the jumper to EXT, plugged
+the board back in, and will go looking for LEDs to use on the external header.
+
+## Response 202 2026-11-18 15:38 - 2026-11-18 15:38 Claude Opus 5.5
+
+* **D201 is backwards** (lights with + on JP2009's LED pin, 1.722 V forward): REVB 33 (accepted), with Jason's rev B
+  items (a bright red LED with a plain cathode/anode difference, its orientation checked on the preview; and/or a
+  push-pull drive, either polarity).  Rework (the whole part off, turned round) later.
+* Board A back on its flash design after the power cycle (ID read 15:38:19); **DAC 1 set to code 0: the LED driver off**
+  before an external LED goes on J210 (the driver gives up to 48 mA at full scale).  `light_curve.py` takes a maximum
+  current, 20 mA by default.

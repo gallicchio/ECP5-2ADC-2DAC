@@ -4,8 +4,12 @@
 ALT, x1).  A white card over both closes the loop.  Needs the flash's bring-up design (a JTAG refresh) and its register
 interface, ecp5bu.
 
-    python3 light_curve.py LABEL          # e.g. nocard, card, dark: 17 LED currents, ADC B's mean and noise at each
-    python3 light_curve.py --plot         # every saved run on one figure
+    python3 light_curve.py LABEL [MAX_MA]  # e.g. nocard, card, dark: 17 LED currents from 0 to MAX_MA (default 20 mA),
+                                           # ADC B's mean and noise at each
+    python3 light_curve.py --plot          # every saved run on one figure
+D201 was found mounted backwards on board A (2026-11-18, REVB 33): the light path then uses an LED on J210 LED EXT
+(JP2009 on EXT; the LED's anode on J210 pin 1, +5V; its cathode on pin 2).  The driver gives up to 48 mA at full scale,
+too much for a small LED: MAX_MA limits the ramp (20 mA by default).
 
 Saves light_<LABEL>.npz here.
 """
@@ -18,11 +22,11 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "..", "..", "gateware", "bringup", "host"))
-CODES = np.linspace(0, 16383, 17).round().astype(int)
 MA_FS = 48.0                                        # the LED driver's current at full scale (BRINGUP.md 5.4)
 
 
-def run(label):
+def run(label, max_ma=20.0):
+    codes = np.linspace(0, min(16383, max_ma / MA_FS * 16384), 17).round().astype(int)
     import ecp5bu
     bd = ecp5bu.Board(ecp5bu.find_port())
     bd.gpio(dac_sleep=0, pdwn_a=0, pdwn_b=0)
@@ -36,7 +40,7 @@ def run(label):
     bd.adc_config(rate=1.5625e6, stats_log2=20)
     rows = []
     try:
-        for code in list(CODES) + [0]:              # up, then off again (did the dark level come back?)
+        for code in list(codes) + [0]:              # up, then off again (did the dark level come back?)
             bd.dac(1, "dc", code=int(code))
             time.sleep(0.05)
             seq0 = bd.rd("STATSEQ")
@@ -79,6 +83,6 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "--plot":
         plot()
     elif len(sys.argv) > 1:
-        run(sys.argv[1])
+        run(sys.argv[1], float(sys.argv[2]) if len(sys.argv) > 2 else 20.0)
     else:
         print(__doc__)
