@@ -6186,3 +6186,27 @@ Add it and put it in the public tree as long as there are no privacy issues.
   stopping your own processes; the tutorial, the Icepi tutorial and the AMOD boards next door; build.py and the design
   reviews.  No email or network addresses or other personal details (checked); the repository already names Jason as
   its author.
+
+## Prompt 158 2026-11-18 08:39
+
+I did move around the ECP5 board to tape it to the table. This may have jiggled the cables. Now p4 is on both the ECP5
+and the Icepi Zero boards and both switches are off on both boards. Test this and make sure the result makes sense.
+
+## Response 158 2026-11-18 08:39 - 2026-11-18 08:47 Claude Opus 5.5
+
+* `bringup/amodp/amodp_both.sh p4` (08:39:29-08:39:52; both lock-ins loaded first).  **Board A's p4 is right now:
+  peak -1.8 dB at 1.075 MHz, -3 dB from 975 kHz to 1.175 MHz (Q 5.4)**; the handbook's circuit says -0.8 dB at 1.073 MHz,
+  Q 6.2.  Within 0.5 dB of it from 1 kHz to 3 MHz.  Yesterday's failure was lockin2, not the cables (moving the board
+  to tape it down changed nothing).  The Icepi repeated yesterday's sweep (+10.5 dB at 3.71 MHz).
+* What makes sense of the differences: **the coil**.  Above 3 MHz board A falls faster than the handbook's 1/f (-43.8 dB
+  at 10 MHz against -36.1) and its phase turns back towards 0: L401's own capacitance.  `amodp/amodp_fit_p4.py` fits
+  the coil as R(f) in series with L, shunted by Cs: 23 ohm at 1.07 MHz rising as f^2 (the handbook takes the 10 ohm DC
+  resistance), 102 uH, 1.4 pF (self-resonant at 13 MHz), C 213 pF; misfit 0.13 dB, 0.8 degrees rms.  The coil's own Q
+  is 30 at 1 MHz, not the handbook's "about 60".  **Put on the Icepi's load model, not refitted, the same coil gives
+  the Icepi's +10.5 dB peak as +11.3 dB** (the handbook's circuit gave +16.1, the puzzle of yesterday): two boards,
+  two AMOD-P boards, one coil model.  The Icepi's phase above 4 MHz is still 20 degrees off it (its 18.4 pF load is
+  itself an estimate).
+* For the AMOD-P handbook (not changed: its repository): p4's "Q of the coil about 60" is about 30 at 1 MHz.
+* Recorded: BRINGUP_LOG (the old p4 row closed, today's added), STATUS (next: p4-1), `amodp/README.md`, the plots
+  `amodp/compare/amodp_both_p4.png` and `amodp_fit_p4.png`; the tutorials' data committed by the runner
+  (ecp5-2adc-2dac-tutorial 9f8657e, icepi-zero-dac-adc b459c75).
