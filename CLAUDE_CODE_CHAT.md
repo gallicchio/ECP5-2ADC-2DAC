@@ -6248,3 +6248,25 @@ p4-2
   The Icepi 3.0 dB above p4's at 10 kHz (the handbook circuit +2.9).
 * **p4 done**: all four switch settings on both boards, one coil model for all of them.  Next: p5 (the 9 MHz
   Butterworth).
+
+## Prompt 162 2026-11-18 09:25
+
+p5
+
+## Response 162 2026-11-18 09:26 - 2026-11-18 09:33 Claude Opus 5.5
+
+* `amodp_both.sh p5` (09:26:00-09:26:19).  Board A drooped from 2 MHz (-0.6 dB at 4 MHz) and crossed -3 dB at 7.6 MHz
+  against the handbook's 8.9 MHz, its phase 6-13 degrees ahead.  Lossy coils, a load capacitance, free part values:
+  none fits (1.0 dB rms at best).
+* **The cause is the measurement, not the tile or the cables**: board A's DAC and ADC run on one 25 MHz clock
+  (lockin2.sv: `dac_clk1 = ~clk`), so the ADC samples the DAC's staircase.  The through reads flat (raw: -0.5 dB at 12
+  MHz, where the hold's sinc alone is -3.4 dB) because the images fold back onto the signal; a tile that cuts the images
+  leaves the sinc droop and the half-sample delay.  One board model, fitted jointly: the staircase folded at 25 MS/s,
+  sampled 2.35 ns after the update, chain poles 2 x 20.6 MHz (the raw through within 0.3 dB): p2 0.19, p3 0.32, p4 0.31,
+  p5 0.28 dB rms on the handbook's tiles plus the coils' loss (plain model: 0.98, 0.69, 1.40, 2.83).
+* **Correction to Response 158**: p4's coil loss at 1 MHz (21-23 ohm) and its 1.35 pF (SRF 14 MHz) stand; "rising as
+  f^2" was the staircase (f^0.6 with it modelled), and so the Icepi's p4 peak is not explained by the coil after all:
+  the Icepi's input must be lossier at 3.7 MHz than the 20.6 k with 18.4 pF assumed (open).
+* The Icepi's p5 (unterminated) rings at 9 MHz, +3.1 dB (its model +10.3 dB at 10 MHz): its input again lossier.
+* To do: the folding into amodp.py's `expected()` for both boards (the Icepi's DAC at 50 MS/s, ADC 25), then the plots
+  redrawn from the saved data.  Next tile: p6.
