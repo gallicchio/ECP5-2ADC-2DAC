@@ -6375,3 +6375,21 @@ to test this and demonstrate clipping in the written tutorials.
 * Board A: fast.sv tops out at half scale (+-1 V behind 50 ohm), too little to clip hard through 1 k; a background agent
   is adding a fine gain command up to full scale, building it and writing clipper.py and a new page (1.20).  Board A's
   ADC must see the tile at high impedance: asked Jason to take JP101 TERM out.
+
+## Prompt 169 2026-11-18 11:45
+
+term out. I pulled the TERM jumper next to J101 ADC A IN. As for ferrite antennas, amazon only has 420uH, 450uH, 490uH,
+and 360uH. I'm not very familiar with these, but can they just be unwound until the desired inductance is achieved?
+
+## Response 169 2026-11-18 11:46 - 2026-11-18 11:48 Claude Opus 5.5
+
+* The agent's work (fast.sv's `g` gain to full scale, 125 MHz build only, seed 7 pinned; clipper.py; a draft page
+  1.20) reviewed, then `make load-fast` and `clipper.py` on board A (11:46:21-11:46:33), JP101 TERM out.  **At 2 V
+  in: 3f -12.0, 5f -19.1, 7f -25.4 dBc, the same as the diode equation to 0.1 dB with nothing fitted**, and within 0.3
+  dB at every drive above the noise; even harmonics -58/-61 dBc and -1.9 mV DC (the diodes' mismatch).  The agreement
+  looked too good, so checked: the zero record's 0.73-code noise, the even harmonics and an independent fit of the raw
+  codes are the board's.  Page 1.20's placeholders filled; ecp5-2adc-2dac-tutorial c159e3c (sync_md, check_tutorial: 31
+  pages, 0 errors).
+* The loopstick: the 360 uH one; unwinding works (L goes as the turns squared: 4 % of the turns takes 360 to 330 uH),
+  or slide the winding toward the rod's end, which lowers L with no soldering (answered in the chat).
+* Board A: **JP101 TERM out** (STATUS says to put it back before any 50 ohm tile); fast.bit loaded.
