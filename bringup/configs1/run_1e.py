@@ -15,7 +15,8 @@ import time
 
 import numpy as np
 
-sys.path.insert(0, "/home/jason/OpticsPCBs/ECP5-2ADC-2DAC/bringup")
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))      # bringup/, wherever the project is
 sys.path.insert(0, "/home/jason/mudd/133electronics/ecp5-2adc-2dac-tutorial/src/verilog")
 import bench                                        # noqa: E402
 import capture                                      # noqa: E402

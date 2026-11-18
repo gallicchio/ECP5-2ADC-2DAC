@@ -1,0 +1,118 @@
+# The commits of this repository that came from the private repository the board was developed in.
+# The documents and the chat log quote the old hashes (first column, usually its first 7 characters);
+# the same commit is here under the hash in the second column.  Newest first.
+old_hash	new_hash	date	subject
+dadeb2e732	a1377512ac	2026-11-17	ECP5 board A: the chain's ENOB and two-tone IMD on both paths; the three-cornered hat of the TCXO, the Si5351 
+e08903e77f	caf0dce653	2026-11-17	ECP5 board A: ADC B's code density after the short (DNL fine; the compression is a slow effect)
+48330980c1	1c5a4b5734	2026-11-17	ECP5 board A: the blips on TAP B are 180 us bursts of 1 us spikes, every 22 ms (ddc_awg) or 66 ms (fast.bit)
+c0a8865c79	fc601d1a95	2026-11-17	ECP5 board A: a U.FL pigtail on the live board damaged the ADC stage (both channels compress at full scale; af
+2ec5b9cab4	a9fa2978f8	2026-11-17	ECP5 board A after a possible short: the self-test passes but DAC 1 -> ADC A compresses its largest swings
+7a545bc4e0	4457d85bc1	2026-11-17	ECP5 REVB 24: four rails steady through the steps; the duty-cycle stabiliser changes the step, the TCXO's comp
+e64bb36032	8f4cfa1f2a	2026-11-17	ECP5 REVB 24: +5VA steady through ADC B's steps
+a68c522ba5	072aa5cd24	2026-11-17	ECP5 REVB 24: 3V3A steady through ADC B's steps
+1376f2f6c7	71ee0e1102	2026-11-17	ECP5 REVB 22, 24 with one cable: the steps persist with nothing on ADC B; DAC 1 reaches ADC B on the board (-5
+b1e2133633	34cb7cc25a	2026-11-17	ECP5 chat log: Prompt 138 (the cables crossed)
+65a2269912	3a6e2e739f	2026-11-17	ECP5 REVB 22, 24 with the DAC cables crossed: the steps stay on ADC B; the 3 MHz cross-talk follows DAC 1, the
+926d944e57	5917b70d69	2026-11-17	ECP5 CONFIGS 1f: move the power to J601 before unplugging USB PROG; the configuration-0 baselines of REVB 22 a
+9032b6896b	09d61b9fd6	2026-11-17	ECP5 board A: gigabit to the PC works (both ADCs and both DACs at 25 MS/s, and both at once, no packet missing
+842cbca90e	b603a351e3	2026-11-17	ECP5 chat log: Prompt 137 (bell's new 1G port retries DHCP every 45 s)
+a1fe7b24be	ef3c39dcf7	2026-11-17	ECP5 chat log: Prompt 136 (the module is in sfp28-2)
+5177ff6bf2	132ac0804c	2026-11-17	ECP5 chat log: Prompt 135 (the MikroTik sees no module in sfp28-1)
+c3d6d435ad	a6a3401653	2026-11-17	ECP5 chat log: Prompt 134 (RouterOS's speed names)
+6e2e14a748	334e5b2395	2026-11-17	ECP5 chat log: Prompt 133 (reaching the MikroTik; a second path to the board)
+d2b2e3e4ac	7a4f2a302a	2026-11-17	ECP5 chat log: Prompt 132 (which FS copper SFP for the MikroTik)
+b5f3490446	a3fa68de89	2026-11-17	ECP5 chat log: Prompt 131 (the MikroTik's SFP28 ports and 1G copper modules)
+50225fcf18	3ac64090fc	2026-11-17	ECP5 chat log: Prompt 130 (configuration 0; the Ethernet on the fast switch has no link yet)
+b6792fa052	dabf219294	2026-11-17	ECP5 board A: CONFIGS 1e (B's path 0.1-0.28 ns the shorter on the ADC side); chat log Prompt 129
+8400b60e69	0e00f76736	2026-11-17	ECP5 chat log and STATUS: the Icepi tutorial's changes passed on the two Icepi Zeros
+4a14e6cd1b	e15c026274	2026-11-17	ECP5 board A: CONFIGS 1a-1d (the ADC front end distorts; cross-talk is neither half alone; CLK IN counts sines
+ec5228981b	259321c3a7	2026-11-17	ECP5: REVB 25 (the RAILS header's labels above its ground row); -4V2 steady under every bitstream and not REVB
+cd6e1d752d	cae9a9caa3	2026-11-17	ECP5 chat log: Responses 119, 121, 125 closed; the night's hand-off
+8890360f56	95a4754ac4	2026-11-17	ECP5: the tutorial's board test re-run (11 pass); the bridge stopped; Response 125 brought up to date
+996c065f21	a6c5cc140f	2026-11-17	ECP5 CONFIGS: 1e's tee and 1f's cabling spelled out against the board's connectors; section 7 lists the overni
+0b4b704e81	0c5d8f136c	2026-11-17	ECP5 STATUS: overnight (IIO two ways, DAC stream, phasemeter, TDC, TRNG; REVB 24)
+0baccd32ec	da016d462a	2026-11-17	ECP5 REVB 24: not the received frames (counted on the board); an RC-like 1.9 s timer; CONFIGS 1f revised
+26e98d8a3a	faed81fcab	2026-11-17	ECP5 REVB 24: ADC B's 1.9 s steps come with the ddc_awg bitstreams, not udp_awg; CONFIGS 1f's tests with ddc_a
+18ea4cee22	ed7e81d77b	2026-11-17	ECP5 board A: the AM lines across 1-10 MHz; a TRNG from the ADC noise; REVB 24 (ADC B steps on a 1.9 s grid) w
+1519f1782c	21eb248b48	2026-11-17	ECP5 board A: a carry-chain TDC (21 ps codes, 3.9 ps rms calibrated); the phasemeter's shortfall found; chat l
+e29f8d8ccf	bd55b21f0e	2026-11-17	ECP5 board A: a phasemeter (1.6 urad/rtHz between the channels); CONFIGS 1e, the ADC channels' skew with a tee
+c79fe276f2	e8f3253c98	2026-11-17	ECP5 board A: the DAC stream with a C sender, never dry; CONFIGS 4's pass at every rate to 25 MS/s
+5d21f9eab9	d8767432e1	2026-11-16	ECP5 board A: an SDR receiver, ARP and the DACs as a stream (tutorial designs); CONFIGS 4 gains the stream tes
+cbcf6adf80	fff16d7cb1	2026-11-16	ECP5 STATUS: udp_awg.bit on board A; Linux with stock iiod boots from the tutorial
+6f18e387c0	6d5d3f7441	2026-11-16	ECP5 board A: the FPGA sends 858 Mbit/s with no overruns; the 100 Mbit/s cap is on board A's network branch; C
+d8619fa1f9	ff4f067cb5	2026-11-16	ECP5-2ADC-2DAC board A: visit 1B (66 pass) after the USB PROG rework; every interface pushed to its limit; CON
+712a7b6b41	4fbfed4d94	2026-11-16	Pin audit of every board (2026-11-16): power pins and pairs against the data sheets, connectors against their 
+64281c6f42	39f8011887	2026-11-16	ECP5-2ADC-2DAC bring-up: the visit plan, bench.py per visit with a simulated bench, the bring-up gateware for 
+49b90dfff9	99e47244ad	2026-11-11	chat log: prompt 98 (lab-instrument-control merged with origin/main, bd1088e)
+d1c4fe2076	d9b5874041	2026-11-11	chat log: prompt 97 (every prompt and response is in the logs); response 52's note names prompt 56 too
+8c17e62c6c	6e54067bcc	2026-11-11	chat log: prompt 96 (lab-instrument-control's BK 9130 driver committed there)
+d26b449053	44659f1a9d	2026-11-11	trustee-show-and-tell (prompts 93-95): the kaleidocycle, and four finales between the seal's turns
+70c3113d35	31cf75ac05	2026-11-11	trustee-show-and-tell: the printed planetary set tightened, the sun's sideways play 1.8 -> 0.7 mm (prompt 92).
+9e450fdbcb	7a44fef533	2026-11-11	trustee-show-and-tell (prompt 91): transcription and translation back from the pool, after replication (the ce
+56180f64a4	f1a5ecda4c	2026-11-10	trustee-show-and-tell (prompt 90): the Icepi pair's DACs dithered, first-order error feedback of the engine's 
+3b053c4ddf	bc44ea270d	2026-11-10	trustee-show-and-tell (prompt 89): the prints named planetary_gears.stl (the gears) and planetary_gears_and_cr
+7f76494d25	3e9c0e8cd9	2026-11-10	trustee-show-and-tell: the printed planetary set held to ~2 mm of play (prompt 88).  The first print's sun sli
+99a3fa0167	9345a29a2e	2026-11-10	CLAUDE_CODE_CHAT: prompt 87 (a review of the icepi-zero-dac-adc tutorial, committed there as 221b062..682d238)
+6edd208972	c652d89501	2026-11-10	CLAUDE_CODE_CHAT: prompt 86 (the Icepi show as 5.08 of the icepi-zero-dac-adc tutorial, committed there as 221
+7168073be1	a4b62c9596	2026-11-09	trustee-show-and-tell: the drone's BicoLog horizontal, as on the drone that flies (Jason's photo): two cones a
+cfaa0aab4d	5ed39bcaa9	2026-11-09	trustee-show-and-tell: the show of 21 finales, the seal after every three, on the Icepi pair: LIGO, the circui
+8f07d55062	54e0a0e3d6	2026-11-09	trustee-show-and-tell: what the show no longer used is gone: the engraved (flat) globe from the scene memory (
+fc86a99de5	8b78f5f5a5	2026-11-09	trustee-show-and-tell: thirteen proposed finales as models and a movie, nothing in the gateware (engine, flyba
+df8f3b4f81	d5894c4d5c	2026-11-09	CLAUDE_CODE_CHAT: prompt 81 (row 13: the HMC fidget spinner)
+c9ae7a4b2e	a2cdd0ce83	2026-11-09	CLAUDE_CODE_CHAT: prompt 80 (the table with a Galton board and a circuit board)
+10ee138b8d	b95e997d82	2026-11-09	CLAUDE_CODE_CHAT: prompt 79 (ten finale proposals, engineering and physics)
+7ed04e7d68	a542d5bbda	2026-11-09	CLAUDE_CODE_CHAT: prompt 78 (other finales as prints: not really; nothing made)
+8f8bdf185c	beed1cecc9	2026-11-09	trustee-show-and-tell: a planetary gear set to print beside the scope, the gears finale in plastic (sun 12, th
+6884893422	45e5ef4f8d	2026-11-09	trustee-show-and-tell: the equator no longer jumps a code: it lies on the screen's centre line (2048), the 8-b
+52c91ff867	36ed53bfdc	2026-11-09	trustee-show-and-tell: the seal as traced left the show (1, 2, a finale, 1: the wireframe globe from the start
+54e693f928	fe6bbf3bc4	2026-11-09	trustee-show-and-tell: the 3D globe comes in as the seal's own: upright, seen from the equator (it was tilted 
+b0638b99c1	060fabb553	2026-11-09	trustee-show-and-tell: the Icepi pair skips mode 0's ramp (the still seal for 3 s; the ECP5 board keeps it); t
+7500c0451d	975efdc18f	2026-11-09	trustee-show-and-tell: what the analog scope showed, fixed: the beam parked below the screen between frames an
+595b199891	cb0ecbbfa4	2026-11-08	ECP5-2ADC-2DAC: the chat log, prompt 69 (the analog-scope video diagnosed: the ramp's dwell not in step on the
+f62d6b8f14	6f111c6603	2026-11-08	trustee-show-and-tell: the movies and animated GIFs rendered into renders/, which git ignores (each render a l
+bbdf45a30f	ecabddd876	2026-11-08	ECP5-2ADC-2DAC: the chat log, prompt 66 (a rebasing pull flattens the unpushed merge; pull --no-rebase, then p
+a4ef3610dd	e7b96e2020	2026-11-08	ECP5-2ADC-2DAC: the chat log, prompts 64-65 (the commits; the pull that stopped on a build product, origin/mas
+25a2bc544d	e9ac2b2f9e	2026-11-08	trustee-show-and-tell: the Icepi pair debugged on the bench (SDS1104X-E in XY over USB): the gap threshold fro
+ee04cbe8cb	d3890eea7e	2026-11-08	trustee-show-and-tell: the central dogma finales as the biology says: templates single-stranded out of the for
+dc44ce6564	153843278d	2026-11-08	trustee-show-and-tell: Chua's circuit as a second twin (shifts and adds, pipelined) with its own ring; both ta
+f37848b8fd	e9ef863625	2026-11-08	trustee-show-and-tell: six more finales after the photos: polarization through a half- and a quarter-wave plat
+141ee8f0e7	37d2782410	2026-11-08	trustee-show-and-tell: finales (a different one each cycle after the seal's 15 s): the Lorenz tail, caffeine, 
+e6c2906afc	42f98c7a77	2026-11-07	trustee-show-and-tell: the dividers redrawn (the right leg the left's mirror, from the traced outline), the Te
+ba9ff70128	92562e179f	2026-11-07	trustee-show-and-tell: make_show.py (the constants, the three-cycle movie and GIF, the tables, the simulations
+4afb1b5000	059c77da88	2026-11-07	trustee-show-and-tell: the scope show (the seal, the 3D tumble, the spinning coastline globe, the Lorenz tail 
+3c64bc8e11	5d1c75c910	2026-11-06	ECP5-2ADC-2DAC bring-up: no udev rule to install on bell, openocd's 60-openocd.rules already covers the FT2232
+db3706acea	c6d3a30e30	2026-11-05	ECP5-2ADC-2DAC: the rev A bring-up, written the evening the boards arrived (2026-11-05)
+0618a0b34f	88bdfed53f	2026-11-03	minor changes for CLAUDE_PCB.md
+f8faf46faf	ec766a54f3	2026-10-22	ECP5-2ADC-2DAC: JLCPCB's pre-production question on D309 answered from the board file (Prompt 44)
+db12393d4d	75ad24cca9	2026-10-18	Every board's README opens with its title, 3D renders and a short description; tools/render_boards.py renders 
+af125e1b89	90610d78a3	2026-10-17	CostasLink-PYNQ-Z2: the order's two readings folded back: SMA C496551 rotation 0 (read in the preview, both bo
+260455c409	579a694a12	2026-10-10	ECP5-2ADC-2DAC: Prompt/Response 43 (the reviewer's kicad_copy/ ignored)
+a726dcbfd4	71dd9fc0de	2026-10-10	Updated ECP5-2ADC-2DAC/design_review_CopilotSDK2 results.
+919f088707	eb611a0d16	2026-10-09	ECP5-2ADC-2DAC: cost model calibrated on the full cart of 2026-10-09 ($727.90; model $727.89): components x 1.
+aa2a84159e	c675feb934	2026-10-09	ECP5-2ADC-2DAC: the order form's stack-up Reminder (1.5544 mm: Yes), Impedance Control (No requirement), the K
+3827dd249f	ccea491671	2026-10-09	ECP5-2ADC-2DAC: the order form in FABRICATION_NOTES marks every non-default field (>>, the default to avoid, t
+b39574e44e	07f3c9c378	2026-10-09	ECP5-2ADC-2DAC: FABRICATION_NOTES opens with JLCPCB's order form in the form's own order (PCB and PCBA), value
+145d872551	7a79c13ec1	2026-10-08	ECP5-2ADC-2DAC: the cost estimate itemised as JLCPCB's cart and calibrated on the real order ($613.84 vs $616.
+53bd238722	035ccfa5f7	2026-10-08	ECP5-2ADC-2DAC: Prompt/Response 37 -- the back checked out in JLCPCB's preview (the bottom-side rotation rule 
+2f4f7cea73	9e9096d08c	2026-10-08	ECP5-2ADC-2DAC: D201's CPL point from JLCPCB's viewer half turn; pin 1 in the preview check; J108 and the crys
+97096e41bd	5adb30a27b	2026-10-08	ECP5-2ADC-2DAC: D201 (2835 LED) +180 in the upload CPL, as read in JLCPCB's viewer; Prompt/Response 35
+7ffec85c42	ea74f9f9c7	2026-10-08	ECP5-2ADC-2DAC: polarity in the preview check (JLCPCB's own pin names); Prompt/Response 34 -- D501, D309, D201
+5f197ee1c5	a5e66a2bac	2026-10-08	ECP5-2ADC-2DAC: build 34 -- exact-length headers, SMA/Pmod/header CPL rotations from JLCPCB's drawings, a comp
+b0f1853a83	7e9a70f9e1	2026-10-07	ECP5-2ADC-2DAC: builds 32-33 -- the second review round reconciled: CLK IN 1 k, a USB PROG P-FET (no back-feed
+8e567800fd	629537528f	2026-10-07	ECP5-2ADC-2DAC: build 31 -- fiducials, layer numbers, JLCPCB order-number marker, a 2 A fuse on the bench 5 V 
+1b75ad6b2c	68bc0d2d87	2026-10-07	ECP5-2ADC-2DAC: build 30 -- the analog supplies as In4 planes (-4V2, +5VA, the ADC's and DAC's AVDD): op-amp r
+acf0072744	dabf12af62	2026-10-07	ECP5-2ADC-2DAC: Prompt/Response 29 -- tools/power_path.py joins copper by overlap (vias on track interiors, tr
+cf150500c6	ca7c256399	2026-10-07	ECP5-2ADC-2DAC: build 29 -- the HEADERS and USB legend paragraphs at their homes, TAPS says 50 ohm; tools/powe
+87fe16a2c7	131321fbdf	2026-10-07	ECP5-2ADC-2DAC: Prompt/Response 27 (an FT601 on the USER port: layout, cost, what it buys); the README's SDRAM
+ee2fa3a101	75b0e37116	2026-10-07	ECP5-2ADC-2DAC: build 28 -- Prompt 26, the sheets and the silkscreen read as a student would
+dcbc427051	e76ba68351	2026-10-06	ECP5-2ADC-2DAC: JLCPCB fits the through-hole parts; CPL rotations predicted from JLCPCB's drawings, the bottom
+55a1fb3e78	ed727071df	2026-10-06	ECP5-2ADC-2DAC: Prompt/Response 24 (status, what to check by eye, the JLCPCB upload); §4 names the nine rails
+c99f630ffb	beb3f9fd16	2026-10-06	ECP5-2ADC-2DAC: the project is on master (PR #2 merged); Prompts 22-23 logged
+c3256ec610	7f51f1db0e	2026-10-04	ECP5-2ADC-2DAC: builds 26-27 -- the five reviews reconciled, four U.FL monitor taps, the silkscreen and sheets
+dd8a89d9b6	8e48da6a17	2026-10-04	ECP5-2ADC-2DAC: the cloud review's six fixes, and the pinout CSV a clone needs
+e73b712fa7	31af8603e2	2026-10-04	ECP5-2ADC-2DAC: the cloud review's findings (design_review_Claude-ultrareview) and Response 20
+a8954d566f	c739baa7a7	2026-10-04	ECP5-2ADC-2DAC: Prompt/Response 19 logged (the repository is too large for the bundled review; use the PR form
+3f7ceaad65	dc0b3f1a50	2026-10-04	ECP5-2ADC-2DAC: Prompt/Response 18 logged (where /code-review ultra is typed)
+712952b014	01ca956831	2026-10-04	ECP5-2ADC-2DAC: Response 17 logged (reviews received, branch arrangement, push and cloud-review caveats)
+22907cca0f	01f58ece22	2026-10-04	ECP5-2ADC-2DAC: the three independent reviews of build 25, and what a reviewer with only the git tree needs
+867e0857bb	a0d5424c18	2026-10-04	ECP5-2ADC-2DAC rev A, build 25: the generated ECP5 + AD9238 + AD9767 board, ready for design review

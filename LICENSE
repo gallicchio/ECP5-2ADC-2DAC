@@ -1,0 +1,63 @@
+ECP5-2ADC-2DAC is open hardware and open source.
+
+  Hardware   CERN Open Hardware Licence Version 2 - Permissive (CERN-OHL-P-2.0)
+             The schematic, the PCB, the generator scripts' design data, the
+             manufacturing files, the drawings and renders, and the
+             documentation of how to make and bring up the board
+             (the KiCad project, gen/, pcb/, library/, mfg/, docs/, photos/,
+             the design documents).
+             Full text: LICENSE-HARDWARE.txt
+
+  Software   MIT License (below)
+             The gateware, the host programs, the bench and bring-up programs,
+             and the build, simulation and check scripts
+             (gateware/, bringup/, sim/, tools/, build.py).
+
+Both licences are permissive: you may make, sell, modify and share the board
+and its derivatives, keeping the copyright and licence notices.
+
+ECP5-2ADC-2DAC is a Lattice ECP5 board with two ADC channels, two DAC
+channels and gigabit Ethernet, open from the schematic to the Linux that runs
+on its RISC-V soft core.  Designed by Jason Gallicchio with Claude
+(Anthropic's Claude Code), October and November 2026.
+
+Third-party material:
+  * Symbols, footprints and 3D models copied from the KiCad libraries are
+    CC-BY-SA 4.0 with the KiCad libraries' exception: using them in a design
+    does not put the design under CC-BY-SA.
+  * library/easyeda/ holds symbols and footprints converted from EasyEDA's
+    parts library (JLCPCB's land patterns and pin tables) with easyeda2kicad.
+    Their 3D models are not part of this repository.
+  * gateware/litex/ecp5_2adc_2dac.py is a generated LiteX platform file,
+    BSD-2-Clause like litex-boards.
+  * Datasheets are not part of this repository (datasheets/ is ignored), and
+    neither are the copies of them the design reviewers made.  Lattice's
+    pinout table, which gen/fpga.py reads, is among them.
+  * The reports under design_review/ were written by the language models and
+    review services named there, at the author's request.
+  * The FPGA is built with Yosys, nextpnr and Project Trellis, which are not
+    part of this repository.
+
+------------------------------------------------------------------------------
+
+MIT License
+
+Copyright (c) 2026 Jason Gallicchio
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

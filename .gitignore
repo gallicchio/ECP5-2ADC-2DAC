@@ -1,0 +1,92 @@
+# ---- Other people's material: on the bench PC, never committed -------------------------------------------------
+# Vendor datasheets (PDF), their text, and renders of their pages and drawings.  tools/jlc_datasheet.py (by LCSC
+# code) and tools/adi_datasheet.py fetch them again.  Lattice's pinout table for the ECP5U-25 is among them
+# (datasheets/FPGA-SC-02033-2-0-ECP5U-25-Pinout.csv): gen/fpga.py, tools/pin_tables.py and tools/check_pairs.py
+# read it, so a fresh clone downloads it from Lattice before it can regenerate the FPGA's pins.
+/datasheets/
+/docs/datasheets/txt/
+/docs/datasheets/drawings/g2406*.png
+/docs/datasheets/drawings/hammond*.png
+/docs/datasheets/drawings/led2835*.png
+/docs/datasheets/drawings/rgb1615*.png
+/docs/datasheets/drawings/sma*.png
+/docs/datasheets/drawings/tcxo*.png
+# ... and the copies the design reviewers made of them
+/design_review/Gemini_3.8_Flash/ad9238.txt
+/design_review/Gemini_3.8_Flash/ad9767.txt
+/design_review/Gemini_3.8_Flash/ecp5.txt
+/design_review/Gemini_3.8_Flash/ft2232.txt
+/design_review/Gemini_3.8_Flash/hammond.txt
+/design_review/Gemini_3.8_Flash/lm27761.txt
+/design_review/Gemini_3.8_Flash/opa2810.txt
+/design_review/Gemini_3.8_Flash/sma.txt
+/design_review/Gemini_3.8_Flash/ths4521.txt
+/design_review/Gemini_3.8_Flash/usblc6.txt
+/design_review/Gemini_3.8_Flash/w25q128.txt
+/design_review/CopilotSDK2/USBLC6.txt
+/design_review/Grok4.7/ecp5_family.pdf
+/design_review/Grok4.7/ecp5_family.txt
+/design_review/Grok4.7/ecp5_sysconfig.pdf
+/design_review/Grok4.7/ecp5_sysconfig.txt
+/design_review/Grok4.7/opa1612.pdf
+/design_review/Grok4.7/opa1612.txt
+/design_review/Gemini_3.8_Flash2/usblc6_p-000.png
+/design_review/Gemini_3.8_Flash2/usblc6_p-001.png
+# The parts' 3D models, converted from EasyEDA's.  Only the 3D view and the renders use them; the symbols and the
+# footprints beside them are in git.
+/library/easyeda/easyeda.3dshapes/
+/library/ours.3dshapes/UFL_Hirose_U.FL-R-SMT-1.step
+/library/ours.3dshapes/UFL_Hirose_U.FL-R-SMT-1.wrl
+# The show for the college's trustees: its scene is built around a tracing of the college's seal, which is the
+# college's.  The whole folder stays on the bench PC.
+/trustee-show-and-tell/
+# JLCPCB's parts data and EasyEDA's land patterns, cached: theirs, and fetched again when stale.  JLCPCB's
+# production-file confirmation zips.
+/tools/jlc_cache.json
+/mfg/jlc_footprint_cache.json
+*_gerbers_Y*.zip
+# Cloned reference designs (reference/SOURCES.md records what and when)
+/reference/*/
+
+# ---- The bench's record -----------------------------------------------------------------------------------------
+/bringup/data/
+/bringup/bench_config.json
+# the phone's originals of photos/, with their metadata
+/bringup/board_photos/
+
+# ---- Working notes exchanged with Claude (the chat log is the record) -------------------------------------------
+/QUESTIONS.md
+/ANSWERS.md
+
+# ---- Build intermediates, except the small results a reviewer without KiCad needs --------------------------------
+/build/*
+!/build/netlist.net
+!/build/drc.json
+!/build/erc.json
+!/build/route_report.json
+!/build/lcsc.json
+!/build/placement.json
+!/build/pin_swaps.json
+!/build/bus_plan.json
+# a reviewer's private copy of the tree, or of the KiCad project to run DRC/ERC on
+/design_review/*/repo/
+/design_review/*/kicad_copy/
+# the gateware pin proof's outputs (gateware/test/build.sh remakes them in every build)
+/gateware/test/pins.json
+/gateware/test/pins.config
+/gateware/test/pins.bit
+/gateware/test/pins.pnr.log
+# the bring-up gateware's build intermediates (the bitstreams are kept)
+/gateware/bringup/build/*
+!/gateware/bringup/build/*.bit
+
+# ---- Tools' droppings -------------------------------------------------------------------------------------------
+fp-info-cache
+*-backups
+*.lck
+tmp*.rpt
+.history/
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
