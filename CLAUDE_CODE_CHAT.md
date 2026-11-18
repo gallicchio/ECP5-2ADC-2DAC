@@ -6297,3 +6297,19 @@ p6
   for L401: 21-23 ohm at 1 MHz (the peak 1 dB low, Q 5.4).
 * The Icepi stays plain: no delta or chain fits it (its raw through would rise 3 dB at 12 MHz where it rises 0.9), and
   a lossy input (19.4 pF behind 258 ohm) fits p4 but moves its peak to 3.43 MHz and leaves p5 at 1.7 dB.  Open.
+
+## Prompt 164 2026-11-18 10:44
+
+p7
+
+## Response 164 2026-11-18 10:45 - 2026-11-18 10:49 Claude Opus 5.5
+
+* `amodp_both.sh p7` (10:45:01-10:45:23).  **Board A peaks -5.4 dB at 5.3 MHz (-3 dB 4.34-6.8 MHz), the Icepi -6.8 dB
+  at 6.0 MHz**; the handbook's circuit gives about 0 dB from 4.7 to 7.5 MHz.  Both AMOD-P boards lose the same 5-7 dB:
+  the tile, not the boards or the cables.  A fit of the six parts to both boards at once: the shunt coil L702
+  (CS0603-R33J, 330 nH wire-wound 0603) has a Q of about 4 at 6 MHz, so the shunt tank is about 50 ohm across the
+  middle of the filter; the band is 5-8 % low on board A (0.4 dB, 4.5 degrees rms on both).  For the AMOD-P handbook (its
+  repository, not changed): p7 is lossy; a higher-Q shunt coil or a higher-impedance shunt tank.
+* p8's drive on board A: +-0.5 V into 50 ohm (+-1 V behind 50 ohm), which meets the handbook's "+-1 V"; at the series
+  resonance that is about 1 mW in the crystal (R_m about 50 ohm), for the 2-3 s the sweep spends inside the 230 Hz
+  peak.  The Icepi's high-impedance ADC passes about 0.2 uW.  Next: p8.
