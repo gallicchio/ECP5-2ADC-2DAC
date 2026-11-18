@@ -4,10 +4,10 @@
 messages (`python3 bringup/bench.py where`).  The procedure is [`../BRINGUP.md`](../BRINGUP.md); results are in
 [`BRINGUP_LOG.md`](BRINGUP_LOG.md); problems for the next revision in [`REVB.md`](REVB.md).
 
-Updated: **2026-11-18 09:12, by Claude (Prompt 160).  The project lives in its own repository,
+Updated: **2026-11-18 09:23, by Claude (Prompt 161).  The project lives in its own repository,
 `~/pcbs/ECP5-2ADC-2DAC` (github.com/gallicchio/ECP5-2ADC-2DAC); everything is recorded here.**
 
-**Where we are: the AMOD-P march, at p4's DIP switches (p4-1, p4-12 done; p4-2 next).**  Board A and the Icepi Zero DK0GFLAW each sweep the same
+**Where we are: the AMOD-P march, at p5 (p4 done with all four switch settings).**  Board A and the Icepi Zero DK0GFLAW each sweep the same
 AMOD-P tile on their own AMOD-P board at the same time (`amodp/README.md`).  p0 (the through, the calibration), p1-p3
 and **p4 with both switches off** are measured on both and make sense (BRINGUP_LOG).  Board A's p4 (2026-11-18 08:39,
 after a fresh load of lockin2; yesterday's failure was the lock-in bitstream, not the cables): peak -1.8 dB at 1.075
@@ -28,10 +28,10 @@ three-cornered hat are in the log (15:17-15:24).
 |---|---|
 | **Board on the bench** | **A**, reworked: FB6241 gone, a wire from R6222's +3V3 end to its left pad (VPHY 3.3 V); USB PROG through the D+/D- swapped cable.  Board B still in the bag. |
 | **Powered?** | **yes, from USB PROG** (+5V 4.975 V; -4V2 -4.150 V; +1V1 1.108 V at 16:02).  The E3646A is **not connected** to the board. |
-| **Cabled to the board** | J204 (DAC 1 OUT) -> 10 cm SMA -> its AMOD-P board -> 10 cm SMA -> J101 (ADC A IN), TERM in.  On 2026-11-18 on p4 (IN, top left; OUT, bottom right); SW401 both ON since 09:10; board A taped to the table.  J205 (DAC 2 OUT) and J102 (ADC B IN): nothing, as far as the session knows.  A U.FL pigtail from J108 (TAP B) to the scope's CH4; J401 (ETHERNET) on the gigabit path; both USB-C; the Fluke on J602 (RAILS) +1V1. |
+| **Cabled to the board** | J204 (DAC 1 OUT) -> 10 cm SMA -> its AMOD-P board -> 10 cm SMA -> J101 (ADC A IN), TERM in.  On 2026-11-18 on p4 (IN, top left; OUT, bottom right); SW401 switch 2 only since 09:21 (p4-2; p5 next); board A taped to the table.  J205 (DAC 2 OUT) and J102 (ADC B IN): nothing, as far as the session knows.  A U.FL pigtail from J108 (TAP B) to the scope's CH4; J401 (ETHERNET) on the gigabit path; both USB-C; the Fluke on J602 (RAILS) +1V1. |
 | **Instruments claimed for this board** | the Fluke45 (on +1V1) and the scope's CH4 (TAP B), both only reading.  The E3646A released (2026-11-17 22:56:51, the claims log). |
 | **What is in the board's flash** | `bringup.bit` of 2026-11-16 (version 20261116): the board boots it by itself. |
-| **What the session left running** | nothing.  Board A's FPGA holds the tutorial's `lockin2.bit` (loaded 2026-11-18 09:10); the IIO bridge on bell is stopped (22:56:49, its output file).  The Icepi DK0GFLAW holds `lockin_half.bit` in SRAM (its flash still the 5.08 XY show), cabled DAC OUT -> its AMOD-P's p4 -> ADC IN. |
+| **What the session left running** | nothing.  Board A's FPGA holds the tutorial's `lockin2.bit` (loaded 2026-11-18 09:21); the IIO bridge on bell is stopped (22:56:49, its output file).  The Icepi DK0GFLAW holds `lockin_half.bit` in SRAM (its flash still the 5.08 XY show), cabled DAC OUT -> its AMOD-P's p4 -> ADC IN. |
 
 ## Visit 1B on board A (2026-11-16 17:00-18:00)
 
@@ -47,12 +47,12 @@ three-cornered hat are in the log (15:17-15:24).
 
 ## The next thing Jason does
 
-**The AMOD-P march, from p4-2.**  Both boards' cables stay on p4; set SW401 switch 1 OFF (switch 2 stays ON) on both
-AMOD-P boards and reply "p4-2".  The session runs `bringup/amodp/amodp_both.sh p4-2` (about 25 s; both lock-ins
-loaded first) and shows the plot of both.  Board A should peak about 1.5 dB under 0 dB near 0.89 MHz (the handbook's
-dashed line is 1 dB high at the peak: the coil's loss).
+**The AMOD-P march, from p5.**  On both AMOD-P boards, move the two cables from p4 to p5 (the DAC's cable to p5 IN, top
+left; p5 OUT, bottom right, to the ADC) and reply "p5".  The session runs `bringup/amodp/amodp_both.sh p5` (both
+lock-ins loaded first; p5 adds 41 points from 4 to 12 MHz) and shows the plot of both.  Board A should be flat to a few
+MHz, -3 dB near 8.9 MHz (the 9 MHz Butterworth); the Icepi, unterminated, rings instead.
 
-* Then p5 ... p13, one reply per setup ("p5"); the session answers each
+* Then p6 ... p13, one reply per setup ("p5"); the session answers each
   with the next "**go to pN on both boards**".
 * If a sweep ever looks wrong again: the barrel (`ONLY=ecp5 amodp_both.sh p0chk`, it should read 0 dB), then the
   AMOD-P boards swapped between board A and the Icepi.  For a tile with a coil, `amodp/amodp_fit_p4.py` shows how to

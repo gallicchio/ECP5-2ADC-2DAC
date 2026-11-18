@@ -6236,3 +6236,15 @@ p4-12
 * **The Icepi:** peak still 3.71 MHz; its low-frequency side 4.1 dB above p4's at 10 kHz (the handbook circuit +3.9):
   both switches on there too.
 * Next: p4-2 (SW401 switch 1 OFF, switch 2 ON).
+
+## Prompt 161 2026-11-18 09:21
+
+p4-2
+
+## Response 161 2026-11-18 09:21 - 2026-11-18 09:22 Claude Opus 5.5
+
+* `amodp_both.sh p4-2` (09:21:26-09:21:49).  **Board A: peak -1.6 dB at 0.875 MHz** (the fit's f0 0.888 MHz; the
+  handbook 0.89), Q 4.5; the fit's C 316 pF: switch 2 adds 103 pF here and 102 in p4-12, switch 1 48: they add.
+  The Icepi 3.0 dB above p4's at 10 kHz (the handbook circuit +2.9).
+* **p4 done**: all four switch settings on both boards, one coil model for all of them.  Next: p5 (the 9 MHz
+  Butterworth).
