@@ -6224,3 +6224,15 @@ p4-1
   low-frequency side instead, 1.6-1.7 dB up from 3 to 30 kHz against the handbook circuit's +1.7.  Both switches set
   right.
 * Next: p4-12 (SW401 both ON).
+
+## Prompt 160 2026-11-18 09:10
+
+p4-12
+
+## Response 160 2026-11-18 09:10 - 2026-11-18 09:11 Claude Opus 5.5
+
+* `amodp_both.sh p4-12` (09:10:21-09:10:44).  **Board A: peak -1.5 dB at 0.825 MHz** (the handbook 0.83 MHz), Q 4.1;
+  the fit's C 363 pF: switch 2 adds 102 pF; the coil unchanged (102 uH, SRF 13.4 MHz); misfit 0.14 dB, 0.6 degrees.
+* **The Icepi:** peak still 3.71 MHz; its low-frequency side 4.1 dB above p4's at 10 kHz (the handbook circuit +3.9):
+  both switches on there too.
+* Next: p4-2 (SW401 switch 1 OFF, switch 2 ON).
