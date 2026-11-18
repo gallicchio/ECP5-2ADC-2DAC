@@ -6592,3 +6592,26 @@ Write up the analysis in the tutorial.
   a shadow).  DAC 1 then held at code 8192 (about 24 mA) from 15:22:01 for Jason to see D201 lit; the white card next.
 * 192-193: D403 (top right, 10 cm from D103) is the RTL8211F's LED2, the schematic's "1000M link": lit with a gigabit
   link, and its blinking most likely the traffic on board A's gigabit path.  Not the FPGA's; the 0.67 s average covers it.
+
+## Prompts 194-199 2026-11-18 (after 15:22; test 3, D201)
+
+194: Yes, it was probably me leaning over the board.  195: D201 has never been lit, as far as I've seen. Is it IR?
+196: The shunt is on the LED side.  197: Can you drive it with a negative voltage and current to check if it has been put
+in backwards? Or does the LED driver prevent this?  198: The shunt is on LED.  199: I don't know the JP numbers, and the
+pdf that has these isn't great. (What's with the yellow on white?) If JP2009 is the one that used to have the shunt, I
+am now measuring its right-most pin (of 3) on the Fluke with respect to the same ground as before.
+
+## Response 194-199 2026-11-18 15:23 - 2026-11-18 15:27 Claude Opus 5.5
+
+* D201 is an XL-2835SURC-05: red, 620-630 nm (not IR), rated at 150 mA.  The driver: DAC 1's IOUTA into R2401 (24.9 ohm)
+  at U202B's + input, Q201 (SS8050) with R2509 (10 ohm) in its emitter: about 50 mA at full scale, 25 mA at code 8192.
+  D201's anode is on +5V; Q201 only sinks from its cathode, so nothing on the board can reverse-bias it on purpose (197).
+  On the board file D201's cathode is the pad toward JP2009 (x 37.4), the anode (+5V) the far one (x 35.1); DESIGN.md
+  records JLCPCB's viewer drawing this part a half turn off (corrected by +180 before the order), so a reversed D201 is a
+  live suspect.
+* The test: the JP2009 shunt off, the Fluke on JP2009's LED pin (D201's cathode alone): about 3.3-3.6 V if D201 is the
+  right way round (the meter's 10 Mohm draws a little forward current from +5V), about 0 V if reversed or open.
+* JP2009's pins from the board file, left to right with the text upright: pad 1 (x 42.60) D201's cathode, under "LED";
+  pad 2 (45.14) Q201's collector; pad 3 (47.68) J210 pin 2, under "EXT".  Jason's right-most pin read 0.0688 V
+  (15:26:50): the EXT pin, connected to nothing.  Sent `bringup/figs/visit3_places.png`.  REVB 32: the assembly
+  drawings' yellow silk text on white (accepted, documents).
