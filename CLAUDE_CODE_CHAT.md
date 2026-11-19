@@ -6660,3 +6660,18 @@ side.  206: Using the flashlight now.  207: done.
 * 206-207: a phone's flashlight on D103 (`light/pd_log.py`, 0.67 s windows, the board's LEDs dark): ADC B 2114 -> 2267
   codes (+152, 7.4 uA in the 10 k), three pulses: **the photodiode receiver passes**.  The light path's two faults are the
   LED (backwards) and its driver.
+
+## Prompts 208-211 2026-11-18 (after 15:53; the x100 gain)
+
+208: Do the x100 gain check. You should have a x1 set of jumpers now. Test that.  209: JP103 pulled. Do that
+measurement. When you're done, we should pull JP104, do a measurement at x100, but then put back in JP103 to do a x10
+measurement with the other x10 amplifier.  210: JP104 pulled. x100.  211: x10b.
+
+## Response 208-211 2026-11-18 16:00 - 2026-11-18 16:08 Claude Opus 5.5
+
+* `bringup/gain/gain_check.py` (the bring-up design; the cable J204 -> J101 was in: a 1041-code sine for 1024): the same
+  DAC sine at each gain, so the ratios do not lean on the DAC.  x1 2068.6 codes/V (+1.0 %); stage 1 10.056, stage 2
+  10.074 alone; 10.012 and 10.029 within x100; **x100 / x1 = 100.86 (-1.1 %)**; the x10 stages flat to 5 MHz.
+* **The gain was not the problem; my analysis's assumed roll-off was** (two poles at 6 MHz, when the stages are flat to
+  5 MHz: 1-5 MHz overcorrected).  With the measured gain and response, `bringup/noise/johnson.py`: T = 487 +- 189 K,
+  k_B = (2.2 +- 0.9)e-23 J/K: room temperature within 1 sigma, to +-40 %.

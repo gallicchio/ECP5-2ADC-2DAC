@@ -38,6 +38,31 @@ EDGES = np.geomspace(180e3, 12e6, 23)   # log bands, 12 a decade: at least 5 FFT
 #   median rejects the narrow lines; from 0.18 MHz, above the 120 kHz pair (1.13) that swamps the bands below
 
 
+
+GAIN = os.path.join(HERE, "..", "gain")
+
+
+def measured_chain(fb):
+    """Channel A's gain at x100 in codes per volt at the node, and its power response against frequency, from
+    ../gain/gain_check.py (2026-11-18 16:00-16:05): x1's DC staircase (ADC codes per DAC code, the DAC taken at its
+    design 2 V / 16384 into 50 ohm), x100 / x1 from the same sine, and the x100 sweep with the DAC's 50 MS/s hold
+    (sinc) divided out, since the noise does not pass the DAC.  Without those files: the design values (2048 codes/V
+    x 10.1^2) and two poles at 6 MHz, which is what the first analysis used and which overcorrected 1-5 MHz."""
+    try:
+        x1 = np.load(os.path.join(GAIN, "gain_x1.npz"))
+        x10 = np.load(os.path.join(GAIN, "gain_x10.npz"))
+        x100 = np.load(os.path.join(GAIN, "gain_x100.npz"))
+    except FileNotFoundError:
+        return G0, 1 / (1 + (fb / 6e6) ** 2) ** 2, "the design gain"
+    dc = x1["dc"]
+    per_volt = np.polyfit(dc[:, 0], dc[:, 1], 1)[0] * 16384 / 2.0            # ADC codes per volt at x1
+    amp = lambda z, sh: [r[2] for r in z["sines"] if int(r[0]) == sh][0]
+    g100 = amp(x10, 5) / amp(x1, 5) * amp(x100, 8) / amp(x10, 8)
+    sw = x100["sweep"]
+    f, a = sw[:, 0], sw[:, 1] / np.sinc(sw[:, 0] / 50e6)
+    resp = np.interp(np.log(fb), np.log(f), (a / a[0]) ** 2, left=1.0, right=np.nan)
+    return per_volt * g100, resp, "the measured gain (x1 %.1f codes/V, x100 / x1 %.2f)" % (per_volt, g100)
+
 def spectra(recs, fs):
     n = recs.shape[1]
     w = np.hanning(n)
@@ -93,15 +118,15 @@ def main():
     d = np.load(SPECTRA)
     edges = d["edges"]
     fb = np.sqrt(edges[:-1] * edges[1:])
-    H = 1 / (1 + (fb / 6e6) ** 2) ** 2                      # the two x10.1 stages, poles taken at 6 MHz (GBW / 10.1)
+    G, H, how = measured_chain(fb)
     m, e = {}, {}                                             # mean, error (segment scatter / sqrt n): paa, pbb, Re, Im
     for k in R_OHM:
         s = d[k + "_seg"]
         m[k] = s.mean(0)
         e[k] = s.std(0, ddof=1) / np.sqrt(len(s))
     # the shared part beyond 0 ohm, at the node: V^2/Hz (the chain's nominal gain and poles divided out)
-    v = {k: (m[k][2] - m["0"][2]) / G0 ** 2 / H for k in ("100", "1k", "10k")}
-    ev = {k: np.hypot(e[k][2], e["0"][2]) / G0 ** 2 / H for k in v}
+    v = {k: (m[k][2] - m["0"][2]) / G ** 2 / H for k in ("100", "1k", "10k")}
+    ev = {k: np.hypot(e[k][2], e["0"][2]) / G ** 2 / H for k in v}
     hi = (fb > 0.6e6) & (fb < 4e6)                            # where 100 ohm and 1 k are flat (1 k's RC corner is ~8 MHz)
     plat = (fb > 0.3e6) & (fb < 0.55e6)                       # 10 k's plateau, below its RC corner
     kt300 = 4 * KB * 300
@@ -117,7 +142,7 @@ def main():
                          [p10, 20e-12], x_scale=[p10, 20e-12])
     p10f, cnode = fitc.x
     i2_10k = (p10f - kt300 * 1e4) / 1e8
-    print("the shared part beyond 0 ohm, at the node (nV/rtHz; the chain's nominal gain x %.0f codes/V divided out):" % G0)
+    print("the shared part beyond 0 ohm, at the node (nV/rtHz; %s: %.0f codes/V divided out, and its response):" % (how, G))
     print("  100 ohm %.2f (0.6-4 MHz; 4kTR at 300 K: %.2f);  1 k %.2f (0.6-4 MHz; 4kTR %.2f);  10 k %.1f (0.3-0.55 MHz; 4kTR %.1f)"
           % (np.sqrt(v100) * 1e9, np.sqrt(kt300 * 100) * 1e9, np.sqrt(v1k) * 1e9, np.sqrt(kt300 * 1e3) * 1e9,
              np.sqrt(p10) * 1e9, np.sqrt(kt300 * 1e4) * 1e9))
@@ -132,7 +157,7 @@ def main():
     print("  0 ohm: the channels share %.0f %% of their noise power at 0.18-1 MHz, %.0f %% at 1-5 MHz; at the node, "
           "%.1f nV/rtHz shared and %.1f in A alone (0.18-1 MHz)"
           % (100 * np.median(coh0[lo]), 100 * np.median(coh0[(fb > 1e6) & (fb < 5e6)]),
-             np.sqrt(np.median(m["0"][2][lo]) / G0 ** 2) * 1e9, np.sqrt(np.median(m["0"][0][lo]) / G0 ** 2) * 1e9))
+             np.sqrt(np.median(m["0"][2][lo]) / G ** 2) * 1e9, np.sqrt(np.median(m["0"][0][lo]) / G ** 2) * 1e9))
 
     import matplotlib
     matplotlib.use("Agg")
@@ -156,8 +181,8 @@ def main():
     sm = lambda x: np.convolve(x, np.ones(9) / 9, mode="same")
     band = (f > 50e3) & (f < 12e6)
     for q, lab, col in (("0_paa", "ADC A alone", "C0"), ("0_pbb", "ADC B alone", "C1")):
-        a2.loglog(f[band] / 1e6, np.sqrt(sm(d[q])[band] / G0 ** 2) * 1e9, lw=0.7, color=col, label=lab)
-    a2.loglog(f[band] / 1e6, np.sqrt(np.clip(sm(d["0_pab"].real), 1e-30, None)[band] / G0 ** 2) * 1e9, lw=0.7, color="k",
+        a2.loglog(f[band] / 1e6, np.sqrt(sm(d[q])[band] / G ** 2) * 1e9, lw=0.7, color=col, label=lab)
+    a2.loglog(f[band] / 1e6, np.sqrt(np.clip(sm(d["0_pab"].real), 1e-30, None)[band] / G ** 2) * 1e9, lw=0.7, color="k",
               label="shared (Re A x B*)")
     a2.axhline(np.sqrt(kt300 * 100) * 1e9, color="C0", ls=":", lw=0.8)
     a2.text(0.06, np.sqrt(kt300 * 100) * 1e9 * 1.1, "4kTR, 100 ohm", fontsize=8, color="C0")
