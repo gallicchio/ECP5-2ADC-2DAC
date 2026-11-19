@@ -125,6 +125,76 @@ def _is_board(p):
     return a > 128 and g > r + 8 and g > b + 4 and r < 90        # the solder mask's green
 
 
+def zoom(name, title, subtitle, x0, y0, x1, y1, points, note='', z=5.0):
+    """A close-up of the render, board millimetres (x0, y0)-(x1, y1) enlarged z times, with numbered points.  `points`:
+    (n, (x, y) in board mm, label, colour, side 'L' or 'R').  Pad positions come from the board file (its origin is
+    placement.json's plus 25 mm in x and y)."""
+    src = Image.open(os.path.join(PROJECT, 'docs', 'images', 'render-top.png')).convert('RGBA')
+    px = src.load(); w, h = src.size
+    xs = [x for x in range(w) if sum(1 for y in range(0, h, 4) if _is_board(px[x, y])) > h // 16]
+    bx0 = min(xs); k0 = (max(xs) - bx0) / BOARD_W
+    ys = [y for y in range(h) if sum(1 for x in range(0, w, 4) if _is_board(px[x, y])) > w // 16]
+    by0 = min(ys)
+    crop = src.crop((int(bx0 + x0 * k0), int(by0 + y0 * k0), int(bx0 + x1 * k0), int(by0 + y1 * k0)))
+    crop = crop.resize((int(crop.width * z), int(crop.height * z)), Image.LANCZOS)
+    ml, mr, mt, mb = 470, 470, 100, 40 + 30 * (note.count('\n') + 1 if note else 0)
+    im = Image.new('RGB', (crop.width + ml + mr, crop.height + mt + mb), (255, 255, 255))
+    im.paste(crop, (ml, mt), crop)
+    d = ImageDraw.Draw(im)
+    d.text((20, 14), title, fill=(0, 0, 0), font=font(34, True))
+    d.text((20, 58), subtitle, fill=(60, 60, 60), font=font(22))
+    kk = k0 * z
+
+    def at(x, y):
+        return ml + (x - x0) * kk - (int(bx0 + x0 * k0) - (bx0 + x0 * k0)) * z, mt + (y - y0) * kk - (int(by0 + y0 * k0) - (by0 + y0 * k0)) * z
+    taken = {'L': [], 'R': []}
+    f, fn = font(21, True), font(26, True)
+    for n, (x, y), text, col, side in points:
+        cx, cy = at(x, y)
+        r = 0.55 * kk
+        lines = text.split('\n')
+        hh = 27 * len(lines) + 14
+        ww = max(d.textlength(s, font=f) for s in lines) + 64
+        ly = max(mt, cy - hh / 2)
+        for (a, b) in sorted(taken[side]):
+            if ly < b + 10 and ly + hh > a - 10:
+                ly = b + 10
+        taken[side].append((ly, ly + hh))
+        lx = ml - 30 - ww if side == 'L' else im.width - mr + 30
+        d.line((lx + ww if side == 'L' else lx, ly + hh / 2, cx - r if side == 'L' else cx + r, cy), fill=col, width=4)
+        d.rectangle((lx, ly, lx + ww, ly + hh), outline=col, width=3, fill=(255, 255, 255))
+        d.text((lx + 12, ly + hh / 2 - 15), str(n), fill=col, font=fn)
+        for i, s in enumerate(lines):
+            d.text((lx + 50, ly + 7 + 27 * i), s, fill=col, font=f)
+        d.ellipse((cx - r, cy - r, cx + r, cy + r), outline=col, width=5)
+        d.text((cx + r + 2, cy - r - 30), str(n), fill=col, font=fn, stroke_width=3, stroke_fill=(255, 255, 255))
+    if note:
+        y = im.height - mb + 14
+        d.rectangle((20, y - 8, im.width - 20, im.height - 8), fill=(255, 255, 235))
+        for i, s in enumerate(note.split('\n')):
+            d.text((30, y + 30 * i), s, fill=(0, 0, 0), font=font(22))
+    path = os.path.join(HERE, 'figs', name)
+    im.quantize(colors=128, method=Image.MEDIANCUT, dither=Image.NONE).save(path, optimize=True)
+    print(path, im.size)
+    return path
+
+
+def driver_probe():
+    # REVB 34: the LED driver (U202B, Q201, R2508, R2509; JP2009 EXT to J210).  Pads from the board file, minus 25 mm.
+    P = lambda x, y: (x - 25.0, y - 25.0)
+    zoom('revb34_driver_probe.png', 'REVB 34: where to touch the Fluke\'s red probe',
+         'the LED driver, SMAs to the left; DAC 1 asks for 20 mA; black probe on J602 RAILS GND (top row)',
+         8.0, 70.0, 38.0, 90.0, [
+             (1, P(48.40, 102.73), 'R2509 (10R), its LOWER pad\n(Q201 emitter):  0.20 V', (220, 40, 40), 'R'),
+             (2, P(48.40, 104.22), 'R2508 (100R), its UPPER pad\n(U202 pin 7):  about 0.95 V', (40, 90, 220), 'R'),
+             (3, P(48.40, 105.88), 'R2508 (100R), its LOWER pad\n(Q201 base):  about 0.95 V', (20, 150, 60), 'R'),
+             (4, P(44.61, 103.60), 'Q201, its lone pin\n(collector):  about 3 V lit,\n4.1 V if no current', (150, 60, 190), 'L'),
+             (5, P(50.52, 101.69), 'U202 pin 5, the top-left pin\n(VA1, the DAC):  0.20 V', (230, 130, 0), 'R'),
+         ],
+         note='R2509\'s UPPER pad is GND.  Pads 1 and 2 are 1.5 mm apart: a slip between them reads in between.\n'
+              'The resistors\' and the transistor\'s names are not printed on the board (only U202\'s is).')
+
+
 def main():
     # ---- the map: every place the plan names ------------------------------------------------------------------
     f = Fig('ECP5-2ADC-2DAC: where things are', 'the board as it lies on the bench: SMAs to the left, USB and Ethernet to the right')
@@ -216,6 +286,7 @@ def main():
     f.label('J602', 'RAILS: scope probes on\n+3V3 (2nd pin) and +1V1 (3rd pin)', ORANGE, 'R', box=(26, 7), dx=11.5)
     f.label('J603', 'TAP -4V2 (U.FL)', BLUE, 'R', r=2.5)
     f.save('visit3_places.png')
+    driver_probe()
 
 
 if __name__ == '__main__':

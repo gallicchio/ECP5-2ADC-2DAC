@@ -6675,3 +6675,32 @@ measurement with the other x10 amplifier.  210: JP104 pulled. x100.  211: x10b.
 * **The gain was not the problem; my analysis's assumed roll-off was** (two poles at 6 MHz, when the stages are flat to
   5 MHz: 1-5 MHz overcorrected).  With the measured gain and response, `bringup/noise/johnson.py`: T = 487 +- 189 K,
   k_B = (2.2 +- 0.9)e-23 J/K: room temperature within 1 sigma, to +-40 %.
+
+## Prompt 212 2026-11-19 (after 08:39)
+
+Add photos/20261118_113014.jpg onto the top of the top-level README.md as proof that something has been hooked up and
+tested and that LEDs work.  The shunt is back, so all gains should be x1. probe.
+
+## Response 212 2026-11-19 08:42 - 2026-11-19 08:47 Claude Opus 5.5
+
+* README: the photo, cropped to the two boards and resized (`docs/images/photos/bench_2026-11-18.jpg`, no metadata),
+  at the top, linking to the full photo; what it shows (board A measuring AMOD-P's circuits at 11:30, DAC 1 OUT and
+  ADC A IN cabled, CLK OUT looped to CLK IN; the eight rail LEDs, a white user LED, the RGB LED and Ethernet's LED lit);
+  `photos/README.md` lists it.  The full photo still carries the phone's make, model and time (no location): removing
+  them in place was refused by the tool, so Jason is asked.  Not committed yet.
+* Probe (REVB 34): the Fluke back on +1V1 (1.1041 V, 08:43:10, so in DC volts); DAC 1 at code 6827 (20 mA asked; 20 mA
+  rather than 24 for the unknown LED on J210) 08:45:21.  `bringup/figs/revb34_driver_probe.png` (new `zoom()` in
+  `make_figs.py`): five points, from the board file's pads (the resistors' and Q201's names are not on the
+  silkscreen): 1 R2509's lower pad (emitter, 0.20 V), 2 R2508's upper pad (U202 pin 7, about 0.95 V), 3 R2508's lower
+  pad (Q201 base), 4 Q201's lone pin (collector, about 3 V if lit), 5 U202 pin 5 (VA1, 0.20 V).
+
+## Prompt 213 2026-11-19 (after 08:47)
+
+Strip the metadata. Then commit everything in here so that I can push. I may or may not get to the probing stuff.
+
+## Response 213 2026-11-19 10:03 - 2026-11-19 10:04 Claude Opus 5.5
+
+* `exiv2 rm photos/20261118_113014.jpg` (no EXIF left; the pixels untouched).  STATUS.md rewritten for the hand-off
+  (visit 3 done but for REVB 34; the probe ready whenever Jason has time; DAC 1 left asking 20 mA, harmless while the
+  driver does not sink); REVB 34 points to the probe figure.  Committed with the README photo, the figure and
+  `make_figs.py`'s `zoom()`.

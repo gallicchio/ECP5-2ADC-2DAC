@@ -4,10 +4,10 @@
 messages (`python3 bringup/bench.py where`).  The procedure is [`../BRINGUP.md`](../BRINGUP.md); results are in
 [`BRINGUP_LOG.md`](BRINGUP_LOG.md); problems for the next revision in [`REVB.md`](REVB.md).
 
-Updated: **2026-11-18 15:38, by Claude (Prompt 202).  The project lives in its own repository,
+Updated: **2026-11-19 10:03, by Claude (Prompt 213).  The project lives in its own repository,
 `~/pcbs/ECP5-2ADC-2DAC` (github.com/gallicchio/ECP5-2ADC-2DAC); everything is recorded here.**
 
-**Where we are: board A alone, visit 3 (Prompt 174's three tests).  (1) LEDs and the RGB LED: pass (REVB 30: blue dim, green bright).  (2) The noise source: both channels see SW101's resistors coherently; k_B waits on a measured x100 gain (the tutorial's 1.22; REVB 31).  (3) The light path: D201 is mounted backwards (REVB 33, rework later); JP2009 now on EXT, DAC 1 at code 0 (the driver off): Jason is finding an LED for J210 LED EXT (anode pin 1 +5V, cathode pin 2).  Jumpers: JP101 TERM in, JP102 SMA, SW101 all off, JP1203 PD, JP202 ALT, GAIN shunts in.  No SMA cables on board A.**  Board A and the Icepi Zero DK0GFLAW each sweep the same
+**Where we are: board A alone, visit 3 (Prompt 174's three tests) done but for one fault.  (1) LEDs and the RGB LED: pass (REVB 30: blue dim, green bright).  (2) The noise source and the correlation: pass; with the measured gain (x100 / x1 = 100.86) T = 487 +- 189 K, room temperature within 1 sigma (the tutorial's 1.22; REVB 31 the shared floor).  (3) The light path: the receiver passes (a flashlight); D201 is mounted backwards (REVB 33, Jason reworks it later) and the LED driver does not sink current (REVB 34): the probe of `figs/revb34_driver_probe.png` is ready (DAC 1 asks 20 mA) whenever Jason has time.  Jumpers: JP101 TERM in, JP102 SMA, SW101 all off, JP1203 PD, JP202 ALT, all four GAIN shunts in (x1), JP2009 EXT with a test LED on J210 LED EXT.  One SMA cable, J204 DAC 1 OUT -> J101 ADC A IN.**  The README shows board A at work (2026-11-18 11:30, `photos/20261118_113014.jpg`).  Earlier, board A and the Icepi Zero DK0GFLAW each swept the same
 AMOD-P tile on their own AMOD-P board at the same time (`amodp/README.md`).  p0 (the through, the calibration), p1-p3
 and **p4 with both switches off** are measured on both and make sense (BRINGUP_LOG).  Board A's p4 (2026-11-18 08:39,
 after a fresh load of lockin2; yesterday's failure was the lock-in bitstream, not the cables): peak -1.8 dB at 1.075
@@ -29,11 +29,11 @@ three-cornered hat are in the log (15:17-15:24).
 | | |
 |---|---|
 | **Board on the bench** | **A**, reworked: FB6241 gone, a wire from R6222's +3V3 end to its left pad (VPHY 3.3 V); USB PROG through the D+/D- swapped cable.  Board B still in the bag. |
-| **Powered?** | **yes, from USB PROG** (+5V 4.975 V; -4V2 -4.150 V; +1V1 1.108 V at 16:02).  The E3646A is **not connected** to the board. |
-| **Cabled to the board** | J204 (DAC 1 OUT) -> 10 cm SMA -> its AMOD-P board -> 10 cm SMA -> J101 (ADC A IN).  On 2026-11-18 on p4 (IN, top left; OUT, bottom right); on p10 from about 11:25; **on p12 (IN only: four LEDs behind 100 ohm, one DIP way at a time) by Prompt 170**; **JP101 TERM out since 11:45** (for p10; ADC A is not used on p12); board A taped to the table.  J205 (DAC 2 OUT) and J102 (ADC B IN): nothing, as far as the session knows.  A U.FL pigtail from J108 (TAP B) to the scope's CH4; J401 (ETHERNET) on the gigabit path; both USB-C; the Fluke on J602 (RAILS) +1V1. |
-| **Instruments claimed for this board** | the Fluke45 (on +1V1) and the scope's CH4 (TAP B), both only reading.  The E3646A released (2026-11-17 22:56:51, the claims log). |
+| **Powered?** | **yes, from USB PROG** (+1V1 1.1041 V at 2026-11-19 08:43:10).  The E3646A is **not connected** to the board. |
+| **Cabled to the board** | J204 (DAC 1 OUT) -> SMA -> J101 (ADC A IN) (the gain check, 2026-11-18 16:00); the AMOD-P boards are off both boards (paused, Prompt 174).  JP101 TERM in.  An LED on J210 LED EXT (anode pin 1 +5V, cathode pin 2), JP2009 on EXT.  J401 (ETHERNET); both USB-C; the Fluke on J602 (RAILS) +1V1, black on GND.  The scope's CH4 went to another project (2026-11-18 16:1x); whether a U.FL pigtail is still on J108 TAP B is not known to the session. |
+| **Instruments claimed for this board** | the Fluke45 only (reading).  The E3646A released (2026-11-17 22:56:51, the claims log). |
 | **What is in the board's flash** | `bringup.bit` of 2026-11-16 (version 20261116): the board boots it by itself. |
-| **What the session left running** | nothing on bell.  Board A's FPGA holds the tutorial's new `ledramp.bit` (loaded 2026-11-18 13:08:48; uncommitted until its page): DAC 1 ramps 0 to +2 V open circuit in 43 s and repeats, DAC 2 at 0 V, LED7..LED0 the ramp's top eight bits (LED7 = 1 V); SW302 USER pauses/resumes, SW301 RESET held runs it down.  The IIO bridge on bell is stopped (2026-11-17 22:56:49).  The Icepi DK0GFLAW holds the Icepi tutorial's new `ledramp.bit` in SRAM (13:08:51, loaded again 14:02:34 after Jason saw no ramp on it; its flash still the 5.08 XY show): DAC OUT ramps 0 to +3.88 V in 43 s into its AMOD-P's p12, the five LEDs the top five bits (leftmost 1.97 V); the button nearest the USB pauses/resumes. |
+| **What the session left running** | nothing on bell.  Board A runs the flash's bring-up design (booted at the power cycle of 2026-11-18 15:38); **DAC 1 at code 6827 (20 mA asked of the LED driver, 2026-11-19 08:45:21)**, DAC 2 at code 8192 (0 V).  The Icepi DK0GFLAW holds the Icepi tutorial's `ledramp.bit` in SRAM (14:11:31; its flash still the 5.08 XY show). |
 
 ## The next three tests on board A (Prompt 174), what Jason moves
 
@@ -61,7 +61,13 @@ JP102 and JP202 on SMA, JP1203 on PD, the four GAIN shunts in (JP103, JP104, JP2
 
 ## The next thing Jason does
 
-**Choose what is next** (both boards' cables are on p11):
+**When there is time, the REVB 34 probe** (nothing to move first): the Fluke's black lead stays on J602 RAILS GND, the
+red one on a probe tip, at the five points of `figs/revb34_driver_probe.png`, the five readings typed into the chat.
+If the driver works: 1 R2509's lower pad 0.20 V; 2 R2508's upper pad (U202 pin 7) about 0.95 V; 3 R2508's lower pad
+(Q201 base) about 0.95 V; 4 Q201's lone pin (collector) about 3 V lit, 4.1 V with no current; 5 U202 pin 5 (VA1)
+0.20 V.  Later: D201's rework (REVB 33); the scope on J603 TAP -4V2 for REVB 31.
+
+**Before Prompt 174 (the AMOD-P march, paused)**, what was next (both boards' cables were on p11):
 
 * p10 (the clipper) and p12 (the LEDs) want an amplitude or DC sweep, not a frequency sweep (to be written), and p10
   reads OUT on high impedance (board A's JP101 TERM out).  p13 (the AM loopstick) needs a loopstick coil on the tile and

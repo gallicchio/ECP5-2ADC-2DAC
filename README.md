@@ -2,6 +2,13 @@
 
 **Completely Open: Schematic, PCB, FPGA, Verilog, RISC-V processor, Linux, Ethernet, 2 ADCs, 2 DACs**
 
+<a href="photos/20261118_113014.jpg"><img src="docs/images/photos/bench_2026-11-18.jpg" alt="Board A running on the bench, cabled by SMA to the AMOD-P board of passive building blocks; its eight red rail LEDs, a white user LED, the RGB LED (blue) and the Ethernet link LED (green) are lit"></a>
+
+**Board A at work, 2026-11-18**, measuring the passive circuits on the AMOD-P board (left).
+- **Cabling:** DAC 1 OUT drives a circuit and ADC A IN reads it back, over the SMA cables. The clock loops from CLK OUT back to CLK IN.
+- **LEDs:** all eight red rail LEDs are lit, and so are a white user LED, the RGB LED (blue) and the Ethernet link LED (green).
+- **Results:** every measurement so far is in [`bringup/BRINGUP_LOG.md`](bringup/BRINGUP_LOG.md).
+
 > [!WARNING]
 > ## Rev A mostly works, but only after soldering work. Wait for rev B.
 > **Do not order this board yet.** Rev A's programming port is dead until two things are changed with a
